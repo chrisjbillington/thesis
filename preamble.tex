@@ -22,6 +22,8 @@
   math-style=ISO,
   % Uppercase bold symbols should also be italic unless set otherwise:
   bold-style=ISO,
+  % Upright \nabla though:
+  nabla=upright,
   % \mathrm,\mathit,\mathbf and operators should use the maths font, not the text font:
   mathup=sym,mathit=sym,mathbf=sym
 ]{unicode-math}
@@ -48,8 +50,8 @@
 % Asana for all non-alphanumeric symbols, operators, etc:
 \setmathfont{Asana Math}
 
-% Latin Modern for integrals, sums etc:
-\setmathfont[range={\mathop}]{Latin Modern Math}
+% Latin Modern for integrals, sums etc, and \nabla:
+\setmathfont[range={\mathop,\nabla}]{Latin Modern Math}
 
 % Minion pro for alphanumeric symbols, inlcuding Greek:
 \setmathfont{Minion Pro}[
@@ -85,11 +87,15 @@
         {Size = 19.91-, Font = MinionPro-BoldItDisp}
     }]
 
+% Use swashed Minion Pro for mathcal:
+% \setmathfont[range=cal,Contextuals=Swash]{Minion Pro Italic}
 
-% Make mathcal use sensible symbols - can't seem to get lualatex to use Minion or Garamond swash
-% letters. Works in xelatex, but presently that renders Minion Pro with unicode-math pretty badly.
-\usepackage{calrsfs}
-\DeclareMathAlphabet{\mathcal}{OMS}{zplm}{m}{n}
+% Workaround for bug where the above commented out line doesn't work - it works in xelatex and will
+% presumably be fixed for lualatex in the future. In the meantime we define a text font face that
+% uses swashed Minion Pro, and redefine the \mathcal command to use it:
+\newfontface\swash[Contextuals=Swash]{Minion Pro Italic}
+\renewcommand\mathcal[1]{\mathmbox{\textrm{\swash #1}}}
+
 
 % Typesetting tweaks for pedants and perfectionists:
 \usepackage{microtype}
@@ -208,8 +214,8 @@
 \let\oldhat\hat
 \renewcommand{\hat}[1]{\skew{1.5}\oldhat{\mathmbox{#1}}}
 
-% \vec: Bold, italic vector
-\renewcommand{\vec}[1]{\symbfit{#1}}
+% \vec: Bold vector. Italic or not depending on unicode-math options.
+\renewcommand{\vec}[1]{\symbf{#1}}
 
 % \upvec: Non-italic vector
 \newcommand{\upvec}[1]{\symbfit{#1}}
