@@ -1,7 +1,9 @@
 % Build with:
-% xelatex -file-line-error -interaction=nonstopmode -halt-on-error -shell-escape thesis.tex
-
-\include{preamble}
+% lualatex -file-line-error -interaction=nonstopmode -halt-on-error -shell-escape thesis.tex
+\documentclass[a4paper,10pt,twoside]{memoir}
+\include{preamble_standard}
+\include{preamble_layout}
+\include{preamble_macros}
 \begin{document}
 \include{front_matter}
 \include{introduction}

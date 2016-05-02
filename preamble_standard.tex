@@ -1,5 +1,3 @@
-\documentclass[a4paper,10pt,twoside]{memoir}
-
 % Maths symbols, equation environments and physics macros:
 \usepackage{amsmath,amssymb}
 \usepackage{physics}
@@ -104,13 +102,10 @@
 \usepackage{cite}
 
 % Allow rotating floats - useful for landscape float pages:
-% \usepackage[xetex]{rotating}
 \usepackage{rotating}
 
 % Graphics:
-% \usepackage[xetex]{graphicx}
 \usepackage{graphicx}
-% \usepackage[xetex,draft]{graphicx} %uncomment to compile in draft mode - no images, faster
 
 % Make commands run at the start of a new page. Useful for changing the margins on a float page
 % without having to manually start a new page and thus have the rest of the current page
@@ -157,96 +152,8 @@
 % Links to DOIs in bibliography
 \usepackage{doi}
 
-
-% This page left intentionally blank:
-  \makeatletter \def\clearforchapter{
-    \clearpage\if@twoside \ifodd\c@page\else \hbox{}\vfill
-    \begin{center}This page intentionally left blank
-    \end{center}\vfill \thispagestyle{cleared}%
-  \newpage\if@twocolumn\hbox{}\newpage\fi\fi\fi}\makeatother
-
-  \newcommand*{\blankpage}{%
-  \vspace*{\fill}
-  \centering This page intentionally left blank
-  \vspace{\fill}}
-  \makeatletter
-  \renewcommand*{\cleardoublepage}{\clearpage\if@twoside \ifodd\c@page\else
-  \blankpage
-  \thispagestyle{empty}
-  \newpage
-  \if@twocolumn\hbox{}\newpage\fi\fi\fi}
-  \makeatother
-
-
-% Make contents go deep
-\setcounter{secnumdepth}{5}
-\setcounter{tocdepth}{5}
-
-
-%% Make footnotes go in the margin %%
-\footnotesinmargin
-\setlength{\footmarkwidth}{0em}
-\setlength{\footmarksep}{0em}
-\setlength{\footparindent}{0em}
-
+% Provides \RaggedLeft and \RaggedRight commands for ragged text with occasional hyphenation:
 \usepackage{ragged2e}
 
-\renewcommand{\foottextfont}{\footnotesize\raggedright}
-
+% Move margin notes upward to prevent them running off the edge of the page:
 \usepackage{marginfix}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Defining custom page layout %%%%%%
-\settrims{0pt}{0pt}
-\settypeblocksize{220.8mm}{4.5in}{*}
-\setlrmargins{25.4mm}{*}{*}
-\setulmargins{1.5in}{*}{*}
-\setmarginnotes{5mm}{40mm}{\onelineskip}
-\setheadfoot{\onelineskip}{2\onelineskip}
-\setheaderspaces{*}{2\onelineskip}{*}
-
-\checkandfixthelayout
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Macros:
-
-% \hat: QM Operator
-\let\oldhat\hat
-\renewcommand{\hat}[1]{\skew{1.5}\oldhat{\mathmbox{#1}}}
-
-% \vec: Bold vector. Italic or not depending on unicode-math options.
-\renewcommand{\vec}[1]{\symbf{#1}}
-
-% \upvec: Non-italic vector
-\newcommand{\upvec}[1]{\symbfit{#1}}
-
-% Bras, kets, brakets, ketbras, expectation values, and matrix elements. Versions that don't resize
-% start with a lowercase letter, versions that will resize start with uppercase letter:
-
-\let\oldbra\bra
-\renewcommand\bra[1]{\oldbra*{#1}}
-\newcommand\Bra[1]{\oldbra{#1}}
-
-\let\oldket\ket
-\renewcommand\ket[1]{\oldket*{#1}}
-\newcommand\Ket[1]{\oldket{#1}}
-
-\let\oldbraket\braket
-\renewcommand\braket[2]{\oldbraket*{#1}{#2}}
-\newcommand\Braket[2]{\oldbraket{#1}{#2}}
-
-\let\oldketbra\ketbra
-\renewcommand\ketbra[2]{\oldketbra*{#1}{#2}}
-\newcommand\Ketbra[2]{\oldketbra{#1}{#2}}
-
-\let\oldev\ev
-\renewcommand\ev[1]{\oldev*{#1}}
-\newcommand\Ev[1]{\oldev{#1}}
-
-\let\oldmatrixel\matrixel
-\renewcommand\matrixel[3]{\oldmatrixel*{#1}{#2}{#3}}
-\newcommand\Matrixel[3]{\oldmatrixel{#1}{#2}{#3}}
-
-% Euler's number, shouldn't be italic:
-\def\e{\mathrm{e}}
-

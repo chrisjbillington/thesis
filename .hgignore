@@ -1,6 +1,6 @@
 syntax: glob
 *.aux
 *.toc
-_minted-thesis/default.pygstyle
 *.log
 *.out
+_minted*

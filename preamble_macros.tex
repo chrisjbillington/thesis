@@ -1,0 +1,40 @@
+% \hat: QM Operator
+\let\oldhat\hat
+\renewcommand{\hat}[1]{\skew{1.5}\oldhat{\mathmbox{#1}}}
+
+% \vec: Bold vector. Italic or not depending on unicode-math options.
+\renewcommand{\vec}[1]{\symbf{#1}}
+
+% \upvec: Non-italic vector
+\newcommand{\upvec}[1]{\symbfit{#1}}
+
+% Bras, kets, brakets, ketbras, expectation values, and matrix elements. Versions that don't resize
+% start with a lowercase letter, versions that will resize start with uppercase letter:
+
+\let\oldbra\bra
+\renewcommand\bra[1]{\oldbra*{#1}}
+\newcommand\Bra[1]{\oldbra{#1}}
+
+\let\oldket\ket
+\renewcommand\ket[1]{\oldket*{#1}}
+\newcommand\Ket[1]{\oldket{#1}}
+
+\let\oldbraket\braket
+\renewcommand\braket[2]{\oldbraket*{#1}{#2}}
+\newcommand\Braket[2]{\oldbraket{#1}{#2}}
+
+\let\oldketbra\ketbra
+\renewcommand\ketbra[2]{\oldketbra*{#1}{#2}}
+\newcommand\Ketbra[2]{\oldketbra{#1}{#2}}
+
+\let\oldev\ev
+\renewcommand\ev[1]{\oldev*{#1}}
+\newcommand\Ev[1]{\oldev{#1}}
+
+\let\oldmatrixel\matrixel
+\renewcommand\matrixel[3]{\oldmatrixel*{#1}{#2}{#3}}
+\newcommand\Matrixel[3]{\oldmatrixel{#1}{#2}{#3}}
+
+% Euler's number, shouldn't be italic:
+\def\e{\mathrm{e}}
+

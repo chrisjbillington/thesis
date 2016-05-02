@@ -1,0 +1,48 @@
+% This page left intentionally blank:
+  \makeatletter \def\clearforchapter{
+    \newgeometry{left=2.54cm,bottom=1.5in,right=2.54cm,top=1.5in}
+    \clearpage\if@twoside \ifodd\c@page\else \hbox{}\vfill
+    \begin{center}This page intentionally left blank
+    \end{center}\vfill\thispagestyle{cleared}\restoregeometry%
+  \newpage\if@twocolumn\hbox{}\newpage\fi\fi\fi}\makeatother
+
+  \newcommand*{\blankpage}{%
+  \newgeometry{left=2.54cm,bottom=1.5in,right=2.54cm,top=1.5in}
+  \vspace*{\fill}
+  \centering This page intentionally left blank
+  \vspace{\fill}
+  \restoregeometry}
+  \makeatletter
+  \renewcommand*{\cleardoublepage}{\clearpage\if@twoside \ifodd\c@page\else
+  \blankpage
+  \thispagestyle{empty}
+  \restoregeometry
+  \if@twocolumn\hbox{}\newpage\fi\fi\fi}
+  \makeatother
+
+
+% Make contents go deep
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+% Make footnotes be ragged:
+\renewcommand{\foottextfont}{\footnotesize\RaggedRight}
+
+%% Make footnotes go in the margin %%
+\footnotesinmargin
+\setlength{\footmarkwidth}{0em}
+\setlength{\footmarksep}{0em}
+\setlength{\footparindent}{0em}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Defining custom page layout %%%%%%
+\settrims{0pt}{0pt}
+\settypeblocksize{220.8mm}{4.5in}{*}
+\setlrmargins{25.4mm}{*}{*}
+\setulmargins{1.5in}{*}{*}
+\setmarginnotes{5mm}{40mm}{\onelineskip}
+\setheadfoot{\onelineskip}{2\onelineskip}
+\setheaderspaces{*}{2\onelineskip}{*}
+
+\checkandfixthelayout
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
