@@ -1,9 +1,15 @@
 % This page left intentionally blank:
   \makeatletter \def\clearforchapter{
-    \newgeometry{left=2.54cm,bottom=1.5in,right=2.54cm,top=1.5in}
-    \clearpage\if@twoside \ifodd\c@page\else \hbox{}\vfill
-    \begin{center}This page intentionally left blank
-    \end{center}\vfill\thispagestyle{cleared}\restoregeometry%
+    \clearpage
+    \if@twoside \ifodd\c@page\else
+        \newgeometry{left=2.54cm,bottom=1.5in,right=2.54cm,top=1.5in}
+        \hbox{}
+        \vfill
+        \begin{center}This page intentionally left blank
+        \end{center}
+        \vfill
+        \thispagestyle{cleared}
+        \restoregeometry%
   \newpage\if@twocolumn\hbox{}\newpage\fi\fi\fi}\makeatother
 
   \newcommand*{\blankpage}{%
@@ -16,14 +22,19 @@
   \renewcommand*{\cleardoublepage}{\clearpage\if@twoside \ifodd\c@page\else
   \blankpage
   \thispagestyle{empty}
-  \restoregeometry
   \if@twocolumn\hbox{}\newpage\fi\fi\fi}
   \makeatother
 
 
-% Make contents go deep
-\setcounter{secnumdepth}{5}
-\setcounter{tocdepth}{5}
+% Caption name/title style:
+\captionnamefont{\normalfont\small\bfseries}
+\captiontitlefont{\small\rmfamily}
+
+
+%% Set contents depth and section numbering %%
+\setcounter{tocdepth}{2}
+\setsecnumdepth{subsection}
+
 
 % Make footnotes be ragged:
 \renewcommand{\foottextfont}{\footnotesize\RaggedRight}
@@ -34,8 +45,46 @@
 \setlength{\footmarksep}{0em}
 \setlength{\footparindent}{0em}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Defining custom page layout %%%%%%
+
+% Chapter style:
+\makechapterstyle{madsen_mod}{% requires graphicx package
+  \chapterstyle{default}
+  \renewcommand*{\chapnamefont}{%
+    \normalfont\Large\scshape\raggedleft}
+  \renewcommand*{\chaptitlefont}{%
+    \normalfont\Huge\bfseries\raggedleft}
+  \renewcommand*{\chapternamenum}{}
+  \renewcommand*{\printchapternum}{%
+    \makebox[0pt][l]{\hspace{0.4em}%
+      \resizebox{!}{6ex}{%
+        \chapnamefont\bfseries\rmfamily\thechapter}%
+    }%
+  }%
+  \renewcommand*{\printchapternonum}{%
+    \chapnamefont \phantom{\printchaptername \chapternamenum%
+      \makebox[0pt][l]{\hspace{0.4em}%
+        \resizebox{!}{6ex}{%
+          \chapnamefont\bfseries\sffamily 1}%
+      }%
+    }%
+    \afterchapternum %
+  }%
+  \renewcommand*{\afterchapternum}{%
+    \par\hspace{1.5cm}\hrule\vskip\midchapskip}}
+\chapterstyle{madsen_mod}
+
+
+%% Make page headers underlined and small caps %%
+\makeheadrule{headings}{\textwidth}{\normalrulethickness}
+\pagestyle{headings}
+\renewcommand*{\memUChead}[1]{\textsc{\MakeTextLowercase{#1}}}
+
+
+% Call the Bibliography section "References"
+\renewcommand{\bibname}{References}
+
+
+% Page margins:
 \settrims{0pt}{0pt}
 \settypeblocksize{220.8mm}{4.5in}{*}
 \setlrmargins{25.4mm}{*}{*}
@@ -43,6 +92,4 @@
 \setmarginnotes{5mm}{40mm}{\onelineskip}
 \setheadfoot{\onelineskip}{2\onelineskip}
 \setheaderspaces{*}{2\onelineskip}{*}
-
 \checkandfixthelayout
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
