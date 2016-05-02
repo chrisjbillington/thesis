@@ -7,3 +7,5 @@ _minted*
 *.bbl
 *.blg
 *.brf
+*.fdb_latexmk
+*.fls

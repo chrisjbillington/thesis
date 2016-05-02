@@ -1,19 +1,23 @@
-.PHONY: clean
-latex_command = lualatex -file-line-error -interaction=nonstopmode -halt-on-error -shell-escape thesis.tex
-bibtex_command = bibtex thesis.aux
+.PHONY: thesis clean
 
-clean:
-	rm -rf *.aux *.log *.out *.toc *.bbl *.blg *.brf _minted-thesis/
+latex_command = lualatex -file-line-error -interaction=nonstopmode -halt-on-error -shell-escape
+
+# Tell TeX to just print lines as long as it wants:
+export max_print_line=1048576
+
+thesis:
+	latexmk -pdflatex="$(latex_command)" -pdf thesis.tex
+
+write:
+	# Like "make thesis" except continually updates when files change. Good for when writing.
+	latexmk -pvc -pdflatex="$(latex_command)" -pdf thesis.tex
 
 latex:
-	$(latex_command)
+	$(latex_command) thesis.tex
 
-bibtex:
-	$(bibtex_command)
+clean:
+	rm -rf *.aux *.log *.out *.toc *.bbl *.blg *.brf *.fls *.fdb_latexmk _minted-thesis/
 
-full: clean
-	$(latex_command)
-	$(bibtex_command)
-	$(latex_command)
-	$(latex_command)
+
+
 
