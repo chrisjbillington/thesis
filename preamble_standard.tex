@@ -2,6 +2,9 @@
 \usepackage{amsmath,amssymb}
 \usepackage{physics}
 
+% Graphics:
+\usepackage{graphicx}
+
 % For an mbox command that works in math mode (i.e that contains math):
 \usepackage{mathtools}
 
@@ -9,6 +12,7 @@
 \usepackage{xcolor}
 \definecolor{pastelred}{RGB}{200,80,80}
 \definecolor{pastelgreen}{RGB}{0,150,80}
+\definecolor{battleshipgrey}{rgb}{0.52, 0.52, 0.51}
 
 
 % Fonts:
@@ -35,14 +39,13 @@
 
 % Monospaced font:
 \setmonofont{Ubuntu Mono}
-% redefine \texttt to be coloured:
-\renewcommand\texttt[1]{{\ttfamily\color{pastelgreen}#1}}
 
 % Asana for all non-alphanumeric symbols, operators, etc:
 \setmathfont{Asana Math}
 
-% Latin Modern for integrals, sums etc, and \nabla:
-\setmathfont[range={\mathop,\nabla}]{Latin Modern Math}
+% Latin Modern for integrals, sums, \nabla, and other symbold determined to be missing from Minion
+% and Asana:
+\setmathfont[range={\mathop,\nabla,\triangleright}]{Latin Modern Math}
 
 % Minion pro for alphanumeric symbols, inlcuding Greek:
 \setmathfont{Minion Pro}[
@@ -87,6 +90,8 @@
 \newfontface\swash[Contextuals=Swash]{Minion Pro Italic}
 \renewcommand\mathcal[1]{\mathmbox{\textrm{\swash #1}}}
 
+% redefine \texttt to be coloured:
+\renewcommand\texttt[1]{{\ttfamily\color{pastelgreen}#1}}
 
 % Typesetting tweaks for pedants and perfectionists:
 \usepackage{microtype}
@@ -96,9 +101,6 @@
 
 % Allow rotating floats - useful for landscape float pages:
 \usepackage{rotating}
-
-% Graphics:
-\usepackage{graphicx}
 
 % Make commands run at the start of a new page. Useful for changing the margins on a float page
 % without having to manually start a new page and thus have the rest of the current page
@@ -141,6 +143,9 @@
     [pp~#2]
   \fi
 }
+
+% Remove need for extra pass of latex to make bookmarks:
+\usepackage{bookmark}
 
 % Links to DOIs in bibliography
 \usepackage{doi}
