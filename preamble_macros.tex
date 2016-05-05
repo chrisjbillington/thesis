@@ -31,3 +31,31 @@
 \let\oldmatrixel\matrixel
 \renewcommand\matrixel[3]{\oldmatrixel*{#1}{#2}{#3}}
 \newcommand\Matrixel[3]{\oldmatrixel{#1}{#2}{#3}}
+
+% Imaginary and real parts as normal operators instead of script font:
+\DeclareMathOperator{\im}{Im}
+\DeclareMathOperator{\re}{Re}
+
+% A figref command to standardise the way figures are referenced:
+\newcommand\figref[1]{Figure \ref{#1}}
+
+% Similarly, a table command:
+\newcommand\tableref[1]{Table\ref{#1}}
+
+% Units
+\newcommand\unit[1]{\,\mathrm{#1}}
+
+% Scientific notation: times-ten-to-the
+\newcommand\E[1]{\times 10^{#1}}
+
+% \mathup in braces:
+\newcommand\up[1]{{\mathup{#1}}}
+
+
+% Abbreviations:
+% \newacronym{rk4}{rk4}{fourth order Runge--Kutta}
+% \newacronym{rk4ip}{rk4ip}{fourth order Runge--Kutta in the interaction picture}
+% \newacronym{rk4ilip}{rk4ilip}{fourth order Runge--Kutta in an instantaneous local interaction picture}
+% \newacronym{sp}{sp}{Schr\"odinger picture}
+% \newacronym{ip}{ip}{interaction picture}
+% \newacronym{de}{de}{differential equation}

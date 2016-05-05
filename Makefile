@@ -21,22 +21,22 @@ export max_print_line=1048576
 
 all:
 	@# make with latexmk - runs latex and bibtex repreatedly as required
-	latexmk -silent -pdflatex="$(LATEXMK_COMMAND)" $(BASENAME).tex -pdf
+	@latexmk -silent -pdflatex="$(LATEXMK_COMMAND)" $(BASENAME).tex -pdf
 
 write:
 	@# latexmk in continuous view mode, running as necessary whenever files change
-	latexmk -silent -pvc -pdflatex="$(LATEXMK_COMMAND)" $(BASENAME).tex -pdf
+	@latexmk -silent -pvc -pdflatex="$(LATEXMK_COMMAND)" $(BASENAME).tex -pdf
 
 latex:
 	@# Just run latex by itself.
-	$(LATEX_COMMAND)
+	@$(LATEX_COMMAND)
 
 wc:
 	@# Wordcount:
-	texcount -total $(CONTENT_FILES) | tee wc.txt
+	@texcount -total $(CONTENT_FILES) | tee wc.txt
 
 clean:
-	rm -rf *.aux *.log *.out *.toc *.bbl *.blg *.brf *.fls *.fdb_latexmk _minted-$(BASENAME)/
+	@rm -rf *.aux *.log *.out *.toc *.bbl *.blg *.brf *.fls *.fdb_latexmk _minted-$(BASENAME)/
 
 
 
