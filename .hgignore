@@ -9,3 +9,4 @@ _minted*
 *.brf
 *.fdb_latexmk
 *.fls
+hglog.txt

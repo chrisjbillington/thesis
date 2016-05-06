@@ -1,4 +1,4 @@
-.PHONY: all write latex clean wc
+.PHONY: all write latex wc hglog clean
 
 BASENAME = thesis
 CONTENT_FILES = atomic_physics.tex experiment.tex front_matter.tex hidden_variables.tex introduction.tex numerics.tex software.tex velocimetry.tex wave_mixing.tex
@@ -34,6 +34,9 @@ latex:
 wc:
 	@# Wordcount:
 	@texcount -total $(CONTENT_FILES) | tee wc.txt
+
+hg_log:
+	@hg log -l1 --template 'rev:     {rev} ({node|short})\nauthor:  {author}\ndate:    {date|date}\nsummary: {desc}' > hglog.txt
 
 clean:
 	@rm -rf *.aux *.log *.out *.toc *.bbl *.blg *.brf *.fls *.fdb_latexmk _minted-$(BASENAME)/

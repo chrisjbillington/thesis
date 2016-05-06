@@ -58,7 +58,7 @@
 
 % [explanation of how it works, comparison of implementation with RSP4 vs something like RK4. RK4 is more general purpose, method does not need to be modified for different Hamiltonians. Main limitation is inability to factor out fast dynamical phases, see RK4ILIP for solution to this. MPI implementation and scaling properties with increasing cores. Superscaling at low number of cores. Mention how my implementation can tolerate high network latency due to early sending od data before all local computations are complete. Mention that it is ripe for GPU processing. Limitations: vulnerable to Runge's phenomenon for sharp potentials. Can't increase the order of the polynomials much because small spacing at the edges requires tiny timesteps. Possible solution: pre-conditioning the potential to be an approximation better representable in the DVR basis.]
 
-
+\setcounter{section}{5}
 \section{Fourth order Runge--Kutta in an instantaneous local interaction picture}
 \sectionmark{RK4 in an instantaneous local interaction picture}
 
@@ -135,53 +135,56 @@ G(t, \psi(\vec r, t)) = V(\vec r, t) + g|\psi(\vec r, t)|^2.
 Note that each symbol with a superscript $^{(n)}$ denotes the entire set over all $n$, subscripts denote the different stages of \textsc{rk4}, and all operations are elementwise. The only opportunity for non-elementwise operations may occur within $F$, which contains the details of any couplings between basis states for whatever system of equations is being solved, for example, using Fast Fourier transforms or finite differences to evaluate the Laplacian in \eqref{eq:RK4_ILIP_GPE}.
 
 
-\begin{algorithmic}[1]
-\linespread{1.5}
-\footnotesize
-\Function{$\up{RK4ILIP}$}{$t_0$, $\upDelta t$, $\psi_0^{(n)}$, $F$}
-    \State $f_1^{(n)} \gets F(t_0, \psi_0^{(n)})$
-    \Comment{First evaluation of Schrödinger picture DE}
-    \State $\omega^{(n)} \gets G(t_0, \psi_0^{(n)})$
-    \Comment{Oscillation frequencies: $\hbar\omega^{(n)} = \matrixel{n}{\hat H_\up{diag}(t_0)}{n}$}
-    \State $k_1^{(n)} \gets f_1^{(n)} + i\omega^{(n)}\psi_0^{(n)}$
-    \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=0$}
-    \State $\phi_1^{(n)} \gets \psi_0^{(n)} + k_1^{(n)} \frac{\upDelta t}{2}$
-    \Comment{First RK4 estimate of IP state vector, at $t=t_0 + \frac{\upDelta t}{2}$}
-    \State $\psi_1^{(n)} \gets e^{-i\omega^{(n)}\frac{\upDelta t}{2}}\phi_1^{(n)}$
-    \Comment{Convert first estimate back to SP with \eqref{eq:backtransform_components}}
-    \State $f_2^{(n)} \gets F(t_0 + \frac{\upDelta t}{2}, \psi_1^{(n)})$
-    \Comment{Second evaluation of Schrödinger picture DE}
-    \State $k_2^{(n)} \gets e^{i\omega^{(n)}\frac{\upDelta t}{2}}f_2^{(n)} + i\omega^{(n)}\phi_1^{(n)}$
-    \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=\frac{\upDelta t}{2}$}
-    \State $\phi_2^{(n)} \gets \psi_0^{(n)} + k_2^{(n)} \frac{\upDelta t}{2}$
-    \Comment{Second RK4 estimate of IP state vector, at $t=t_0 + \frac{\upDelta t}{2}$}
-    \State $\psi_2^{(n)} \gets e^{-i\omega^{(n)}\frac{\upDelta t}{2}}\phi_2^{(n)}$
-    \Comment{Convert second estimate back to SP with \eqref{eq:backtransform_components}}
-    \State $f_3^{(n)} \gets F(t_0 + \frac{\upDelta t}{2}, \psi_2^{(n)})$
-    \Comment{Third evaluation of Schrödinger picture DE}
-    \State $k_3^{(n)} \gets e^{i\omega^{(n)}\frac{\upDelta t}{2}}f_3^{(n)} + i\omega^{(n)}\phi_2^{(n)}$
-    \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=\frac{\upDelta t}{2}$}
-    \State $\phi_3^{(n)} \gets \psi_0^{(n)} + k_3^{(n)} \upDelta t$
-    \Comment{Third RK4 estimate of IP state vector, at $t=t_0 + \upDelta t$}
-    \State $\psi_3^{(n)} \gets e^{-i\omega^{(n)}\upDelta t}\phi_3^{(n)}$
-    \Comment{Convert third estimate back to SP with \eqref{eq:backtransform_components}}
-    \State $f_4^{(n)} \gets F(t_0 + \upDelta t, \psi_3^{(n)})$
-    \Comment{Fourth evaluation of Schrödinger picture DE}
-    \State $k_4^{(n)} \gets e^{i\omega^{(n)}\upDelta t}f_4^{(n)} + i\omega^{(n)}\phi_3^{(n)}$
-    \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=\upDelta t$}
-    \State $\phi_4^{(n)} \gets
-            \psi_0^{(n)} + \frac{\upDelta t}{6}\left(k_1^{(n)} + 2k_2^{(n)} + 2k_3^{(n)} + k_4^{(n)}\right)$
-    \Comment{Fourth RK4 estimate, at $t=t_0 + \upDelta t$}
-    \State $\psi_4^{(n)} \gets e^{-i\omega^{(n)}\upDelta t}\phi_4^{(n)}$
-    \Comment{Convert fourth estimate back to SP with \eqref{eq:backtransform_components}}
-    \State \Return $\psi_4^{(n)}$
-    \Comment{Return the computed SP state vector at $t=t_0 + \upDelta t$}
-\EndFunction
-\end{algorithmic}
+\begin{breakablealgorithm}
+    \caption{\textsc{rk4ilip}}
+    \begin{algorithmic}[1]
+    \linespread{1.5}
+    \footnotesize
+    \Function{$\up{RK4ILIP}$}{$t_0$, $\upDelta t$, $\psi_0^{(n)}$, $F$}
+        \State $f_1^{(n)} \gets F(t_0, \psi_0^{(n)})$
+        \Comment{First evaluation of Schrödinger picture DE}
+        \State $\omega^{(n)} \gets G(t_0, \psi_0^{(n)})$
+        \Comment{Oscillation frequencies: $\hbar\omega^{(n)} = \matrixel{n}{\hat H_\up{diag}(t_0)}{n}$}
+        \State $k_1^{(n)} \gets f_1^{(n)} + i\omega^{(n)}\psi_0^{(n)}$
+        \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=0$}
+        \State $\phi_1^{(n)} \gets \psi_0^{(n)} + k_1^{(n)} \frac{\upDelta t}{2}$
+        \Comment{First RK4 estimate of IP state vector, at $t=t_0 + \frac{\upDelta t}{2}$}
+        \State $\psi_1^{(n)} \gets e^{-i\omega^{(n)}\frac{\upDelta t}{2}}\phi_1^{(n)}$
+        \Comment{Convert first estimate back to SP with \eqref{eq:backtransform_components}}
+        \State $f_2^{(n)} \gets F(t_0 + \frac{\upDelta t}{2}, \psi_1^{(n)})$
+        \Comment{Second evaluation of Schrödinger picture DE}
+        \State $k_2^{(n)} \gets e^{i\omega^{(n)}\frac{\upDelta t}{2}}f_2^{(n)} + i\omega^{(n)}\phi_1^{(n)}$
+        \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=\frac{\upDelta t}{2}$}
+        \State $\phi_2^{(n)} \gets \psi_0^{(n)} + k_2^{(n)} \frac{\upDelta t}{2}$
+        \Comment{Second RK4 estimate of IP state vector, at $t=t_0 + \frac{\upDelta t}{2}$}
+        \State $\psi_2^{(n)} \gets e^{-i\omega^{(n)}\frac{\upDelta t}{2}}\phi_2^{(n)}$
+        \Comment{Convert second estimate back to SP with \eqref{eq:backtransform_components}}
+        \State $f_3^{(n)} \gets F(t_0 + \frac{\upDelta t}{2}, \psi_2^{(n)})$
+        \Comment{Third evaluation of Schrödinger picture DE}
+        \State $k_3^{(n)} \gets e^{i\omega^{(n)}\frac{\upDelta t}{2}}f_3^{(n)} + i\omega^{(n)}\phi_2^{(n)}$
+        \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=\frac{\upDelta t}{2}$}
+        \State $\phi_3^{(n)} \gets \psi_0^{(n)} + k_3^{(n)} \upDelta t$
+        \Comment{Third RK4 estimate of IP state vector, at $t=t_0 + \upDelta t$}
+        \State $\psi_3^{(n)} \gets e^{-i\omega^{(n)}\upDelta t}\phi_3^{(n)}$
+        \Comment{Convert third estimate back to SP with \eqref{eq:backtransform_components}}
+        \State $f_4^{(n)} \gets F(t_0 + \upDelta t, \psi_3^{(n)})$
+        \Comment{Fourth evaluation of Schrödinger picture DE}
+        \State $k_4^{(n)} \gets e^{i\omega^{(n)}\upDelta t}f_4^{(n)} + i\omega^{(n)}\phi_3^{(n)}$
+        \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=\upDelta t$}
+        \State $\phi_4^{(n)} \gets
+                \psi_0^{(n)} + \frac{\upDelta t}{6}\left(k_1^{(n)} + 2k_2^{(n)} + 2k_3^{(n)} + k_4^{(n)}\right)$
+        \Comment{Fourth RK4 estimate, at $t=t_0 + \upDelta t$}
+        \State $\psi_4^{(n)} \gets e^{-i\omega^{(n)}\upDelta t}\phi_4^{(n)}$
+        \Comment{Convert fourth estimate back to SP with \eqref{eq:backtransform_components}}
+        \State \Return $\psi_4^{(n)}$
+        \Comment{Return the computed SP state vector at $t=t_0 + \upDelta t$}
+    \EndFunction
+    \end{algorithmic}
+\end{breakablealgorithm}
 
 \subsubsection{Note on imaginary time evolution}
 
-When \textsc{rk4ilip} is used for imaginary time evolution, the oscillation frequencies $\omega_n^{t^\prime}$ may have a large imaginary part. If the initial guess is different enough from the groundstate, then one of \eqref{eq:IP_definition_components} and \eqref{eq:backtransform_components} may result in numerical overflow. To deal with this problem, one can define a clipped copy $\omega_\up{clipped}$ of $\omega_n^{t^\prime}$ such that $\abs*{e^{\pm i\omega_\up{clipped}\upDelta t}}$ is less than the largest representable floating point number, and use $\omega_\up{clipped}$ in all the exponents instead. In the following results I used \textsc{rk4ilip} with \textsc{item} to find all the initial groundstates, and performed clipping such that\footnote{$400$ being about half the largest (base $e$) exponent representable in double precision floating point.} {$\abs*{\im{(\omega_\up{clipped})}\upDelta t} < 400$}. This clipped version of $\omega_n^{t^\prime}$ should be used in all exponents in the above algorithm, but not in the second term of \eqref{eq:IPDE_components}. If it is used everywhere then all we have achieved is to choose a different (less useful) interaction picture, and will still overflow. What we achieve by clipping only the exponents is to have temporarily ``incorrect" evolution\footnote{Of no concern since we are using \textsc{item} as a relaxation method, and are not interested in intermediate states. Only the final state's correctness concerns us.}, limiting the change in magnitude of the wavefunction at each point in space to a factor of $e^{400}$ per step. This will continue for the few steps that it takes \textsc{item} to get the wavefunction within a factor of $e^{400}$ of the groundstate, after which no clipping is necessary and convergence to the groundstate proceeds as normal, subject to the ordinary limitations on what timesteps work with \textsc{item}.
+When \textsc{rk4ilip} is used for imaginary time evolution, the oscillation frequencies $\omega_n^{t^\prime}$ may have a large imaginary part. If the initial guess is different enough from the groundstate, then one of \eqref{eq:IP_definition_components} and \eqref{eq:backtransform_components} may result in numerical overflow. To deal with this problem, one can define a clipped copy $\omega_\up{clipped}$ of $\omega_n^{t^\prime}$ such that $\abs*{e^{\pm i\omega_\up{clipped}\upDelta t}}$ is less than the largest representable floating point number, and use $\omega_\up{clipped}$ in all the exponents instead. In the following results I used \textsc{rk4ilip} with \textsc{item} to smooth initial states after a phase printing, and performed clipping such that\footnote{$400$ being about half the largest (base $e$) exponent representable in double precision floating point.} {$\abs*{\im{(\omega_\up{clipped})}\upDelta t} < 400$}. This clipped version of $\omega_n^{t^\prime}$ should be used in all exponents in the above algorithm, but not in the second term of \eqref{eq:IPDE_components}. If it is used everywhere then all we have achieved is to choose a different (less useful) interaction picture, and will still overflow. What we achieve by clipping only the exponents is to have temporarily ``incorrect" evolution\footnote{Of no concern since we are using \textsc{item} as a relaxation method, and are not interested in intermediate states. Only the final state's correctness concerns us.}, limiting the change in magnitude of the wavefunction at each point in space to a factor of $e^{400}$ per step. This will continue for the few steps that it takes \textsc{item} to get the wavefunction within a factor of $e^{400}$ of the groundstate, after which no clipping is necessary and convergence to the groundstate proceeds as normal, subject to the ordinary limitations on what timesteps work with \textsc{item}.
 
 \subsection{Domain of usefulness}
 
@@ -195,12 +198,29 @@ This leaves \textsc{rk4ilip} with an advantage only in the case of large spatial
 
 The Fourier split-step method (see section [TODO REF TO EARLIER NUMERICS SEC]) also models dynamical phases due to the potential analytically to first order. As such it is also quite capable of modeling large potentials. However, it requires that all operators be diagonal in either the spatial basis or the Fourier basis. Therefore \textsc{bec}s in rotating frames, due to the Hamiltonian containing an angular momentum operator, are not amenable to simulation with \textsc{fss}\footnote{Split step with more than these two bases is possible in other schemes such as \textsc{FEDVR} [TODO SEE EARLIER SECTION] however - each operator can be diagonalised and exponentiated locally in each element and applied as a (relatively small) matrix multiplication rather than using \textsc{fft}s.}.
 
-[talk about rk4ip requiring FFTs - you could use it for the kinetic term only and use FFTs or finite differences for the rotation terms, but then it provides little benefit compared to ordinary rk4]
+This use of \textsc{fft}s in both the \textsc{fss} and \textsc{rk4ip} methods necessarily imposes periodic boundary conditions on a simulation, which may not be desired. By contrast, if different boundary conditions are desired, finite differences instead of \textsc{fft}s can be used to evaluate spatial derivatives in the \textsc{rk4} and \text{rk4ip} methods. Finite differences seem to have waned in popularity in \textsc{bec} simulations due to the ``infinite order" accuracy of using \textsc{fft}s for derivatives, but from what I can gather the impression that finite differences are inaccurate stems from only considering second order finite differences [cite FEDVR paper]. As shown in [TODO CITE EARLIER SECTION], 6th or so order finite differences are entirely sufficient for \textsc{bec} simulations.
 
-[talk about local parallelisability]
+Along with the ability to impose arbitrary boundary conditions, finite differences require only local data, that is, only points spatially close to the point being considered need be known in order to evaluate derivatives there. This makes finite differences amenable to simulation on cluster computers, with only a small number of points (depending on the order of the scheme) needing to be exchanged at node-boundaries each step. By contrast, \textsc{fft} based derivatives require data from the entire spatial region. Whilst this can still be parallelised on a \textsc{gpu}, where all the data is available, it cannot be done on a cluster without large amounts of data transfer between nodes.
 
+\begin{table}
+\centering
+\begin{tabular}[c]{|r||rrrr|}
+\hline
+Method & \textsc{rk4} & \textsc{rk4ip} & \textsc{rk4ilip} & \textsc{fss} \\
+\hline
+Error & $\Ord{\upDelta t^4}$ & $\Ord{\upDelta t^4}$& $\Ord{\upDelta t^4}$ & $\Ord{\upDelta t^2}$\\
+\textsc{fft}s per step & $4$ & $4$ & $4$ & $2$\\
+Large $\upDelta V$ & No & No & Yes & Yes\\
+Large kinetic term & No & Yes & No & Yes\\
+Arbitrary operators & Yes & Yes$^\dagger$ & Yes & No\\
+Locally parallelisable & Yes & No & Yes & No\\
+Arbitrary boundary conditions & Yes & No & Yes & No\\
+\hline
+\end{tabular}
+\caption{Advantages and disadvantages of the four methods for simulating Bose--Einstein condensates. \emph{Arbitrary operators} refers to whether the method permits operators that are not diagonal in either the spatial or Fourier basis, such as angular momentum operators. \emph{Locally parallelisable} means the method uses only spatially nearby points in computing operators, and thus is amenable to parallelisation by splitting the simulation over multiple cores in the spatial basis, $\dagger$ Whilst one can include arbitrary operators within the \textsc{rk4ip} method, only operators diagonal in Fourier space can be analytically treated the way \textsc{rk4ip} does with the kinetic term, and so there is no advantage for these terms over ordinary \textsc{rk4}.}\label{table:rk4ilip_methods}
+\end{table}
 
-\tableref{table:rk4ilip_methods} summarises the capabilities of the methods considered in the following results section. There are two situations in which \textsc{rk4ilip} is the
+\tableref{table:rk4ilip_methods} summarises the capabilities of the methods considered in the following results section. \textsc{rk4ilip} is the only method capable of modelling a large spatial variation in the potential term whilst being locally parallelisable, and supporting arbitrary operators and boundary conditions.
 
 \subsection{Results}
 
@@ -234,14 +254,16 @@ All groundstates were determined using with successive over-relaxation [TODO SEE
 \begin{equation}
 \upDelta\mu = \sqrt{\frac{\braket{\psi(\hat H - \mu)} {(\hat H - \mu)\psi}}{\braket {\psi}{\psi}}},
 \end{equation}
-where $\hat H$ is the nonlinear Hamiltonian and $\braket{\vec r}{\psi}$ the condensate wavefunction, which does not have unit norm. For the rotating frame simulations
+where $\hat H$ is the nonlinear Hamiltonian and $\braket{\vec r}{\psi}$ the condensate wavefunction, which does not have unit norm. For the rotating frame simulations the groundstates converged to $\frac{\upDelta\mu}{\mu} \approx 9\E{-7}, 2\E{-6}, 3\E{-6}$ and $2\E{-6}$ for $\alpha = 16, 12, 8$, and $4$ respectively.
 
-The rotating frames had their groundstates determined to 9e-7 for alpha = 16, and 2, 3, and 2e-6  for alpha = 12, 8, and 4 respectively.
+After the groundstates were found
+
+[40ms TIME EVOLUTION, FFTs for nonrotating, FD for rotating]
+
+[TODO PAST TENSE]
 
 \subsection{Discussion}
 
-As mentioned, \textsc{rk4ilip} is mostly useful for continuum quantum mechanics only when there are large spatial differences in the potential, which cannot give rise to equally large kinetic energies\footnote{This is essentially due to such a situation violating the condition we laid out at the beginning of this section --- that the simulation basis must be nearly an eigenbasis of the total Hamiltonian.}. Furthermore, the advantage that \textsc{rk4ilip} has over other methods with that same property is that it is does not require a particular form of Hamiltonian or a particular method of evaluating spatial derivatives. The former means is is applicable in rotating frames or to situations with unusual Hamiltonians, and the latter means is can be used
+As mentioned, \textsc{rk4ilip} is mostly useful for continuum quantum mechanics only when there are large spatial differences in the potential, which cannot give rise to equally large kinetic energies\footnote{This is essentially due to such a situation violating the condition we laid out at the beginning of this section --- that the simulation basis must be nearly an eigenbasis of the total Hamiltonian.}. Furthermore, the advantage that \textsc{rk4ilip} has over other methods with that same property is that it is does not require a particular form of Hamiltonian or a particular method of evaluating spatial derivatives. The former means is is applicable in rotating frames or to situations with unusual Hamiltonians, and the latter means is can be used with finite differences or \textsc{fedv} and thus is amenable to parallelisation on a cluster computer.
 
-- Table comparing methods. Parallelism. Or rather, *local* parallelism. Talk about rk4ilip being good for decoupled timescales and how there could possibly be a similar situation for rk4ip - where large gradients in oscillation frequencies do not give rise to large kinetic energies
-
-
+The ability to model a large $\Delta V$ provides only a narrow domain of increased usefulness over other methods. If a large kinetic energy results from the large potential, then the method requires just as small timesteps as any other. And if the large potential is supposed to approximate an an infinite well, then an actual infinite well may be modelled using zero boundary conditions, negating the need for something like \textsc{rk4ilip}. However, when potential wells are steep, but not infinitely steep, \textsc{rk4ilip} provides a benefit. The only other model that can handle these large potentials, Fourier split-step has the disadvantage that it cannot deal with arbitrary operators such as those arising from a rotating frame, and is not parallelisable with local data. The benefits of parallelisability are obvious, and in the previous results I demonstrated \textsc{rk4ilip}'s advantage at simulating \textsc{bec}s in tight traps and rotating frames---\textsc{rk4ilip} was the last method standing.
