@@ -83,21 +83,14 @@
 \renewcommand{\bibname}{References}
 
 % Draft mode: Include hg info in footers:
-% \begingroup\makeatletter\everyeof{\noexpand}
-% \edef\x{\endgroup\def\noexpand\hginfo{\@@input|"hg log -l 1" }}\x
-% \def\draftinfo{\\ \tiny \ttfamily \bfseries \color{red} \hginfo}
-
-\immediate\write18{make hg_log}
+\immediate\write18{make hglog}
 \def\hginfo{\verbatiminput{hglog.txt}}
-\def\draftinfo{\small \ttfamily \bfseries \color{red} \hginfo}
-
+\def\draftinfo{{\small \ttfamily \bfseries \color{red} \hginfo}}
 \makeevenfoot{plain}{\draftinfo}{\thepage}{}
 \makeoddfoot{plain}{\draftinfo}{\thepage}{}
 \makeevenfoot{headings}{\draftinfo}{}{}
 \makeoddfoot{headings}{\draftinfo}{}{}
 
-
-%
 
 % Page margins:
 \settrims{0pt}{0pt}

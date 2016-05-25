@@ -1,6 +1,13 @@
-% \hat: QM Operator
+% Skew accents that go over characters to make them more centered:
+
+% \hat:
 \let\oldhat\hat
 \renewcommand{\hat}[1]{\skew{1.5}\oldhat{\mathmbox{#1}}}
+
+% \tilde:
+\let\oldtilde\tilde
+\renewcommand{\tilde}[1]{\skew{1.5}\oldtilde{\mathmbox{#1}}}
+
 
 % \vec: Bold vector. Italic or not depending on unicode-math options.
 \renewcommand{\vec}[1]{\symbf{#1}}
@@ -35,6 +42,9 @@
 % Imaginary and real parts as normal operators instead of script font:
 \DeclareMathOperator{\im}{Im}
 \DeclareMathOperator{\re}{Re}
+
+% Two argument arctan function:
+\DeclareMathOperator{\arctantwo}{arctan2}
 
 % A figref command to standardise the way figures are referenced:
 \newcommand\figref[1]{Figure \ref{#1}}
