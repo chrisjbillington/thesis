@@ -15,3 +15,64 @@ Time dependent potentials could potentially be handled by approximating unitary 
 Matrix scaling for Schrodinger theory, discuss methods: Sinkhorn-Knopp, Lineal, and my one. Compare time complexity of algorithms so as to define the computational complexity of the hidden variables semiclassical method. Method is of course parallelisable on GPU or similar so is fast on parallel machines even if matrix scaling is slow.
 
 Discuss how it would make sense for the systems to behave in the presence of collisions w.r.t collapse of state vectors.
+
+\section{Derivation of approximate Markovian decoherence rate}
+
+Positional separation of two different internal states of an atom leads to decoherence of those states, with a decoherence factor $r_{ij}(t)$ equal to the overlap of the spatial wavefunctions of the two components in question a time $t$ after they began separating. Approximating both wavepackets as initially overlapping Gaussians of width $\sigma$, ignoring dispersion, and assuming they separate with constant relative acceleration $a_{ij}$, the decoherence factor is
+
+\begin{align}
+r_{ij}(t) &= \braket{\psi_i(t)}{\psi_j(t)}\\
+ &= C \int_{-\infty}^{\infty} e^{-\frac{x^2}{4\sigma^2}}e^{-\frac{(x-x_\up{rel})^2}{4\sigma^2} + ik_\up{rel}x}\,\dd x,\label{eq:gaussian_integral}
+\end{align}
+where
+\begin{align}
+x_{\mathrm{rel}}(t) = \frac12a_{ij}t^2
+\end{align}
+and
+\begin{align}
+k_\up{rel}(t) = \frac m \hbar a_{ij} t
+\end{align}
+are the wavepackets' relative\footnote{$a_{ij}$, $x_\up{rel}$ and $k_\up{rel}$ are the acceleration, position, and wavenumber of the $j^\up{th}$ component with respect to the $i^\up{th}$ component, that is, $a_{ij} = a_j - a_i$, etc.} position and wavenumber due to acceleration for a time $t$ starting from zero relative velocity, and
+\begin{align}
+C^{-1}=\int_{-\infty}^\infty e^{-\frac{x^2}{2\sigma^2}}\,\dd x\label{supp:eq:Cdef}
+\end{align}
+is a normalisation constant. Note that this expression holds for any number of dimensions---relative motion is only along one axis so the integrals in all other directions equal one.
+
+Evaluating the Gaussian integral (\ref{eq:gaussian_integral}) gives the following expression for the decoherence factor $r_{ij}(t)$:
+\begin{align}
+r_{ij}(t)&= e^{-\left[
+        \frac{1} {8\sigma^2} x_\up{rel}^2
+      + \frac i2 x_{\mathrm{rel}} k_\up{rel}
+      + \frac{\sigma^2}{2} k_\up{rel}^2
+      \right]}\label{eq:decoherence_factor}.
+\end{align}
+
+This is a decoherence \emph{factor}; it is the factor by which the $(i, j)$ off-diagonal of the reduced density matrix for the atom's internal state will be reduced at time $t$. The corresponding decoherence \emph{rate} is given by the logarithmic derivative of (\ref{eq:decoherence_factor}):
+
+\begin{align}
+\Gamma_{ij}(t) = - \frac 1 {r_{ij}(t)} \dv t {r_{ij}(t)}.
+\end{align}
+
+ The fact that (\ref{eq:decoherence_factor}) does not describe a constant decoherence rate (i.e., it does not have the functional form of exponential decay) means that the back-action on the atom's internal state caused by measurements of its motional state will be different depending on the interval of time between measurements.
+
+For example, the logarithmic derivative of (\ref{eq:decoherence_factor}) approaches zero as $t$ goes to zero. This means that in the limit of infinitely frequent measurements, no decoherence occurs at all in between measurements, and the motional state is reset after each measurement such that the wavepackets never separate at all. This is the quantum Zeno effect, and its appearance in models of open quantum systems is usually treated as a reminder that the assumption of infinitely frequent strong measurements is unphysical [CITE].
+
+Since experimentally we are not measuring atoms' motional states so frequently, we ought to wait until the wavepackets are completely separated before performing a projective measurement. As in quantum optics models of open quantum systems, in which the measurement interval ``should be large enough to allow the photons to get away from the atom" [CITE The Quantum Jump Approach
+and Quantum Trajectories Gerhard C. Hegerfeldt], ours should be large enough for the atomic states to get away from each other.
+
+If at large enough times, a decoherence rate is independent of time, that decoherence is called Markovian at that timescale. A Markovian environment is one that has no memory of the decoherence process---it ``forgets" any information caused by past interaction with the system. Even though at short times, all decoherence rates in quantum mechanics tend to zero [CITE], if they become Markovian on a timescale shorter than other timescales of interest, the Markov approximation can be used and a constant decoherence rate used at all times. In quantum optics, the decoherence factor for the internal state of an atom due to photon emission indeed tends to exponential decay on timescales that are still much shorter than that of the system evolution, and thus the Markov approximation is accurate.
+
+Unlike quantum optics models, our decoherence factor does not describe Markovian decoherence on any timescale. In the limit of large $t$, its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian [CITE] at that timescale. Nonetheless, if we wish to write a time-local differential equation for the internal state of the atom, Markovian decoherence is the only kind we can include [CITE].
+
+To that end, we will now construct a ``time ignorant" version of $r_{ij}(t)$ that answers the question ``What is the expected decoherence factor at all future times, if you don't know how long it has been since the two wavepackets began separating?" In this way we can compute an \emph{average} decoherence rate $\Gamma_{ij}$ described by our decoherence factor, even though $r_{ij}(t)$ does not have a constant decoherence rate at large times. This essentually amounts to finding the best fitting exponential to $r_{ij}(t)$. Whilst this approximation is crude, it is nonetheless an improvement over the Ehrenfest model, which has no decoherence at all (i.e. it has a decoherence rate that is also constant like ours---but equal to zero).
+
+We define the time-ignorant decoherence factor $\tilde r_{ij}(t)$ as the overlap of the wavefunction of the $i^\up{th}$ internal state with a superposition of wavepackets of the $j^\up{th}$ internal state, with the superposition being over all times in the past the wavepackets began separating:
+\begin{align}
+\tilde r_{ij}(t) &= \bra{\psi_i(t)} A\int_{-\infty}^0 \ket{\psi_j(t - t^\prime)} \,\dd t^\prime,
+\end{align}
+where $A$ is a normalisation constant such that $\tilde r_{ij}(0) = 1$.
+Since $\ket{\psi_i(t)}$ is time independent (rather, since we can perform our calculations in the frame of reference in which it is stationary), this is simply:
+\begin{align}
+\tilde r_{ij}(t) &= A\int_{-\infty}^0 r_{ij}(t - t^\prime) \,\dd t^\prime.
+\end{align}
+Our average decoherence rate $\Gamma_{ij}$ is then given by the logarithmic derivative of $\tilde r_{ij}(t)$ at $t=0$:
