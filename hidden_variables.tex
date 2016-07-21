@@ -36,9 +36,9 @@ are the wavepackets' relative\footnote{$a_{ij}$, $x_\up{rel}$ and $k_\up{rel}$ a
 \begin{align}
 C^{-1}=\int_{-\infty}^\infty e^{-\frac{x^2}{2\sigma^2}}\,\dd x\label{supp:eq:Cdef}
 \end{align}
-is a normalisation constant. Note that this expression holds for any number of dimensions---relative motion is only along one axis so the integrals in all other directions equal one.
+is a normalisation constant [TODO CHECK IF NEEDS TO BE SQUARED]. Note that this expression holds for any number of dimensions---relative motion is only along one axis so the integrals in all other directions equal one.
 
-Evaluating the Gaussian integral (\ref{eq:gaussian_integral}) gives the following expression for the decoherence factor $r_{ij}(t)$:
+Evaluating the Gaussian integral \eqref{eq:gaussian_integral} gives the following expression for the decoherence factor $r_{ij}(t)$:
 \begin{align}
 r_{ij}(t)&= e^{-\left[
         \frac{1} {8\sigma^2} x_\up{rel}^2
@@ -47,15 +47,15 @@ r_{ij}(t)&= e^{-\left[
       \right]}\label{eq:decoherence_factor}.
 \end{align}
 
-This is a decoherence \emph{factor}; it is the factor by which the $(i, j)$ off-diagonal of the reduced density matrix for the atom's internal state will be reduced at time $t$. The corresponding decoherence \emph{rate} is given by the logarithmic derivative of (\ref{eq:decoherence_factor}):
+This is a decoherence \emph{factor}; it is the factor by which the $(i, j)$ off-diagonal of the reduced density matrix for the atom's internal state will be reduced at time $t$. The corresponding decoherence \emph{rate} is given by the logarithmic derivative of \eqref{eq:decoherence_factor}:
 
 \begin{align}
 \Gamma_{ij}(t) = - \frac 1 {r_{ij}(t)} \dv t {r_{ij}(t)}.
 \end{align}
 
- The fact that (\ref{eq:decoherence_factor}) does not describe a constant decoherence rate (i.e., it does not have the functional form of exponential decay) means that the back-action on the atom's internal state caused by measurements of its motional state will be different depending on the interval of time between measurements.
+ The fact that \eqref{eq:decoherence_factor} does not describe a constant decoherence rate (i.e., it does not have the functional form of exponential decay) means that the back-action on the atom's internal state caused by measurements of its motional state will be different depending on the interval of time between measurements.
 
-For example, the logarithmic derivative of (\ref{eq:decoherence_factor}) approaches zero as $t$ goes to zero. This means that in the limit of infinitely frequent measurements, no decoherence occurs at all in between measurements, and the motional state is reset after each measurement such that the wavepackets never separate at all. This is the quantum Zeno effect, and its appearance in models of open quantum systems is usually treated as a reminder that the assumption of infinitely frequent strong measurements is unphysical [CITE].
+For example, the logarithmic derivative of \eqref{eq:decoherence_factor} approaches zero as $t$ goes to zero. This means that in the limit of infinitely frequent measurements, no decoherence occurs at all in between measurements, and the motional state is reset after each measurement such that the wavepackets never separate at all. This is the quantum Zeno effect, and its appearance in models of open quantum systems is usually treated as a reminder that the assumption of infinitely frequent strong measurements is unphysical [CITE].
 
 Since experimentally we are not measuring atoms' motional states so frequently, we ought to wait until the wavepackets are completely separated before performing a projective measurement. As in quantum optics models of open quantum systems, in which the measurement interval ``should be large enough to allow the photons to get away from the atom" [CITE The Quantum Jump Approach
 and Quantum Trajectories Gerhard C. Hegerfeldt], ours should be large enough for the atomic states to get away from each other.
@@ -71,8 +71,37 @@ We define the time-ignorant decoherence factor $\tilde r_{ij}(t)$ as the overlap
 \tilde r_{ij}(t) &= \bra{\psi_i(t)} A\int_{-\infty}^0 \ket{\psi_j(t - t^\prime)} \,\dd t^\prime,
 \end{align}
 where $A$ is a normalisation constant such that $\tilde r_{ij}(0) = 1$.
-Since $\ket{\psi_i(t)}$ is time independent (rather, since we can perform our calculations in the frame of reference in which it is stationary), this is simply:
+Since $\ket{\psi_i(t)}$ is time independent (rather, since we can perform our calculations in the frame of reference in which it is stationary), this is:
 \begin{align}
-\tilde r_{ij}(t) &= A\int_{-\infty}^0 r_{ij}(t - t^\prime) \,\dd t^\prime.
+\tilde r_{ij}(t) &= A\int_{-\infty}^0 r_{ij}(t - t^\prime) \,\dd t^\prime,
 \end{align}
+which is simply the convolution of our decoherence factor with a step function which is nonzero at all negative times.
 Our average decoherence rate $\Gamma_{ij}$ is then given by the logarithmic derivative of $\tilde r_{ij}(t)$ at $t=0$:
+
+\begin{align}
+\Gamma_{ij} &= -\frac {\tilde r_{ij}^\prime(0)} {\tilde r_{ij}(0)}\\
+&= -\frac {\int_0^\infty \tilde r_{ij}^\prime(t)\,\dd t} {\int_0^\infty \tilde r_{ij}(t)\, \dd t}\\
+\Rightarrow \Gamma_{ij}^{-1}&= \int_0^\infty e^{-\left[
+        \frac{1} {8\sigma^2} x_\up{rel}^2
+      + \frac i2 x_{\mathrm{rel}} k_\up{rel}
+      + \frac{\sigma^2}{2} k_\up{rel}^2
+      \right]}\, \dd t.\label{eq:gamma_integral}
+\end{align}
+In order to obtain an approximate analytic expression for this integral, we consider two limiting cases and then stitch them together in the intermediate regime. In the limit of small wavepackets, $\sigma$ is small and thus the first term in the exponent in \eqref{eq:gamma_integral} is largest, and the third term is smallest. In this regime, which describes when positional separation (as opposed to separation in $k$-space) dominates the decoherence, we'll neglect the third term in the exponent and treat the second term as small relative to the first.
+This gives us:
+\begin{align}
+\Gamma_{ij\,\up{(pos)}}^{-1} &\approx \int_0^\infty e^{-\left[
+        \frac{1} {8\sigma^2} x_\up{rel}^2
+      + \frac i2 x_{\mathrm{rel}} k_\up{rel}
+      \right]}\, \dd t.\\
+      &\approx \int_0^\infty e^{-
+              \frac{1} {8\sigma^2} x_\up{rel}^2}\left(1 - \frac i2 x_{\mathrm{rel}} k_\up{rel}\right)\, \dd t.\label{eq:gamma_pos_exp}\\
+      &= 2^{\frac54}\upGamma(\tfrac54)\sqrt{\frac{\sigma}{a_{ij}}} - 2i\frac{m \sigma^2}{\hbar},\label{eq:gamma_pos_recip}
+\end{align}
+where we used a first-order Taylor expansion of an exponential in \eqref{eq:gamma_pos_exp}. We similarly use a first order expansion to take the reciprocal of \eqref{eq:gamma_pos_recip} (since the second term is much smaller than the first), and arrive at:
+\begin{align}
+\Gamma_{ij\,\up{(pos)}} &\approx \frac1{2^{\frac54}\upGamma(\tfrac54)}\sqrt{\frac{a_{ij}}{\sigma}}
++ \frac i {2\sqrt{2}\upGamma(\tfrac54)^2} \frac{m\sigma a_{ij}}{\hbar}\\
+&\approx 0.463865\sqrt{\frac{a_{ij}}{\sigma}}
++ 0.430341 i \frac{m\sigma a_{ij}}{\hbar}.
+\end{align}
