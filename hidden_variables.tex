@@ -16,7 +16,7 @@ Matrix scaling for Schrodinger theory, discuss methods: Sinkhorn-Knopp, Lineal, 
 
 Discuss how it would make sense for the systems to behave in the presence of collisions w.r.t collapse of state vectors.
 
-\section{Derivation of approximate Markovian decoherence rate}
+\section{Approximate Markovian decoherence rate for separating wavepackets}
 
 Positional separation of two different internal states of an atom leads to decoherence of those states, with a decoherence factor $r_{ij}(t)$ equal to the overlap of the spatial wavefunctions of the two components in question a time $t$ after they began separating. Approximating both wavepackets as initially overlapping Gaussians of width $\sigma$, ignoring dispersion, and assuming they separate with constant relative acceleration $a_{ij}$, the decoherence factor is
 
@@ -87,6 +87,9 @@ Our average decoherence rate $\Gamma_{ij}$ is then given by the logarithmic deri
       + \frac{\sigma^2}{2} k_\up{rel}^2
       \right]}\, \dd t.\label{eq:gamma_integral}
 \end{align}
+
+As mentioned, $\Gamma_{ij}$ is the decay constant for the best fitting exponential to our decoherence factor \eqref{eq:decoherence_factor}. Although \eqref{eq:decoherence_factor} looks nothing like a decaying exponential in time, an exponential approximation to it nonetheless ought to decay to zero on the same timescale. An example of this is shown in \figref{fig:decoherence_factor_example}
+
 In order to obtain an approximate analytic expression for this integral, we consider two limiting cases and then stitch them together in the intermediate regime. In the limit of small wavepackets, $\sigma$ is small and thus the first term in the exponent in \eqref{eq:gamma_integral} is largest, and the third term is smallest. In this regime, which describes when positional separation (as opposed to separation in $k$-space) dominates the decoherence, we'll neglect the third term in the exponent and treat the second term as small relative to the first.
 This gives us:
 \begin{align}
@@ -98,10 +101,38 @@ This gives us:
               \frac{1} {8\sigma^2} x_\up{rel}^2}\left(1 - \frac i2 x_{\mathrm{rel}} k_\up{rel}\right)\, \dd t.\label{eq:gamma_pos_exp}\\
       &= 2^{\frac54}\upGamma(\tfrac54)\sqrt{\frac{\sigma}{a_{ij}}} - 2i\frac{m \sigma^2}{\hbar},\label{eq:gamma_pos_recip}
 \end{align}
-where we used a first-order Taylor expansion of an exponential in \eqref{eq:gamma_pos_exp}. We similarly use a first order expansion to take the reciprocal of \eqref{eq:gamma_pos_recip} (since the second term is much smaller than the first), and arrive at:
+where we used a first-order Taylor expansion of an exponential in \eqref{eq:gamma_pos_exp}. We similarly use a first order expansion to take the reciprocal of \eqref{eq:gamma_pos_recip} (since the second term is much smaller than the first\footnote{This isn't necessary in order to obtain a simple expression for $\Gamma_{ij\,\up{(pos)}}$---the reciprocal without this approximation is equally simple---but it leaves us with power laws for the real and imaginary parts of $\Gamma_{ij\,\up{(pos)}}$, which are easier to stitch together with those from the large $\sigma$ regime.}), and arrive at:
 \begin{align}
 \Gamma_{ij\,\up{(pos)}} &\approx \frac1{2^{\frac54}\upGamma(\tfrac54)}\sqrt{\frac{a_{ij}}{\sigma}}
-+ \frac i {2\sqrt{2}\upGamma(\tfrac54)^2} \frac{m\sigma a_{ij}}{\hbar}\\
-&\approx 0.463865\sqrt{\frac{a_{ij}}{\sigma}}
-+ 0.430341 i \frac{m\sigma a_{ij}}{\hbar}.
++ \frac i {2\sqrt{2}\upGamma(\tfrac54)^2} \frac{m\sigma a_{ij}}{\hbar}\label{eq:gamma_pos_final}%\\
+% &\approx 0.463865\sqrt{\frac{a_{ij}}{\sigma}}
+% + 0.430341 i \frac{m\sigma a_{ij}}{\hbar}.
 \end{align}
+
+Similarly for the large $\sigma$ regime, we neglect the first term in the exponent of \eqref{eq:gamma_integral} and consider the second term small relative to the third. This is the regime in which the decrease in overlap of the two wavepackets is dominated by their separation in velocity space. Following the same process as above gives:
+\begin{align}
+\Gamma_{ij\,\up{(vel)}}^{-1} &\approx \int_0^\infty e^{-\left[
+        \frac i2 x_{\mathrm{rel}} k_\up{rel}
+        + \frac{\sigma^2}{2} k_\up{rel}^2
+      \right]}\, \dd t.\\
+      &\approx \int_0^\infty \left(1 - \frac i2 x_{\mathrm{rel}} k_\up{rel}\right)
+      e^{-\frac{\sigma^2}{2} k_\up{rel}^2}\, \dd t\\
+      & = \sqrt{\frac\pi2}\frac\hbar{m \sigma a_{ij}} - i\frac{\hbar^3}{2m^3 \sigma^4 a_{ij}^2}\\
+      \Rightarrow \Gamma_{ij\,\up{(vel)}} &\approx \sqrt{\frac2\pi}\frac{m \sigma a_{ij}}\hbar
+                                          + \frac i\pi \frac\hbar{m \sigma^2}
+                                          \label{eq:gamma_vel_final}
+\end{align}
+Equations \eqref{eq:gamma_pos_final} and \eqref{eq:gamma_vel_final} are our final expressions for the docoherence rate in the limit of small and large wavepackets respectively. Adding their real parts in quadrature and adding the reciprocals of their imaginary parts then provides a reasonable approximation for $\Gamma_{ij}$ over all wavepacket sizes:
+\begin{align}
+\Gamma_{ij} \approx
+\left[\re(\Gamma_{ij\,\up{(pos)}})^2 + \re(\Gamma_{ij\,\up{(vel)}})^2\right]^{\frac12}
++ i\left[\im(\Gamma_{ij\,\up{(pos)}})^{-1} + \im(\Gamma_{ij\,\up{(vel)}})^{-1}\right]^{-1}.
+\label{eq:gamma_total}
+\end{align}
+
+We now have an approximate analytic expression that is not computationally expensive to evaluate for each atom in an ensemble at every timestep of a differential equation.
+An example showing the accuracy of \eqref{eq:gamma_total}, compared to the exact expression \eqref{eq:gamma_integral} for for $\Gamma_{ij}$ over a range of wavepacket sizes is shown in \figref{fig:decoherence_rate_example}.
+
+\section{Choice of wavepacket size}
+
+How big is a wavepacket?
