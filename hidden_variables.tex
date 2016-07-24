@@ -66,6 +66,13 @@ Unlike quantum optics models, our decoherence factor does not describe Markovian
 
 To that end, we will now construct a ``time ignorant" version of $r_{ij}(t)$ that answers the question ``What is the expected decoherence factor at all future times, if you don't know how long it has been since the two wavepackets began separating?" In this way we can compute an \emph{average} decoherence rate $\Gamma_{ij}$ described by our decoherence factor, even though $r_{ij}(t)$ does not have a constant decoherence rate at large times. This essentually amounts to finding the best fitting exponential to $r_{ij}(t)$. Whilst this approximation is crude, it is nonetheless an improvement over the Ehrenfest model, which has no decoherence at all (i.e. it has a decoherence rate that is also constant like ours---but equal to zero).
 
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics{figures/hidden_variables/decoherence_factor_example.pdf}
+    \caption{Caption.}
+    \label{fig:decoherence_factor_example}
+\end{figure}
+
 We define the time-ignorant decoherence factor $\tilde r_{ij}(t)$ as the overlap of the wavefunction of the $i^\up{th}$ internal state with a superposition of wavepackets of the $j^\up{th}$ internal state, with the superposition being over all times in the past the wavepackets began separating:
 \begin{align}
 \tilde r_{ij}(t) &= \bra{\psi_i(t)} A\int_{-\infty}^0 \ket{\psi_j(t - t^\prime)} \,\dd t^\prime,
@@ -130,7 +137,14 @@ Equations \eqref{eq:gamma_pos_final} and \eqref{eq:gamma_vel_final} are our fina
 \label{eq:gamma_total}
 \end{align}
 
-We now have an approximate analytic expression that is not computationally expensive to evaluate for each atom in an ensemble at every timestep of a differential equation.
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics{figures/hidden_variables/decoherence_rate_example.pdf}
+    \caption{Caption.}
+    \label{fig:decoherence_rate_example}
+\end{figure}
+
+We now have an approximate analytic expression that not computationally inexpensive to evaluate for each atom in an ensemble at every timestep of a differential equation.
 An example showing the accuracy of \eqref{eq:gamma_total}, compared to the exact expression \eqref{eq:gamma_integral} for for $\Gamma_{ij}$ over a range of wavepacket sizes is shown in \figref{fig:decoherence_rate_example}.
 
 \section{Choice of wavepacket size}
