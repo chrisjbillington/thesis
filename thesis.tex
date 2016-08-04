@@ -20,4 +20,9 @@
 
 \bibliographystyle{unsrturl_mod}
 \bibliography{references}
+
+\chapter*{Word count}
+\immediate\write18{make wc}
+\verbatiminput{wc.txt}
+
 \end{document}
