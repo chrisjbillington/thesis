@@ -1,9 +1,25 @@
 \chapter{Quantum mechanics on a computer}
+
+This chapter comprises a summary of some of the methods used by cold atom physicists to compute numerical results pertaining to cold atom systems. Many a problem in quantum mechanics is not analytically solvable, especially when the real world of experimental physics rears its ugly head, violating theorists' assumptions of simplicitly left and right. In particular, atomic physics experiments are time-dependent, with each run of an experiment generally proceeding in stages. Lasers may turn on and off, magnetic fields may vary in magnitude and direction, \textsc{rf} pulses may be chirped [CITE LISA?] to reliably induce particular atomic transitions. Much of the numerical calculations performed by researchers in cold atom physics groups such as ours are accordingly of the time-dependent variety, and are fairly literal simulations of specific experiments that may be carried out in the lab.
+
+To numerically simulate a quantum mechanical system, one must evolve a state vector in time according to the Schr\"odinger equation:
+\begin{align}
+\dv{t}\ket{\psi} = \hat H \ket{\psi}
+\end{align}
+To do this on a computer, one must first decide which degrees of freedom are to be simulated. We necessarily neglect many degrees of freedom as a matter of course; which ones can be neglected is warranted by the specific situation and we do it so often we barely notice. For example, simulating a single component Bose--Einstein condensate entails neglecting the internal degrees of freedom of the atoms---as well as reducing the atom-light interaction to a simple potential such as an optical dipole trap or magnetic dipole interaction (neglecting the quantum degrees of freedom in the electromagnetic field). We may ignore one or more spatial degrees of freedom as well, say, if we are simulating an experiment in which the condensate is confined to two dimensions by way of a tight trapping potential in one direction [CITE AN EXAMPLE]. Or, when simulating laser cooling [SEE SECTION TODO], we may care very much about the electronic state of the atom, but treat its motional state classically. In these cases we are essentially imposing the assumption that the system will only occupy one state with respect to those degrees of freedom ignored (the condensate will remain in the ground state of the tight trap, the atoms will remain in one specific Zeeman sublevel), or we are assuming those degrees of freedom can be treated classically (the electromagnetic field is well described by classical electromagnetism, the atoms' motional state is described well by Newtonian mechanics).
+
+Once the degrees of freedom are known, one must decide on a basis in which to represent them concretely. The basis often cannot be complete, since for many degrees of freedom this would require an infinite number of basis states---for example the electronic state of an atom contains a countably infinite number of states, whereas a spatial wavefunction in free space has an uncountable number of states (one for each position in R3 [TODO BLACKBOARD BOLD]). For the internal state of an atom, therefore, we restrict ourselves to only the states we expect can become non-negligibly occupied, given the initial conditions and transitions involved. For example, at low temperature we can expect atoms to be almost completely in their electronic ground states, since energy gaps between ground and excited states are large compared to the atoms' thermal energy.\footnote{The D-line of rubidium 87 has an energy gap of [TODO], requiring a temperature of [TODO] or higher in order for the Boltzmann factor $e^{\frac{\upDelta E}{kT}}$ describing the excited state population to be greater than $1\E{-6}$.}. We need only include the small number of excited states that might become occupied as a result of optical transitions present in the situation being simulated. This can still be a large number of states if one is studying Rydberg atoms or using ultrafast (and therefore broad-band) laser pulses, but is otherwise fairly small. Including both the D1 and D2 lines of Rubidium 87, with all hyperfine levels and Zeeman sublevels gives 32 states, for example (see section [TODO]).
+
+One the degrees of freedom and basis vectors have been chosen, the state vector is then represented on a computer as an array of complex numbers, giving the coefficients of each basis vector required to represent a particular state vector. Matrix elements of the Hamiltonian in the same basis must be calculated, and the Schr\"odinger equation can then be written:
+\begin{align}
+\dv{t}\ket{\psi} = \hat H \ket{\psi}
+\end{align}
 % \begin{itemize}
 % \item Descriptions of how to perform simulations of atomic systems and Bose–Einstein condensates. Include numerical methods, interaction pictures, Monte–Carlo wavefunction methods and other acquired wisdom that would be relevant to anyone implementing similar simulations.
 
 % \item Fourier method: usefulness, use with RK4IP, limitations (i.e. first derivs no good near vortices)
 
+% \item {absorbing boundary conditions, reflective boundary conditions, periodic boundary conditions}
 
 % \end{itemize}
 
@@ -13,16 +29,19 @@
 
 %     Every symbol on the paper has a representation in a computer. State vectors are arrays of complex numbers, operators are matrices - differential operators are no exception. Operators must have a concrete representation, their matrix elements can be computed and then things solved with linear algebra. For discrete degrees of freedom, the matrix representation of the operators may be known, for continuous ones you can find the matrix elements once you define what basis functions you will use [show how]. Or, for the DVR it is a little more subtle (because it's not a basis) but still basically the same process.
 
-% \section{The interaction picture}
-%     \begin{itemize}
-%         \item Sometimes called a "rotating frame"
-%         \item Is equivalent to basis change where new basis functions differ by a time-dependent phase factor
-%         \item Is defined by a time-independent Hamiltonian
-%         \item This has the effect of moving some time dependence into the operators (demonstrate, by writing some operators with the unitary in front of them. As you can see it is simply a change of basis - but a time-dependent one.)
-%         \item No need to remain in the same interaction picture - can be redefined arbitrarily often throughout a simulation and state vectors transformed into new basis.
-%     \end{itemize}
+
 
 % \section{Discrete degrees of freedom}
+
+%     \subsection{The interaction picture}
+%         \begin{itemize}
+%             \item Sometimes called a "rotating frame"
+%             \item Is equivalent to basis change where new basis functions differ by a time-dependent phase factor
+%             \item Is defined by a time-independent Hamiltonian
+%             \item This has the effect of moving some time dependence into the operators (demonstrate, by writing some operators with the unitary in front of them. As you can see it is simply a change of basis - but a time-dependent one.)
+%             \item No need to remain in the same interaction picture - can be redefined arbitrarily often throughout a simulation and state vectors transformed into new basis.
+%         \end{itemize}
+
 %     \subsection{Unitary integration}
 %         \subsubsection{Direct exponentiation via diagonalisation of Hamiltonian}
 %         \begin{itemize}
@@ -58,7 +77,6 @@
 
 % [explanation of how it works, comparison of implementation with RSP4 vs something like RK4. RK4 is more general purpose, method does not need to be modified for different Hamiltonians. Main limitation is inability to factor out fast dynamical phases, see RK4ILIP for solution to this. MPI implementation and scaling properties with increasing cores. Superscaling at low number of cores. Mention how my implementation can tolerate high network latency due to early sending od data before all local computations are complete. Mention that it is ripe for GPU processing. Limitations: vulnerable to Runge's phenomenon for sharp potentials. Can't increase the order of the polynomials much because small spacing at the edges requires tiny timesteps. Possible solution: pre-conditioning the potential to be an approximation better representable in the DVR basis.]
 
-\setcounter{section}{5}
 \section{Fourth order Runge--Kutta in an instantaneous local interaction picture}
 \sectionmark{RK4 in an instantaneous local interaction picture}
 
