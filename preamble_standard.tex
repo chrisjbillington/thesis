@@ -118,8 +118,11 @@
 
 % Source code listings:
 \usepackage{minted}
+  % % A command for including Python source from a file, like: \python{myfile.py}
+  % \newcommand{\python}[1]{\spacing{0.7}\inputminted[linenos, numbersep=5pt, frame=lines, framesep=2mm,fontsize=\scriptsize]{python}{#1}}
+
   % A command for including Python source from a file, like: \python{myfile.py}
-  \newcommand{\python}[1]{\spacing{0.7}\inputminted[linenos, numbersep=5pt, frame=lines, framesep=2mm,fontsize=\scriptsize]{python}{#1}}
+  \newcommand{\python}[1]{\inputminted[linenos, numbersep=5pt, frame=lines, framesep=2mm,fontsize=\scriptsize]{python}{#1}}
 
 % For verbatim text input
 \usepackage{verbatim}

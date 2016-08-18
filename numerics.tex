@@ -2,80 +2,149 @@
 
 This chapter comprises a summary of some of the methods used by cold atom physicists to compute numerical results pertaining to cold atom systems. Many a problem in quantum mechanics is not analytically solvable, especially when the real world of experimental physics rears its ugly head, violating theorists' assumptions of simplicitly left and right. In particular, atomic physics experiments are time-dependent, with each run of an experiment generally proceeding in stages. Lasers may turn on and off, magnetic fields may vary in magnitude and direction, \textsc{rf} pulses may be chirped [CITE LISA?] to reliably induce particular atomic transitions. Much of the numerical calculations performed by researchers in cold atom physics groups such as ours are accordingly of the time-dependent variety, and are fairly literal simulations of specific experiments that may be carried out in the lab.
 
+\section{From the abstract to the concrete: neglect, discretisation and representation}
+
 To numerically simulate a quantum mechanical system, one must evolve a state vector in time according to the Schr\"odinger equation:
-\begin{align}
-\dv{t}\ket{\psi} = \hat H \ket{\psi}
+\begin{align}\label{eq:schrodinger_equation}
+i\hbar\dv{t}\ket{\psi(t)} = \hat H (t) \ket{\psi(t)}
 \end{align}
-To do this on a computer, one must first decide which degrees of freedom are to be simulated. We necessarily neglect many degrees of freedom as a matter of course; which ones can be neglected is warranted by the specific situation and we do it so often we barely notice. For example, simulating a single component Bose--Einstein condensate entails neglecting the internal degrees of freedom of the atoms---as well as reducing the atom-light interaction to a simple potential such as an optical dipole trap or magnetic dipole interaction (neglecting the quantum degrees of freedom in the electromagnetic field). We may ignore one or more spatial degrees of freedom as well, say, if we are simulating an experiment in which the condensate is confined to two dimensions by way of a tight trapping potential in one direction [CITE AN EXAMPLE]. Or, when simulating laser cooling [SEE SECTION TODO], we may care very much about the electronic state of the atom, but treat its motional state classically. In these cases we are essentially imposing the assumption that the system will only occupy one state with respect to those degrees of freedom ignored (the condensate will remain in the ground state of the tight trap, the atoms will remain in one specific Zeeman sublevel), or we are assuming those degrees of freedom can be treated classically (the electromagnetic field is well described by classical electromagnetism, the atoms' motional state is described well by Newtonian mechanics).
+To do this on a computer, one must first decide which degrees of freedom are to be simulated. We necessarily neglect many degrees of freedom as a matter of course; which ones can be neglected is warranted by the specific situation and we do it so often we barely notice. For example, simulating a single component Bose--Einstein condensate entails neglecting the internal degrees of freedom of the atoms---as well as reducing the atom-light interaction to a simple potential such as an optical dipole trap or magnetic dipole interaction (neglecting the quantum degrees of freedom in the electromagnetic field). We may ignore one or more spatial degrees of freedom as well, say, if we are simulating an experiment in which the condensate is confined to two dimensions by way of a tight trapping potential in one direction [CITE AN EXAMPLE]. Or, when simulating laser cooling [SEE SECTION TODO], we may care very much about the electronic state of the atom, but treat its motional state classically. In these cases we are essentially imposing the assumption that the system will only occupy one state with respect to those degrees of freedom ignored (the condensate will remain in lowest excitation level in the direction of the tight trap, the atoms will remain in one specific Zeeman sublevel), or we are assuming those degrees of freedom can be treated classically (the electromagnetic field is well described by classical electromagnetism, the atoms' motional state is described well by Newtonian mechanics). Which degrees of freedom can be neglected and which cannot requires knowledge of the situation at hand, often informed by best-practices of the research community in question and ultimately justified by experiment.\footnote{A classic example in the cold atom community of neglected degrees of freedom leading to \emph{disagreement} with experiment is the discovery of polarisation gradient cooling (\textsc{PGC}) [CITE THE LIGHT SHEET EXPERIMENT], the explanation for which requires consideration of Zeeman sublevels of the atoms. The experiment that discovered \textsc{PGC} was designed to measure the effect of Doppler cooling, which does not involve Zeeman sublevels, and it was not until afterwards that theorists determined [CITE DALIBARD ETC] that transitions between Zeeman sublevels cannot be neglected and indeed are crucial in explaining the lower than predicted temperatures observed.}
 
-Once the degrees of freedom are known, one must decide on a basis in which to represent them concretely. The basis often cannot be complete, since for many degrees of freedom this would require an infinite number of basis states---for example the electronic state of an atom contains a countably infinite number of states, whereas a spatial wavefunction in free space has an uncountable number of states (one for each position in R3 [TODO BLACKBOARD BOLD]). For the internal state of an atom, therefore, we restrict ourselves to only the states we expect can become non-negligibly occupied, given the initial conditions and transitions involved. For example, at low temperature we can expect atoms to be almost completely in their electronic ground states, since energy gaps between ground and excited states are large compared to the atoms' thermal energy.\footnote{The D-line of rubidium 87 has an energy gap of [TODO], requiring a temperature of [TODO] or higher in order for the Boltzmann factor $e^{\frac{\upDelta E}{kT}}$ describing the excited state population to be greater than $1\E{-6}$.}. We need only include the small number of excited states that might become occupied as a result of optical transitions present in the situation being simulated. This can still be a large number of states if one is studying Rydberg atoms or using ultrafast (and therefore broad-band) laser pulses, but is otherwise fairly small. Including both the D1 and D2 lines of Rubidium 87, with all hyperfine levels and Zeeman sublevels gives 32 states, for example (see section [TODO]).
+Once the degrees of freedom are known, one must decide on a basis in which to represent them concretely. The basis often cannot be complete, since for many degrees of freedom this would require an infinite number of basis states---for example the electronic state of an atom contains a countably infinite number of states, and a spatial wavefunction in free space has an uncountable number of states (one for each position in R3 [TODO BLACKBOARD BOLD]). For the internal state of an atom, therefore, we restrict ourselves to only the states we expect can become non-negligibly occupied, given the initial conditions and transitions involved. For example, at low temperature we can expect atoms to be almost completely in their electronic ground states, since energy gaps between ground and excited states are large compared to the atoms' thermal energy.\footnote{The D-line of rubidium 87 has an energy gap of [TODO], requiring a temperature of [TODO] or higher in order for the Boltzmann factor $e^{\frac{\upDelta E}{kT}}$ describing the excited state population to be greater than $1\E{-6}$.}. We need only include the small number of excited states that might become occupied as a result of optical transitions present in the situation being simulated. This can still be a large number of states if one is studying Rydberg atoms [CITE] or using ultrafast (and therefore broad-band) laser pulses, but is otherwise fairly small. For example, including both the D1 and D2 lines of Rubidium 87, with all hyperfine levels and Zeeman sublevels gives 32 states (see section [TODO]).
 
-One the degrees of freedom and basis vectors have been chosen, the state vector is then represented on a computer as an array of complex numbers, giving the coefficients of each basis vector required to represent a particular state vector. Matrix elements of the Hamiltonian in the same basis must be calculated, and the Schr\"odinger equation can then be written:
+For spatial degrees of freedom, one can either discretise space on a grid, or use a set of orthogonal basis functions\footnote{Strictly speaking, these can be the same thing---discretising space on a grid is declaring one's basis functions to be a set of functions, one for each gridpoint, each of which is zero at all gridpoints .}.
+
+
+Once the degrees of freedom and basis vectors have been chosen, the state vector is then represented on a computer as an array of complex numbers, giving the coefficients of each basis vector required to represent a particular state vector. Matrix elements of the Hamiltonian in the same basis must be calculated, and the Schr\"odinger equation can then be written:
 \begin{align}
-\dv{t}\ket{\psi} = \hat H \ket{\psi}
+i\hbar\dv{t}\braket n{\psi(t)} = \sum_m\matrixel n {\hat H(t)} m \braket m {\psi(t)},
 \end{align}
-% \begin{itemize}
-% \item Descriptions of how to perform simulations of atomic systems and Bose–Einstein condensates. Include numerical methods, interaction pictures, Monte–Carlo wavefunction methods and other acquired wisdom that would be relevant to anyone implementing similar simulations.
+or in standard matrix/vector notation (without Dirac notation):
+\begin{align}
+i\hbar\dv{t}\psi_n(t) = \sum_m H_{nm}(t) \psi_m(t),
+\end{align}
+where $\psi_n(t) = \braket n{\psi(t)}$ and $H_{nm}(t) = \matrixel n {\hat H(t)} m$.
+This is now something very concrete that can be typed into a computer. Programming languages generally don't know about Dirac kets and operators, and so everything that is to be computed must be translated into matrices and vectors in specific bases. This may seem so obvious as to not be worth mentioning, but was nonetheless a stumbling block in my own experience of getting to grips with quantum mechanics. Once realising that every operator has a matrix representation in some basis, at least in principle, and that every ket is just a list of vector components in some basis, similarly at least in principle, expressions dense in bras and kets become much more concrete as the reader has a feel for exactly how they would type it into a computer. Without this realisation, doing quantum mechanics on paper can seem like an exercise in abstract mumbo-jumbo.
 
-% \item Fourier method: usefulness, use with RK4IP, limitations (i.e. first derivs no good near vortices)
+\section{Solution to the Schr\"odinger equation by direct exponentiation}
+As an example of something seemingly abstract being more concrete than first appearances, it is sometimes said that the `formal' solution to the Schr\"odinger equation \eqref{eq:schrodinger_equation} is:
+\begin{align}\label{eq:formal_solution}
+\ket{\psi(t + \upDelta t)} = e^{-\frac i \hbar \int_t^{t+ \upDelta t} \hat H(t^\prime)\,\dd t^\prime}\ket{\psi(t)}.
+\end{align}
+Saying that this is the `formal' solution rather than just `the solution' is presumably intended to emphasise that the arithmetic operations involved in \eqref{eq:formal_solution} might not make immediate sense for the types of mathematical objects they are operating on, and that we have to be careful in defining the operations such that they produce a result that is not only sensible, but also the solution to the Schr\"odinger equation. If both $\hat H(t)$ and $\ket{\psi(t)}$ were single-valued functions of time rather than an operator valued function of time (the values at different times of which don't necessarily commute) and a vector valued function of time, then we would have no problem. However, \eqref{eq:formal_solution} as written with operators and vectors is ambiguous, and we need to elaborate on it in order to ensure it is correct. I will come back to this after considering a simpler case.
 
-% \item {absorbing boundary conditions, reflective boundary conditions, periodic boundary conditions}
+If the Hamiltonian is time-independent, then \eqref{eq:formal_solution} reduces to
+\begin{align}\label{eq:formal_solution}
+\ket{\psi(t + \upDelta t)} = e^{-\frac {i \upDelta t} \hbar \hat H}\ket{\psi(t)}.
+\end{align}
+Given the matrix representation $H$ of $\hat H$ and vector representation $\psi(t)$ of $\ket{\psi(t)}$ in a particular basis, this can now be directly typed into a computer as the matrix multiplication:
+\begin{align}\label{eq:formal_solution}
+\psi(t + \upDelta t) = U(t, t + \upDelta t)\psi(t),
+\end{align}
+where
+\begin{align}
+U(t, t + \upDelta t) = e^{-\frac {i \upDelta t} \hbar H}
+\end{align}
+is the unitary evolution operator for time evolution from the initial time $t$ to time $t + \upDelta t$, and is computed using a matrix exponential of $-\frac {i \upDelta t} \hbar H$. Exponentiation of matrices is defined via the Taylor series of the exponential,
+\begin{align}
+e^A = \sum_{n=0}^\infty \frac{A^n}{n!},
+\end{align}
+which reduces exponentiation to the known operations of matrix multiplication and addition. However, any linear algebra programming library worth the bytes it occupies will have a matrix exponentiation function that should be used instead, as there are other methods of computing matrix exponentials that are more computationally efficient and numerically stable, such as the Pad\'e approximant [CITE].
 
-% \end{itemize}
+\subsection{Matrix exponentiation by diagonalisation}
+Regardless of which method is used, matrix exponentiation is computationally expensive. It can be sped up however if a diagonalisation of $H$ is known, since if
+\begin{align}
+H = UDU^\dagger,
+\end{align}
+where $D$ is a diagonal matrix and U is a unitary matrix\footnote{Note that the diagonals of $D$ are the eigenvalues of $H$, and the columns of $U$ are its eigenvectors.}, then
+\begin{align}
+e^H = U e^D U^\dagger.
+\end{align}
+This is simple to evaluate because the exponentiation of a diagonal matrix can be performed by exponentiating each diagonal matrix element individually\footnote{The reason for this is clear from the Taylor series definition of matrix exponentiation, since matrix multiplication and addition can both be performed elementwise for diagonal matrices.}
+
+Even if a diagonalisation of $H$ is not analytically known, numerically diagonalising $H$ (using a linear algebra library function or otherwise) can form the basis for writing your own matrix exponentiation function, if needed. I found this necessary for efficiently exponentiating an array of matrices in Python, since the \texttt{scipy} and \texttt{numpy} scientific and numeric libraries at the present time lack matrix exponentiation functions that can act on arrays. Writing a \texttt{for} loop in an interpreted language such as Python to exponentiate the matrices individually in many cases is unacceptably slow, so for these cases\footnote{Such as simulating the internal state of a large number of atoms, or evolving a spinor Bose--Einstein condensate by exponentiating the Zeeman Hamiltonian with a spatially varying magnetic field.} I use a function such as the below:
+
+\python{code_listings/expm_example.py}
+
+This concludes all I have to say for the moment on evolving systems with time-independent Hamiltonians using direct exponentiation. Sections [TODO - refer to operator product sections] will say a bit more about how to \emph{approximately} exponentiate certain Hamiltonians, which is sometimes useful. In addition, it turns out that the time-dependent case can be reduced to the repeated application of evolution with time-independent Hamiltonians over small timesteps, as we will see in the next section.
+
+\subsection{Time-ordered exponentials and time-ordered products}
 
 
-%     Operators and their matrix representation
-%     The general case: Need to integrate the equations of motion. What does this mean in a computer? Formal solution of the Schrodinger equation. Is not so formal - can be typed into a programming language thusly: [example code - time ordered product of matrix exponentials].
+As mentioned, the solution [EQREF FORMAL SOL] is not the whole picture. It can only be taken at face value if the Hamiltonian at each moment in time commutes with itself at all other times [CITE SOMETHING]. In this case, once represented in a specific basis, the solution to the Schr\"odinger equation is again the matrix multiplication
+\begin{align}
+\psi(t + \upDelta t) = U(t, t + \upDelta t)\psi(t),
+\end{align}
+with
+\begin{align}
+U(t, t + \upDelta t) = e^{-\frac i \hbar \int_t^{t+ \upDelta t} H(t^\prime)\,\dd t^\prime}.
+\end{align}
+Since matrix addition can be performed elementwise, so can the integral in the exponent, yielding a matrix which once exponentiated will give the evolution operator $U(t, t + \upDelta t)$ for the solution to the Schr\"odinger equation. If the Hamiltonian at each moment in time does not commute with itself at all other times, however, then the unitary evolution operator for the solution to the Schr\"odinger equation is instead given by the following \emph{time-ordered exponential}:
+\begin{align}
+U(t, t + \upDelta t) = \mathcal{T}\left\{e^{-\frac i \hbar \int_t^{t+ \upDelta t} H(t^\prime)\,\dd t^\prime}\right\}.
+\end{align}
+\begin{itemize}
+\item Descriptions of howf to perform simulations of atomic systems and Bose–Einstein condensates. Include numerical methods, interaction pictures, Monte–Carlo wavefunction methods and other acquired wisdom that would be relevant to anyone implementing similar simulations.
 
-%     Every symbol on the paper has a representation in a computer. State vectors are arrays of complex numbers, operators are matrices - differential operators are no exception. Operators must have a concrete representation, their matrix elements can be computed and then things solved with linear algebra. For discrete degrees of freedom, the matrix representation of the operators may be known, for continuous ones you can find the matrix elements once you define what basis functions you will use [show how]. Or, for the DVR it is a little more subtle (because it's not a basis) but still basically the same process.
+\item Fourier method: usefulness, use with RK4IP, limitations (i.e. first derivs no good near vortices)
+
+\item {absorbing boundary conditions, reflective boundary conditions, periodic boundary conditions}
+
+\end{itemize}
+
+
+    Operators and their matrix representation
+    The general case: Need to integrate the equations of motion. What does this mean in a computer? Formal solution of the Schrodinger equation. Is not so formal - can be typed into a programming language thusly: [example code - time ordered product of matrix exponentials].
+
+    Every symbol on the paper has a representation in a computer. State vectors are arrays of complex numbers, operators are matrices - differential operators are no exception. Operators must have a concrete representation, their matrix elements can be computed and then things solved with linear algebra. For discrete degrees of freedom, the matrix representation of the operators may be known, for continuous ones you can find the matrix elements once you define what basis functions you will use [show how]. Or, for the DVR it is a little more subtle (because it's not a basis) but still basically the same process.
 
 
 
-% \section{Discrete degrees of freedom}
+\section{Discrete degrees of freedom}
 
-%     \subsection{The interaction picture}
-%         \begin{itemize}
-%             \item Sometimes called a "rotating frame"
-%             \item Is equivalent to basis change where new basis functions differ by a time-dependent phase factor
-%             \item Is defined by a time-independent Hamiltonian
-%             \item This has the effect of moving some time dependence into the operators (demonstrate, by writing some operators with the unitary in front of them. As you can see it is simply a change of basis - but a time-dependent one.)
-%             \item No need to remain in the same interaction picture - can be redefined arbitrarily often throughout a simulation and state vectors transformed into new basis.
-%         \end{itemize}
+    \subsection{The interaction picture}
+        \begin{itemize}
+            \item Sometimes called a "rotating frame"
+            \item Is equivalent to basis change where new basis functions differ by a time-dependent phase factor
+            \item Is defined by a time-independent Hamiltonian
+            \item This has the effect of moving some time dependence into the operators (demonstrate, by writing some operators with the unitary in front of them. As you can see it is simply a change of basis - but a time-dependent one.)
+            \item No need to remain in the same interaction picture - can be redefined arbitrarily often throughout a simulation and state vectors transformed into new basis.
+        \end{itemize}
 
-%     \subsection{Unitary integration}
-%         \subsubsection{Direct exponentiation via diagonalisation of Hamiltonian}
-%         \begin{itemize}
-%         \item Unitary - doesn't mean it's accurate but means it won't explode. Great for the bits of your simulation that are explosion-prone but don't matter (like regions of space where the wavefunction is near zero but the potential is large or steep)
-%         \item error is order [whatever it is] per timestep, not great compared to RK4
-%         \item can be combined with RK4 to improve accuracy (see later subsection)
-%         \end{itemize}
-%         \subsubsection{Approximate exponentiation by operator product}
+    \subsection{Unitary integration}
+        \subsubsection{Direct exponentiation via diagonalisation of Hamiltonian}
+        \begin{itemize}
+        \item Unitary - doesn't mean it's accurate but means it won't explode. Great for the bits of your simulation that are explosion-prone but don't matter (like regions of space where the wavefunction is near zero but the potential is large or steep)
+        \item error is order [whatever it is] per timestep, not great compared to RK4
+        \item can be combined with RK4 to improve accuracy (see later subsection)
+        \end{itemize}
+        \subsubsection{Approximate exponentiation by operator product}
 
-%         [Comment in this section how the approximate total unitary can be used at each timestep to define an interaction picture, and the remaining dynamics simulated with RK4 like RKILIP does in the spatial basis. Interaction pictures are really useful!]
-% \section{Continuous degrees of freedom}
-%     \begin{itemize}
-%         \item Have to be discretised in some way to simulate on a computer - need basis functions. Often a spatial basis is used. Any spatial basis must be combined with assumptions about what the wavefunction is doing at points in between the basis points, in order to define differential operators. Finite differences approximates wavefunction as low-order polynomial in between points (is this equivalent to a polynomial \emph{basis}? Probably not.). Fourier method assume the Fourier series of the wavefunction at the given points can be used to interpolate between points (or the wavefuntion can be Fourier transformed and calculations can be done directly in the Fourier basis). DVR is not actually a spatial basis despite appearances. It assumes the wavefunction is a sum of polynomial 'shape functions', but these shape functions are not basis functions as they are not orthonormal. This is why it is called a representation rather than a basis. Regardless, the shape functions can be used to define an interpolation of the wavefunction between points and thus define differential operators.
+        [Comment in this section how the approximate total unitary can be used at each timestep to define an interaction picture, and the remaining dynamics simulated with RK4 like RKILIP does in the spatial basis. Interaction pictures are really useful!]
+\section{Continuous degrees of freedom}
+    \begin{itemize}
+        \item Have to be discretised in some way to simulate on a computer - need basis functions. Often a spatial basis is used. Any spatial basis must be combined with assumptions about what the wavefunction is doing at points in between the basis points, in order to define differential operators. Finite differences approximates wavefunction as low-order polynomial in between points (is this equivalent to a polynomial \emph{basis}? Probably not.). Fourier method assume the Fourier series of the wavefunction at the given points can be used to interpolate between points (or the wavefuntion can be Fourier transformed and calculations can be done directly in the Fourier basis). DVR is not actually a spatial basis despite appearances. It assumes the wavefunction is a sum of polynomial 'shape functions', but these shape functions are not basis functions as they are not orthonormal. This is why it is called a representation rather than a basis. Regardless, the shape functions can be used to define an interpolation of the wavefunction between points and thus define differential operators.
 
-%     \end{itemize}
-%     \subsection{Finite differences}
-%         Show a matrix representation of a few different finite differences, to show that differential operators really are just matrices. They approximate the function as low-order polynomials about each point. You can take them to arbitrarily high order.
-%     \subsection{The Fourier basis}
-%         Because of properties of Fourier transforms, derivitives can be taken in Fourier space as simple multiplication. This is essentially because differential operators are diagonal in the Fourier basis. So you can use this fact to define a differential operator in the spatial basis [show matrix] ...or, you could just implement it with Fourier transforms, since FFTs are faster than matrix-vector multiplication ($O(n \log (n)$) rather than $O(n^2)$)
-%         \subsubsection{Split operator method}
-%             \begin{itemize}
-%             \item Equivalent to approximate exponentiation via operator product with the discrete case
-%             \end{itemize}
-%     \subsection{Harmonic oscillator basis functions}
+    \end{itemize}
+    \subsection{Finite differences}
+        Show a matrix representation of a few different finite differences, to show that differential operators really are just matrices. They approximate the function as low-order polynomials about each point. You can take them to arbitrarily high order.
+    \subsection{The Fourier basis}
+        Because of properties of Fourier transforms, derivitives can be taken in Fourier space as simple multiplication. This is essentially because differential operators are diagonal in the Fourier basis. So you can use this fact to define a differential operator in the spatial basis [show matrix] ...or, you could just implement it with Fourier transforms, since FFTs are faster than matrix-vector multiplication ($O(n \log (n)$) rather than $O(n^2)$)
+        \subsubsection{Split operator method}
+            \begin{itemize}
+            \item Equivalent to approximate exponentiation via operator product with the discrete case
+            \end{itemize}
+    \subsection{Harmonic oscillator basis functions}
 
-% \section{Finding ground states}
-% \subsection{Imaginary time evolution}
-% \subsection{Successive over-relaxation}
-% \subsection{Generalisation to excited states via Gram–Schmidt orthonormalisation}
-% Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another approach is to find the ground state using one of the above techniques, and then repeat the process, subtracting off the wavefunction's projection onto the already found ground state at every step. This yields the lowest energy state that is orthogonal to the first - i.e the first excited state. Repeating the process, but subtracting off \emph{both} eigenstates found so far, then yields the second excited state and so forth. This is simply the Gram-Schmidt process for finding orthonormal vectors, with the additional step of relaxing each vector to the lowest possible energy for each one - this ensures the eigenstates of the Hamiltonian are produced, rather than a different orthogonal basis. Extra conditions can be imposed on the wavefunction at each relaxation step in order to obtain particular solutions in the case of degenerate eigenstates. For example, a phase winding can be imposed in order to obtain a particular harmonic oscillator state - otherwise this process produces an arbitrary superposition of basis states that have equal energy.
+\section{Finding ground states}
+\subsection{Imaginary time evolution}
+\subsection{Successive over-relaxation}
+\subsection{Generalisation to excited states via Gram–Schmidt orthonormalisation}
+Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another approach is to find the ground state using one of the above techniques, and then repeat the process, subtracting off the wavefunction's projection onto the already found ground state at every step. This yields the lowest energy state that is orthogonal to the first - i.e the first excited state. Repeating the process, but subtracting off \emph{both} eigenstates found so far, then yields the second excited state and so forth. This is simply the Gram-Schmidt process for finding orthonormal vectors, with the additional step of relaxing each vector to the lowest possible energy for each one - this ensures the eigenstates of the Hamiltonian are produced, rather than a different orthogonal basis. Extra conditions can be imposed on the wavefunction at each relaxation step in order to obtain particular solutions in the case of degenerate eigenstates. For example, a phase winding can be imposed in order to obtain a particular harmonic oscillator state - otherwise this process produces an arbitrary superposition of basis states that have equal energy.
 
-% \section{The finite-element discrete variable representation}
+\section{The finite-element discrete variable representation}
 
-% [explanation of how it works, comparison of implementation with RSP4 vs something like RK4. RK4 is more general purpose, method does not need to be modified for different Hamiltonians. Main limitation is inability to factor out fast dynamical phases, see RK4ILIP for solution to this. MPI implementation and scaling properties with increasing cores. Superscaling at low number of cores. Mention how my implementation can tolerate high network latency due to early sending od data before all local computations are complete. Mention that it is ripe for GPU processing. Limitations: vulnerable to Runge's phenomenon for sharp potentials. Can't increase the order of the polynomials much because small spacing at the edges requires tiny timesteps. Possible solution: pre-conditioning the potential to be an approximation better representable in the DVR basis.]
+[explanation of how it works, comparison of implementation with RSP4 vs something like RK4. RK4 is more general purpose, method does not need to be modified for different Hamiltonians. Main limitation is inability to factor out fast dynamical phases, see RK4ILIP for solution to this. MPI implementation and scaling properties with increasing cores. Superscaling at low number of cores. Mention how my implementation can tolerate high network latency due to early sending od data before all local computations are complete. Mention that it is ripe for GPU processing. Limitations: vulnerable to Runge's phenomenon for sharp potentials. Can't increase the order of the polynomials much because small spacing at the edges requires tiny timesteps. Possible solution: pre-conditioning the potential to be an approximation better representable in the DVR basis.]
 
 \section{Fourth order Runge--Kutta in an instantaneous local interaction picture}
 \sectionmark{RK4 in an instantaneous local interaction picture}
