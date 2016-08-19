@@ -34,11 +34,11 @@ As an example of something seemingly abstract being more concrete than first app
 Saying that this is the `formal' solution rather than just `the solution' is presumably intended to emphasise that the arithmetic operations involved in \eqref{eq:formal_solution} might not make immediate sense for the types of mathematical objects they are operating on, and that we have to be careful in defining the operations such that they produce a result that is not only sensible, but also the solution to the Schr\"odinger equation. If both $\hat H(t)$ and $\ket{\psi(t)}$ were single-valued functions of time rather than an operator valued function of time (the values at different times of which don't necessarily commute) and a vector valued function of time, then we would have no problem. However, \eqref{eq:formal_solution} as written with operators and vectors is ambiguous, and we need to elaborate on it in order to ensure it is correct. I will come back to this after considering a simpler case.
 
 If the Hamiltonian is time-independent, then \eqref{eq:formal_solution} reduces to
-\begin{align}\label{eq:formal_solution}
+\begin{align}
 \ket{\psi(t + \upDelta t)} = e^{-\frac {i \upDelta t} \hbar \hat H}\ket{\psi(t)}.
 \end{align}
 Given the matrix representation $H$ of $\hat H$ and vector representation $\psi(t)$ of $\ket{\psi(t)}$ in a particular basis, this can now be directly typed into a computer as the matrix multiplication:
-\begin{align}\label{eq:formal_solution}
+\begin{align}
 \psi(t + \upDelta t) = U(t, t + \upDelta t)\psi(t),
 \end{align}
 where
@@ -71,7 +71,7 @@ This concludes all I have to say for the moment on evolving systems with time-in
 \subsection{Time-ordered exponentials and time-ordered products}
 
 
-As mentioned, the solution [EQREF FORMAL SOL] is not the whole picture. It can only be taken at face value if the Hamiltonian at each moment in time commutes with itself at all other times [CITE SOMETHING]. In this case, once represented in a specific basis, the solution to the Schr\"odinger equation is again the matrix multiplication
+As mentioned, the solution \eqref{eq:formal_solution} is not the whole picture. It can only be taken at face value if the Hamiltonian at each moment in time commutes with itself at all other times [CITE SOMETHING]. In this case, once represented in a specific basis, the solution to the Schr\"odinger equation is again the matrix multiplication
 \begin{align}
 \psi(t + \upDelta t) = U(t, t + \upDelta t)\psi(t),
 \end{align}
@@ -79,11 +79,37 @@ with
 \begin{align}
 U(t, t + \upDelta t) = e^{-\frac i \hbar \int_t^{t+ \upDelta t} H(t^\prime)\,\dd t^\prime}.
 \end{align}
-Since matrix addition can be performed elementwise, so can the integral in the exponent, yielding a matrix which once exponentiated will give the evolution operator $U(t, t + \upDelta t)$ for the solution to the Schr\"odinger equation. If the Hamiltonian at each moment in time does not commute with itself at all other times, however, then the unitary evolution operator for the solution to the Schr\"odinger equation is instead given by the following \emph{time-ordered exponential}:
-\begin{align}
+Since matrix addition can be performed elementwise, so can the integral in the exponent, yielding a matrix which once exponentiated will give the evolution operator $U(t, t + \upDelta t)$ for the solution to the Schr\"odinger equation. If the Hamiltonian at each moment in time does not commute with itself at all other times, however, then the unitary evolution operator for the solution to the Schr\"odinger equation is instead given by the following \emph{time-ordered exponential} [CITE]:
+\begin{align}\label{eq:time_ordered_exponential}
 U(t, t + \upDelta t) = \mathcal{T}\left\{e^{-\frac i \hbar \int_t^{t+ \upDelta t} H(t^\prime)\,\dd t^\prime}\right\}.
 \end{align}
-\begin{itemize}
+
+In this expression, $\mathcal{T}$ denotes the \emph{time-ordering operator}. The time ordering operator reorders terms within products that contain a time parameter (for us, the time parameter is the argument of the matrix $H$), such that the value of the time parameter is smallest on the rightmost term, largest on the leftmost term, and monotonically increasing right-to-left in between. For example:
+\begin{align}
+\mathcal{T}\left\{H(4)H(1)H(2)H(5)H(3)\right\} = H(5)H(4)H(3)H(2)H(1).
+\end{align}
+
+Despite appearances, this time-ordered exponential is perfectly concretely defined via the definitions of all the operations involved that we have described so far, and can---with some effort---be typed into a computer and evaluated directly. Even though this is not how I evaluate time-ordered exponentials in my simulations of atomic systems, I'll quickly elaborate on this just to emphasise the concreteness of all these operations.
+
+``What products is $\mathcal{T}$ reordering?" you might ask, as \eqref{eq:time_ordered_exponential} doesn't appear to contain any products of $H(t)$. On the contrary, it does, since exponentiation is defined by its Taylor series, and so
+\begin{align}
+U(t, t + \upDelta t) &= \mathcal{T}\left\{\sum_{n=0}^\infty \frac1 {n!}\left[ -\frac i \hbar \int_t^{t+ \upDelta t} H(t^\prime)\,\dd t^\prime\right]^n\right\}\\
+&= \sum_{n=0}^\infty \frac{(-i)^n} {n!\hbar^n}\mathcal{T}\left\{\int_t^{t+ \upDelta t} H(t^\prime)\,\dd t^\prime\right\}^n\,.
+\end{align}
+Each term in this series contains the $n^\up{th}$ power (and hence a product) of an integral of $H(t)$. The time ordering operator doesn't allow us to evaluate each term by computing the matrix integral once and then raising it to a power---to do so would violate time-ordering since each integral involves evaluating $H(t)$ at all times. Instead we have to write each product of integrals as the integral of a product:
+\begin{align}
+U(t, t + \upDelta t)
+&= \sum_{n=0}^\infty \frac{(-i)^n} {n!\hbar^n}\int_t^{t+ \upDelta t}\cdots\int_t^{t+ \upDelta t} \mathcal{T}\left\{H(t_0^\prime)\cdots H(t_n^\prime)\right\}\,\dd t_0^\prime\cdots\dd t_n^\prime\,,
+\end{align}
+from which we can see exactly which product of matrices the time ordering operator is acting on.
+
+Now we are close to seeing one might evaluate $U(t, t + \upDelta t)$ numerically by summing each term in the Taylor series up to some order set by the required accuracy. For the $n^{\up{th}}$ term, one needs to evaluate an $n$-dimensional integral over $n$ time coordinates, with each coordinate having the same limits of integration. This can be computed in the usual way an integral is numerically computed\footnote{By sampling the integrand on a uniform grid, using a quadrature method, or Monte-Carlo integration [CITE], which is widely used for high dimensional integrals such as these.}, with the minor change that each time the integrand is evaluated, the terms within it must be re-ordered to respect the required time-ordering. Alternatively, the integration region can be restricted to the region in which the terms are already time-ordered, and then the total integral inferred by symmetry, which gives:
+\begin{align}
+U(t, t + \upDelta t)
+&= \sum_{n=0}^\infty \left(-\frac i \hbar\right)^n\int_t^{t+ \upDelta t}\cdots\int_t^{t_n^\prime} H(t_0^\prime)\cdots H(t_n^\prime)\,\dd t_0^\prime\cdots\dd t_n^\prime\,.
+\end{align}
+
+ \begin{itemize}
 \item Descriptions of howf to perform simulations of atomic systems and Bose–Einstein condensates. Include numerical methods, interaction pictures, Monte–Carlo wavefunction methods and other acquired wisdom that would be relevant to anyone implementing similar simulations.
 
 \item Fourier method: usefulness, use with RK4IP, limitations (i.e. first derivs no good near vortices)
