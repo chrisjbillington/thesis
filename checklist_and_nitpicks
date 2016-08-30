@@ -16,3 +16,6 @@ What's a zero energy resonance?
 Wavefunctions must be continuous and smooth. First derivatives must be equal
 at an interface. This is one way of reasoning as to why you get reflections
 when the potential changes suddenly.
+
+Ensure footnote markers are after punctuation
+Ensure all integrals have a "\," before the "\dd"

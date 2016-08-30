@@ -29,23 +29,23 @@ This is now something very concrete that can be typed into a computer. Programmi
 \section{Solution to the Schr\"odinger equation by direct exponentiation}
 As an example of something seemingly abstract being more concrete than first appearances, it is sometimes said that the `formal' solution to the Schr\"odinger equation \eqref{eq:schrodinger_equation} is:
 \begin{align}\label{eq:formal_solution}
-\ket{\psi(t + \upDelta t)} = e^{-\frac i \hbar \int_t^{t+ \upDelta t} \hat H(t^\prime)\,\dd t^\prime}\ket{\psi(t)}.
+\ket{\psi(t_f)} = e^{-\frac i \hbar \int_t^{t_f} \hat H(t^\prime)\,\dd t^\prime}\ket{\psi(t)}.
 \end{align}
 Saying that this is the `formal' solution rather than just `the solution' is presumably intended to emphasise that the arithmetic operations involved in \eqref{eq:formal_solution} might not make immediate sense for the types of mathematical objects they are operating on, and that we have to be careful in defining the operations such that they produce a result that is not only sensible, but also the solution to the Schr\"odinger equation. If both $\hat H(t)$ and $\ket{\psi(t)}$ were single-valued functions of time rather than an operator valued function of time (the values at different times of which don't necessarily commute) and a vector valued function of time, then we would have no problem. However, \eqref{eq:formal_solution} as written with operators and vectors is ambiguous, and we need to elaborate on it in order to ensure it is correct. I will come back to this after considering a simpler case.
 
 If the Hamiltonian is time-independent, then \eqref{eq:formal_solution} reduces to
 \begin{align}
-\ket{\psi(t + \upDelta t)} = e^{-\frac {i \upDelta t} \hbar \hat H}\ket{\psi(t)}.
+\ket{\psi(t_f)} = e^{-\frac i \hbar (t_f - t)\hat H}\ket{\psi(t)}.
 \end{align}
 Given the matrix representation $H$ of $\hat H$ and vector representation $\psi(t)$ of $\ket{\psi(t)}$ in a particular basis, this can now be directly typed into a computer as the matrix multiplication:
 \begin{align}
-\psi(t + \upDelta t) = U(t, t + \upDelta t)\psi(t),
+\psi(t_f) = U(t, t_f)\psi(t),
 \end{align}
 where
 \begin{align}
-U(t, t + \upDelta t) = e^{-\frac {i \upDelta t} \hbar H}
+U(t, t_f) = e^{-\frac i \hbar (t_f - t) H}
 \end{align}
-is the unitary evolution operator for time evolution from the initial time $t$ to time $t + \upDelta t$, and is computed using a matrix exponential of $-\frac {i \upDelta t} \hbar H$. Exponentiation of matrices is defined via the Taylor series of the exponential,
+is the unitary evolution operator for time evolution from the initial time $t$ to time $t_f$, and is computed using a matrix exponential of $-\frac i \hbar (t_f - t) H$. Exponentiation of matrices is defined via the Taylor series of the exponential,
 \begin{align}
 e^A = \sum_{n=0}^\infty \frac{A^n}{n!},
 \end{align}
@@ -58,7 +58,7 @@ H = UDU^\dagger,
 \end{align}
 where $D$ is a diagonal matrix and U is a unitary matrix\footnote{Note that the diagonals of $D$ are the eigenvalues of $H$, and the columns of $U$ are its eigenvectors.}, then
 \begin{align}
-e^H = U e^D U^\dagger.
+e^{-\frac i \hbar (t_f - t) H} = U e^{-\frac i \hbar (t_f - t)D} U^\dagger.
 \end{align}
 This is simple to evaluate because the exponentiation of a diagonal matrix can be performed by exponentiating each diagonal matrix element individually\footnote{The reason for this is clear from the Taylor series definition of matrix exponentiation, since matrix multiplication and addition can both be performed elementwise for diagonal matrices.}
 
@@ -73,15 +73,15 @@ This concludes all I have to say for the moment on evolving systems with time-in
 
 As mentioned, the solution \eqref{eq:formal_solution} is not the whole picture. It can only be taken at face value if the Hamiltonian at each moment in time commutes with itself at all other times [CITE SOMETHING]. In this case, once represented in a specific basis, the solution to the Schr\"odinger equation is again the matrix multiplication
 \begin{align}
-\psi(t + \upDelta t) = U(t, t + \upDelta t)\psi(t),
+\psi(t_f) = U(t, t_f)\psi(t),
 \end{align}
 with
 \begin{align}
-U(t, t + \upDelta t) = e^{-\frac i \hbar \int_t^{t+ \upDelta t} H(t^\prime)\,\dd t^\prime}.
+U(t, t_f) = e^{-\frac i \hbar \int_t^{t_f} H(t^\prime)\,\dd t^\prime}.
 \end{align}
 Since matrix addition can be performed elementwise, so can the integral in the exponent, yielding a matrix which once exponentiated will give the evolution operator $U(t, t + \upDelta t)$ for the solution to the Schr\"odinger equation. If the Hamiltonian at each moment in time does not commute with itself at all other times, however, then the unitary evolution operator for the solution to the Schr\"odinger equation is instead given by the following \emph{time-ordered exponential} [CITE]:
 \begin{align}\label{eq:time_ordered_exponential}
-U(t, t + \upDelta t) = \mathcal{T}\left\{e^{-\frac i \hbar \int_t^{t+ \upDelta t} H(t^\prime)\,\dd t^\prime}\right\}.
+U(t, t_f) = \mathcal{T}\left\{e^{-\frac i \hbar \int_t^{t_f} H(t^\prime)\,\dd t^\prime}\right\}.
 \end{align}
 
 In this expression, $\mathcal{T}$ denotes the \emph{time-ordering operator}. The time ordering operator reorders terms within products that contain a time parameter (for us, the time parameter is the argument of the matrix $H$), such that the value of the time parameter is smallest on the rightmost term, largest on the leftmost term, and monotonically increasing right-to-left in between. For example:
@@ -93,42 +93,95 @@ Despite appearances, this time-ordered exponential is perfectly concretely defin
 
 ``What products is $\mathcal{T}$ reordering?" you might ask, as \eqref{eq:time_ordered_exponential} doesn't appear to contain any products of $H(t)$. On the contrary, it does, since exponentiation is defined by its Taylor series, and so
 \begin{align}
-U(t, t + \upDelta t) &= \mathcal{T}\left\{\sum_{n=0}^\infty \frac1 {n!}\left[ -\frac i \hbar \int_t^{t+ \upDelta t} H(t^\prime)\,\dd t^\prime\right]^n\right\}\\
-&= \sum_{n=0}^\infty \frac{(-i)^n} {n!\hbar^n}\mathcal{T}\left\{\int_t^{t+ \upDelta t} H(t^\prime)\,\dd t^\prime\right\}^n\,.
+U(t, t_f) &= 1 + \mathcal{T}\left\{\sum_{n=1}^\infty \frac1 {n!}\left[ -\frac i \hbar \int_t^{t_f} H(t^\prime)\,\dd t^\prime\right]^n\right\}\\
+&= 1 + \sum_{n=1}^\infty \frac{(-i)^n} {n!\hbar^n}\mathcal{T}\left\{\left[\int_t^{t_f} H(t^\prime)\,\dd t^\prime\right]^n\right\}\,.
 \end{align}
 Each term in this series contains the $n^\up{th}$ power (and hence a product) of an integral of $H(t)$. The time ordering operator doesn't allow us to evaluate each term by computing the matrix integral once and then raising it to a power---to do so would violate time-ordering since each integral involves evaluating $H(t)$ at all times. Instead we have to write each product of integrals as the integral of a product:
 \begin{align}
-U(t, t + \upDelta t)
-&= \sum_{n=0}^\infty \frac{(-i)^n} {n!\hbar^n}\int_t^{t+ \upDelta t}\cdots\int_t^{t+ \upDelta t} \mathcal{T}\left\{H(t_0^\prime)\cdots H(t_n^\prime)\right\}\,\dd t_0^\prime\cdots\dd t_n^\prime\,,
+U(t, t_f)
+&= 1 + \sum_{n=1}^\infty \frac{(-i)^n} {n!\hbar^n}\int_t^{t_f}\cdots\int_t^{t_f} \mathcal{T}\left\{H(t_1^\prime)\cdots H(t_n^\prime)\right\}\,\dd t_1^\prime\cdots\dd t_n^\prime\,,
 \end{align}
 from which we can see exactly which product of matrices the time ordering operator is acting on.
 
-Now we are close to seeing one might evaluate $U(t, t + \upDelta t)$ numerically by summing each term in the Taylor series up to some order set by the required accuracy. For the $n^{\up{th}}$ term, one needs to evaluate an $n$-dimensional integral over $n$ time coordinates, with each coordinate having the same limits of integration. This can be computed in the usual way an integral is numerically computed\footnote{By sampling the integrand on a uniform grid, using a quadrature method, or Monte-Carlo integration [CITE], which is widely used for high dimensional integrals such as these.}, with the minor change that each time the integrand is evaluated, the terms within it must be re-ordered to respect the required time-ordering. Alternatively, the integration region can be restricted to the region in which the terms are already time-ordered, and then the total integral inferred by symmetry, which gives:
+Now we are close to seeing one might evaluate $U(t, t_f)$ numerically by summing each term in the Taylor series up to some order set by the required accuracy. For the $n^{\up{th}}$ term, one needs to evaluate an $n$-dimensional integral over $n$ time coordinates, with each coordinate having the same limits of integration. This can be computed in the usual way an integral is numerically computed\footnote{By sampling the integrand on a uniform grid, using a quadrature method, or Monte-Carlo integration [CITE], which is widely used for high dimensional integrals such as these.}, with the minor change that each time the integrand is evaluated, the terms within it must be re-ordered to respect the required time-ordering. Alternatively, the integration region can be restricted to the region in which the terms are already time-ordered, and then the total integral inferred by symmetry, which gives:
 \begin{align}
-U(t, t + \upDelta t)
-&= \sum_{n=0}^\infty \left(-\frac i \hbar\right)^n\int_t^{t+ \upDelta t}\cdots\int_t^{t_n^\prime} H(t_0^\prime)\cdots H(t_n^\prime)\,\dd t_0^\prime\cdots\dd t_n^\prime\,.
+U(t, t_f)
+&= 1+\sum_{n=1}^\infty \left(-\frac i \hbar\right)^n\int_t^{t_f}\cdots\int_t^{t_{n-1}^\prime} H(t_1^\prime)\cdots H(t_n^\prime)\,\dd t_1^\prime\cdots\dd t_n^\prime\,.
 \end{align}
 
- \begin{itemize}
-\item Descriptions of howf to perform simulations of atomic systems and Bose–Einstein condensates. Include numerical methods, interaction pictures, Monte–Carlo wavefunction methods and other acquired wisdom that would be relevant to anyone implementing similar simulations.
+This is now a perfectly concrete expression, with each term comprising an integral over an $n$-simplex\footnote{A simplex is the generalisation of a triangle to higher dimensions, i.e a 3-simplex is a tetrahedron.} of a product of $n$ matrices.
 
-\item Fourier method: usefulness, use with RK4IP, limitations (i.e. first derivs no good near vortices)
+This expression for the unitary evolution operator is called the Dyson series [CITE]. It is not generally used in cold atom physics; I certainly have never evaluated it. However it does see use in high energy physics [CITE] for computing transition amplitudes between incoming and outgoing waves in scattering problems (in which $U$ is called the $S$-matrix). In these problems, $H$ is an interaction Hamiltonian containing terms for all particle interactions being considered. Accordingly, the integrand for the $n^\up{th}$ term, being a product of $n$ copies of $H$ at different times, contains one term for each possible sequence of $n$ particle interactions.
+The integral itself can be considered a sum of transition amplitudes over all possible times that each interaction could have occurred. Indeed, each term corresponds to a Feynman diagram with $n$ nodes [CITE].
+
+The Dyson series isn't really suited to the problems we face in cold atom physics. For one, the series must be truncated at some point, and the result won't be a $U$ that is actually unitary.\footnote{Although unitarity is not often a strict requirement - we also frequently solve [EQREF TDSE] directly with fourth order Runge--Kutta, which is also not unitary.}. Also, we are usually interested in the intermediate states, not just the final state of a system as in a scattering problem.
+
+In any case, typically when solving the Schr\"odinger equation by exponentiation we use the following, alternate expression for a time-ordered exponential:
+\begin{align}
+U(t, t_f) &= \mathcal{T}\left\{e^{-\frac i \hbar \int_t^{t_f} H(t^\prime)\,\dd t^\prime}\right\}\\
+ &= \lim_{N\rightarrow\infty}\mathcal{T}
+ \left\{\prod_{i=0}^N e^{-\frac i \hbar  H(t_i)\upDelta t}\right\},
+\end{align}
+
+where $\upDelta t = (t - t_f)/N$ and $t_i = t + i\upDelta t$. You can convince yourself that [EQREF INTEGRAL DEFINITION] is equivalent to this by replacing the integral in the exponent with a sum---as per the Riemann definition of an integral---and expanding the exponential according to its Taylor series. Expanding each exponential in [EQREF PRODUCT DEFINITION] as a Taylor Series and collecting terms with the same number of copies of $H$ then reveals that the two Taylor series are identical.
+
+In any case, [EQREF PRODUCT DEFINITION] paints an intuitive picture of solving the Schr\"odinger equation: one evolves the initial state vector in time by evolving it according to constant Hamiltonians repeatedly over small time intervals. This has the desirable property that all intermediate state vectors are computed at the intermediate steps, meaning one can study the dynamics of the system and not just obtain the final state. This is of course useful for comparison with experiments, plenty of which involve time-dependent data acquisition and not just post-mortem analysis of some evolution.
+
+Numerically, we can't actually take $N\rightarrow\infty$, or equivalently $\upDelta t \rightarrow 0$, and so we instead choose a $\upDelta t$ smaller than the timescale of any time-dependence of $H$, and step through time using [EQREF].
+
+Thus the case of a time-dependent Hamiltonian reduces to repeated application of the solution [EQREF] for a time-independent Hamiltonian. Furthermore, if the Hamiltonian is analytically diagonalisable at each moment in time, each of these steps can be taken with the diagonalisation method of matrix exponentiation. If it is not, and the system is small, then resorting to numerical diagonalisation may be acceptable. Otherwise, if the Hamiltonian can be decomposed into a \emph{sum} of terms which are individually diagonalisable, the split-step method can be used (see sec [SECREF]). Failing that, a general purpose integration method such as fourth-order Runge-Kutta may have to be resorted to.\footnote{Though if I admit it, \textsc{rkr4} is usually what I reach for first.} I will elaborate on these comments with examples in the following sections.
+
+\begin{itemize}
 
 \item {absorbing boundary conditions, reflective boundary conditions, periodic boundary conditions}
 
 \end{itemize}
 
+\section{Continuous degrees of freedom}
+The single-particle, non-relativistic, scalar Schr\"odinger wave equation, as distinct from the general Schr\"odinger equation [EQREF], is:
 
-    Operators and their matrix representation
-    The general case: Need to integrate the equations of motion. What does this mean in a computer? Formal solution of the Schrodinger equation. Is not so formal - can be typed into a programming language thusly: [example code - time ordered product of matrix exponentials].
+[EQUATION].
 
-    Every symbol on the paper has a representation in a computer. State vectors are arrays of complex numbers, operators are matrices - differential operators are no exception. Operators must have a concrete representation, their matrix elements can be computed and then things solved with linear algebra. For discrete degrees of freedom, the matrix representation of the operators may be known, for continuous ones you can find the matrix elements once you define what basis functions you will use [show how]. Or, for the DVR it is a little more subtle (because it's not a basis) but still basically the same process.
+As mentioned in [SECREF], the equation for the single-particle wavefunction of an atom in a single-component Bose--Einstein condensate is the Gross--Pitaevskii equation
 
+[EQUATION],
 
+where $\psi(\vec r) = \sqrt{N}\braket{\vec r}{\psi}$ is the single-particle wavefunction scaled by the square root number of atoms $N$.
+
+Both these equations are partial differential equations involving both spatial and temporal derivatives. But in quantum mechanics all state vectors can be mapped to column vectors and all operators to matrices. Spatial wavefunctions are no exception to the former and differential operators such as $\pdv*[2] t$ are no exception to the latter. So what do these vectors and operators look like?
+
+Imagine a two dimensional spatial region within which we are solving the single-component Gross--Pitaevskii equation, evolving an initial wavefunction in time. Having specified which degrees of freedom we want to simulate (two continuous degrees of freedom, one for each spatial dimension), the next step according to the method outlined in [SECREF ABOVE] is to choose a basis in which to represent this state vector.
+
+Analytically, state vectors in Hilbert spaces with spatial degrees of freedom such as this are often represented in the spatial basis $\ket{\vec r}$. This basis has one basis vector for each point in space (and hence has an infinite number of basis vectors), each of which is a Dirac delta. The state vector's projection onto one of them is therefore:
+
+\begin{align}
+\braket{\vec r}{\psi} = \int \delta(\vec r^\prime - \vec r)\psi(\vec r^\prime)\,\dd \vec r^\prime,
+\end{align}
+which is obviously just the wavefunction $\psi(\vec r)$ again. The above reasoning is of course a bit circular, as the braket has been evaluated as in integral in the spatial basis itself. These basis vectors $\ket{\vec r}$ can be represented in any basis, however, and so the projection of a state vector onto one of them can similarly be evaluated in any basis. For example the Fourier transform of a delta function is [CITE]:
+\begin{align}
+\mathcal{F}\{\delta(\vec r^\prime - \vec r)\}(\vec k) = e^{-i\vec k\cdot \vec r},
+\end{align}
+which is interpreted as the projection of the spatial basis vector $\ket{\vec r}$ onto the Fourier basis vector $\ket{\vec k}$. So the spatial basis vector $\ket{\vec r}$ has a representation as the sum of Fourier basis vectors:
+\begin{align}
+\ket{\vec r} &= \int \braket{\vec k}{\vec r}\ket{\vec k}\,\dd \vec k\\
+             &= \int e^{-i\vec k\cdot \vec r}\ket{\vec k}\,\dd \vec k\\
+\end{align}
+and so the projection of the state vector $\ket\psi$ onto a spatial basis vector $\ket{\vec r}$ can be computed in the Fourier basis too, as:
+\begin{align}
+\braket{\vec r}{\psi} = \sum_{\vec k} \braket{\vec k}{\psi}\ket{\vec k}
+\end{align}
+\footnote{Which, if no approximations are made, is infinite dimensional - the wavefunction has one complex number for each of the infinite number of points in the two dimensional region.} The state vector can then be represented as a column vector, with one complex number giving the amplitude of each component of the state vector in the chosen basis. Lets say we discretise space in a $5\times 5$ grid,\footnote{For the sake of example---$256\times256$ is a more realistic minimum.} and only represent the wavefunction at those $25$ points in space. The state vector can then be represented by a list of $25$ complex numbers. This is our column vector.
+
+[FIGURE SHOWING UNWRAPPING OF 2D REGION INTO COLUMN VECTOR. PERHAPS 2D REGION IS CONTINUOUS WITH A GRID SUPERIMPOSED ON IT, AND LINES JOIN EACH GRIDPOINT TO THE VECTOR AT RIGHT]
+
+But at what point did we choose a basis just now? Imagine
 
 \section{Discrete degrees of freedom}
 
-    \subsection{The interaction picture}
+\subsection{The interaction picture}
+
+A common situation in atomic physics is to be simulating the internal state of an atom, armed with the knowledge that only a small number of atomic states are able to become occupied.
+
         \begin{itemize}
             \item Sometimes called a "rotating frame"
             \item Is equivalent to basis change where new basis functions differ by a time-dependent phase factor
@@ -147,7 +200,13 @@ U(t, t + \upDelta t)
         \subsubsection{Approximate exponentiation by operator product}
 
         [Comment in this section how the approximate total unitary can be used at each timestep to define an interaction picture, and the remaining dynamics simulated with RK4 like RKILIP does in the spatial basis. Interaction pictures are really useful!]
+
 \section{Continuous degrees of freedom}
+
+
+
+    Every symbol on the paper has a representation in a computer. State vectors are arrays of complex numbers, operators are matrices - differential operators are no exception. Operators must have a concrete representation, their matrix elements can be computed and then things solved with linear algebra. For discrete degrees of freedom, the matrix representation of the operators may be known, for continuous ones you can find the matrix elements once you define what basis functions you will use [show how]. Or, for the DVR it is a little more subtle (because it's not a basis) but still basically the same process.
+
     \begin{itemize}
         \item Have to be discretised in some way to simulate on a computer - need basis functions. Often a spatial basis is used. Any spatial basis must be combined with assumptions about what the wavefunction is doing at points in between the basis points, in order to define differential operators. Finite differences approximates wavefunction as low-order polynomial in between points (is this equivalent to a polynomial \emph{basis}? Probably not.). Fourier method assume the Fourier series of the wavefunction at the given points can be used to interpolate between points (or the wavefuntion can be Fourier transformed and calculations can be done directly in the Fourier basis). DVR is not actually a spatial basis despite appearances. It assumes the wavefunction is a sum of polynomial 'shape functions', but these shape functions are not basis functions as they are not orthonormal. This is why it is called a representation rather than a basis. Regardless, the shape functions can be used to define an interpolation of the wavefunction between points and thus define differential operators.
 
