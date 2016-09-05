@@ -148,16 +148,42 @@ As mentioned in [SECREF], the equation for the single-particle wavefunction of a
 
 where $\psi(\vec r) = \sqrt{N}\braket{\vec r}{\psi}$ is the single-particle wavefunction scaled by the square root number of atoms $N$.
 
-Both these equations are partial differential equations involving both spatial and temporal derivatives. But in quantum mechanics all state vectors can be mapped to column vectors and all operators to matrices. Spatial wavefunctions are no exception to the former and differential operators such as $\pdv*[2] t$ are no exception to the latter. So what do these vectors and operators look like?
+Both these equations are partial differential equations involving both spatial and temporal derivatives. But in quantum mechanics all state vectors can be mapped to column vectors and all operators to matrices. Spatial wavefunctions are no exception to the former and differential operators such as $\grad^2$ are no exception to the latter. So what do these vectors and operators look like? That depends on whether we choose to discretise space on a grid, or use a functional basis (and on which functional basis we choose). As we'll see below, however, spatial discretisation is actually just a particular choice of functional basis, namely the Fourier basis.
 
-Imagine a two dimensional spatial region within which we are solving the single-component Gross--Pitaevskii equation, evolving an initial wavefunction in time. Having specified which degrees of freedom we want to simulate (two continuous degrees of freedom, one for each spatial dimension), the next step according to the method outlined in [SECREF ABOVE] is to choose a basis in which to represent this state vector.
+\subsection{Spatial discretisation}
+Imagine a two dimensional spatial region within which we are solving the single-component Gross--Pitaevskii equation, evolving an initial condensate wavefunction in time. Having specified which degrees of freedom we want to simulate (two continuous degrees of freedom, one for each spatial dimension), the next step according to the method outlined in [SECREF ABOVE] is to choose a basis in which to represent this state vector.
 
-Analytically, state vectors in Hilbert spaces with spatial degrees of freedom such as this are often represented in the spatial basis $\ket{\vec r}$. This basis has one basis vector for each point in space (and hence has an infinite number of basis vectors), each of which is a Dirac delta. The state vector's projection onto one of them is therefore:
+Lets say we discretise space in an equally-spaced $5\times 5$ rectangular grid,\footnote{For the sake of example---$256\times256$ is a more realistic minimum.} with spacing $\upDelta x$, and only represent the wavefunction at those $25$ points in space. The state vector can then be represented by a list of $25$ complex numbers, each taken to be the wavefunction's value at the spatial position corresponding to one gridpoint. This $25$-vector is now a concrete representation of our state vector.
+
+[FIGURE SHOWING UNWRAPPING OF 2D REGION INTO COLUMN VECTOR. PERHAPS 2D REGION IS CONTINUOUS WITH A GRID SUPERIMPOSED ON IT, AND LINES JOIN EACH GRIDPOINT TO THE VECTOR AT RIGHT]
+
+But at what point did we choose a basis just now---what are the basis vectors? This just looks like discretising space at a certain resolution, rather than the formal process of choosing a basis and projecting the state vector and operators onto each basis vector, as outlined in [SECREF ABOVE]. Assuming what we've done is equivalent to choosing a basis, that basis has a finite number ($25$) of basis vectors, which means it cannot be complete, since state vectors we're approximately representing with it require an infinite number of complex numbers to be described exactly.\footnote{One for each position within the two dimensional space we're representing.} So what do the basis functions look like, and what state vectors have we implicitly excluded from simulation by choosing a basis that is incomplete?
+
+As a sidenote, spatial wavefunctions are often described as the representation of wavefuctions in the ``spatial basis"---a basis in which the basis vectors $\{\ket{\vec r}\}$ are Dirac-deltas centred on each point in space [CITE DIRAC'S BOOK MAYBE]. The wavefunction $\psi(\vec r)$ is then simply a coefficient saying how much of the basis vector $\ket{\vec r}$ (the spatial representation of which is a Dirac delta centred on the position $\vec r$) to include in the overall state vector. What we have \emph{not} done is chosen a subset of these Dirac delta basis functions\footnote{Strictly, distribtuions, not functions, but ``basis distributions" just doesn't have the right ring to it.} as our basis. This would be very strange---our representation of the wavefunction would allow it to have a value at one gridpoint, and at the next gridpoint, but not in between. Spatially separated Dirac deltas do not spatially overlap at all; the matrix elements of the kinetic energy operator:
+\begin{align}
+K_{ij} = \int \delta(\vec r - \vec r_i)\left(-\frac{\hbar^2}{2m}\grad^2\right)\delta(\vec r - \vec r_j)\,\dd \vec r
+\end{align}
+would all be zero for $i\neq j$, disallowing any flow of amplitude from one point in space to another by virtue of it not being able to pass through the intervening points. Neither have we chosen a set of two-dimenstional boxcar functions centred on each gridpoint with width $\upDelta x$ in each direction. These cover all space in between gridpoints, but are no good because they are not twice differentiable everywhere, and hence the kinetic energy operator's matrix elements cannot be evaluated. No, neither of these bases will do. To interpret our spatial grid as a basis, we need a set of functions [$FUNC_{ij}(r)$] (where $i$ and $j$ are the indices of the gridpoints in the $x$ and $y$ directions respectively) that have unit norm, are nonzero only at one gridpoint and are zero at all others, and are twice differentiable everywhere in our spatial region. Infinite choices present themselves to us, differing only in their incompleteness---the choice of which state vectors they will and won't be able to represent. A sensible choice is that we want to be able to represent the state vectors whose wavefunctions do not change much between adjacent gridpoints, and we are happy for the necessary incompleteness of our basis to exclude wavefunctions with any sort of structure in between gridpoints.
+
+\subsubsection{The discrete Fourier transform to the rescue}
+
+It turns out that discretising space in this way is indeed equivalent to choosing an entirely sensible basis. This is made clearer by thinking in terms of what we have done in Fourier space, which I'll quickly go through now.
+
+Analytically, state vectors in Hilbert spaces with spatial degrees of freedom such as this are often represented in the spatial basis $\ket{\vec r}$. This basis has one basis vector for each point in space (and hence has an infinite number of basis vectors), each of which is a Dirac delta. We then call $\psi(\vec r)$ the \emph{wavefunction} corresponding to the state vector. \footnote{Dirac introduced this distinction when he invented bra-ket notation, that the state-vector's coefficients in a continuous basis can be written as a function of a continuous variable and called a ``wavefunction"}
+
+If the state vector is known in some basis $\ket{n}$, then The state vector's projection onto one of them is therefore:
 
 \begin{align}
 \braket{\vec r}{\psi} = \int \delta(\vec r^\prime - \vec r)\psi(\vec r^\prime)\,\dd \vec r^\prime,
 \end{align}
-which is obviously just the wavefunction $\psi(\vec r)$ again. The above reasoning is of course a bit circular, as the braket has been evaluated as in integral in the spatial basis itself. These basis vectors $\ket{\vec r}$ can be represented in any basis, however, and so the projection of a state vector onto one of them can similarly be evaluated in any basis. For example the Fourier transform of a delta function is [CITE]:
+which is obviously just the wavefunction $\psi(\vec r)$ again. The above reasoning is of course a bit circular, as the braket has been evaluated as in integral in the spatial basis itself. These basis vectors $\ket{\vec r}$ can be represented in any basis, however, and so the projection of a state vector onto one of them can similarly be evaluated in any basis $\ket{n}$ as:
+\begin{align}
+\braket{\vec r}\psi &= \sum_n \braket {\vec r} n \braket n \psi\\
+& = \sum_n U_{\vec r n}\psi_n,
+\end{align}
+where $\psi_n = \braket n \psi$ is the vector component of
+
+. For example the Fourier transform of a delta function is [CITE]:
 \begin{align}
 \mathcal{F}\{\delta(\vec r^\prime - \vec r)\}(\vec k) = e^{-i\vec k\cdot \vec r},
 \end{align}
@@ -170,11 +196,9 @@ and so the projection of the state vector $\ket\psi$ onto a spatial basis vector
 \begin{align}
 \braket{\vec r}{\psi} = \sum_{\vec k} \braket{\vec k}{\psi}\ket{\vec k}
 \end{align}
-\footnote{Which, if no approximations are made, is infinite dimensional - the wavefunction has one complex number for each of the infinite number of points in the two dimensional region.} The state vector can then be represented as a column vector, with one complex number giving the amplitude of each component of the state vector in the chosen basis. Lets say we discretise space in a $5\times 5$ grid,\footnote{For the sake of example---$256\times256$ is a more realistic minimum.} and only represent the wavefunction at those $25$ points in space. The state vector can then be represented by a list of $25$ complex numbers. This is our column vector.
 
-[FIGURE SHOWING UNWRAPPING OF 2D REGION INTO COLUMN VECTOR. PERHAPS 2D REGION IS CONTINUOUS WITH A GRID SUPERIMPOSED ON IT, AND LINES JOIN EACH GRIDPOINT TO THE VECTOR AT RIGHT]
 
-But at what point did we choose a basis just now? Imagine
+\footnote{Which, if no approximations are made, is infinite dimensional - the wavefunction has one complex number for each of the infinite number of points in the two dimensional region.} The state vector can then be represented as a column vector, with one complex number giving the amplitude of each component of the state vector in the chosen basis.
 
 \section{Discrete degrees of freedom}
 
@@ -228,6 +252,8 @@ A common situation in atomic physics is to be simulating the internal state of a
 Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another approach is to find the ground state using one of the above techniques, and then repeat the process, subtracting off the wavefunction's projection onto the already found ground state at every step. This yields the lowest energy state that is orthogonal to the first - i.e the first excited state. Repeating the process, but subtracting off \emph{both} eigenstates found so far, then yields the second excited state and so forth. This is simply the Gram-Schmidt process for finding orthonormal vectors, with the additional step of relaxing each vector to the lowest possible energy for each one - this ensures the eigenstates of the Hamiltonian are produced, rather than a different orthogonal basis. Extra conditions can be imposed on the wavefunction at each relaxation step in order to obtain particular solutions in the case of degenerate eigenstates. For example, a phase winding can be imposed in order to obtain a particular harmonic oscillator state - otherwise this process produces an arbitrary superposition of basis states that have equal energy.
 
 \section{The finite-element discrete variable representation}
+
+- Plots of representation of sine wave as function of number of points between FEDVR and FD. RMS error of a derivative operator perhaps.
 
 [explanation of how it works, comparison of implementation with RSP4 vs something like RK4. RK4 is more general purpose, method does not need to be modified for different Hamiltonians. Main limitation is inability to factor out fast dynamical phases, see RK4ILIP for solution to this. MPI implementation and scaling properties with increasing cores. Superscaling at low number of cores. Mention how my implementation can tolerate high network latency due to early sending od data before all local computations are complete. Mention that it is ripe for GPU processing. Limitations: vulnerable to Runge's phenomenon for sharp potentials. Can't increase the order of the polynomials much because small spacing at the edges requires tiny timesteps. Possible solution: pre-conditioning the potential to be an approximation better representable in the DVR basis.]
 
