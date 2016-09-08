@@ -1,20 +1,25 @@
 
 \chapter{Hidden variables for semiclassical models with state-dependent forces}
 
-Define/describe what a hidden variable theory is, drawing heavily on Aaronson's~\cite{Aaronson2005} explanations. Give examples, argue why the Schrodinger theory is appealing.
+TODO:
+\begin{itemize}
+\item Define/describe what a hidden variable theory is, drawing heavily on Aaronson's~\cite{Aaronson2005} explanations. Give examples, argue why the Schrodinger theory is appealing.
 
-Motivate with Stern-Gerlach experiment, and derive the method, show what sorts of problems it
+\item Motivate with Stern-Gerlach experiment, and derive the method, show what sorts of problems it
 solves and where it disagrees with other models, provide simulation results. Limitations: no time dependent potentials, no 3D.
 
-Possibly include speculation about these:
+\item Possibly include speculation about these:
 
-Maybe include a test to see whether it actually does work in 3D as-is, since we haven't actually checked, we just haven't been able to show on paper that current behavior is correct in 3D (also haven't shown it's incorrect).
+\item Maybe include a test to see whether it actually does work in 3D as-is, since we haven't actually checked, we just haven't been able to show on paper that current behavior is correct in 3D (also haven't shown it's incorrect).
 
-Time dependent potentials could potentially be handled by approximating unitary as product of part due to spatial variation in H, and part due to time variation in H. compute transition probs for both such that a transition can be attributed to one or the other - only do velocity jumps to conserve potential if due to spatial motion, as time dependent potential can exchange energy with particle.
+\item Time dependent potentials could potentially be handled by approximating unitary as product of part due to spatial variation in H, and part due to time variation in H. compute transition probs for both such that a transition can be attributed to one or the other - only do velocity jumps to conserve potential if due to spatial motion, as time dependent potential can exchange energy with particle.
 
-Matrix scaling for Schrodinger theory, discuss methods: Sinkhorn-Knopp, Lineal, and my one. Compare time complexity of algorithms so as to define the computational complexity of the hidden variables semiclassical method. Method is of course parallelisable on GPU or similar so is fast on parallel machines even if matrix scaling is slow.
+\item Matrix scaling for Schrodinger theory, discuss methods: Sinkhorn-Knopp, Lineal, and my one. Compare time complexity of algorithms so as to define the computational complexity of the hidden variables semiclassical method. Method is of course parallelisable on GPU or similar so is fast on parallel machines even if matrix scaling is slow.
 
-Discuss how it would make sense for the systems to behave in the presence of collisions w.r.t collapse of state vectors.
+\item Discuss how it would make sense for the systems to behave in the presence of collisions w.r.t collapse of state vectors.
+
+\item Be sure to include picture from KOALA talk of atoms going in multiple directions
+\end{itemize}
 
 \section{Approximate Markovian decoherence rate for separating wavepackets}
 

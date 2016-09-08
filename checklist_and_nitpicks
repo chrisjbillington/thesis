@@ -10,6 +10,9 @@ Sch\"rodinger - ensure umlauts everywhere
 
 Check all references to bases have {} brackets around them: "the basis {|n>}"
 
+Check Dirac deltas all upright
+
+Check timestep deltas all upright
 
 What's a zero energy resonance?
 
@@ -19,3 +22,12 @@ when the potential changes suddenly.
 
 Ensure footnote markers are after punctuation
 Ensure all integrals have a "\," before the "\dd"
+
+Ensure all units are done with appropriate macro
+Ensure all exponents are done with appropriate macro
+Ensure all cross-references are done with appropriate macros
+Ensure no duplicate bibliography items
+Ensure all small caps are done using a macro?
+Ensure all bras and kets are done with macros
+Ensure all derivatives are done with macros
+Ensure all texttt done with macros
