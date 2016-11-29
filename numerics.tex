@@ -1,6 +1,6 @@
 \chapter{Quantum mechanics on a computer}
 
-This chapter comprises a summary of some of the methods used by cold atom physicists to compute numerical results pertaining to cold atom systems. Many a problem in quantum mechanics is not analytically solvable, especially when the real world of experimental physics rears its ugly head, violating theorists' assumptions of simplicitly left and right. In particular, atomic physics experiments are time-dependent, with each run of an experiment generally proceeding in stages. Lasers may turn on and off, magnetic fields may vary in magnitude and direction, \textsc{rf} pulses may be chirped [CITE LISA?] to reliably induce particular atomic transitions. Much of the numerical calculations performed by researchers in cold atom physics groups such as ours are accordingly of the time-dependent variety, and are fairly literal simulations of specific experiments that may be carried out in the lab.
+This chapter comprises a summary of some of the methods used by cold atom physicists to compute numerical results pertaining to cold atom systems. Many a problem in quantum mechanics is not analytically solvable, especially when the real world of experimental physics rears its ugly head, violating theorists' assumptions of simplicity left and right. In particular, atomic physics experiments are time-dependent, with each run of an experiment generally proceeding in stages. Lasers may turn on and off, magnetic fields may vary in magnitude and direction, \textsc{rf} pulses may be chirped [CITE LISA?] to reliably induce particular atomic transitions. Much of the numerical calculations performed by researchers in cold atom physics groups such as ours are accordingly of the time-dependent variety, and are fairly literal simulations of specific experiments that may be carried out in the lab.
 
 \section{From the abstract to the concrete: neglect, discretisation and representation}
 
@@ -167,10 +167,10 @@ would all be zero for $i\neq j$, disallowing any flow of amplitude from one poin
 
 \subsubsection{The discrete Fourier transform to the rescue}
 
-It turns out that discretising space in this way is indeed equivalent to choosing an entirely sensible basis. This is made clearer by thinking in terms of what we have done in Fourier space, which I'll quickly go through now.
+It turns out that discretising space in this way can indeed be equivalent to choosing an entirely sensible basis. This is made clearer by thinking in terms of what we have done in Fourier space, which I'll quickly go through now.
 
 One possible basis for representing all possible state vectors is the Fourier basis $\{\ket{\vec k_{i,j}}\}$. With it, any state vector (whose wavefunction is nonzero only within the $2D$ region)can be represented as the sum of basis vectors whose wavefunctions are $2$D plane waves, also localised to the 2D region:
-\begin{align}
+\begin{align}\label{eq:spatial_plane_wave_basis}
 \braket{\vec r}{\vec k_{i,j}} = \begin{cases}
 \frac 1 {\sqrt A} e^{i\vec k_{i,j}\cdot\vec r}\qquad (\vec r\ \textrm{within 2D region})\\
 0\qquad(\vec r\ \textrm{not within 2D region}),
@@ -213,42 +213,30 @@ we include only the $Nx$ and $N_y$ (both equal to $5$ in our example) longest wa
 \end{align}
 where $k = |\vec k_i|$, by excluding basis vectors with larger wavevectors, we are excluding state vectors with large kinetic energy. Thus the truncation is a kinetic energy cutoff, and is an accurate approximation whenever a simulation is such that the system is unlikely to obtain kinetic energies above the cutoff.\footnote{Because a \emph{square} region in Fourier space is being carved out, by limiting each of $k_x$ and $k_y$ to finite ranges rather than the total wavenumber $k = \sqrt{k_x^2 + k_y^2}$, there is no single kinetic energy cutoff so to speak. Nonetheless there is a maximum wavenumber $k_\up{max} = \min(\{|k_x|\} \cup \{|k_y|\})$ defining a kinetic energy cutoff $K_\up{max} = \hbar^2k_\up{max}^2/(2m)$ below which kinetic energies definitely are representable and above which they may not be.}
 
-Now we have 25 basis vectors, a discrete Fourier basis, but their spatial wavefunctions still don't have the property of being nonzero only at a single gridpoint each. But consider the following superposition of Fourier basis vectors:
-\begin{align}
+Now we have 25 basis vectors---a discrete Fourier basis---but their spatial wavefunctions still don't have the property of being nonzero only at a single gridpoint each. On the contrary, each plane wave has has a constant amplitude everywhere in space. But consider the following superposition of Fourier basis vectors:
+\begin{align}\label{eq:DFT_basischange}
 \ket{\vec r_{i, j}} = \sum_{i^\prime, j^\prime} e^{-i \vec k_{i^\prime, j^\prime} \cdot \vec r_{i, j}}\ket{\vec k_{i^\prime,j^\prime}}
 \end{align}
-where $N=5$ is the number of gridpoints in each spatial direction.
 
-Analytically, state vectors in Hilbert spaces with spatial degrees of freedom such as this are often represented in the spatial basis $\ket{\vec r}$. This basis has one basis vector for each point in space (and hence has an infinite number of basis vectors), each of which is a Dirac delta. We then call $\psi(\vec r)$ the \emph{wavefunction} corresponding to the state vector. \footnote{Dirac introduced this distinction when he invented bra-ket notation, that the state-vector's coefficients in a continuous basis can be written as a function of a continuous variable and called a ``wavefunction"}
-
-If the state vector is known in some basis $\ket{n}$, then The state vector's projection onto one of them is therefore:
-
+with $\vec r_{i, j} = (i \upDelta x, j \upDelta y)^\up{T}$ and $i, j \in [0, 4]$.
+This is simply a unitary transformation of the truncated Fourier basis, with the unitary transformation matrix elements:
 \begin{align}
-\braket{\vec r}{\psi} = \int \delta(\vec r^\prime - \vec r)\psi(\vec r^\prime)\,\dd \vec r^\prime,
-\end{align}
-which is obviously just the wavefunction $\psi(\vec r)$ again. The above reasoning is of course a bit circular, as the braket has been evaluated as in integral in the spatial basis itself. These basis vectors $\ket{\vec r}$ can be represented in any basis, however, and so the projection of a state vector onto one of them can similarly be evaluated in any basis $\ket{n}$ as:
-\begin{align}
-\braket{\vec r}\psi &= \sum_n \braket {\vec r} n \braket n \psi\\
-& = \sum_n U_{\vec r n}\psi_n,
-\end{align}
-where $\psi_n = \braket n \psi$ is the vector component of
-
-. For example the Fourier transform of a delta function is [CITE]:
-\begin{align}
-\mathcal{F}\{\delta(\vec r^\prime - \vec r)\}(\vec k) = e^{-i\vec k\cdot \vec r},
-\end{align}
-which is interpreted as the projection of the spatial basis vector $\ket{\vec r}$ onto the Fourier basis vector $\ket{\vec k}$. So the spatial basis vector $\ket{\vec r}$ has a representation as the sum of Fourier basis vectors:
-\begin{align}
-\ket{\vec r} &= \int \braket{\vec k}{\vec r}\ket{\vec k}\,\dd \vec k\\
-             &= \int e^{-i\vec k\cdot \vec r}\ket{\vec k}\,\dd \vec k\\
-\end{align}
-and so the projection of the state vector $\ket\psi$ onto a spatial basis vector $\ket{\vec r}$ can be computed in the Fourier basis too, as:
-\begin{align}
-\braket{\vec r}{\psi} = \sum_{\vec k} \braket{\vec k}{\psi}\ket{\vec k}
+\hat U_{\textsc{dft2}; i^\prime, j^\prime;i,j} = \braket{\vec k_{i^\prime, j^\prime}}{\vec r_{i, j}} = e^{-i \vec k_{i^\prime, j^\prime} \cdot \vec r_{i, j}}
 \end{align}
 
+The spatial representation of the basis vectors $\ket{\vec r_{i, j}}$ can be computed using \eqref{eq:spatial_plane_wave_basis} as:
+\begin{align}
+\phi_{i,j}(\vec r) &= \braket{\vec r}{\vec r_{i, j}} = \sum_{i^\prime, j^\prime} e^{-i \vec k_{i^\prime, j^\prime} \cdot \vec r_{i, j}}\braket{\vec r}{\vec k_{i^\prime,j^\prime}}\\
+\Rightarrow \phi_{i,j}(\vec r) &=\begin{cases}
+\sum_{i^\prime, j^\prime} \frac 1 {\sqrt A} e^{i \vec k_{i^\prime, j^\prime} \cdot (\vec r - \vec r_{i, j})}\qquad (\vec r\ \textrm{within 2D region})\\
+0\qquad(\vec r\ \textrm{not within 2D region}),
+\end{cases}
+\end{align}
+and are plotted in [TODO MAKE FIGURE].
 
-\footnote{Which, if no approximations are made, is infinite dimensional - the wavefunction has one complex number for each of the infinite number of points in the two dimensional region.} The state vector can then be represented as a column vector, with one complex number giving the amplitude of each component of the state vector in the chosen basis.
+These functions are sometimes called \emph{periodic sinc functions}, or \emph{band-limited delta functions} [CITE]. Each of them is zero at all of our gridpoints except one, and and they form an orthonormal basis set. They satisfy all of our requirements to be a basis corresponding to our gridded discretisation of space. Thus, the approach of discretising space on a grid is indeed equivalent to choosing a (necessarily incomplete) orthonormal basis in which to work.
+
+ One thing to note is that these functions are periodic. By using the Fourier basis in the way we have to restrict our basis to cover only a finite region of both Fourier space and real space, we have necessarily imposed periodicity on the problem. This means that when we compute matrix elements between our spatial basis vectors
 
 \section{Discrete degrees of freedom}
 
@@ -306,6 +294,8 @@ Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another a
 - Plots of representation of sine wave as function of number of points between FEDVR and FD. RMS error of a derivative operator perhaps.
 
 [explanation of how it works, comparison of implementation with RSP4 vs something like RK4. RK4 is more general purpose, method does not need to be modified for different Hamiltonians. Main limitation is inability to factor out fast dynamical phases, see RK4ILIP for solution to this. MPI implementation and scaling properties with increasing cores. Superscaling at low number of cores. Mention how my implementation can tolerate high network latency due to early sending od data before all local computations are complete. Mention that it is ripe for GPU processing. Limitations: vulnerable to Runge's phenomenon for sharp potentials. Can't increase the order of the polynomials much because small spacing at the edges requires tiny timesteps. Possible solution: pre-conditioning the potential to be an approximation better representable in the DVR basis.]
+
+\endinput % Remove once numerics completed
 
 \section{Fourth order Runge--Kutta in an instantaneous local interaction picture}
 \sectionmark{RK4 in an instantaneous local interaction picture}

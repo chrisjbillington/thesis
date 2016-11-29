@@ -31,3 +31,12 @@ Ensure all small caps are done using a macro?
 Ensure all bras and kets are done with macros
 Ensure all derivatives are done with macros
 Ensure all texttt done with macros
+Ensure delta t's are all before Hamiltonians in exponents
+Ensure citation and credit is given to others for control system chapter, as it is adapted from the paper
+
+Ensure all unitaries are of the form U(t_f, t_i)
+Ensure all ordered products are written with descending indices and no time-ordering meta-operator
+
+Be sure to comment in rk4ilip section on split-step methods being able to use arbitrary *linear*
+operators if you really want them to, as per split-operator section
+Make sure all unitaries have hats
