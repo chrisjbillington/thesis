@@ -221,10 +221,17 @@ Now we have 25 basis vectors---a discrete Fourier basis---but their spatial wave
 with $\vec r_{i, j} = (i \upDelta x, j \upDelta y)^\up{T}$ and $i, j \in [0, 4]$.
 This is simply a unitary transformation of the truncated Fourier basis, with the unitary transformation matrix elements:
 \begin{align}
-\hat U_{\textsc{dft2}; i^\prime, j^\prime;i,j} = \braket{\vec k_{i^\prime, j^\prime}}{\vec r_{i, j}} = e^{-i \vec k_{i^\prime, j^\prime} \cdot \vec r_{i, j}}
+\hat U_{\textsc{dft2}; i^\prime, j^\prime;i,j} = \braket{\vec k_{i^\prime, j^\prime}}{\vec r_{i, j}} = e^{-i \vec k_{i^\prime, j^\prime} \cdot \vec r_{i, j}}.
+\end{align}
+This transformation is in fact a discrete Fourier transform (hence the subscript), and the basis vectors $\{\ket{\vec r_{i, j}}\}$ have spatially localised wavefunctions that are nonzero only at one of the spatial gridpoints, so we refer to them as a discrete real-space basis. State vectors and operators can be transformed from their discrete Fourier space representation to their discrete real-space representation and back using the unitary $\hat U_{\textsc{dft2}}$:
+\begin{align}
+\braket{\vec r_{i, j}}{\psi} = \sum_{i^\prime, j^\prime} \hat U^\dagger_{\textsc{dft2}; i, j;i^\prime,j^\prime} \braket{\vec k_{i^\prime, j^\prime}}{\psi}\\
+\braket{\vec k_{i, j}}{\psi} = \sum_{i^\prime, j^\prime} \hat U_{\textsc{dft2}; i^\prime, j^\prime;i,j} \braket{\vec r_{i^\prime, j^\prime}}{\psi}
 \end{align}
 
-The spatial representation of the basis vectors $\ket{\vec r_{i, j}}$ can be computed using \eqref{eq:spatial_plane_wave_basis} as:
+[TODO OPERATOR TRANSFORMATION ONCE INDEXING IMPROVED]
+
+The spatial representation of the basis vectors $\{\ket{\vec r_{i, j}}\}$ can be computed using \eqref{eq:spatial_plane_wave_basis} as:
 \begin{align}
 \phi_{i,j}(\vec r) &= \braket{\vec r}{\vec r_{i, j}} = \sum_{i^\prime, j^\prime} e^{-i \vec k_{i^\prime, j^\prime} \cdot \vec r_{i, j}}\braket{\vec r}{\vec k_{i^\prime,j^\prime}}\\
 \Rightarrow \phi_{i,j}(\vec r) &=\begin{cases}
@@ -236,7 +243,47 @@ and are plotted in [TODO MAKE FIGURE].
 
 These functions are sometimes called \emph{periodic sinc functions}, or \emph{band-limited delta functions} [CITE]. Each of them is zero at all of our gridpoints except one, and and they form an orthonormal basis set. They satisfy all of our requirements to be a basis corresponding to our gridded discretisation of space. Thus, the approach of discretising space on a grid is indeed equivalent to choosing a (necessarily incomplete) orthonormal basis in which to work.
 
- One thing to note is that these functions are periodic. By using the Fourier basis in the way we have to restrict our basis to cover only a finite region of both Fourier space and real space, we have necessarily imposed periodicity on the problem. This means that when we compute matrix elements between our spatial basis vectors
+One thing to note is that these functions are periodic. By using the Fourier basis in the way we have to restrict our basis to cover only a finite region of both Fourier space and real space, we have necessarily imposed periodicity on the problem. This periodicity shows itself when we compute matrix elements of operators in this basis - if we compute the kinetic energy operator's matrix elements for example, it will couple basis states across the boundary of the region, resulting in spatial periodicity---a wavepacket moving rightward through the right boundary will emerge moving rightward from the left boundary.
+
+Perhaps less obviously, the basis is also periodic in Fourier space, and so a wavepacket moving out of the region of Fourier space simulated will also wrap around to the opposite side of Fourier space. In real space, this may appear as a wavepacket undergoing acceleration only to suddenly reverse its velocity as if reflecting off a barrier [SEE FIG TODO FOR EXAMPLE]. This effect is entirely unphysical\footnote{With the possible exception of the region of Fourier space being simulated corresponding to the first Brillouin zone of a lattice potential, in which case these velocity reversals are Bloch oscillations.} and should be taken as a sign that the spatial grid is not fine enough for the dynamics being simulated.
+
+\subsubsection{Matrix elements using DFT basis}
+
+We now have a finite basis $\{\ket{\vec r_{i, j}}\}$ that matches our intuitions somewhat for representing a wavefunction at a set of gridpoints. A state vector\footnote{Or rather, a state vector's projection onto the subspace being simulated.} can be represented as a linear sum of these basis vectors, with the coefficient for each one simply being equal to the value of that state vector's wavefunction at the gridpoint where that basis vector is nonzero:
+\begin{align}
+\ket{\psi} = \sum_{i, j} c_{i, j} \ket{\vec r_{i, j}},
+\end{align}
+where
+\begin{align}
+c_{i ,j} = \braket{\vec r_{i, j}}{\psi} = \psi(\vec r_{i, j}).
+\end{align}
+
+Armed with a basis, we can now proceed to calculate matrix elements of the Hamiltonian, and then proceed to solve the differential equation [TODO EQREF 3.3] to determine how the coefficients $\{c_{i,j}\}$ evolve in time.
+
+The specific properties of our basis make it quite useful for a range of common Hamiltonians. For example, let's take the single particle Schr\"odinger Hamiltonian:
+\begin{align}
+\hat H_\textrm{Schr\"o} = -\frac{\hbar^2 \hat k ^2}{2m}  + V(\hat {\vec r}),
+\end{align}
+where $\hat k = |\hat{\vec k}|$.
+
+The two terms, kinetic and potential, are each diagonal in different bases. The kinetic term is diagonal in the Fourier basis:
+
+\begin{align}
+\matrixel{\vec k^\prime}{-\frac{\hbar^2 \hat k^2}{2m}}{\vec k} = -\frac{\hbar^2 k^2}{2m}\delta(\vec k - \vec k^\prime),
+\end{align}
+where $k = |\vec k|$, and the potential term is diagonal in the spatial basis:
+\begin{align}
+\matrixel{\vec r^\prime}{V(\hat{\vec r})}{\vec r} = V(\vec r) \delta(\vec r - \vec r^\prime).
+\end{align}
+Equivalent relations hold for our discrete Fourier and spatial basis:
+\begin{align}
+\matrixel{\vec k_{i^\prime, j^\prime}}{-\frac{\hbar^2 \hat k^2}{2m}}{\vec k_{i, j}} = -\frac{\hbar^2 k_{i, j}^2}{2m}\delta_{i^\prime i}\delta_{j^\prime j},
+\end{align}
+\begin{align}
+\matrixel{\vec r_{i^\prime, j^\prime}}{V(\hat{\vec r})}{\vec r_{i, j}} = V(\vec r_{i, j}) \delta_{i^\prime i}\delta_{j^\prime j}.
+\end{align}
+
+But to obtain our differential equation, we need all the matrix elements of $\hat H_\textrm{Schr\"o}$ in a single basis.
 
 \section{Discrete degrees of freedom}
 

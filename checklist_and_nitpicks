@@ -40,3 +40,19 @@ Ensure all ordered products are written with descending indices and no time-orde
 Be sure to comment in rk4ilip section on split-step methods being able to use arbitrary *linear*
 operators if you really want them to, as per split-operator section
 Make sure all unitaries have hats
+
+Rewrite unitaries U(t_f, t_i)
+Rewrite ordered products as a descending product so that we can get rid of the time ordering operator.
+
+Put a tilde on top of the discrete spatial basis vectors so it's obvious that they are the discrete versions
+Switch to 1D index for all the discrete basis functions? Add a line saying: "henceforth arbitrary dimension,
+single index, because of that unwrapping?"
+
+Change DFT2 to DFT in unitary subscripts
+
+Define \psi_i and \tilde \psi i for wavefunction and fourier transform of discrete wavefunction, and operators
+bold psi and bold psi tilde for vector representation in specific basis
+
+yeah, start editing this section - print it tomorrow and edit
+
+Seriously switch to single index, it's getting too complicated
