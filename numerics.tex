@@ -1,55 +1,58 @@
 \chapter{Quantum mechanics on a computer}
 
-This chapter comprises a summary of some of the methods used by cold atom physicists to compute numerical results pertaining to cold atom systems. Many a problem in quantum mechanics is not analytically solvable, especially when the real world of experimental physics rears its ugly head, violating theorists' assumptions of simplicity left and right. In particular, atomic physics experiments are time-dependent, with each run of an experiment generally proceeding in stages. Lasers may turn on and off, magnetic fields may vary in magnitude and direction, \textsc{rf} pulses may be chirped [CITE LISA?] to reliably induce particular atomic transitions. Much of the numerical calculations performed by researchers in cold atom physics groups such as ours are accordingly of the time-dependent variety, and are fairly literal simulations of specific experiments that may be carried out in the lab.
+This chapter comprises a summary of some of the methods used by cold atom physicists to compute numerical results pertaining to cold atom systems. Many a problem in quantum mechanics is not analytically solvable, especially when the real world of experimental physics rears its ugly head, violating theorists' assumptions of simplicity left and right. In particular, atomic physics experiments are time-dependent, with each run of an experiment generally proceeding in stages. Lasers may turn on and off, magnetic fields may vary in magnitude and direction, \textsc{rf} pulses may be chirped to reliably induce particular transitions \cite{bennie_precise_2014}. Much of the numerical calculations performed by researchers in cold atom physics groups such as ours are accordingly of the time-dependent variety, and are fairly literal simulations of specific experiments that may be carried out in the lab.
+
+Here I explain some fundamentals of representing quantum mechanical problems on a computer and then present my favourite algorithms for propagating state vectors and wavefunctions in time. To spoil the surprise: my favourite timestepping algorithms are the 4th-order split-step method and (unoriginally) 4th-order Runge--Kutta, and my favourite method of evaluating spatial derivatives is moderate order (6th order or so) finite differences. I think Fourier transforms for spatial derivatives are overrated, and I show that the finite element discrete variable representation (\textsc{fedvr}) is less computationally efficient than simple finite differences for producing equally accurate solutions to the spatial Scr\"odinger eqation. I also mention some methods of finding groundstates and other stationary states, and in section \ref{sec:rk4ilip} I present a modification to 4th-order Runge--Kutta that makes it able to take smaller timesteps for certain problems.
 
 \section{From the abstract to the concrete: neglect, discretisation and representation}
 
 To numerically simulate a quantum mechanical system, one must evolve a state vector in time according to the Schr\"odinger equation:
 \begin{align}\label{eq:schrodinger_equation}
-i\hbar\dv{t}\ket{\psi(t)} = \hat H (t) \ket{\psi(t)}
+\ii\hbar\dv{t}\ket{\psi(t)} = \hat H (t) \ket{\psi(t)}.
 \end{align}
-To do this on a computer, one must first decide which degrees of freedom are to be simulated. We necessarily neglect many degrees of freedom as a matter of course; which ones can be neglected is warranted by the specific situation and we do it so often we barely notice. For example, simulating a single component Bose--Einstein condensate entails neglecting the internal degrees of freedom of the atoms---as well as reducing the atom-light interaction to a simple potential such as an optical dipole trap or magnetic dipole interaction (neglecting the quantum degrees of freedom in the electromagnetic field). We may ignore one or more spatial degrees of freedom as well, say, if we are simulating an experiment in which the condensate is confined to two dimensions by way of a tight trapping potential in one direction [CITE AN EXAMPLE]. Or, when simulating laser cooling [SEE SECTION TODO], we may care very much about the electronic state of the atom, but treat its motional state classically. In these cases we are essentially imposing the assumption that the system will only occupy one state with respect to those degrees of freedom ignored (the condensate will remain in lowest excitation level in the direction of the tight trap, the atoms will remain in one specific Zeeman sublevel), or we are assuming those degrees of freedom can be treated classically (the electromagnetic field is well described by classical electromagnetism, the atoms' motional state is described well by Newtonian mechanics). Which degrees of freedom can be neglected and which cannot requires knowledge of the situation at hand, often informed by best-practices of the research community in question and ultimately justified by experiment.\footnote{A classic example in the cold atom community of neglected degrees of freedom leading to \emph{disagreement} with experiment is the discovery of polarisation gradient cooling (\textsc{PGC}) [CITE THE LIGHT SHEET EXPERIMENT], the explanation for which requires consideration of Zeeman sublevels of the atoms. The experiment that discovered \textsc{PGC} was designed to measure the effect of Doppler cooling, which does not involve Zeeman sublevels, and it was not until afterwards that theorists determined [CITE DALIBARD ETC] that transitions between Zeeman sublevels cannot be neglected and indeed are crucial in explaining the lower than predicted temperatures observed.}
+To do this on a computer, one must first decide which degrees of freedom are to be simulated. We necessarily neglect many degrees of freedom as a matter of course; which ones can be neglected is warranted by the specific situation and we do it so often we barely notice. For example, simulating a single component Bose--Einstein condensate entails neglecting the internal degrees of freedom of the atoms---as well as reducing the atom-light interaction to a simple potential such as an optical dipole trap or magnetic dipole interaction (neglecting the quantum degrees of freedom in the electromagnetic field). We may ignore one or more spatial degrees of freedom as well, say, if we are simulating an experiment in which the condensate is confined to one or two dimensions \cite{gorlitz_realization_2001, hofferberth_non-equilibrium_2007, rauer_cooling_2016} by way of a tight trapping potential in one or more directions. Or, when simulating laser cooling [SEE SECTION ON LASER COOLING SIMS IN ATOMIC PHYSICS CHAPTER], we may care very much about the electronic state of the atom, but treat its motional state classically. In these cases we are essentially imposing the assumption that the system will only occupy one state with respect to those degrees of freedom ignored (the condensate will remain in lowest excitation level in the direction of the tight trap; the atoms will remain in one specific Zeeman sublevel), or we are assuming those degrees of freedom can be treated classically (the electromagnetic field is well described by classical electromagnetism; the atoms' motional state is described well by Newtonian mechanics). Which degrees of freedom can be neglected and which cannot requires knowledge of the situation at hand, often informed by best-practices of the research community in question and ultimately justified by experiment.\footnote{A classic example in the cold atom community of neglected degrees of freedom leading to \emph{disagreement} with experiment is the discovery of polarisation gradient cooling (\textsc{PGC}), the explanation for which requires consideration of Zeeman sublevels of the atoms. The experiment that discovered \textsc{PGC} \cite{lett_observation_1988} was designed to measure the effect of Doppler cooling, which does not involve Zeeman sublevels, and it was not until afterwards that theorists determined \cite{dalibard_laser_1989} that transitions between Zeeman sublevels cannot be neglected and indeed are crucial in explaining the lower than predicted temperatures observed.}
 
-Once the degrees of freedom are known, one must decide on a basis in which to represent them concretely. The basis often cannot be complete, since for many degrees of freedom this would require an infinite number of basis states---for example the electronic state of an atom contains a countably infinite number of states, and a spatial wavefunction in free space has an uncountable number of states (one for each position in R3 [TODO BLACKBOARD BOLD]). For the internal state of an atom, therefore, we restrict ourselves to only the states we expect can become non-negligibly occupied, given the initial conditions and transitions involved. For example, at low temperature we can expect atoms to be almost completely in their electronic ground states, since energy gaps between ground and excited states are large compared to the atoms' thermal energy.\footnote{The D-line of rubidium 87 has an energy gap of [TODO], requiring a temperature of [TODO] or higher in order for the Boltzmann factor $e^{\frac{\upDelta E}{kT}}$ describing the excited state population to be greater than $1\E{-6}$.}. We need only include the small number of excited states that might become occupied as a result of optical transitions present in the situation being simulated. This can still be a large number of states if one is studying Rydberg atoms [CITE] or using ultrafast (and therefore broad-band) laser pulses, but is otherwise fairly small. For example, including both the D1 and D2 lines of Rubidium 87, with all hyperfine levels and Zeeman sublevels gives 32 states (see section [TODO]).
+Once the degrees of freedom are known, one must decide on a basis in which to represent them concretely. The basis often cannot be complete, since for many degrees of freedom this would require an infinite number of basis states---for example the electronic state of an atom contains a countably infinite number of states, and a spatial wavefunction in free space has an uncountable number of states (one for each position in $\mathbb{R}^3$). For the internal state of an atom, therefore, we restrict ourselves to only the states we expect can become non-negligibly occupied, given the initial conditions and transitions involved. For example, at low temperature we can expect atoms to be almost completely in their electronic ground states, since energy gaps between ground and excited states are large compared to the thermal energy scale $k_B T$.\footnote{The D-line of rubidium 87 has an energy gap of $0.6\unit{eV}$, requiring a temperature of $\approx 650\unit{K}$ or higher in order for the Boltzmann factor $\ee^{-\frac{\upDelta E}{k_B T}}$ describing the thermal occupation of the excited state to exceed $1\E{-12}$.}. We need only include the small number of excited states that might become occupied as a result of optical transitions present in the situation being simulated. This can still be a large number of states if one is studying Rydberg atoms \cite{saffman_quantum_2010, urban_observation_2009} or using ultrafast (and therefore broad-band) laser pulses \cite{blinov_broadband_2006, mcculloch_high-coherence_2013, brabec_intense_2000}, but is otherwise fairly small. For example, including both the \textsc{d1} and \textsc{d2} lines of Rubidium 87, with all hyperfine levels and Zeeman sublevels gives 32 states (see section [LASER COOLING SIMS IN ATOMIC PHYSICS CHAPTER]).
 
-For spatial degrees of freedom, one can either discretise space on a grid, or use a set of orthogonal basis functions\footnote{Strictly speaking, these can be the same thing---discretising space on a grid is declaring one's basis functions to be a set of functions, one for each gridpoint, each of which is zero at all gridpoints .}.
-
+For spatial degrees of freedom, we usually limit ourselves firstly to a finite region of space (we don't expect the Bose--Einstein condensate to have much probability amplitude on the Moon or anywhere else outside the vacuum system), and then we need to discretise the region of space remaining. To do this one can either discretise space on a grid, or use a set of orthogonal basis functions, and strictly speaking these can be equivalent, as we will soon see.
 
 Once the degrees of freedom and basis vectors have been chosen, the state vector is then represented on a computer as an array of complex numbers, giving the coefficients of each basis vector required to represent a particular state vector. Matrix elements of the Hamiltonian in the same basis must be calculated, and the Schr\"odinger equation can then be written:
 \begin{align}
-i\hbar\dv{t}\braket n{\psi(t)} = \sum_m\matrixel n {\hat H(t)} m \braket m {\psi(t)},
+\ii\hbar\dv{t}\braket n{\psi(t)} = \sum_m\matrixel n {\hat H(t)} m \braket m {\psi(t)},
 \end{align}
 or in standard matrix/vector notation (without Dirac notation):
-\begin{align}
-i\hbar\dv{t}\psi_n(t) = \sum_m H_{nm}(t) \psi_m(t),
+\begin{align}\label{eq:schrodinger_equation_matrix_vector}
+\ii\hbar\dv{t}\psi_n(t) &= \sum_m H_{nm}(t) \psi_m(t)\\
+\iff \ii\hbar\dv{t} \vec \psi(t) &= H(t) \vec \psi(t),
 \end{align}
-where $\psi_n(t) = \braket n{\psi(t)}$ and $H_{nm}(t) = \matrixel n {\hat H(t)} m$.
-This is now something very concrete that can be typed into a computer. Programming languages generally don't know about Dirac kets and operators, and so everything that is to be computed must be translated into matrices and vectors in specific bases. This may seem so obvious as to not be worth mentioning, but was nonetheless a stumbling block in my own experience of getting to grips with quantum mechanics. Once realising that every operator has a matrix representation in some basis, at least in principle, and that every ket is just a list of vector components in some basis, similarly at least in principle, expressions dense in bras and kets become much more concrete as the reader has a feel for exactly how they would type it into a computer. Without this realisation, doing quantum mechanics on paper can seem like an exercise in abstract mumbo-jumbo.
+where $\psi_n(t) = \braket n{\psi(t)}$, $H_{nm}(t) = \matrixel n {\hat H(t)} m$ and $\vec \psi(t)$ and $H(t)$ are the vector and matrix with components and elements $\{\psi_n(t)\}$ and $\{H_{nm}\}$ respectively.
+This is now something very concrete that can be typed into a computer. Programming languages generally don't know about Dirac kets and operators, and so everything that is to be computed must be translated into matrices and vectors in specific bases. This may seem so obvious as to not be worth mentioning, but was nonetheless a stumbling block in my own experience of getting to grips with quantum mechanics. Once realising that every operator has a matrix representation in some basis, at least in principle (including differential operators), and that every ket is just a list of vector components in some basis (including ones representing spatial wavefunctions), similarly at least in principle, expressions dense in bras and kets become much more concrete as the reader has a feel for exactly how they would type it into a computer. Without a good feel for the mapping between operator algebra and the actual lists of numbers that these objects imply, doing quantum mechanics on paper can seem like an exercise in abstract mumbo-jumbo.
 
 \section{Solution to the Schr\"odinger equation by direct exponentiation}
 As an example of something seemingly abstract being more concrete than first appearances, it is sometimes said that the `formal' solution to the Schr\"odinger equation \eqref{eq:schrodinger_equation} is:
 \begin{align}\label{eq:formal_solution}
-\ket{\psi(t_f)} = e^{-\frac i \hbar \int_t^{t_f} \hat H(t^\prime)\,\dd t^\prime}\ket{\psi(t)}.
+\ket{\psi(t)} = \ee^{-\frac \ii \hbar \int_{t_0}^t \hat H(t^\prime)\,\dd t^\prime}\ket{\psi(t_0)}.
 \end{align}
 Saying that this is the `formal' solution rather than just `the solution' is presumably intended to emphasise that the arithmetic operations involved in \eqref{eq:formal_solution} might not make immediate sense for the types of mathematical objects they are operating on, and that we have to be careful in defining the operations such that they produce a result that is not only sensible, but also the solution to the Schr\"odinger equation. If both $\hat H(t)$ and $\ket{\psi(t)}$ were single-valued functions of time rather than an operator valued function of time (the values at different times of which don't necessarily commute) and a vector valued function of time, then we would have no problem. However, \eqref{eq:formal_solution} as written with operators and vectors is ambiguous, and we need to elaborate on it in order to ensure it is correct. I will come back to this after considering a simpler case.
 
 If the Hamiltonian is time-independent, then \eqref{eq:formal_solution} reduces to
 \begin{align}
-\ket{\psi(t_f)} = e^{-\frac i \hbar (t_f - t)\hat H}\ket{\psi(t)}.
+\ket{\psi(t)} = \ee^{-\frac \ii \hbar\hat H\upDelta t}\ket{\psi(t_0)},
 \end{align}
-Given the matrix representation $H$ of $\hat H$ and vector representation $\psi(t)$ of $\ket{\psi(t)}$ in a particular basis, this can now be directly typed into a computer as the matrix multiplication:
-\begin{align}
-\psi(t_f) = U(t, t_f)\psi(t),
+where $\upDelta t = t - t_0$.
+Given the matrix representation $H$ of $\hat H$ and vector representation $\vec \psi(t_0)$ of $\ket{\psi(t_0)}$ in a particular basis, this can now be directly typed into a computer as the matrix multiplication:
+\begin{align}\label{eq:unitary_time_independent}
+\vec \psi(t) = U(t, t_0)\vec \psi(t_0),
 \end{align}
 where
 \begin{align}
-U(t, t_f) = e^{-\frac i \hbar (t_f - t) H}
+U(t, t_0) = \ee^{-\frac \ii \hbar H \upDelta t}
 \end{align}
-is the unitary evolution operator for time evolution from the initial time $t$ to time $t_f$, and is computed using a matrix exponential of $-\frac i \hbar (t_f - t) H$. Exponentiation of matrices is defined via the Taylor series of the exponential,
+is the (matrix representation of the) unitary evolution operator for time evolution from the initial time $t_0$ to time $t$, and is computed using a matrix exponential of $-\frac \ii \hbar H \upDelta t$. Exponentiation of matrices is defined via the Taylor series of the exponential function:
 \begin{align}
-e^A = \sum_{n=0}^\infty \frac{A^n}{n!},
+\ee^A = \sum_{n=0}^\infty \frac{A^n}{n!},
 \end{align}
-which reduces exponentiation to the known operations of matrix multiplication and addition. However, any linear algebra programming library worth the bytes it occupies will have a matrix exponentiation function that should be used instead, as there are other methods of computing matrix exponentials that are more computationally efficient and numerically stable, such as the Pad\'e approximant [CITE].
+which reduces matrix exponentiation to the known operations of matrix multiplication and addition. However, any linear algebra programming library worth the bytes it occupies will have a matrix exponentiation function that should be used instead, as there are other methods of computing matrix exponentials that are more computationally efficient and numerically stable, such as the Pad\'e approximant [CITE]. It should be noted that there is no known `best' matrix exponential algorithm, all make compromises and perform poorly for certain types of matrices \cite{moler_nineteen_2003}.
 
 \subsection{Matrix exponentiation by diagonalisation}
 Regardless of which method is used, matrix exponentiation is computationally expensive. It can be sped up however if a diagonalisation of $H$ is known, since if
@@ -57,79 +60,118 @@ Regardless of which method is used, matrix exponentiation is computationally exp
 H = UDU^\dagger,
 \end{align}
 where $D$ is a diagonal matrix and U is a unitary matrix\footnote{Note that the diagonals of $D$ are the eigenvalues of $H$, and the columns of $U$ are its eigenvectors.}, then
-\begin{align}
-e^{-\frac i \hbar (t_f - t) H} = U e^{-\frac i \hbar (t_f - t)D} U^\dagger.
+\begin{align}\label{eq:diagonal_expm}
+\ee^{-\frac \ii \hbar H \upDelta t} = U e^{-\frac \ii \hbar D \upDelta t} U^\dagger.
 \end{align}
 This is simple to evaluate because the exponentiation of a diagonal matrix can be performed by exponentiating each diagonal matrix element individually\footnote{The reason for this is clear from the Taylor series definition of matrix exponentiation, since matrix multiplication and addition can both be performed elementwise for diagonal matrices.}
 
-Even if a diagonalisation of $H$ is not analytically known, numerically diagonalising $H$ (using a linear algebra library function or otherwise) can form the basis for writing your own matrix exponentiation function, if needed. I found this necessary for efficiently exponentiating an array of matrices in Python, since the \texttt{scipy} and \texttt{numpy} scientific and numeric libraries at the present time lack matrix exponentiation functions that can act on arrays. Writing a \texttt{for} loop in an interpreted language such as Python to exponentiate the matrices individually in many cases is unacceptably slow, so for these cases\footnote{Such as simulating the internal state of a large number of atoms, or evolving a spinor Bose--Einstein condensate by exponentiating the Zeeman Hamiltonian with a spatially varying magnetic field.} I use a function such as the below:
+Even if a diagonalisation of $H$ is not analytically known, numerically diagonalising $H$ (using a linear algebra library function or otherwise) can form the basis for writing your own matrix exponentiation function, if needed. I found this necessary for efficiently exponentiating an array of matrices in Python, since the \texttt{scipy} and \texttt{numpy} scientific and numeric libraries at the present time lack matrix exponentiation functions that can act on arrays of matrices. Writing a \texttt{for} loop in an interpreted language such as Python to exponentiate the matrices individually in many cases is unacceptably slow, so for these cases\footnote{Such as simulating the internal state of a large number of atoms, or evolving a spinor Bose--Einstein condensate by exponentiating the Zeeman Hamiltonian with a spatially varying magnetic field.} I use a function such as the below:
 
 \python{code_listings/expm_example.py}
 
-This concludes all I have to say for the moment on evolving systems with time-independent Hamiltonians using direct exponentiation. Sections [TODO - refer to operator product sections] will say a bit more about how to \emph{approximately} exponentiate certain Hamiltonians, which is sometimes useful. In addition, it turns out that the time-dependent case can be reduced to the repeated application of evolution with time-independent Hamiltonians over small timesteps, as we will see in the next section.
+Matrix diagonalisation (using singular value decomposition or QR decomposition) has computational time complexity $\Ord{n^3}$ , where $n$ is the number of rows/columns in the (square) matrix. Matrix multiplication is (in practice) $\Ord{n^3}$ and exponentiating a diagonal matrix is only $\Ord n $, so matrix exponentiation of a Hermitian matrix via numerical diagonalisation has total cost $\Ord{n^3}$. This compares to the Pad\'e approximant, which is also $\Ord{n^3}$ \cite{moler_nineteen_2003}. So the numerical diagonalisation method is not any worse in terms of computational resources required.
+
+On the other hand, if an analytic diagonalisation is already known, it would seem that exponentiation is just as slow, since the computational cost of matrix multiplication alone is the same order in $n$ as that of numerical diagonalisation. This is true - so there are only constant factors to be saved in computer time by using an analytic diagonalisation in order to exponentiate a matrix using \eqref{eq:diagonal_expm}. However if one's aim---as is often the case---is to ultimately compute
+\begin{align}
+\vec\psi(t) = \ee^{-\frac \ii \hbar H \upDelta t}\vec\psi(t_0),
+\end{align}
+for a specific $\vec \psi(t_0)$, then one needs only matrix-vector multiplications and not matrix-matrix multiplications in order to evaluate
+\begin{align}
+\vec\psi(t) = U e^{-\frac \ii \hbar D \upDelta t} U^\dagger \vec\psi(t_0),
+\end{align}
+from right-to-left, reducing the computational cost to $\Ord{n^2}$ compared to evaluating it left-to-right.
+
+Whilst matrix exponentiation is a way to efficiently evolve systems with time-independent Hamiltonians, if you only exponentiate a matrix once, you don't much care about the time complexity of doing so. It is mostly of interest because the real real power of these exponentiation methods is as a building block for methods of approximate solutions to the Schr\"odinger equation in the case of time \emph{dependent} Hamiltonians, as we will see in the next section.
 
 \subsection{Time-ordered exponentials and time-ordered products}
 
-
-As mentioned, the solution \eqref{eq:formal_solution} is not the whole picture. It can only be taken at face value if the Hamiltonian at each moment in time commutes with itself at all other times [CITE SOMETHING]. In this case, once represented in a specific basis, the solution to the Schr\"odinger equation is again the matrix multiplication
+As hinted to earlier, the solution \eqref{eq:formal_solution} is not the whole picture. It can only be taken at face value if the Hamiltonian at each moment in time commutes with itself at all other times [CITE SOMETHING]. In this case, once represented in a specific basis, the solution to the Schr\"odinger equation is again the matrix multiplication
 \begin{align}
-\psi(t_f) = U(t, t_f)\psi(t),
+\vec \psi(t) = U(t, t_0) \vec \psi(t_0),
 \end{align}
 with
 \begin{align}
-U(t, t_f) = e^{-\frac i \hbar \int_t^{t_f} H(t^\prime)\,\dd t^\prime}.
+U(t, t_0) = \ee^{-\frac \ii \hbar \int_{t_0}^t H(t^\prime)\,\dd t^\prime},
 \end{align}
-Since matrix addition can be performed elementwise, so can the integral in the exponent, yielding a matrix which once exponentiated will give the evolution operator $U(t, t + \upDelta t)$ for the solution to the Schr\"odinger equation. If the Hamiltonian at each moment in time does not commute with itself at all other times, however, then the unitary evolution operator for the solution to the Schr\"odinger equation is instead given by the following \emph{time-ordered exponential} [CITE]:
+i.e. with an integral in the exponent rather than a simple multiplication by a time interval. Since matrix addition can be performed elementwise, so can the integral in the exponent, yielding a matrix which once exponentiated will give the evolution operator $U(t, t_0)$ for the solution to the Schr\"odinger equation. If the Hamiltonian at each moment in time does not commute with itself at all other times, however, then the unitary evolution operator for the solution to the Schr\"odinger equation is instead given by the following \emph{time-ordered exponential} [CITE]:
 \begin{align}\label{eq:time_ordered_exponential}
-U(t, t_f) = \mathcal{T}\left\{e^{-\frac i \hbar \int_t^{t_f} H(t^\prime)\,\dd t^\prime}\right\}.
+U(t, t_0) = \mathcal{T}\left\{\ee^{-\frac \ii \hbar \int_{t_0}^t H(t^\prime)\,\dd t^\prime}\right\}.
 \end{align}
 
-In this expression, $\mathcal{T}$ denotes the \emph{time-ordering operator}. The time ordering operator reorders terms within products that contain a time parameter (for us, the time parameter is the argument of the matrix $H$), such that the value of the time parameter is smallest on the rightmost term, largest on the leftmost term, and monotonically increasing right-to-left in between. For example:
+In this expression, $\mathcal{T}$ denotes the \emph{time-ordering operator}. The time ordering operator reorders terms within products that contain a time parameter (for us, the time parameter is the argument of the matrix-valued function $H$), such that the value of the time parameter is smallest in the rightmost term, largest in the leftmost term, and monotonically increasing right-to-left in between. For example:
 \begin{align}
 \mathcal{T}\left\{H(4)H(1)H(2)H(5)H(3)\right\} = H(5)H(4)H(3)H(2)H(1).
 \end{align}
 
-Despite appearances, this time-ordered exponential is perfectly concretely defined via the definitions of all the operations involved that we have described so far, and can---with some effort---be typed into a computer and evaluated directly. Even though this is not how I evaluate time-ordered exponentials in my simulations of atomic systems, I'll quickly elaborate on this just to emphasise the concreteness of all these operations.
+Despite appearances, this time-ordered exponential is perfectly concretely defined via the definitions of all the operations involved that we have described so far, and can---with some effort---be typed into a computer and evaluated directly. Even though this is not how I have evaluated time-ordered exponentials in my simulations of atomic systems, I'll quickly elaborate on this just to emphasise the concreteness of all these operations.
 
 ``What products is $\mathcal{T}$ reordering?" you might ask, as \eqref{eq:time_ordered_exponential} doesn't appear to contain any products of $H(t)$. On the contrary, it does, since exponentiation is defined by its Taylor series, and so
 \begin{align}
-U(t, t_f) &= 1 + \mathcal{T}\left\{\sum_{n=1}^\infty \frac1 {n!}\left[ -\frac i \hbar \int_t^{t_f} H(t^\prime)\,\dd t^\prime\right]^n\right\}\\
-&= 1 + \sum_{n=1}^\infty \frac{(-i)^n} {n!\hbar^n}\mathcal{T}\left\{\left[\int_t^{t_f} H(t^\prime)\,\dd t^\prime\right]^n\right\}\,.
+U(t, t_0) &= 1 + \mathcal{T}\left\{\sum_{n=1}^\infty \frac1 {n!}\left[ -\frac \ii \hbar \int_{t_0}^t H(t^\prime)\,\dd t^\prime\right]^n\right\}\\
+&= 1 + \sum_{n=1}^\infty \frac1 {n!}  \left(-\frac \ii \hbar \right)^n \mathcal{T}\left\{\left[\int_{t_0}^t H(t^\prime)\,\dd t^\prime\right]^n\right\}\,.
 \end{align}
 Each term in this series contains the $n^\up{th}$ power (and hence a product) of an integral of $H(t)$. The time ordering operator doesn't allow us to evaluate each term by computing the matrix integral once and then raising it to a power---to do so would violate time-ordering since each integral involves evaluating $H(t)$ at all times. Instead we have to write each product of integrals as the integral of a product:
 \begin{align}
-U(t, t_f)
-&= 1 + \sum_{n=1}^\infty \frac{(-i)^n} {n!\hbar^n}\int_t^{t_f}\cdots\int_t^{t_f} \mathcal{T}\left\{H(t_1^\prime)\cdots H(t_n^\prime)\right\}\,\dd t_1^\prime\cdots\dd t_n^\prime\,,
+U(t, t_0)
+&= 1 + \sum_{n=1}^\infty \frac1 {n!}  \left(-\frac \ii \hbar \right)^n
+\int_{t_0}^t \dd t_1^\prime
+\int_{t_0}^t \dd t_2^\prime
+\cdots
+\int_{t_0}^t \dd t^\prime_n
+\cdots
+\mathcal{T}\left\{H(t_1^\prime)H(t_2^\prime)\cdots H(t_n^\prime)\right\},
 \end{align}
 from which we can see exactly which product of matrices the time ordering operator is acting on.
 
-Now we are close to seeing one might evaluate $U(t, t_f)$ numerically by summing each term in the Taylor series up to some order set by the required accuracy. For the $n^{\up{th}}$ term, one needs to evaluate an $n$-dimensional integral over $n$ time coordinates, with each coordinate having the same limits of integration. This can be computed in the usual way an integral is numerically computed\footnote{By sampling the integrand on a uniform grid, using a quadrature method, or Monte-Carlo integration [CITE], which is widely used for high dimensional integrals such as these.}, with the minor change that each time the integrand is evaluated, the terms within it must be re-ordered to respect the required time-ordering. Alternatively, the integration region can be restricted to the region in which the terms are already time-ordered, and then the total integral inferred by symmetry, which gives:
-\begin{align}
-U(t, t_f)
-&= 1+\sum_{n=1}^\infty \left(-\frac i \hbar\right)^n\int_t^{t_f}\cdots\int_t^{t_{n-1}^\prime} H(t_1^\prime)\cdots H(t_n^\prime)\,\dd t_1^\prime\cdots\dd t_n^\prime\,.
+Now we are close to seeing one might evaluate $U(t, t_0)$ numerically by summing each term in the Taylor series up to some order set by the required accuracy. For the $n^{\up{th}}$ term, one needs to evaluate an $n$-dimensional integral over $n$ time coordinates, with each coordinate having the same limits of integration. This can be computed in the usual way an integral is numerically computed,\footnote{By sampling the integrand on a uniform grid, using a quadrature method, or Monte-Carlo integration \cite{weinzierl_introduction_2000} which is widely used for high dimensional integrals such as these.} with the minor change that each time the integrand is evaluated, the terms within it must be re-ordered to respect the required time-ordering. Alternatively, the integration region can be restricted to the region in which the terms are already time-ordered, and then the total integral inferred by symmetry, which gives:
+\begin{align}\label{eq:dyson_series}
+U(t, t_0)
+&= 1 + \sum_{n=1}^\infty \left(-\frac \ii \hbar \right)^n
+\int_{t_0}^t \dd t_n^\prime
+\cdots
+\int_{t_0}^{t^\prime_3} \dd t_2^\prime
+\int_{t_0}^{t^\prime_2} \dd t_1^\prime
+\,\,
+H(t_n^\prime)\cdots H(t_2^\prime)H(t_1^\prime).
 \end{align}
 
-This is now a perfectly concrete expression, with each term comprising an integral over an $n$-simplex\footnote{A simplex is the generalisation of a triangle to higher dimensions, i.e a 3-simplex is a tetrahedron.} of a product of $n$ matrices.
+This is now a perfectly concrete expression, with each term comprising an integral over an $n$-simplex\footnote{A simplex is the generalisation of a triangle to higher dimensions, i.e. a 3-simplex is a tetrahedron.} of a product of $n$ matrices.
 
-This expression for the unitary evolution operator is called the Dyson series [CITE]. It is not generally used in cold atom physics; I certainly have never evaluated it. However it does see use in high energy physics [CITE] for computing transition amplitudes between incoming and outgoing waves in scattering problems (in which $U$ is called the $S$-matrix). In these problems, $H$ is an interaction Hamiltonian containing terms for all particle interactions being considered. Accordingly, the integrand for the $n^\up{th}$ term, being a product of $n$ copies of $H$ at different times, contains one term for each possible sequence of $n$ particle interactions.
+This expression for the unitary evolution operator is called the Dyson series [CITE]. It is not generally used for time-dependent simulations, though it is the basis for time-dependent perturbation theory, and sees use in high energy physics [CITE] for computing transition amplitudes between incoming and outgoing waves in scattering problems (in which $U$ is called the $S$-matrix). In these problems, $H$ is an interaction Hamiltonian containing terms for all particle interactions being considered. Accordingly, the integrand for the $n^\up{th}$ term, being a product of $n$ copies of $H$ evaluated at different times, contains one term for each possible sequence of $n$ particle interactions.
 The integral itself can be considered a sum of transition amplitudes over all possible times that each interaction could have occurred. Indeed, each term corresponds to a Feynman diagram with $n$ nodes [CITE].
 
-The Dyson series isn't really suited to the problems we face in cold atom physics. For one, the series must be truncated at some point, and the result won't be a $U$ that is actually unitary.\footnote{Although unitarity is not often a strict requirement - we also frequently solve [EQREF TDSE] directly with fourth order Runge--Kutta, which is also not unitary.}. Also, we are usually interested in the intermediate states, not just the final state of a system as in a scattering problem.
+The Dyson series isn't really suited to time-dependent simulations, though perturbation theory is useful for approximate analytics. For one, the series must be truncated at some point, and the result won't be a $U$ that is actually unitary.\footnote{Although unitarity is not often a strict requirement - we also frequently solve \eqref{eq:schrodinger_equation_matrix_vector} directly with fourth order Runge--Kutta, which is also not unitary.}. Also, we are typically interested in the intermediate states, not just the final state of a system or an average transition rate, as one might want to compute in a scattering problem.
 
-In any case, typically when solving the Schr\"odinger equation by exponentiation we use the following, alternate expression for a time-ordered exponential:
+In any case, usually when solving the Schr\"odinger equation by exponentiation we use the following, alternate expression for a time-ordered exponential:
 \begin{align}
-U(t, t_f) &= \mathcal{T}\left\{e^{-\frac i \hbar \int_t^{t_f} H(t^\prime)\,\dd t^\prime}\right\}\\
- &= \lim_{N\rightarrow\infty}\mathcal{T}
- \left\{\prod_{i=0}^N e^{-\frac i \hbar  H(t_i)\upDelta t}\right\},
+U(t, t_0) &= \mathcal{T}\left\{\ee^{-\frac \ii \hbar \int_{t_0}^t H(t^\prime)\,\dd t^\prime}\right\}\\
+ &= \lim_{N\rightarrow\infty}\prod_{n=N-1}^0 \ee^{-\frac \ii \hbar  H(t_n)\upDelta t},
+\label{eq:time_ordered_exp_product}
 \end{align}
 
-where $\upDelta t = (t - t_f)/N$ and $t_i = t + i\upDelta t$. You can convince yourself that [EQREF INTEGRAL DEFINITION] is equivalent to this by replacing the integral in the exponent with a sum---as per the Riemann definition of an integral---and expanding the exponential according to its Taylor series. Expanding each exponential in [EQREF PRODUCT DEFINITION] as a Taylor Series and collecting terms with the same number of copies of $H$ then reveals that the two Taylor series are identical.
+where here $\upDelta t = (t - t_0)/N$ and $t_n = t_0 + n\upDelta t$. Note that the product limits are written in the reverse of the usual order---this is important in order to produce terms with smaller $n$ on the right and larger $n$ on the left of the resulting product. You can convince yourself that \eqref{eq:dyson_series} is equivalent to \eqref{eq:time_ordered_exp_product} this by replacing the integral in the exponent with a sum---as per the Riemann definition of an integral---and expanding the exponential according to its Taylor series. Expanding each exponential in \eqref{eq:time_ordered_exp_product} as a Taylor Series and collecting terms of equal powers of $H$ then reveals that the two Taylor series are identical.
 
-In any case, [EQREF PRODUCT DEFINITION] paints an intuitive picture of solving the Schr\"odinger equation: one evolves the initial state vector in time by evolving it according to constant Hamiltonians repeatedly over small time intervals. This has the desirable property that all intermediate state vectors are computed at the intermediate steps, meaning one can study the dynamics of the system and not just obtain the final state. This is of course useful for comparison with experiments, plenty of which involve time-dependent data acquisition and not just post-mortem analysis of some evolution.
+In any case, \eqref{eq:time_ordered_exp_product} paints an intuitive picture of solving the Schr\"odinger equation: one evolves the initial state vector in time by evolving it according to constant Hamiltonians repeatedly over small time intervals. This has the desirable property that all intermediate state vectors are computed at the intermediate steps, meaning one can study the dynamics of the system and not just obtain the final state. This is of course useful for comparison with experiments, plenty of which involve time-dependent data acquisition and not just post-mortem analysis of some evolution.
 
-Numerically, we can't actually take $N\rightarrow\infty$, or equivalently $\upDelta t \rightarrow 0$, and so we instead choose a $\upDelta t$ smaller than the timescale of any time-dependence of $H$, and step through time using [EQREF].
+Numerically, we can't actually take $N\rightarrow\infty$, or equivalently $\upDelta t \rightarrow 0$, and so we instead choose a $\upDelta t$ smaller than the timescale of any time-dependence of $H$, and step through time using
 
-Thus the case of a time-dependent Hamiltonian reduces to repeated application of the solution [EQREF] for a time-independent Hamiltonian. Furthermore, if the Hamiltonian is analytically diagonalisable at each moment in time, each of these steps can be taken with the diagonalisation method of matrix exponentiation. If it is not, and the system is small, then resorting to numerical diagonalisation may be acceptable. Otherwise, if the Hamiltonian can be decomposed into a \emph{sum} of terms which are individually diagonalisable, the split-step method can be used (see sec [SECREF]). Failing that, a general purpose integration method such as fourth-order Runge-Kutta may have to be resorted to.\footnote{Though if I admit it, \textsc{rkr4} is usually what I reach for first.} I will elaborate on these comments with examples in the following sections.
+\begin{align}\label{eq:first_order_product}
+\vec \psi(t) &=
+\left(\prod_{n=N-1}^0 \ee^{-\frac \ii \hbar  H(t_n)\upDelta t} \right)\vec \psi(t_0) + \Ord{\upDelta t}.
+\end{align}
+Thus the case of a time-dependent Hamiltonian reduces to repeated application of the solution \eqref{eq:unitary_time_independent} for a time-independent Hamiltonian, and is accurate to order $\upDelta t$. Note that the entire expression can be evaluated right-to-left to propagate the intial state vector in time without explicitly computing the overall unitary, which ensures the computational complexity is $\Ord{n^2}$ in the size of the system (when the exponentiation is performed via an analytic or pre-computed diagonalisation) rather than $\Ord{n^3}$.
+
+\subsection{The operator product/split-step method}
+
+Here I'll present decompositions similar to \eqref{eq:first_order_product}, but which use variable timesteps to achieve an accuracy to higher order in $\upDelta t$. I'll present them at the same time as addressing another problem, which is that Hamiltonians are often not in a simple enough form to be exponentiated efficiently at all, making \eqref{eq:first_order_product} difficult to evaluate. Often Hamiltonians are a sum of non-commuting operators (such as kinetic and potential terms), with time dependence such that any diagonalisation of the overall Hamiltonian at one point in time will not diagonalise it at another point in time, with the system size large enough for numerical diagonalisation to be prohibitively expensive. In these cases, we can use methods called \emph{split-step} or \emph{operator product} methods, which allow one to approximately exponentiate the entire Hamiltonian based on having exact diagonalisations of its component terms. There is little downside to having an only approximate exponentiation of the Hamiltonian when the timestepping is already only approximate, so long as we ensure that neither source of error is much greater than the other. To this end I'll show split-step methods that have (global) error $\Ord{\upDelta t}$, $\Ord{\upDelta t^2}$ and $\Ord{\upDelta t^4}$. In the next section on continuous degrees of freedom, we'll see how this method applies to the case of a spatial wavefunction obeying the Gross--Pitaevskii equation.
+
+\begin{align}
+U_1(t_{n+1}, t_n) = .
+\end{align}
+
+
+Actual Hamiltonians can be complicated, and are rarely.
+Otherwise, if the Hamiltonian can be decomposed into a \emph{sum} of terms which are individually diagonalisable, the split-step method can be used (see sec [SECREF]). Failing that, a general purpose integration method such as fourth-order Runge-Kutta may have to be resorted to.\footnote{Though if I admit it, \textsc{rkr4} is usually what I reach for first.} I will elaborate on these comments with examples in the following sections.
 
 \begin{itemize}
 
@@ -334,7 +376,7 @@ A common situation in atomic physics is to be simulating the internal state of a
 \subsection{Imaginary time evolution}
 \subsection{Successive over-relaxation}
 \subsection{Generalisation to excited states via Gram–Schmidt orthonormalisation}
-Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another approach is to find the ground state using one of the above techniques, and then repeat the process, subtracting off the wavefunction's projection onto the already found ground state at every step. This yields the lowest energy state that is orthogonal to the first - i.e the first excited state. Repeating the process, but subtracting off \emph{both} eigenstates found so far, then yields the second excited state and so forth. This is simply the Gram-Schmidt process for finding orthonormal vectors, with the additional step of relaxing each vector to the lowest possible energy for each one - this ensures the eigenstates of the Hamiltonian are produced, rather than a different orthogonal basis. Extra conditions can be imposed on the wavefunction at each relaxation step in order to obtain particular solutions in the case of degenerate eigenstates. For example, a phase winding can be imposed in order to obtain a particular harmonic oscillator state - otherwise this process produces an arbitrary superposition of basis states that have equal energy.
+Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another approach is to find the ground state using one of the above techniques, and then repeat the process, subtracting off the wavefunction's projection onto the already found ground state at every step. This yields the lowest energy state that is orthogonal to the first - i.e. the first excited state. Repeating the process, but subtracting off \emph{both} eigenstates found so far, then yields the second excited state and so forth. This is simply the Gram-Schmidt process for finding orthonormal vectors, with the additional step of relaxing each vector to the lowest possible energy for each one - this ensures the eigenstates of the Hamiltonian are produced, rather than a different orthogonal basis. Extra conditions can be imposed on the wavefunction at each relaxation step in order to obtain particular solutions in the case of degenerate eigenstates. For example, a phase winding can be imposed in order to obtain a particular harmonic oscillator state - otherwise this process produces an arbitrary superposition of basis states that have equal energy.
 
 \section{The finite-element discrete variable representation}
 
@@ -342,9 +384,10 @@ Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another a
 
 [explanation of how it works, comparison of implementation with RSP4 vs something like RK4. RK4 is more general purpose, method does not need to be modified for different Hamiltonians. Main limitation is inability to factor out fast dynamical phases, see RK4ILIP for solution to this. MPI implementation and scaling properties with increasing cores. Superscaling at low number of cores. Mention how my implementation can tolerate high network latency due to early sending od data before all local computations are complete. Mention that it is ripe for GPU processing. Limitations: vulnerable to Runge's phenomenon for sharp potentials. Can't increase the order of the polynomials much because small spacing at the edges requires tiny timesteps. Possible solution: pre-conditioning the potential to be an approximation better representable in the DVR basis.]
 
-\endinput % Remove once numerics completed
+% \endinput % Remove once numerics completed
 
-\section{Fourth order Runge--Kutta in an instantaneous local interaction picture}
+\section{Fourth order Runge--Kutta in an instantaneous local interaction picture}\label{sec:rk4ilip}
+
 \sectionmark{RK4 in an instantaneous local interaction picture}
 
 Consider the differential equation for the components of a state vector $\ket{\psi(t)}$ in a particular basis with basis vectors $\ket{n}$. This might simply be the Schr\"odinger equation, or perhaps some sort of nonlinear or other approximate, effective or phenomenological equation not corresponding to pure Hamiltonian evolution. Though they may have additional terms, such equations are generally of the form:

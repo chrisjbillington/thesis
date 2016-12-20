@@ -47,6 +47,7 @@
 % and Asana:
 \setmathfont[range={\mathop,\nabla,\triangleright}]{Latin Modern Math}
 
+
 % Minion pro for alphanumeric symbols, inlcuding Greek:
 \setmathfont{Minion Pro}[
     range={up}/{latin,Latin,num,Greek,greek},
@@ -80,6 +81,9 @@
         {Size = 13.01-19.91, Font = MinionPro-BoldItSubh},
         {Size = 19.91-, Font = MinionPro-BoldItDisp}
     }]
+
+% Use math font for blackboard bold:
+\DeclareMathAlphabet{\mathbb}{U}{msb}{m}{n}
 
 % Use swashed Minion Pro for mathcal:
 % \setmathfont[range=cal,Contextuals=Swash]{Minion Pro Italic}
