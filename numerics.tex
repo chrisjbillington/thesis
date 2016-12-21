@@ -2,7 +2,7 @@
 
 This chapter comprises a summary of some of the methods used by cold atom physicists to compute numerical results pertaining to cold atom systems. Many a problem in quantum mechanics is not analytically solvable, especially when the real world of experimental physics rears its ugly head, violating theorists' assumptions of simplicity left and right. In particular, atomic physics experiments are time-dependent, with each run of an experiment generally proceeding in stages. Lasers may turn on and off, magnetic fields may vary in magnitude and direction, \textsc{rf} pulses may be chirped to reliably induce particular transitions \cite{bennie_precise_2014}. Much of the numerical calculations performed by researchers in cold atom physics groups such as ours are accordingly of the time-dependent variety, and are fairly literal simulations of specific experiments that may be carried out in the lab.
 
-Here I explain some fundamentals of representing quantum mechanical problems on a computer and then present my favourite algorithms for propagating state vectors and wavefunctions in time. To spoil the surprise: my favourite timestepping algorithms are the 4th-order split-step method and (unoriginally) 4th-order Runge--Kutta, and my favourite method of evaluating spatial derivatives is moderate order (6th order or so) finite differences. I think Fourier transforms for spatial derivatives are overrated, and I show that the finite element discrete variable representation (\textsc{fedvr}) is less computationally efficient than simple finite differences for producing equally accurate solutions to the spatial Scr\"odinger eqation. I also mention some methods of finding groundstates and other stationary states, and in section \ref{sec:rk4ilip} I present a modification to 4th-order Runge--Kutta that makes it able to take smaller timesteps for certain problems.
+Here I explain some fundamentals of representing quantum mechanical problems on a computer and then present my favourite algorithms for propagating state vectors and wavefunctions in time. To spoil the surprise: my favourite timestepping algorithms are the 4th-order split-step method and (unoriginally) 4th-order Runge--Kutta, and my favourite method of evaluating spatial derivatives is moderate order (6th order or so) finite differences. I think Fourier transforms for spatial derivatives are overrated, and I show that the finite element discrete variable representation (\textsc{fedvr}) is less computationally efficient than simple finite differences for producing equally accurate solutions to the spatial Scr\"odinger eqation. I also mention some methods of finding groundstates and other stationary states, and in section \ref{sec:rk4ilip} I present a modification to 4th-order Runge--Kutta that enables it to take larger timesteps for certain problems.
 
 \section{From the abstract to the concrete: neglect, discretisation and representation}
 
@@ -156,19 +156,151 @@ In any case, \eqref{eq:time_ordered_exp_product} paints an intuitive picture of 
 Numerically, we can't actually take $N\rightarrow\infty$, or equivalently $\upDelta t \rightarrow 0$, and so we instead choose a $\upDelta t$ smaller than the timescale of any time-dependence of $H$, and step through time using
 
 \begin{align}\label{eq:first_order_product}
-\vec \psi(t) &=
+\vec \psi(t_{n+1}) &=
+\ee^{-\frac \ii \hbar  H(t_n)\upDelta t}\vec \psi(t_n) + \Ord{\upDelta t^2}\\
+\Rightarrow \vec \psi(t) &=
 \left(\prod_{n=N-1}^0 \ee^{-\frac \ii \hbar  H(t_n)\upDelta t} \right)\vec \psi(t_0) + \Ord{\upDelta t}.
 \end{align}
-Thus the case of a time-dependent Hamiltonian reduces to repeated application of the solution \eqref{eq:unitary_time_independent} for a time-independent Hamiltonian, and is accurate to order $\upDelta t$. Note that the entire expression can be evaluated right-to-left to propagate the intial state vector in time without explicitly computing the overall unitary, which ensures the computational complexity is $\Ord{n^2}$ in the size of the system (when the exponentiation is performed via an analytic or pre-computed diagonalisation) rather than $\Ord{n^3}$.
+Thus the case of a time-dependent Hamiltonian reduces to repeated application of the solution \eqref{eq:unitary_time_independent} for a time-independent Hamiltonian, and is (globally) accurate to order $\upDelta t$. Note that the entire expression can be evaluated right-to-left to propagate the intial state vector in time without explicitly computing the overall unitary, which ensures the computational complexity is $\Ord{n^2}$ in the size of the system (when the exponentiation is performed via an analytic or pre-computed diagonalisation) rather than $\Ord{n^3}$.
 
 \subsection{The operator product/split-step method}
 
 Here I'll present decompositions similar to \eqref{eq:first_order_product}, but which use variable timesteps to achieve an accuracy to higher order in $\upDelta t$. I'll present them at the same time as addressing another problem, which is that Hamiltonians are often not in a simple enough form to be exponentiated efficiently at all, making \eqref{eq:first_order_product} difficult to evaluate. Often Hamiltonians are a sum of non-commuting operators (such as kinetic and potential terms), with time dependence such that any diagonalisation of the overall Hamiltonian at one point in time will not diagonalise it at another point in time, with the system size large enough for numerical diagonalisation to be prohibitively expensive. In these cases, we can use methods called \emph{split-step} or \emph{operator product} methods, which allow one to approximately exponentiate the entire Hamiltonian based on having exact diagonalisations of its component terms. There is little downside to having an only approximate exponentiation of the Hamiltonian when the timestepping is already only approximate, so long as we ensure that neither source of error is much greater than the other. To this end I'll show split-step methods that have (global) error $\Ord{\upDelta t}$, $\Ord{\upDelta t^2}$ and $\Ord{\upDelta t^4}$. In the next section on continuous degrees of freedom, we'll see how this method applies to the case of a spatial wavefunction obeying the Gross--Pitaevskii equation.
 
+\subsubsection{First order split-step}
+Say we have a (matrix representation of a) Hamiltonian which is the sum of two non-commuting terms:
 \begin{align}
-U_1(t_{n+1}, t_n) = .
+H(t) = H_1(t) + H_2(t).
+\end{align}
+The unitary for the solution to the Schr\"odinger equation is then:
+\begin{align}
+U(t, t_0) &= \mathcal{T}\left\{\ee^{-\frac \ii \hbar \int_{t_0}^t H(t^\prime)\,\dd t^\prime}\right\},
+\end{align}
+which, without loss of exactness, we can split into $N$ equal time intervals of size $\upDelta t$ and write:
+\begin{align}
+U(t, t_0) &= \prod_{n=N-1}^0 U(t_{n+1}, t_n),
+\end{align}
+where again $\upDelta t = (t - t_0)/N$ and $t_n = t_0 + n\upDelta t$, and where
+\begin{align}\label{eq:U_singlestep_exact}
+U(t_{n+1}, t_n) = \mathcal{T}\left\{\ee^{-\frac \ii \hbar \int_{t_n}^{t_{n+1}} H(t^\prime)\,\dd t^\prime}\right\}.
+\end{align}
+Evaluating the integral using a one-point rectangle rule gives:
+\begin{align}
+U(t_{n+1}, t_n) = \ee^{-\frac \ii \hbar H(t_n)\upDelta t + \Ord{\upDelta t^2}},
+\end{align}
+in which we were able to drop the time ordering operator because $H(t)$ is only evaluated at a single time. Using the Taylor series definition of the exponential, we can take the error term out of the exponent and write:
+\begin{align}\label{eq:integration_error}
+U(t_{n+1}, t_n) = \ee^{-\frac \ii \hbar H(t_n)\upDelta t} + \Ord{\upDelta t^2}.
 \end{align}
 
+So far all we've done is justify \eqref{eq:first_order_product}. Now we'll acknowledge that $H$ is a sum of two terms and write:
+\begin{align}
+U(t_{n+1}, t_n) = \ee^{-\frac \ii \hbar \left(H_1(t_n) + H_2(t_n)\right)\upDelta t} + \Ord{\upDelta t^2}.
+\end{align}
+Using the Baker--Campbell--Hausdorff formula [CITE], we can expand the exponential as:
+\begin{align}
+\ee^{-\frac \ii \hbar \left(H_1(t_n) + H_2(t_n)\right)\upDelta t}
+&= \ee^{-\frac \ii \hbar H_1(t_n)\upDelta t}
+  \ee^{-\frac \ii \hbar H_2(t_n)\upDelta t}
+  \ee^{\frac 1 {2\hbar^2} \left[H_1(t_n), H_2(t_n)\right]\upDelta t^2 + \Ord{\upDelta t^3}}\\
+& = \ee^{-\frac \ii \hbar H_1(t_n)\upDelta t}\label{eq:commutation_error}
+  \ee^{-\frac \ii \hbar H_2(t_n)\upDelta t} + \Ord{\upDelta t^2}\\
+\Rightarrow U(t_{n+1}, t_n)
+&= \ee^{-\frac \ii \hbar H_1(t_n)\upDelta t}
+  \ee^{-\frac \ii \hbar H_2(t_n)\upDelta t} + \Ord{\upDelta t^2}.
+\end{align}
+So we see that the `commutation error' in \eqref{eq:commutation_error} caused by treating the two terms as if they commute is no greater than the `integration error' in \eqref{eq:integration_error} caused by treating the overall Hamiltonian as time-independent over one timestep, resulting in a method with local error $\Ord{\upDelta t^2}$ and global error $\Ord{\upDelta t}$; the first order split-step method:
+\begin{align}
+U(t, t_0) &= \prod_{n=N-1}^0 U_1(t_{n+1}, t_n) + \Ord{\upDelta t},
+\end{align}
+where
+\begin{align}\label{eq:U_1}
+U_1(t_{n+1}, t_n) = \ee^{-\frac \ii \hbar H_1(t_n)\upDelta t}
+                    \ee^{-\frac \ii \hbar H_2(t_n)\upDelta t}.
+\end{align}
+Using the diagonalisation method of matrix exponentiation discussed in [SECREF], this unitary $U_1$ can be used to step a state vector through time with only matrix-vector multiplications and scalar exponentiation, where separate diagonalisations of $H_1$ and $H_2$ are either analytically known or pre-computed, even though a diagonalisation of the total Hamiltonian $H$ may not be feasible.
+
+Crucially, if $H_1$ and $H_2$ act on different subspaces of the overall Hilbert space, with respective dimensionalities $n_1$ and $n_2$, that is, $H_1(t) = \tilde H_1(t)\otimes\mathbb{I}_{n_2} $ and $H_2(t) = \mathbb{I}_{n_1}\otimes\tilde H_2(t)$, where $\mathbb{I}_m$ is the $m\times m$ identity matrix, then the matrix-vector products involved in applying $U_1$ to a state vector can be much faster ($\Ord{n_1^2 n_2 + n_1 n_2^2}$ rather than $\Ord{n_1^2 n_2^2}$) than if the Hamiltonian weren't split into two terms, even if an analytic diagonalisation of the total Hamiltonian were available:
+
+\begin{align}\label{eq:U_1_subspace}
+U_1(t_{n+1}, t_n) =
+\left(\ee^{-\frac \ii \hbar \tilde H_1(t_n)\upDelta t}\otimes \mathbb{I}_{n_2}\right)
+\left(\mathbb{I}_{n_1}\otimes\ee^{-\frac \ii \hbar \tilde H_2(t_n)\upDelta t}\right).
+\end{align}
+
+By applying \eqref{eq:commutation_error} recursively for the case where either $H_1$ or $H_2$ is itself the sum of two further terms, \eqref{eq:U_1} immediately generalises to the case where $H$ is a sum of an arbitrary number of non-commuting terms:
+\begin{align}\label{eq:U_1_arbitrary_terms}
+U_1(t_{n+1}, t_n) = \prod_{m=1}^M \ee^{-\frac \ii \hbar H_m(t_n)\upDelta t},
+\end{align}
+where $H(t) = \sum_{m=1}^M H_m(t)$.
+
+\subsubsection{Second and fourth order split-step}
+
+By using a two-point trapezoid rule for the integral in \eqref{eq:U_singlestep_exact}, evaluating $H(t)$ at the beginning and end of the timestep, one can instead obtain an integration error of $\Ord{\upDelta t^3}$ per step:
+\begin{align}
+U(t_{n+1}, t_n) &= \ee^{-\frac \ii \hbar \left(H(t_n) + H(t_{n+1})\right)\frac{\upDelta t} 2} + \Ord{\upDelta t^3}\\
+&= \ee^{-\frac \ii \hbar \left(H_1(t_n) + H_2(t_n) + H_1(t_{n+1}) + H_2(t_{n+1})\right)\frac{\upDelta t} 2} + \Ord{\upDelta t^3}.
+\end{align}
+Then, applying the Baker--Campbell--Hausdorff formula once more, and replacing $H_1(t_{n+1})$ (and similarly for $H_2(t_{n+1})$) wherever it appears in a commutator with the Taylor series $H_1(t_n) + H^\prime_1(t_n)\upDelta t + \Ord{\upDelta t^2}$, one can show that if the individual exponentials are ordered in the following way, then the remaining commutation error is also $\Ord{\upDelta t^3}$:
+\begin{align}
+U(t_{n+1}, t_n)
+&= \ee^{-\frac \ii \hbar H_2(t_{n+1})\frac{\upDelta t} 2}
+   \ee^{-\frac \ii \hbar H_1(t_{n+1})\frac{\upDelta t} 2}
+   \ee^{-\frac \ii \hbar H_1(t_n)\frac{\upDelta t} 2}
+   \ee^{-\frac \ii \hbar H_2(t_n)\frac{\upDelta t} 2} + \Ord{\upDelta t^3}.
+\end{align}
+This gives the second order split-step method:
+\begin{align}
+U(t, t_0) &= \prod_{n=N-1}^0 U_2(t_{n+1}, t_n) + \Ord{\upDelta t^2},
+\end{align}
+where
+\begin{align}\label{eq:U_2}
+U_2(t_{n+1}, t_n) =
+   \ee^{-\frac \ii \hbar H_2(t_{n+1})\frac{\upDelta t} 2}
+   \ee^{-\frac \ii \hbar H_1(t_{n+1})\frac{\upDelta t} 2}
+   \ee^{-\frac \ii \hbar H_1(t_n)\frac{\upDelta t} 2}
+   \ee^{-\frac \ii \hbar H_2(t_n)\frac{\upDelta t} 2},
+\end{align}
+or, for an arbitrary number of terms in the Hamiltonian,
+\begin{align}\label{eq:U_2_arbitrary_terms}
+U_2(t_{n+1}, t_n) =
+\left(\prod_{m=M}^1 \ee^{-\frac \ii \hbar H_m(t_{n+1})\frac{\upDelta t} 2}\right)
+\left(\prod_{m=1}^M \ee^{-\frac \ii \hbar H_m(t_n)\frac{\upDelta t} 2}\right).
+\end{align}
+$U_2$ can be concisely written in terms of $U_1$ as:
+\begin{align}
+U_2(t_{n+1}, t_n) =
+U_1^\dagger(t_{n+1}, t_n + \tfrac {\upDelta t} 2)
+U_1(t_n, t_n + \tfrac {\upDelta t} 2),
+\end{align}
+which is to say it is simply two applications of $U_1$, each of duration half a total timestep, and with the exponentials applied in the opposite orders. Two shortcuts are immediately apparent when computing $U_2$ or its action on a vector: firstly, if there is a time-independent term in the Hamiltonian, it should be assigned to $H_1$, so that the innermost two exponentials in \eqref{eq:U_2} can be collapsed into one; secondly the final exponential of each timestep is identical to the first exponential of the next timestep, and so these can also be collapsed together (being split apart only at points in time when one wishes to sample the state vector).
+
+The fourth order split-step method is much more difficult to derive, with a large number of commutators needing to cancel exactly to ensure the local error cancels out up to fourth order in $\upDelta t$. It can be stated in terms of the second order split-step method as:
+\begin{align}
+U(t, t_0) &= \prod_{n=N-1}^0 U_4(t_{n+1}, t_n) + \Ord{\upDelta t^4},
+\end{align}
+where
+\begin{align}\label{eq:U_4}
+U_4(t_{n+1}, t_n) =
+&\phantom{\times}
+U_2(t_{n+1}, t_{n+1} - p\upDelta t)\nonumber\\
+&\times
+U_2(t_{n+1} - p\upDelta t, t_{n+1} - 2p\upDelta t)\nonumber\\
+&\times
+U_2(t_{n+1} - 2p\upDelta t, t_n + 2p\upDelta t)\nonumber\\
+&\times
+U_2(t_n + 2p\upDelta t, t_n + p\upDelta t)\nonumber\\
+&\times
+U_2(t_n + p\upDelta t, t_n),
+\end{align}
+where $p = 1/(4 - 4^{1/3})$. $U_4$ comprises five applications of $U_2$ with timesteps $p\upDelta t$, $p\upDelta t$, $(1 - 4p)\upDelta t$, $p\upDelta t$, and $p\upDelta t$ respectively. The innermost timestep is backwards in time, since $(1 - 4p) < 0$. But this is no problem, one simply evaluates the expression for $U_2$ with a negative timestep exactly as written, so long as one reads $\upDelta t$ when written within the above expressions for $U_1(t_f, t_i)$ and $U_2(t_f, t_i)$ as referring to $t_f - t_i$, i.e. the difference between the two arguments to the expression, not its absolute value, and not to the timestep of the method as a whole.
+
+\subsubsection{Parallelisability}
+Expressions such as \eqref{eq:U_2} don't at first glance appear particularly easy to parallelise, that is, to be evaluated in such a way as to leverage the computing power of multiple CPU cores, GPU cores, or multiple computers. A series of Hamiltonian terms must be exponentiated one by one and multiplied together. Whilst each exponential factor could be evaluated independently, and then all of them multiplied together before being applied to a state vector, this explicit construction of $U$ is very costly compared to merely computing its action on a particular state vector, since the latter allows each term to act only in its specific subspace of the overall Hilbert space, and avoids having to pay the $\Ord{n^3}$ cost of matrix-matrix multiplication.
+
+\subsubsection{Dealing with nonlinearity}
+
+It is difficult to understate how powerful a method the split-step method is. It allows you to decompose exponentiating a Hamiltonian into exponentiating its component parts, in the subspaces that they act on, saving on computing power immensely compared to exponentiating the full Hamiltonian. It is unitary, and stable---that is, unlike Runge--Kutta methods, the method's truncation error does not grow exponentially in time but is bounded (floating point rounding error still grows with time, but linearly) [TODO CONFIRM BASED ON FEDVR PAPER'S COMMENTS]. So there is no need to take much smaller timesteps than one otherwise would at earlier times in order to ensure the error remains acceptable at later times---an appropriate timestep at earlier times will be appropriate at later times, \emph{ceteris paribus}. This is very appealing. Whilst higher order split-step methods quickly become unwieldy [CITE], fourth order accuracy is quite acceptable for many problems.
 
 Actual Hamiltonians can be complicated, and are rarely.
 Otherwise, if the Hamiltonian can be decomposed into a \emph{sum} of terms which are individually diagonalisable, the split-step method can be used (see sec [SECREF]). Failing that, a general purpose integration method such as fourth-order Runge-Kutta may have to be resorted to.\footnote{Though if I admit it, \textsc{rkr4} is usually what I reach for first.} I will elaborate on these comments with examples in the following sections.
@@ -384,7 +516,7 @@ Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another a
 
 [explanation of how it works, comparison of implementation with RSP4 vs something like RK4. RK4 is more general purpose, method does not need to be modified for different Hamiltonians. Main limitation is inability to factor out fast dynamical phases, see RK4ILIP for solution to this. MPI implementation and scaling properties with increasing cores. Superscaling at low number of cores. Mention how my implementation can tolerate high network latency due to early sending od data before all local computations are complete. Mention that it is ripe for GPU processing. Limitations: vulnerable to Runge's phenomenon for sharp potentials. Can't increase the order of the polynomials much because small spacing at the edges requires tiny timesteps. Possible solution: pre-conditioning the potential to be an approximation better representable in the DVR basis.]
 
-% \endinput % Remove once numerics completed
+\endinput % Remove once numerics completed
 
 \section{Fourth order Runge--Kutta in an instantaneous local interaction picture}\label{sec:rk4ilip}
 
