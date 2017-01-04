@@ -295,8 +295,79 @@ U_2(t_n + p\upDelta t, t_n),
 \end{align}
 where $p = 1/(4 - 4^{1/3})$. $U_4$ comprises five applications of $U_2$ with timesteps $p\upDelta t$, $p\upDelta t$, $(1 - 4p)\upDelta t$, $p\upDelta t$, and $p\upDelta t$ respectively. The innermost timestep is backwards in time, since $(1 - 4p) < 0$. But this is no problem, one simply evaluates the expression for $U_2$ with a negative timestep exactly as written, so long as one reads $\upDelta t$ when written within the above expressions for $U_1(t_f, t_i)$ and $U_2(t_f, t_i)$ as referring to $t_f - t_i$, i.e. the difference between the two arguments to the expression, not its absolute value, and not to the timestep of the method in which it is embedded.
 
-\subsubsection{Parallelisability}
+\subsubsection{Parallelisability and other speedups for banded matrices}
 Expressions such as \eqref{eq:U_2} don't at first glance appear particularly easy to parallelise, that is, to be evaluated in such a way as to leverage the computing power of multiple CPU cores, GPU cores, or multiple computers. A series of Hamiltonian terms must be exponentiated one by one and multiplied together. Whilst each exponential factor could be evaluated independently, and then all of them multiplied together before being applied to a state vector, this explicit construction of $U$ is very costly compared to merely computing its action on a particular state vector, since the latter allows each term to act only in its specific subspace of the overall Hilbert space, and avoids having to pay the $\Ord{n^3}$ cost of matrix-matrix multiplication.
+
+When one or more terms in the Hamiltonian has a matrix representation which is banded however, that is, all its entries further than a finite number of elements away from the main diagonal are zero, then those terms may be written as a sum of block diagonal matrices, for example:
+
+\begin{align}
+& A  = \left[\begin{smallmatrix}
+         c & d & e &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+         b & c & d & e &   &   &   &   &   &   &   &   &   &   &   &   \\
+         a & b & c & d & e &   &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}& a & b & c & d & e &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   & a & b & c & d & e &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   & a & b & c & d & e &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   & a & b & c & d & e &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   & a & b & c & d & e &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   & a & b & c & d & e &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   & a & b & c & d & e &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   & a & b & c & d & e &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   & a & b & c & d & e &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   & a & b & c & d & e &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   & a & b & c & d & e \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   & a & b & c & d \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   & a & b & c \\
+\end{smallmatrix} \right]\nonumber\\
+& =\left[ \begin{smallmatrix}
+        c  & d & e &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+        b  & c & d & e &   &   &   &   &   &   &   &   &   &   &   &   \\
+        a  & b & c & d & e &   &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}& a & b & c & d & e &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   & a & b &c/2&d/2&   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   & a &b/2&c/2&   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &c/2&d/2& e &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &b/2&c/2& d & e &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   & a & b & c & d & e &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   & a & b & c & d & e &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   & a & b &c/2&d/2&   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   & a &b/2&c/2&   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+\end{smallmatrix} \right]
++\left[ \begin{smallmatrix}
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &c/2&d/2& e &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &b/2&c/2& d & e &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   & a & b & c & d & e &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   & a & b & c & d & e &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   & a & b &c/2&d/2&   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   & a &b/2&c/2&   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &c/2&d/2& e &   \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &b/2&c/2& d & e \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   & a & b & c & d \\
+\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   & a & b & c \\
+\end{smallmatrix} \right]\\
+&= B + C,
+\end{align}
+where zero-valued matrix elements are omitted. In this example, we first take the original $16\times16$ matrix $A$, and create four $4\times4$ nonoverlapping submatrices whose diagonals lie along $A$'s main diagonal. These submatrices don't quite cover all of $A$'s nonzero elements, however, so we expand each submatrix (except the final one) from its bottom-right by two elements, making it a $6\times 6$ matrix. The submatrices are no longer non-overlapping, so we take every second one and put it in a matrix $B$, every other one and put it in a matrix $C$ such $B$ and $C$ are block diagonal, divide the elements they have in common by two so we don't double count them, and then declare that $A=B+C$. In the general case, the amount of overlap between the submatrices required to encompass all of $A$ is equal to the bandwidth $b$ of $A$ (in this case $b=2$ since $A$ has two non-main diagonals on each side of its main diagonal).
+
+Having split a term in the Hamiltonian into two terms, we can simply apply the split operator method as normal, with the same order accuracy in $\upDelta t$ as before. But now the matrices that we wish to exponentiate and have act on a vector are \emph{block diagonal}. This means that the exponentiation of each block can be applied (using the diagonalisation method) separately to the vector, independently of each other block. This enables the application of the exponentials to be performed in parallel - each block submatrix modifies different elements of the vector. So one might store different parts of the state vector on different nodes on a cluster computer, and compute $\ee^{-\frac \ii \hbar C\upDelta t}\vec\psi$ in parallel. Then some data exchange between nodes would be neccesary () before applying $\ee^{-\frac \ii \hbar B\upDelta t}$ to the result. See \figref{fig:parallel_split_step} for a schematic of how this works.
+
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics[width=\textwidth]{figures/numerics/parallel_split_step.pdf}
+    \caption{[CAPTION]}
+    \label{fig:parallel_split_step}
+\end{figure}
+
 
 \subsubsection{Dealing with nonlinearity}
 
