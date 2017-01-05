@@ -1,8 +1,8 @@
 \chapter{Quantum mechanics on a computer}
 
-This chapter comprises a summary of some of the methods used by cold atom physicists to compute numerical results pertaining to cold atom systems. Many a problem in quantum mechanics is not analytically solvable, especially when the real world of experimental physics rears its ugly head, violating theorists' assumptions of simplicity left and right. In particular, atomic physics experiments are time-dependent, with each run of an experiment generally proceeding in stages. Lasers may turn on and off, magnetic fields may vary in magnitude and direction, \textsc{rf} pulses may be chirped to reliably induce particular transitions \cite{bennie_precise_2014}. Much of the numerical calculations performed by researchers in cold atom physics groups such as ours are accordingly of the time-dependent variety, and are fairly literal simulations of specific experiments that may be carried out in the lab.
+This chapter comprises a summary of some of the methods used by cold atom physicists to compute numerical results pertaining to cold atom systems. Many a problem in quantum mechanics is not analytically solvable, especially when the real world of experimental physics rears its ugly head, violating theorists' assumptions of simplicity left and right. In particular, atomic physics experiments are time-dependent, with each run of an experiment generally proceeding in stages. Lasers may turn on and off, magnetic fields may vary in magnitude and direction, \textsc{rf} pulses may be chirped to reliably induce particular transitions \cite{bennie_precise_2014}. Much of the numerical computation performed by researchers in cold atom physics groups such as ours are accordingly of the time-dependent variety, and are fairly literal simulations of specific experiments that may be carried out in the lab.
 
-Here I explain some fundamentals of representing quantum mechanical problems on a computer and then present my favourite algorithms for propagating state vectors and wavefunctions in time. To spoil the surprise: my favourite timestepping algorithms are the 4th-order split-step method and (unoriginally) 4th-order Runge--Kutta, and my favourite method of evaluating spatial derivatives is moderate order (6th order or so) finite differences. I think Fourier transforms for spatial derivatives are overrated, and I show that the finite element discrete variable representation (\textsc{fedvr}) is less computationally efficient than simple finite differences for producing equally accurate solutions to the spatial Scr\"odinger equation. I also mention some methods of finding groundstates and other stationary states, and in section \ref{sec:rk4ilip} I present a modification to 4th-order Runge--Kutta that enables it to take larger timesteps for certain problems.
+Here I explain some fundamentals of representing quantum mechanical problems on a computer and then present my favourite algorithms for propagating state vectors and wavefunctions in time. To spoil the surprise: my favourite timestepping algorithms are the 4th-order split-step method and (unoriginally) 4th-order Runge--Kutta, and my favourite method of evaluating spatial derivatives is moderate (6th or so) order finite differences. I think Fourier transforms for spatial derivatives are overrated, and I show that the finite element discrete variable representation (\textsc{fedvr}) is, despite appearances, actually less computationally efficient than simple finite differences for producing equally accurate solutions to the spatial Scr\"odinger equation. I also mention some methods of finding groundstates and other stationary states, and in section \ref{sec:rk4ilip} I present a modification to 4th-order Runge--Kutta that enables it to take larger timesteps for certain problems.
 
 \section{From the abstract to the concrete: neglect, discretisation and representation}
 
@@ -165,14 +165,20 @@ Thus the case of a time-dependent Hamiltonian reduces to repeated application of
 
 \subsection{The operator product/split-step method}
 
-Here I'll present decompositions similar to \eqref{eq:first_order_product}, but which use variable timesteps to achieve an accuracy to higher order in $\upDelta t$. I'll present them at the same time as addressing another problem, which is that Hamiltonians are often not in a simple enough form to be exponentiated efficiently at all, making \eqref{eq:first_order_product} difficult to evaluate. Often Hamiltonians are a sum of non-commuting operators (such as kinetic and potential terms), with time dependence such that any diagonalisation of the overall Hamiltonian at one point in time will not diagonalise it at another point in time, with the system size large enough for numerical diagonalisation to be prohibitively expensive. In these cases, we can use methods called \emph{split-step} or \emph{operator product} methods, which allow one to approximately exponentiate the entire Hamiltonian based on having exact diagonalisations of its component terms. There is little downside to having an only approximate exponentiation of the Hamiltonian when the timestepping is already only approximate, so long as we ensure that neither source of error is much greater than the other. To this end I'll show split-step methods that have (global) error $\Ord{\upDelta t}$, $\Ord{\upDelta t^2}$ and $\Ord{\upDelta t^4}$. In the next section on continuous degrees of freedom, we'll see how this method applies to the case of a spatial wavefunction obeying the Gross--Pitaevskii equation.
+Here I'll present decompositions similar to \eqref{eq:first_order_product}, but which use variable timesteps to achieve an accuracy to higher order in $\upDelta t$. I'll present them at the same time as addressing another problem, which is that Hamiltonians are often not in a simple enough form to be exponentiated efficiently at all, making \eqref{eq:first_order_product} difficult to evaluate. Often Hamiltonians are a sum of non-commuting operators (such as kinetic and potential terms), with time dependence such that any diagonalisation of the overall Hamiltonian at one point in time will not diagonalise it at another point in time, with the system size large enough for numerical diagonalisation to be prohibitively expensive. In these cases, we can use methods called \emph{split-step} or \emph{operator product} methods, which allow one to approximately exponentiate the entire Hamiltonian based on having exact diagonalisations of its component terms. In the case of time-dependent Hamiltonians, this allows us to avoid rediagonalising at every timestep whenever the time-dependence can be expressed as scalar coefficients multiplying time-independent operators:
+\begin{align}
+\hat H(t) = \alpha(t)\hat H_1 + \beta(t)\hat H_2 + \cdots,
+\end{align}
+since multiplication of a matrix by a scalar merely scales its eigenvalues, leaving its eigenbasis unchanged.
+
+There is little downside to having an only approximate exponentiation of the Hamiltonian when the timestepping is already only approximate, so long as we ensure that neither source of error is much greater than the other. To this end I'll show split-step methods that have (global) error $\Ord{\upDelta t}$, $\Ord{\upDelta t^2}$ and $\Ord{\upDelta t^4}$. In section [secref:continuous degrees of freedom], we'll see how this method applies to the case of a spatial wavefunction obeying the Gross--Pitaevskii equation.
 
 \subsubsection{First order split-step}
-Say we have a (matrix representation of a) Hamiltonian which is the sum of two non-commuting terms:
+Say we have (the matrix representation of) a Hamiltonian that is the sum of two non-commuting terms:\footnote{From here on, component terms of the Hamiltonian will be written with general time dependence, even though it is understood that these methods are mostly useful for the case where that time dependence can be written as scalar coefficients multiplying otherwise time-independent matrices.}
 \begin{align}
 H(t) = H_1(t) + H_2(t).
 \end{align}
-The unitary for the solution to the Schr\"odinger equation is then:
+The unitary for the solution to the Schr\"odinger equation is as before:
 \begin{align}
 U(t, t_0) &= \mathcal{T}\left\{\ee^{-\frac \ii \hbar \int_{t_0}^t H(t^\prime)\,\dd t^\prime}\right\},
 \end{align}
@@ -302,93 +308,176 @@ When one or more terms in the Hamiltonian has a matrix representation which is b
 
 \begin{align}
 & A  = \left[\begin{smallmatrix}
-         c & d & e &   &   &   &   &   &   &   &   &   &   &   &   &   \\
-         b & c & d & e &   &   &   &   &   &   &   &   &   &   &   &   \\
-         a & b & c & d & e &   &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}& a & b & c & d & e &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   & a & b & c & d & e &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   & a & b & c & d & e &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   & a & b & c & d & e &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   & a & b & c & d & e &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   & a & b & c & d & e &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   & a & b & c & d & e &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   & a & b & c & d & e &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   & a & b & c & d & e &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   & a & b & c & d & e &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   & a & b & c & d & e \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   & a & b & c & d \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   & a & b & c \\
+     c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+     b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+     a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e \\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d \\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c \\
 \end{smallmatrix} \right]\nonumber\\
 & =\left[ \begin{smallmatrix}
-        c  & d & e &   &   &   &   &   &   &   &   &   &   &   &   &   \\
-        b  & c & d & e &   &   &   &   &   &   &   &   &   &   &   &   \\
-        a  & b & c & d & e &   &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}& a & b & c & d & e &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   & a & b &c/2&d/2&   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   & a &b/2&c/2&   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &c/2&d/2& e &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &b/2&c/2& d & e &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   & a & b & c & d & e &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   & a & b & c & d & e &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   & a & b &c/2&d/2&   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   & a &b/2&c/2&   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+     c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+     b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+     a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb& a & b &c/2&d/2&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb& a &b/2&c/2&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\md&\md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\md&\md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\md&\md&c/2&d/2& e &\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&b/2&c/2& d & e &\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b &c/2&d/2&\md&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a &b/2&c/2&\md&\md\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&\md&\md\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&\md\\
 \end{smallmatrix} \right]
 +\left[ \begin{smallmatrix}
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &c/2&d/2& e &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &b/2&c/2& d & e &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   & a & b & c & d & e &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   & a & b & c & d & e &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   & a & b &c/2&d/2&   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   & a &b/2&c/2&   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &c/2&d/2& e &   \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &b/2&c/2& d & e \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   & a & b & c & d \\
-\phantom{d}&   &   &   &   &   &   &   &   &   &   &   &   & a & b & c \\
+    \md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \md&\md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\md&\md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\md&\md&c/2&d/2& e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\md&b/2&c/2& d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb& a & b &c/2&d/2&\md&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb& a &b/2&c/2&\md&\md&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&\md&\md&\md&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&\md&\md&\md&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&c/2&d/2& e &\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&b/2&c/2& d & e \\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d \\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c \\
 \end{smallmatrix} \right]\\
 &= B + C,
 \end{align}
-where zero-valued matrix elements are omitted. In this example, we first take the original $16\times16$ matrix $A$, and create four $4\times4$ nonoverlapping submatrices whose diagonals lie along $A$'s main diagonal. These submatrices don't quite cover all of $A$'s nonzero elements, however, so we expand each submatrix (except the final one) from its bottom-right by two elements, making it a $6\times 6$ matrix. The submatrices are no longer non-overlapping, so we take every second one and put it in a matrix $B$, every other one and put it in a matrix $C$ such $B$ and $C$ are block diagonal, divide the elements they have in common by two so we don't double count them, and then declare that $A=B+C$. In the general case, the amount of overlap between the submatrices required to encompass all of $A$ is equal to the bandwidth $b$ of $A$ (in this case $b=2$ since $A$ has two non-main diagonals on each side of its main diagonal).
+where zero-valued matrix elements outside the band are omitted, and those within the band replaced with dots. In this example, we first take the original $16\times16$ matrix $A$, and create four $4\times4$ nonoverlapping submatrices whose diagonals lie along $A$'s main diagonal. These submatrices don't quite cover all of $A$'s nonzero elements, however, so we expand each submatrix (except the final one) from its bottom-right by two elements, making it a $6\times 6$ matrix. The submatrices are no longer non-overlapping, so we take every second one and put it in a matrix $B$, every other one and put it in a matrix $C$ such that $B$ and $C$ are both block diagonal, divide the elements they have in common by two so we don't double count them, and then declare that $A=B+C$. In the general case, the amount of overlap between the submatrices required to encompass all of $A$ is equal to the bandwidth $b$ of $A$ (in this case $b=2$ since $A$ has two non-main diagonals on each side of its main diagonal).
 
-Having split a term in the Hamiltonian into two terms, we can simply apply the split operator method as normal, with the same order accuracy in $\upDelta t$ as before. But now the matrices that we wish to exponentiate and have act on a vector are \emph{block diagonal}. This means that the exponentiation of each block can be applied (using the diagonalisation method) separately to the vector, independently of each other block. This enables the application of the exponentials to be performed in parallel - each block submatrix modifies different elements of the vector. So one might store different parts of the state vector on different nodes on a cluster computer, and compute $\ee^{-\frac \ii \hbar C\upDelta t}\vec\psi$ in parallel. Then some data exchange between nodes would be neccesary before applying $\ee^{-\frac \ii \hbar B\upDelta t}$ to the result. See \figref{fig:parallel_split_step} for a schematic of how this works.
+Having split a term in the Hamiltonian into two terms, we can simply apply the split operator method as normal, with the same order accuracy in $\upDelta t$ as before. But now the matrices that we wish to exponentiate and have act on a vector are \emph{block diagonal}. This means that the exponentiation of each block can be applied (using the diagonalisation method) separately to the vector, independently of each other block. This enables the application of the exponentials to be performed in parallel---each block submatrix modifies different elements of the vector. So one might store different parts of the state vector on different nodes on a cluster computer, and compute $\ee^{-\frac \ii \hbar C\upDelta t}\vec\psi$ in parallel. Then some data exchange between nodes would be neccesary before applying $\ee^{-\frac \ii \hbar B\upDelta t}$ to the result (See \figref{fig:parallel_split_step} for a schematic of how this works).
 
 \begin{figure}[t]
     \centerfloat
     \includegraphics[width=\textwidth]{figures/numerics/parallel_split_step.pdf}
-    \caption{Schematic of data flow for parallel split-step method. Computation proceeds right to left. To compute the action of $\ee^{-\frac\ii\hbar B\upDelta t}\ee^{-\frac\ii\hbar C\upDelta t}$ on a vector $\vec\psi$, one can treat the submatrices $B_1$, $B_2$, $C_1$ and $C_2$, of the block-diagonal matrices $B$ and $C$ separately. First, the exponentiation of $C$ can be applied to $\psi$ by applying the exponentiations of $C_1$ and the exponentiations of $C_1$ and $C_2$ to $\psi$. If diagonalisations $C_1 = Q_{C_1} D_{C_1} Q^\dagger_{C_1}$ and $C_2 = Q_{C_2} D_{C_2} Q^\dagger_{C_2}$ are known, then the two operations can be applied as a series of matrix-vector multiplications and the exponentiation of diagonal matrices. Because the two submatrices are non-overlapping, they can be applied to the vector completely independently in separate computer processes, \textsc{cpu} or \textsc{gpu} threads, or cluster nodes. The exponentiation of $B$ can then be applied to the resulting intermediate vector $\vec\psi^\prime$, similarly via two independent operarations acting on nonoverlapping elements of $\psi^\prime$. However, because each submatrix of $C$ overlaps each submatrix of $B$ by $b=2$ elements on either side ($b$ being the bandwidth of the original matrix $A=B+C$), threads/processes must share these elements (here the ninth and tenth elements), sending them to each other whenever they have been updated.}
+    \caption{Schematic of data flow for parallel split-step method. Computation proceeds right to left. To compute the action of $\ee^{-\frac\ii\hbar B\upDelta t}\ee^{-\frac\ii\hbar C\upDelta t}$ on a vector $\vec\psi$, one can treat the submatrices $B_1$, $B_2$, $C_1$ and $C_2$, of the block-diagonal matrices $B$ and $C$ separately. First, the exponentiation of $C$ can be applied to $\psi$ by applying the exponentiations of $C_1$ and $C_2$ to $\psi$. If diagonalisations $C_1 = Q_{C_1} D_{C_1} Q^\dagger_{C_1}$ and $C_2 = Q_{C_2} D_{C_2} Q^\dagger_{C_2}$ are known, then the two operations can be applied as a series of matrix-vector multiplications and the exponentiation of diagonal matrices. Because the two submatrices are non-overlapping, they can be applied to the vector completely independently in separate computer processes, \textsc{cpu} or \textsc{gpu} threads, or cluster nodes. The exponentiation of $B$ can then be applied to the resulting intermediate vector $\vec\psi^\prime$, similarly via two independent operarations acting on nonoverlapping elements of $\psi^\prime$. However, because each submatrix of $C$ overlaps each submatrix of $B$ by $b=2$ elements on either side ($b$ being the bandwidth of the original matrix $A=B+C$), threads/processes must share these elements (here the ninth and tenth elements), sending them to each other whenever they have been updated.}
     \label{fig:parallel_split_step}
 \end{figure}
 
-Whilst this specific banded matrix $A$ is small for the sake of example, in general of course one might have a matrix of any size, allowing for $B$ and $C$ to contain more than two submatrices each. The submatrices have a minimum size of twice the bandwidth $b$ of $A$, in order to cover all elements of $A$. But the only maximum is the size of $A$ itself. So what is the optimal submatrix size? Although the split-step method is still acurate to the same order in $\upDelta t$ no matter how many pieces we split a banded matrix into, we clearly introduce additional `commutation error' every time we split $A$ into additional submatrices. So one might think that the number of pieces ought be be minimised, and hence the submatrix size maximimised. With regard to this, one might decide to split $A$ into $2n_\up{threads}$ submatrices, where $n_\up{threads}$ is the number of independent computational threads available, half of which will reside in $B$ and half in $A$. This minimises the extra commutation error subject to the constraint that all threads are put to use.
+Whilst this specific banded matrix $A$ is small for the sake of example, in general of course one might have a matrix of any size, allowing for $B$ and $C$ to contain more than two submatrices each. The submatrices have a minimum size of twice the bandwidth $b$ of $A$, in order to cover all elements of $A$ whilst only sharing elements with their nearest neighbor submatrices (any smaller and they would share elements with their next nearest neighbor submatrices as well, complicating things somewhat). But the only maximum is the size of $A$ itself. So what is the optimal submatrix size? Although the split-step method is still acurate to the same order in $\upDelta t$ no matter how many pieces we split a banded matrix into, we clearly introduce additional `commutation error' every time we split $A$ into additional submatrices. So one might think that the number of pieces ought be be minimised, and hence the submatrix size maximimised. With regard to this, one might decide to split $A$ into $2n_\up{threads}$ submatrices (where $n_\up{threads}$ is the number of independent computational threads available), half of which will reside in $B$ and half in $C$. This minimises the extra commutation error subject to the constraint that all threads are put to use---splitting $A$ into yet smaller pieces within one computational thread will only yield unnecessary additional error.
 
-Is this the best option? No. Despite the extra commutation error, there is additional benefit to splitting $A$ into more submatrices than required for parallelisation. Let $s$ be the `nominal' size of each submatrix, that is, the size of each submatrix prior to expanding each one along the diagonal by a number of elements equal to the bandwidth $b$. The computational cost of the matrix-vector multiplications for computing the action of $\ee^{-\frac\ii\hbar B\upDelta t}\ee^{-\frac\ii\hbar C\upDelta t}$ on a vector is then $\Ord{(s+b)^2}$ per submatrix. The total number of submatrices required to cover $A$ scales as $s^{-1}$, and so the total cost of applying the exponentiations of all submatrices can be written as $\Ord{s^{-1}(s+b)^2}$. The cost \emph{per unit time} of simulation is then $\Ord{\upDelta t^{-1}s^{-1}(s+b)^2}$. Here we see that splitting into smaller submatrices is desirable from the point of view of speed: because matrix-vector multiplication is quadratic, a larger number of smaller matrices can be multiplied by vectors faster than a smaller number of larger matrices.
+Is this the best option? No. Despite the extra commutation error, there is additional benefit to splitting $A$ into more submatrices than required for parallelisation. Let $s$ be the `nominal' size of each submatrix, that is, the size of the corresponding \emph{non-overlapping} submatrices prior to expanding each one along the diagonal (creating overlap) by a number of elements equal to the bandwidth $b$. The computational cost of the matrix-vector multiplications for computing the action of $\ee^{-\frac\ii\hbar B\upDelta t}\ee^{-\frac\ii\hbar C\upDelta t}$ on a vector is then $\Ord{(s+b)^2}$ per submatrix, since $s+b$ is the size of the submatrices in terms of their nominal size and the bandwidth. The total number of submatrices required to cover $A$ is $ns^{-1}$, where $n$ is the size of $A$, and so the total cost of applying the exponentiations of all submatrices to a vector is $\Ord{ns^{-1}(s+b)^2}$. The cost \emph{per unit time} of simulation is then $\Ord{n\upDelta t^{-1}s^{-1}(s+b)^2}$. Here we see that splitting into smaller submatrices is desirable from the point of view of speed: because matrix-vector multiplication runs in quadratic time, a larger number of smaller matrices can be multiplied by vectors faster than a smaller number of larger matrices.
 
-But it comes at the cost of extra error. Extra error can be made up for by making the timestep smaller, so is it worth it?
-
-The extra commutation error from splitting up $A$ into more and more pieces in general depends on $A$. I performed a small numerical experiment to see how the commutator $[B, C]$ (which the commutation error is proportional to) scales with $s$ for random banded matrices, as well as those corresponding to 2nd, 4th and 6th order finite differences for first and second derivatives. The result was that the commutator scaled as $s^{-\frac12}$ (see figure [FIG]).
+But the more submatrices, the more cummutation error. Extra error can be made up for by making the timestep smaller, which increases the cost per unit time once more. So is it worth it? The extra commutation error from splitting up $A$ into more and more pieces in general depends on the form of $A$. I performed a small numerical experiment to see how the commutator $[B, C]$ (which the commutation error is proportional to) scales with $s$ for random banded matrices, as well as those corresponding to 2nd, 4th and 6th order finite differences for first and second derivatives. The result in all cases was that the commutator scaled as $s^{-\frac12}$ (see figure [FIG]).
 
 [TODO FIG. point out why sum of squared elements is what makes sense for scaling.]
 
-This additional error is undesirable, but can be made up for by making the timestep smaller. Taking into account the submatrix size $s$ and the method's error in terms of $\upDelta t$, the total error (assuming the $s^{-\frac12}$ result holds) is $\Ord{\upDelta t^a s^{-\frac12}}$, where $a$ is the order in $\upDelta t$ of the specific split-step method ($1$, $2$, or $4$ for those I've discussed). Using these two pieces of information: the total error, and the total cost per unit time; we can now answer the question ``What value of $s$ minimises the computational cost per unit time, assuming constant error?".
+Back to our question---does decreasing the timestep size $\upDelta t$ to compensate for the additional cummutation error result in more, or less computational cost per unit time than if we hadn't split $A$ into more pieces than required for parallelisation? Taking into account the nominal submatrix size $s$ and the method's error in terms of $\upDelta t$, the total error of integrating using the split-step method (assuming the $s^{-\frac12}$ commutator scaling holds) is $\Ord{\upDelta t^a s^{-\frac12}}$, where $a$ is the order in $\upDelta t$ of the accuracy of the specific split-step method used ($1$, $2$, or $4$ for those I've discussed). Using these two pieces of information: the total error, and the total cost per unit time; we can now answer the question ``What value of $s$ minimises the computational cost per unit time, assuming constant error?".
 
-For constant error we set $\upDelta t^a s^{-\frac12} = 1 \Rightarrow \upDelta t = s^{\frac1{2a}}$ and get that the computational cost per unit time at constant error is $\Ord{s^{-\frac1{2a} - 1}(s + b)^2}$. For $a > \frac12$, this expression has a minimum at $s=b$, which is the smallest possible submatrix size in any case. So the conlusion is: use the smallest submatrices possible.
+For constant error we set $\upDelta t^a s^{-\frac12} \propto 1$ and get that the computational cost per unit time at constant error is $\Ord{ns^{-\frac1{2a} - 1}(s + b)^2}$. For $a > \frac12$, this expression has a minimum at $s=b$, which is the smallest possible submatrix size in any case. For our example banded matrix $A$, decomposition into the smallest possible submatrices looks like this:
+\setlength{\arraycolsep}{1pt}
+\begin{align}
+& A  = \left[\begin{smallmatrix}
+     c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+     b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+     a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e \\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d \\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c \\
+\end{smallmatrix} \right]\nonumber\\
+& =\left[ \begin{xsmallmatrix}
+     c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+     b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+     a & b &c/2&d/2&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb& a &b/2&c/2&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\md&\md&c/2&d/2& e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\md&b/2&c/2& d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb& a & b &c/2&d/2&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb& a &b/2&c/2&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\md&\md&c/2&d/2& e &\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&b/2&c/2& d & e &\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b &c/2&d/2&\md&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a &b/2&c/2&\md&\md&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&c/2&d/2& e &\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&b/2&c/2& d & e \\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d \\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c \\
+\end{xsmallmatrix} \right]
++\left[ \begin{xsmallmatrix}
+    \md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \md&\md&c/2&d/2& e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\md&b/2&c/2& d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb& a & b &c/2&d/2&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb& a &b/2&c/2&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\md&\md&c/2&d/2& e &\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\md&b/2&c/2& d & e &\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb& a & b &c/2&d/2&\md&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb& a &b/2&c/2&\md&\md&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&c/2&d/2& e &\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&b/2&c/2& d & e &\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b &c/2&d/2&\md&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a &b/2&c/2&\md&\md\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&\md&\md\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&\md\\
+\end{xsmallmatrix} \right].
+\end{align}
 
+So the conlusion is: use the smallest submatrices possible when decomposing a banded matrix into a sum of two block-diagonal matrices. The decrease in computational costs, even when the increased error is compensated for by a smaller timestep, is worth it.
 
-\subsubsection{Dealing with nonlinearity}
+\subsubsection{Limitations and nonlinearity}
 
-It is difficult to understate how powerful a method the split-step method is. It allows you to decompose exponentiating a Hamiltonian into exponentiating its component parts, in the subspaces that they act on, saving on computing power immensely compared to exponentiating the full Hamiltonian. It is unitary, and stable---that is, unlike Runge--Kutta methods, the method's truncation error does not grow exponentially in time but is bounded (floating point rounding error still grows with time, but linearly) [TODO CONFIRM BASED ON FEDVR PAPER'S COMMENTS]. So there is no need to take much smaller timesteps than one otherwise would at earlier times in order to ensure the error remains acceptable at later times---an appropriate timestep at earlier times will be appropriate at later times, \emph{ceteris paribus}. This is very appealing. Whilst higher order split-step methods quickly become unwieldy [CITE], fourth order accuracy is quite acceptable for many problems.
+The split-step method is quite powerful and general. It allows you to approximately decompose the exponentiation of a Hamiltonian into exponentiations of its component terms, in the subspaces that they act on, and avoids exponentiating large banded matrices; saving on computing power immensely compared to exponentiating the full Hamiltonian. It is unitary, and stable---that is, unlike Runge--Kutta methods, the method's truncation error does not grow exponentially in time but is bounded (floating point rounding error still grows with time, but linearly) [TODO CONFIRM BASED ON FEDVR PAPER'S COMMENTS]. So there is no need to take much smaller timesteps than one otherwise would at earlier times in order to ensure the error remains acceptable at later times---an appropriate timestep at earlier times will be appropriate at later times, \emph{ceteris paribus}. This is extremely appealing. And, whilst higher order split-step methods quickly become unwieldy [CITE], fourth order accuracy is quite acceptable for many problems.
 
-Actual Hamiltonians can be complicated, and are rarely.
-Otherwise, if the Hamiltonian can be decomposed into a \emph{sum} of terms which are individually diagonalisable, the split-step method can be used (see sec [SECREF]). Failing that, a general purpose integration method such as fourth-order Runge-Kutta may have to be resorted to.\footnote{Though if I admit it, \textsc{rkr4} is usually what I reach for first.} I will elaborate on these comments with examples in the following sections.
+Applying all the tricks described in the above sections results $\Ord{\upDelta t}$, $\Ord{\upDelta t^2}$ and $\Ord{\upDelta t^4}$ accurate timestepping methods for solving the Schrodinger equation with total computational cost scaling as $\Ord{N \sum_i b_i}$, where $N=\prod_i n_i$ (for a product space of subspaces with dimensionalities $\{n_i\}$) is the dimensionality of the total Hilbert space, and $\{b_i\}$ are the bandwidths of the matrix representations of each term in the Hamiltonian in the chosen basis.\footnote{Now that we are here, we can finally say something about the best basis for simulating in: to minimise computational costs, the best basis is the one that minimises precisely this sum of bandwidths. The exception to this is when fast Fourier transforms are involved, which I discuss later.} Furthermore, the method is efficiently parallelisable, provided the the maximum size-to-bandwidth ratio $\max_i(n_i/b_i)$ of the terms in the Hamiltonian is much larger than the number of parallel computing threads available. Although the constant factors that big-O notation neglects may not be optimal, this scaling would seem to be the best one could hope for---for each of the $N$ elements in the state vector one must consider the $\sum_i b_i$ elements (including itself) that the Hamiltonian couples it with, and no more.\footnote{Assuming the banded matrices are otherwise dense within their band---further improvements would be possible if some elements within the band were always zero.}
+
+The main downside of this otherwise excellent method of exponentiating Hamiltonians is that the evolution modelled must actually be described by a Hamiltonian. One cannot add arbitrary terms and nonlinear operators to the Hamiltonian, as the split-step method demands that one can evaluate each time-dependent term in the Hamiltonian at arbitrary times, including times at which the solution for the state vector is not yet available. This would seem to limit the split-step method strictly to modelling \emph{linear} dynamics, that is, terms in the Hamiltonian must not depend explicitly on the state vector they are operating on. Whilst nature might fundamentally be described by linear dynamics, once approximations of various kinds are made in order to make problems tractable, it's extremely common to end up with a nonlinear pseudopotential or nonlinear effective Hamiltonian.
+
+Thankfully, one specific form of nonlinearity that cold atom physicists are particularly interested in---the nonlinear term in the Gross--Pitaevskii equation, can be included without much fuss. As mentioned, the problem with nonlinearity is that all but the first-order split step methods require you to evaluate terms in the Hamiltonian at some future time at which the state vector is not yet known, that is the algorithm contains steps akin to $\vec \psi(t_{n+1}) = U(t_{n+1}, t_n; \vec\psi(t_{n+1})) \vec \psi(t_n)$ for some nonlinear unitary matrix $U(t_{n+1}, t_n; \vec\psi(t_{n+1}))$. $U$ cannot be explicitly constructed because is both requires and is required by $\psi(t_{n+1})$.
+
+For the Gross--Pitaevskii effective Hamiltonian, the second-order split-step method (from which the fourth order method is constructed) for a single step might be na\"ively written:
+\begin{align}
+\vec \psi(t_{n+1}) =
+e^{-\frac\ii\hbar K \frac{\upDelta t} 2}
+e^{-\frac\ii\hbar (g\vec\psi(t_{n+1})\vec\psi^\dagger(t_{n+1}) + V(t_{n+1})) \frac{\upDelta t} 2}
+e^{-\frac\ii\hbar (g\vec\psi(t_n)\vec\psi^\dagger(t_n) + V(t_n) ) \frac{\upDelta t} 2}
+e^{-\frac\ii\hbar K \frac{\upDelta t} 2}
+\vec \psi(t_n),
+\end{align}
+where $\vec\psi$ is the state vector represented in a discrete position basis, $g$ is the nonlinear interaction constant, $V$ and $\vec\psi\vec\psi^\dagger$ are diagonal matrices for the external potential and the density operator for $\vec\psi$ in the position vasis, and $K$ is a discrete approximation to the kinetic energy operator in the position basis.
+
+As written, this can't be evaluated because $\vec \psi(t_{n+1})$ is not yet known. The order we choose to exponentiate the terms in our Hamiltonian is arbitrary, however (so long as we alternately reverse that order each half-step as required by the second order split-step method),
+and so swapping the order gives:
+\begin{align}
+\vec \psi(t_{n+1}) =
+e^{-\frac\ii\hbar (g\vec\psi(t_{n+1})\vec\psi^\dagger(t_{n+1}) + V(t_{n+1})) \frac{\upDelta t} 2}
+e^{-\frac\ii\hbar K \upDelta t}
+e^{-\frac\ii\hbar (g\vec\psi(t_n)\vec\psi^\dagger(t_n) + V(t_n) ) \frac{\upDelta t} 2}
+\vec \psi(t_n),
+\end{align}
+which incidentally has the benefit that since $K$ is (normally) time independent, its two adjacent exponentials can be combined into one.
+
+\section{For everything else, there's fourth-order Runge--Kutta}
 
 \begin{itemize}
 

@@ -39,6 +39,18 @@
 \renewcommand\matrixel[3]{\oldmatrixel*{#1}{#2}{#3}}
 \newcommand\Matrixel[3]{\oldmatrixel{#1}{#2}{#3}}
 
+% A placeholder for zeros in matrices - a \cdot (but with a smaller command so that things are
+% neater in latex source); first \makebox sets the width, second zero-width \makebox contains a
+% phantom that sets the height:
+\newcommand\mb{\phantom{0}}
+% \newcommand\md{\makebox[0pt]{$\cdot$}\phantom{0}}
+\newcommand\md{\makebox[\widthof{$0$}][c]{$\cdot$}}
+
+% A smallmatrix with even smaller column separation:
+\newenvironment{xsmallmatrix}
+    {\renewcommand\thickspace{\kern1pt}\smallmatrix}
+    {\endsmallmatrix}
+
 % Imaginary and real parts as normal operators instead of script font:
 \DeclareMathOperator{\im}{Im}
 \DeclareMathOperator{\re}{Re}
