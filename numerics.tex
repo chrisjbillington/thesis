@@ -458,24 +458,36 @@ Fortunately, one specific form of nonlinearity that cold atom physicists are par
 For the Gross--Pitaevskii effective Hamiltonian, the second-order split-step method (from which the fourth order method is constructed) for a single step might be na\"ively written:
 \begin{align}
 \vec \psi(t_{n+1}) =
-e^{-\frac\ii\hbar K \frac{\upDelta t} 2}
-e^{-\frac\ii\hbar (g\rho(t_{n+1}) + V(t_{n+1})) \frac{\upDelta t} 2}
-e^{-\frac\ii\hbar (g\rho(t_n) + V(t_n) ) \frac{\upDelta t} 2}
-e^{-\frac\ii\hbar K \frac{\upDelta t} 2}
+\ee^{-\frac\ii\hbar K \frac{\upDelta t} 2}
+\ee^{-\frac\ii\hbar (g\rho(t_{n+1}) + V(t_{n+1})) \frac{\upDelta t} 2}
+\ee^{-\frac\ii\hbar (g\rho(t_n) + V(t_n) ) \frac{\upDelta t} 2}
+\ee^{-\frac\ii\hbar K \frac{\upDelta t} 2}
 \vec \psi(t_n),
 \end{align}
-where $\vec\psi(t)$ is the state vector\footnote{Usually when modelling the GPE the single-particle state vector is normalised to the number of particles, rather than unity, and so strictly speaking it cannot be called a state vector, though it otherwise can be treated as one in every respect.} represented in a discrete position basis, $g$ is the nonlinear interaction constant, $V(t)$ and $\rho(t) = \vec\psi(t)\vec\psi^\dagger(t)$ are diagonal matrices for the external potential and the density matrix for $\vec\psi(t)$ in the same position basis, and $K$ is a discrete approximation to the kinetic energy operator in the position basis.
+where $\vec\psi(t)$ is the state vector\footnote{Usually when modelling the GPE the single-particle state vector is normalised to the number of particles, rather than unity, and so strictly speaking it cannot be called a state vector, though it otherwise can be treated as one in most respects.} represented in a discrete position basis, $g$ is the nonlinear interaction constant, $V(t)$ and $\rho(t) = \vec\psi(t)\vec\psi^\dagger(t)$ are diagonal matrices for the external potential and the density matrix for $\vec\psi(t)$ in the same position basis, and $K$ is a discrete approximation to the kinetic energy operator in the position basis.
 
 As written, this can't be evaluated because $\vec \psi(t_{n+1})$---required to evaluate $\rho(t_{n+1})$---is not yet known. The order we choose to exponentiate the terms in our Hamiltonian is arbitrary, however (so long as we alternately reverse that order each half-step as required by the second order split-step method),
 and so swapping the order gives:
 \begin{align}
 \vec \psi(t_{n+1}) =
-e^{-\frac\ii\hbar (g\rho(t_{n+1}) + V(t_{n+1})) \frac{\upDelta t} 2}
-e^{-\frac\ii\hbar K \upDelta t}
-e^{-\frac\ii\hbar (g\rho(t_n) + V(t_n) ) \frac{\upDelta t} 2}
+\ee^{-\frac\ii\hbar (g\rho(t_{n+1}) + V(t_{n+1})) \frac{\upDelta t} 2}
+\ee^{-\frac\ii\hbar K \upDelta t}
+\ee^{-\frac\ii\hbar (g\rho(t_n) + V(t_n) ) \frac{\upDelta t} 2}
 \vec \psi(t_n),
 \end{align}
-which incidentally has the benefit that since $K$ is (ordinarily) time independent, the two adjacent exponentials containing it can be combined into one. Now $\rho(t_{n+1})$ is contained within the leftmost exponential.
+which incidentally has the benefit that since $K$ is (ordinarily) time independent, the two adjacent exponentials containing it can be combined into one. Now $\rho(t_{n+1})$ is contained within the leftmost exponential, and so it is the last operator to be applied in the timestep. Note that since $g\rho(t)$ is real and diagonal in the position basis (as is $V(t)$), ths leftmost unitary merely changes the phase of the state vector at each point in space, having no effect on its density. This means that $\rho(t)$ is, in fact, unaffected by this last unitary evolution operator. Hence, $\rho(t_{n+1})$ can be computed simply as the density matrix of the intermediate state vector that this unitary was to act on:
+\begin{align}
+\rho(t_{n+1}) = \vec\psi(t_{n+1})\vec\psi^\dagger(t_{n+1}) = \tilde{\vec\psi}\tilde{\vec\psi}^\dagger,
+\end{align}
+where
+\begin{align}
+\vec\psi(t_{n+1}) = \ee^{-\frac\ii\hbar(g\rho(t_{n+1}) + V(t_{n+1})) \frac{\upDelta t} 2}\tilde{\vec\psi}\tilde{\vec\psi}^\dagger.
+\end{align}
+The inclusion of $V(t)$ with $g\rho(t)$ here is optional, and if $V(t)$ was not real valued, would not be valid (since in that case the density \emph{would} be affected by the evolution induced by $V(t)$). In such a case the Hamiltonian would have to be split into three terms with $V(t)$ and $g\rho(t)$ treated separately.
+
+So now we can put some conditions on what types of nonlinear operators can be used within the second-order split step method. The first condition is that at most one nonlinear operator can be included, since it must be placed last in the sandwich of exponentials (otherwise its value at the end of the timsestep cannot be inferred immediately prior to acting on the state vector). The second condition is that the nonlinear operator must be symmetric with respect to the evolution that it itself induces in the state vector. Here we have an operator that  depends only on the state vector's absolute value, but for which the corresponding unitary only evolves the state vector's phase. Another example might be an operator that depends only on the state vector's phase gradients, but evolves the state vector's absolute value, and so forth.
+
+Although I find this argument compelling for second-order split-step, it's less obvious that it should hold for fourth-order split-step as well, which, even though it is based on multiple applications of second-order split-step, involves a substep that is backwards in time. `Evaluate the nonlinear operator based on the state vector at this specific time' becomes ambiguous when that moment in time is traversed in both directions by two different sub-steps. However, [Blah Blah et al] have verified using computer symbolic algebra that indeed, up to even higher order split-step methods, putting the nonlinear density term last in the splitting and always evaluating it using the value of the intermediate state vector immediately prior results in the method having the same order accuracy in $\upDelta t$ as for linear operators only. Given this and my argument above, as well as the reasoning that the second-order split-step method has no way of `knowing' whether it is acting backward in time or not when embedded in a higher-order split step method, I would expect the same to hold for all nonlinear operators meeting the above two conditions, though I haven't shown this explicitly.
 
 \section{For everything else, there's fourth-order Runge--Kutta}
 
