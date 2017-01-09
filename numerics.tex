@@ -453,29 +453,29 @@ Applying all the tricks described in the above sections results $\Ord{\upDelta t
 
 The main downside of this otherwise excellent method of exponentiating Hamiltonians is that the evolution modelled must actually be described by a Hamiltonian. One cannot add arbitrary terms and nonlinear operators to the Hamiltonian, as the split-step method demands that one can evaluate each time-dependent term in the Hamiltonian at arbitrary times, including times at which the solution for the state vector is not yet available. This would seem to limit the split-step method strictly to modelling \emph{linear} dynamics, that is, terms in the Hamiltonian must not depend explicitly on the state vector they are operating on. Whilst nature might fundamentally be described by linear dynamics, once approximations of various kinds are made in order to make problems tractable, it's extremely common to end up with a nonlinear pseudopotential or nonlinear effective Hamiltonian.
 
-Thankfully, one specific form of nonlinearity that cold atom physicists are particularly interested in---the nonlinear term in the Gross--Pitaevskii equation, can be included without much fuss. As mentioned, the problem with nonlinearity is that all but the first-order split step methods require you to evaluate terms in the Hamiltonian at some future time at which the state vector is not yet known, that is the algorithm contains steps akin to $\vec \psi(t_{n+1}) = U(t_{n+1}, t_n; \vec\psi(t_{n+1})) \vec \psi(t_n)$ for some nonlinear unitary matrix $U(t_{n+1}, t_n; \vec\psi(t_{n+1}))$. $U$ cannot be explicitly constructed because is both requires and is required by $\psi(t_{n+1})$.
+Fortunately, one specific form of nonlinearity that cold atom physicists are particularly interested in---the nonlinear term in the Gross--Pitaevskii equation---can be included without much difficulty. As mentioned, the problem with nonlinearity is that all but the first-order split step methods require you to evaluate terms in the Hamiltonian at some future time at which the state vector is not yet known, that is the algorithm contains steps akin to $\vec \psi(t_{n+1}) = U(t_{n+1}, t_n; \vec\psi(t_{n+1})) \vec \psi(t_n)$ for some nonlinear unitary matrix $U(t_{n+1}, t_n; \vec\psi(t_{n+1}))$---$U$ cannot be explicitly constructed because it both requires and is required by $\psi(t_{n+1})$.
 
 For the Gross--Pitaevskii effective Hamiltonian, the second-order split-step method (from which the fourth order method is constructed) for a single step might be na\"ively written:
 \begin{align}
 \vec \psi(t_{n+1}) =
 e^{-\frac\ii\hbar K \frac{\upDelta t} 2}
-e^{-\frac\ii\hbar (g\vec\psi(t_{n+1})\vec\psi^\dagger(t_{n+1}) + V(t_{n+1})) \frac{\upDelta t} 2}
-e^{-\frac\ii\hbar (g\vec\psi(t_n)\vec\psi^\dagger(t_n) + V(t_n) ) \frac{\upDelta t} 2}
+e^{-\frac\ii\hbar (g\rho(t_{n+1}) + V(t_{n+1})) \frac{\upDelta t} 2}
+e^{-\frac\ii\hbar (g\rho(t_n) + V(t_n) ) \frac{\upDelta t} 2}
 e^{-\frac\ii\hbar K \frac{\upDelta t} 2}
 \vec \psi(t_n),
 \end{align}
-where $\vec\psi$ is the state vector represented in a discrete position basis, $g$ is the nonlinear interaction constant, $V$ and $\vec\psi\vec\psi^\dagger$ are diagonal matrices for the external potential and the density operator for $\vec\psi$ in the position vasis, and $K$ is a discrete approximation to the kinetic energy operator in the position basis.
+where $\vec\psi(t)$ is the state vector\footnote{Usually when modelling the GPE the single-particle state vector is normalised to the number of particles, rather than unity, and so strictly speaking it cannot be called a state vector, though it otherwise can be treated as one in every respect.} represented in a discrete position basis, $g$ is the nonlinear interaction constant, $V(t)$ and $\rho(t) = \vec\psi(t)\vec\psi^\dagger(t)$ are diagonal matrices for the external potential and the density matrix for $\vec\psi(t)$ in the same position basis, and $K$ is a discrete approximation to the kinetic energy operator in the position basis.
 
-As written, this can't be evaluated because $\vec \psi(t_{n+1})$ is not yet known. The order we choose to exponentiate the terms in our Hamiltonian is arbitrary, however (so long as we alternately reverse that order each half-step as required by the second order split-step method),
+As written, this can't be evaluated because $\vec \psi(t_{n+1})$---required to evaluate $\rho(t_{n+1})$---is not yet known. The order we choose to exponentiate the terms in our Hamiltonian is arbitrary, however (so long as we alternately reverse that order each half-step as required by the second order split-step method),
 and so swapping the order gives:
 \begin{align}
 \vec \psi(t_{n+1}) =
-e^{-\frac\ii\hbar (g\vec\psi(t_{n+1})\vec\psi^\dagger(t_{n+1}) + V(t_{n+1})) \frac{\upDelta t} 2}
+e^{-\frac\ii\hbar (g\rho(t_{n+1}) + V(t_{n+1})) \frac{\upDelta t} 2}
 e^{-\frac\ii\hbar K \upDelta t}
-e^{-\frac\ii\hbar (g\vec\psi(t_n)\vec\psi^\dagger(t_n) + V(t_n) ) \frac{\upDelta t} 2}
+e^{-\frac\ii\hbar (g\rho(t_n) + V(t_n) ) \frac{\upDelta t} 2}
 \vec \psi(t_n),
 \end{align}
-which incidentally has the benefit that since $K$ is (normally) time independent, its two adjacent exponentials can be combined into one.
+which incidentally has the benefit that since $K$ is (ordinarily) time independent, the two adjacent exponentials containing it can be combined into one. Now $\rho(t_{n+1})$ is contained within the leftmost exponential.
 
 \section{For everything else, there's fourth-order Runge--Kutta}
 
