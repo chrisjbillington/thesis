@@ -57,11 +57,11 @@ which reduces matrix exponentiation to the known operations of matrix multiplica
 \subsection{Matrix exponentiation by diagonalisation}
 Regardless of which method is used, matrix exponentiation is computationally expensive. It can be sped up however if a diagonalisation of $H$ is known, since if
 \begin{align}
-H = UDU^\dagger,
+H = QDQ^\dagger,
 \end{align}
-where $D$ is a diagonal matrix and U is a unitary matrix\footnote{Note that the diagonals of $D$ are the eigenvalues of $H$, and the columns of $U$ are its eigenvectors.}, then
+where $D$ is a diagonal matrix and Q is a unitary matrix\footnote{Note that the diagonals of $D$ are the eigenvalues of $H$, and the columns of $Q$ are its eigenvectors.}, then
 \begin{align}\label{eq:diagonal_expm}
-\ee^{-\frac \ii \hbar H \upDelta t} = U e^{-\frac \ii \hbar D \upDelta t} U^\dagger.
+\ee^{-\frac \ii \hbar H \upDelta t} = Q e^{-\frac \ii \hbar D \upDelta t} Q^\dagger.
 \end{align}
 This is simple to evaluate because the exponentiation of a diagonal matrix can be performed by exponentiating each diagonal matrix element individually\footnote{The reason for this is clear from the Taylor series definition of matrix exponentiation, since matrix multiplication and addition can both be performed elementwise for diagonal matrices.}
 
@@ -451,7 +451,7 @@ The split-step method is quite powerful and general. It allows you to approximat
 
 Applying all the tricks described in the above sections results $\Ord{\upDelta t}$, $\Ord{\upDelta t^2}$ and $\Ord{\upDelta t^4}$ accurate timestepping methods for solving the Schrodinger equation with total computational cost scaling as $\Ord{N \sum_i b_i}$, where $N=\prod_i n_i$ (for a product space of subspaces with dimensionalities $\{n_i\}$) is the dimensionality of the total Hilbert space, and $\{b_i\}$ are the bandwidths of the matrix representations of each term in the Hamiltonian in the chosen basis.\footnote{Now that we are here, we can finally say something about the best basis for simulating in: to minimise computational costs, the best basis is the one that minimises precisely this sum of bandwidths. The exception to this is when fast Fourier transforms are involved, which I discuss later.} Furthermore, the method is efficiently parallelisable, provided the the maximum size-to-bandwidth ratio $\max_i(n_i/b_i)$ of the terms in the Hamiltonian is much larger than the number of parallel computing threads available. Although the constant factors that big-O notation neglects may not be optimal, this scaling would seem to be the best one could hope for---for each of the $N$ elements in the state vector one must consider the $\sum_i b_i$ elements (including itself) that the Hamiltonian couples it with, and no more.\footnote{Assuming the banded matrices are otherwise dense within their band---further improvements would be possible if some elements within the band were always zero.}
 
-The main downside of this otherwise excellent method of exponentiating Hamiltonians is that the evolution modelled must actually be described by a linear system of equations. One cannot add arbitrary terms and nonlinear operators to the Hamiltonian, as the split-step method requires that one can evaluate each time-dependent term in the Hamiltonian at specific times, including times at which the solution for the state vector is not yet available. This would seem to limit the split-step method strictly to modelling \emph{linear} dynamics, that is, terms in the Hamiltonian must not depend explicitly on the state vector they are operating on. Whilst nature might fundamentally be described by linear dynamics, once approximations of various kinds are made in order to make problems tractable, it's extremely common to end up with a nonlinear pseudopotential or nonlinear effective Hamiltonian. Note that non-\emph{Hermitian}, pseudo-Hamiltonians---leading to non-unitary evolution---are fine. The split-step method has made no assumptions that rules them out, and can solve anything of the form
+The main downside of this otherwise excellent method of exponentiating Hamiltonians is that the evolution modelled must actually be described by a linear system of equations. One cannot add arbitrary terms and nonlinear operators to the Hamiltonian, as the split-step method requires that one can evaluate each time-dependent term in the Hamiltonian at specific times, including times at which the solution for the state vector is not yet available. This would seem to limit the split-step method strictly to modelling \emph{linear} dynamics, that is, terms in the Hamiltonian must not depend explicitly on the state vector they are operating on. Whilst nature might fundamentally be described by linear dynamics, once approximations of various kinds are made in order to make problems tractable, it's extremely common to end up with a nonlinear pseudopotential or nonlinear effective Hamiltonian. Note that non-\emph{Hermitian}, pseudo-Hamiltonians---leading to non-unitary evolution---are fine. The split-step method has made no assumptions that rules them out, it only assumes the differential equation can be expressed in the form
 \begin{align}
 \dv t \vec\psi(t) = \sum_n H_n(t)\vec\psi(t),
 \end{align}
@@ -495,11 +495,24 @@ Although I find this argument compelling for second-order split-step, it's less 
 
 \section{For everything else, there's fourth-order Runge--Kutta}
 
-\begin{itemize}
+[summarise and say why it's more general. Biggest downside is error isn't bounded, other downside related to what the RK4ILIP section tries to improve]
 
-\item {absorbing boundary conditions, reflective boundary conditions, periodic boundary conditions}
+% \subsection{The interaction picture}
 
-\end{itemize}
+% A common situation in atomic physics is to be simulating the internal state of an atom, armed with the knowledge that only a small number of atomic states are able to become occupied.
+
+%         \begin{itemize}
+%             \item Sometimes called a "rotating frame"
+%             \item Is equivalent to basis change where new basis functions differ by a time-dependent phase factor
+%             \item Is defined by a time-independent Hamiltonian
+%             \item This has the effect of moving some time dependence into the operators (demonstrate, by writing some operators with the unitary in front of them. As you can see it is simply a change of basis - but a time-dependent one.)
+%             \item No need to remain in the same interaction picture - can be redefined arbitrarily often throughout a simulation and state vectors transformed into new basis.
+%         \end{itemize}
+% \begin{itemize}
+
+% \item {absorbing boundary conditions, reflective boundary conditions, periodic boundary conditions}
+
+% \end{itemize}
 
 \section{Continuous degrees of freedom}
 The single-particle, non-relativistic, scalar Schr\"odinger wave equation, as distinct from the general Schr\"odinger equation [EQREF], is:
@@ -514,7 +527,10 @@ where $\psi(\vec r) = \sqrt{N}\braket{\vec r}{\psi}$ is the single-particle wave
 
 Both these equations are partial differential equations involving both spatial and temporal derivatives. But in quantum mechanics all state vectors can be mapped to column vectors and all operators to matrices. Spatial wavefunctions are no exception to the former and differential operators such as $\grad^2$ are no exception to the latter. So what do these vectors and operators look like? That depends on whether we choose to discretise space on a grid, or use a functional basis (and on which functional basis we choose). As we'll see below, however, spatial discretisation is actually just a particular choice of functional basis, namely the Fourier basis.
 
-\subsection{Spatial discretisation}
+\subsection{Spatial discretisation on a uniform grid: the Fourier basis}
+
+[This section incomplete: TODO: Simplify all the algebra by giving everything a single index instead of 2 indices for the 2D examples - it's too confusing with two indices on everything. Distinguish discrete vs continuous eigenkets with a different symbol - maybe a tilde over the $\vec r$ or something like that]
+
 Imagine a two dimensional spatial region within which we are solving the single-component Gross--Pitaevskii equation, evolving an initial condensate wavefunction in time. Having specified which degrees of freedom we want to simulate (two continuous degrees of freedom, one for each spatial dimension), the next step according to the method outlined in [SECREF ABOVE] is to choose a basis in which to represent this state vector.
 
 Lets say we discretise space in an equally-spaced $N_x\times N_y = 5\times 5$ rectangular grid,\footnote{For the sake of example---$256\times256$ is a more realistic minimum.} with spacing $\upDelta x$, and only represent the wavefunction at those $25$ points in space. The state vector can then be represented by a list of $25$ complex numbers, each taken to be the wavefunction's value at the spatial position corresponding to one gridpoint. This $25$-vector is now a concrete representation of our state vector.
@@ -649,64 +665,87 @@ Equivalent relations hold for our discrete Fourier and spatial basis:
 
 But to obtain our differential equation, we need all the matrix elements of $\hat H_\textrm{Schr\"o}$ in a single basis.
 
-\section{Discrete degrees of freedom}
+\subsection{Finite differences}
+\begin{itemize}
+    \item Simple, equal to fixed order approximation to fourier method.
+    \item But can be made non-periodic
+    \item Computationally efficient compared to FFTs in Runge--Kutta.
+    \item Computationally efficient compared to FFTs in split-step (banded matrices amentable to splitting into sum of two block-diagonal matrices).
+    \item Parallelisable in both cases, with number of points needing to be exchanged related to the order of the finite difference (2nd order, 1 point, 4th order, 2 points etc).
+    \item Single-core efficiecy compared to FFTs not observable in practice on current computers---to see it you need more points than fit in CPU cache and so both of them are limited by memory bandwidth and $\Ord{n}$ with big coefficient. But FD are parallelisable without shared data, whereas parallel FFTs scale poorly - the amount of data needing to be sent per node increases with the number of nodes. But, on a GPU where all data is available, parallel FFTs can be pretty good.
+    \item Also good compared to FFTs in that many problems are not actually periodic, and imposing periodicity on them can cause problems - finite differences give you a fair bit of freedom to make your own boundary conditions.
+\end{itemize}
 
-\subsection{The interaction picture}
+\subsection{The finite element discrete variable representation}
 
-A common situation in atomic physics is to be simulating the internal state of an atom, armed with the knowledge that only a small number of atomic states are able to become occupied.
+\begin{itemize}
+    \item Summarise, don't go into detail. Just a different method of spatial discretisation.
+    \item{Splits space into `elements'. Briefly mention what these are good for - funky boundary conditions and irregular grids mostly}
+    \item Represents state vector within each element using interpolating polynomials - they're a basis but they're not an orthonormal one. Each one is zero all points in each element except one. To get coefficients in this basis you get the wavefunction's values at the specific points in space (you can't just do a projection, because the basis isn't orthonormal - you'd get a state vector with >1 norm if you did that). To reconstruct a wavefunction again you sum the interpolating polynomials with their coefficients.
+    \item Benefit of finite elements in general, other than boundary conditions and variable grids is that you can choose basis functions within elements that conserve some known conserved quantities, and hence you can make geometric integrators.
+    \item Differential operators can be computed using the quadrature rule, and then you can solve using Runge-Kutta or split-step. The main paper on all this [CITE] uses fourth order split-step.
+    \item For the Schrodinger and Schrodinger-like equations, purported benefit other than irregular gridding and boundary conditions is that you only need to exchange one point between elements, speeding up parallel implementations.
+    \item Go into why that actually doesn't help:
+    \item Conceptually I like to think of DVR as non-central finite differences on an irregular grid. Finite differences are also based on interpolating polynomials. Central finite differences of say, 6th order acccuracy would require sending four points across compute-node boundaries every time you want to apply an operator to a state vector. But, non-central finite differences within individual elements, instead of central finite differences everywhere, can make it such that within elements, points need every other point in order to compute a differential operator - but they only require one point across element boundaries. The differential operators are still same order accuracy in $\updelta x$. But, now they're subject to Gibbs'/Runge's phenomenon. So, you solve this by making the points unequally spaced. [Such and such theorem] says that you optimally supress the oscillations near the element boundaries if the point spacing scales like [however it scales]. So you space the points unevenly like that, recompute your differential operators based on what the interpolating polynomials now look like, and you have a DVR basis. If you force points to be on element boundaries and do some tricks to join elements together, you now have an FEDVR basis.
+    \item The paper compares 6th order [and other order] FEDVR to 2nd order finite differences for accuracy in representing the 2D SHO groundstate. FEDVR wins the comparison. But, i think it's not a fair comparison becuse they only used second order central finite differences. 6th order central finite differences are just as accurate as 6th order FEDVR.
+    \item But if you use 6th order central finite differences, you have to pass 4x more points at compute-node boundaries compared to FEDVR. So that means FEDVR parallelises better, right? Wrong. Not for time-evolution, and not for the Schrodinger equation. Maximum timestep you can take (regardless of RK or split-step) is set by the kinetic term and is intuitive - you can't take timesteps longer than the time it takes the fastest mode to move the smallest frid spacing.
+    \item FEDVR has \emph{smaller minimum grid spacing}. It requires smaller timesteps. How much smaller? [SHOW CALCULATION] Enough to mean that you have to take 16x as many timesteps compared to FD. So you thought you were sending four times less data compared to central finite differneces, but you're actually sending four times more, because you are only sending four times less per timestep - and you are taking sixteen times as many timesteps.
 
-        \begin{itemize}
-            \item Sometimes called a "rotating frame"
-            \item Is equivalent to basis change where new basis functions differ by a time-dependent phase factor
-            \item Is defined by a time-independent Hamiltonian
-            \item This has the effect of moving some time dependence into the operators (demonstrate, by writing some operators with the unitary in front of them. As you can see it is simply a change of basis - but a time-dependent one.)
-            \item No need to remain in the same interaction picture - can be redefined arbitrarily often throughout a simulation and state vectors transformed into new basis.
-        \end{itemize}
+    \item So unless you're using it in order to have irregular grids or strange boundary conditions, FEDVR provides little benefit for time-evolving Schrodinger-like equations. Finite differences can be used on irregular grids too [CITE]
 
-    \subsection{Unitary integration}
-        \subsubsection{Direct exponentiation via diagonalisation of Hamiltonian}
-        \begin{itemize}
-        \item Unitary - doesn't mean it's accurate but means it won't explode. Great for the bits of your simulation that are explosion-prone but don't matter (like regions of space where the wavefunction is near zero but the potential is large or steep)
-        \item error is order [whatever it is] per timestep, not great compared to RK4
-        \item can be combined with RK4 to improve accuracy (see later subsection)
-        \end{itemize}
-        \subsubsection{Approximate exponentiation by operator product}
+\end{itemize}
 
-        [Comment in this section how the approximate total unitary can be used at each timestep to define an interaction picture, and the remaining dynamics simulated with RK4 like RKILIP does in the spatial basis. Interaction pictures are really useful!]
+\subsection{Harmonic oscillator basis functions}
 
-\section{Continuous degrees of freedom}
+[Another way of discretising space. Not a grid at all. Useful in, well, harmonic and approximately harmonic potentials, or (well, equivalently) when Hamiltonian is sparse in the SHO eigenbasis. Otherwise not great - without FFTs, applying the Hamiltonian means big, dense matrices - slow.]
 
 
 
-    Every symbol on the paper has a representation in a computer. State vectors are arrays of complex numbers, operators are matrices - differential operators are no exception. Operators must have a concrete representation, their matrix elements can be computed and then things solved with linear algebra. For discrete degrees of freedom, the matrix representation of the operators may be known, for continuous ones you can find the matrix elements once you define what basis functions you will use [show how]. Or, for the DVR it is a little more subtle (because it's not a basis) but still basically the same process.
+    % \subsection{Unitary integration}
+    %     \subsubsection{Direct exponentiation via diagonalisation of Hamiltonian}
+    %     \begin{itemize}
+    %     \item Unitary - doesn't mean it's accurate but means it won't explode. Great for the bits of your simulation that are explosion-prone but don't matter (like regions of space where the wavefunction is near zero but the potential is large or steep)
+    %     \item error is order [whatever it is] per timestep, not great compared to RK4
+    %     \item can be combined with RK4 to improve accuracy (see later subsection)
+    %     \end{itemize}
+    %     \subsubsection{Approximate exponentiation by operator product}
 
-    \begin{itemize}
-        \item Have to be discretised in some way to simulate on a computer - need basis functions. Often a spatial basis is used. Any spatial basis must be combined with assumptions about what the wavefunction is doing at points in between the basis points, in order to define differential operators. Finite differences approximates wavefunction as low-order polynomial in between points (is this equivalent to a polynomial \emph{basis}? Probably not.). Fourier method assume the Fourier series of the wavefunction at the given points can be used to interpolate between points (or the wavefuntion can be Fourier transformed and calculations can be done directly in the Fourier basis). DVR is not actually a spatial basis despite appearances. It assumes the wavefunction is a sum of polynomial 'shape functions', but these shape functions are not basis functions as they are not orthonormal. This is why it is called a representation rather than a basis. Regardless, the shape functions can be used to define an interpolation of the wavefunction between points and thus define differential operators.
+    %     [Comment in this section how the approximate total unitary can be used at each timestep to define an interaction picture, and the remaining dynamics simulated with RK4 like RKILIP does in the spatial basis. Interaction pictures are really useful!]
 
-    \end{itemize}
-    \subsection{Finite differences}
-        Show a matrix representation of a few different finite differences, to show that differential operators really are just matrices. They approximate the function as low-order polynomials about each point. You can take them to arbitrarily high order.
-    \subsection{The Fourier basis}
-        Because of properties of Fourier transforms, derivitives can be taken in Fourier space as simple multiplication. This is essentially because differential operators are diagonal in the Fourier basis. So you can use this fact to define a differential operator in the spatial basis [show matrix] ...or, you could just implement it with Fourier transforms, since FFTs are faster than matrix-vector multiplication ($O(n \log (n)$) rather than $O(n^2)$)
-        \subsubsection{Split operator method}
-            \begin{itemize}
-            \item Equivalent to approximate exponentiation via operator product with the discrete case
-            \end{itemize}
-    \subsection{Harmonic oscillator basis functions}
+% \section{Continuous degrees of freedom}
+
+
+
+%     Every symbol on the paper has a representation in a computer. State vectors are arrays of complex numbers, operators are matrices - differential operators are no exception. Operators must have a concrete representation, their matrix elements can be computed and then things solved with linear algebra. For discrete degrees of freedom, the matrix representation of the operators may be known, for continuous ones you can find the matrix elements once you define what basis functions you will use [show how]. Or, for the DVR it is a little more subtle (because it's not a basis) but still basically the same process.
+
+%     \begin{itemize}
+%         \item Have to be discretised in some way to simulate on a computer - need basis functions. Often a spatial basis is used. Any spatial basis must be combined with assumptions about what the wavefunction is doing at points in between the basis points, in order to define differential operators. Finite differences approximates wavefunction as low-order polynomial in between points (is this equivalent to a polynomial \emph{basis}? Probably not.). Fourier method assume the Fourier series of the wavefunction at the given points can be used to interpolate between points (or the wavefuntion can be Fourier transformed and calculations can be done directly in the Fourier basis). DVR is not actually a spatial basis despite appearances. It assumes the wavefunction is a sum of polynomial 'shape functions', but these shape functions are not basis functions as they are not orthonormal. This is why it is called a representation rather than a basis. Regardless, the shape functions can be used to define an interpolation of the wavefunction between points and thus define differential operators.
+
+    % \end{itemize}
+    % \subsection{Finite differences}
+    %     Show a matrix representation of a few different finite differences, to show that differential operators really are just matrices. They approximate the function as low-order polynomials about each point. You can take them to arbitrarily high order.
+    % \subsection{The Fourier basis}
+    %     Because of properties of Fourier transforms, derivitives can be taken in Fourier space as simple multiplication. This is essentially because differential operators are diagonal in the Fourier basis. So you can use this fact to define a differential operator in the spatial basis [show matrix] ...or, you could just implement it with Fourier transforms, since FFTs are faster than matrix-vector multiplication ($O(n \log (n)$) rather than $O(n^2)$)
+    %     \subsubsection{Split operator method}
+    %         \begin{itemize}
+    %         \item Equivalent to approximate exponentiation via operator product with the discrete case
+    %         \end{itemize}
 
 \section{Finding ground states}
 \subsection{Imaginary time evolution}
+[Summarise ITEM]
 \subsection{Successive over-relaxation}
+[Summarise SOR]
 \subsection{Generalisation to excited states via Gram–Schmidt orthonormalisation}
 Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another approach is to find the ground state using one of the above techniques, and then repeat the process, subtracting off the wavefunction's projection onto the already found ground state at every step. This yields the lowest energy state that is orthogonal to the first - i.e. the first excited state. Repeating the process, but subtracting off \emph{both} eigenstates found so far, then yields the second excited state and so forth. This is simply the Gram-Schmidt process for finding orthonormal vectors, with the additional step of relaxing each vector to the lowest possible energy for each one - this ensures the eigenstates of the Hamiltonian are produced, rather than a different orthogonal basis. Extra conditions can be imposed on the wavefunction at each relaxation step in order to obtain particular solutions in the case of degenerate eigenstates. For example, a phase winding can be imposed in order to obtain a particular harmonic oscillator state - otherwise this process produces an arbitrary superposition of basis states that have equal energy.
 
-\section{The finite-element discrete variable representation}
+% \section{The finite-element discrete variable representation}
 
-- Plots of representation of sine wave as function of number of points between FEDVR and FD. RMS error of a derivative operator perhaps.
+% - Plots of representation of sine wave as function of number of points between FEDVR and FD. RMS error of a derivative operator perhaps.
 
-[explanation of how it works, comparison of implementation with RSP4 vs something like RK4. RK4 is more general purpose, method does not need to be modified for different Hamiltonians. Main limitation is inability to factor out fast dynamical phases, see RK4ILIP for solution to this. MPI implementation and scaling properties with increasing cores. Superscaling at low number of cores. Mention how my implementation can tolerate high network latency due to early sending od data before all local computations are complete. Mention that it is ripe for GPU processing. Limitations: vulnerable to Runge's phenomenon for sharp potentials. Can't increase the order of the polynomials much because small spacing at the edges requires tiny timesteps. Possible solution: pre-conditioning the potential to be an approximation better representable in the DVR basis.]
+% [explanation of how it works, comparison of implementation with RSP4 vs something like RK4. RK4 is more general purpose, method does not need to be modified for different Hamiltonians. Main limitation is inability to factor out fast dynamical phases, see RK4ILIP for solution to this. MPI implementation and scaling properties with increasing cores. Superscaling at low number of cores. Mention how my implementation can tolerate high network latency due to early sending od data before all local computations are complete. Mention that it is ripe for GPU processing. Limitations: vulnerable to Runge's phenomenon for sharp potentials. Can't increase the order of the polynomials much because small spacing at the edges requires tiny timesteps. Possible solution: pre-conditioning the potential to be an approximation better representable in the DVR basis.]
 
-\endinput % Remove once numerics completed
+% \endinput % Remove once numerics completed
 
 \section{Fourth order Runge--Kutta in an instantaneous local interaction picture}\label{sec:rk4ilip}
 

@@ -10,14 +10,14 @@ def expmh(M):
     # Diagonalise the matrices:
     evals, evecs = eigh(M)
 
-    # Now we compute exp(M) = U exp(D) U^\dagger where U is the matrix of
+    # Now we compute exp(M) = Q exp(D) Q^\dagger where Q is the matrix of
     # eigenvectors (as columns) and D is the diagonal matrix of eigenvalues:
 
-    U = evecs
-    U_dagger = U.conj().swapaxes(-1, -2) # Only transpose the matrix dimensions
+    Q = evecs
+    Q_dagger = Q.conj().swapaxes(-1, -2) # Only transpose the matrix dimensions
     exp_D_diags = np.exp(evals)
 
-    # Compute the 3-term matrix product U*exp_D_diags*U_dagger using the
+    # Compute the 3-term matrix product Q*exp_D_diags*Q_dagger using the
     # einsum function in order to specify which array axes of each array to
     # sum over:
-    return np.einsum('...ik,...k,...kj->...ij', U, exp_D_diags, U_dagger)
+    return np.einsum('...ik,...k,...kj->...ij', Q, exp_D_diags, Q_dagger)
