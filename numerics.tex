@@ -52,9 +52,9 @@ is the (matrix representation of the) unitary evolution operator for time evolut
 \begin{align}
 \ee^A = \sum_{n=0}^\infty \frac{A^n}{n!},
 \end{align}
-which reduces matrix exponentiation to the known operations of matrix multiplication and addition. However, any linear algebra programming library worth the bytes it occupies will have a matrix exponentiation function that should be used instead, as there are other methods of computing matrix exponentials that are more computationally efficient and numerically stable, such as the Pad\'e approximant [CITE]. It should be noted that there is no known `best' matrix exponential algorithm, all make compromises and perform poorly for certain types of matrices \cite{moler_nineteen_2003}.
+which reduces matrix exponentiation to the known operations of matrix multiplication and addition. However, any linear algebra programming library worth the bytes it occupies will have a matrix exponentiation function that should be used instead, as there are other methods of computing matrix exponentials that are more computationally efficient and numerically stable, such as the Pad\'e approximant \cite{brezinski_extrapolation_1996}. It should be noted that there is no known `best' matrix exponential algorithm, all make compromises and perform poorly for certain types of matrices \cite{moler_nineteen_2003}.
 
-\subsection{Matrix exponentiation by diagonalisation}
+\subsection{Matrix exponentiation by diagonalisation}\label{sec:matrix_exp_diagonalisation}
 Regardless of which method is used, matrix exponentiation is computationally expensive. It can be sped up however if a diagonalisation of $H$ is known, since if
 \begin{align}
 H = QDQ^\dagger,
@@ -71,7 +71,7 @@ Even if a diagonalisation of $H$ is not analytically known, numerically diagonal
 
 Matrix diagonalisation (using singular value decomposition or QR decomposition) has computational time complexity $\Ord{n^3}$ , where $n$ is the number of rows/columns in the (square) matrix. Matrix multiplication is (in practice) $\Ord{n^3}$ and exponentiating a diagonal matrix is only $\Ord n $, so matrix exponentiation of a Hermitian matrix via numerical diagonalisation has total cost $\Ord{n^3}$. This compares to the Pad\'e approximant, which is also $\Ord{n^3}$ \cite{moler_nineteen_2003}. So the numerical diagonalisation method is not any worse in terms of computational resources required.
 
-On the other hand, if an analytic diagonalisation is already known, it would seem that exponentiation is just as slow, since the computational cost of matrix multiplication alone is the same order in $n$ as that of numerical diagonalisation. This is true - so there are only constant factors to be saved in computer time by using an analytic diagonalisation in order to exponentiate a matrix using \eqref{eq:diagonal_expm}. However if one's aim---as is often the case---is to ultimately compute
+On the other hand, if an analytic diagonalisation is already known, it would seem that exponentiation is just as slow, since the computational cost of matrix multiplication alone is the same order in $n$ as that of numerical diagonalisation. This is true---so there are only constant factors to be saved in computer time by using an analytic diagonalisation in order to exponentiate a matrix using \eqref{eq:diagonal_expm}. However if one's aim---as is often the case---is to ultimately compute
 \begin{align}
 \vec\psi(t) = \ee^{-\frac \ii \hbar H \upDelta t}\vec\psi(t_0),
 \end{align}
@@ -81,11 +81,11 @@ for a specific $\vec \psi(t_0)$, then one needs only matrix-vector multiplicatio
 \end{align}
 from right-to-left, reducing the computational cost to $\Ord{n^2}$ compared to evaluating it left-to-right.
 
-Whilst matrix exponentiation is a way to efficiently evolve systems with time-independent Hamiltonians, if you only exponentiate a matrix once, you don't much care about the time complexity of doing so. It is mostly of interest because the real real power of these exponentiation methods is as a building block for methods of approximate solutions to the Schr\"odinger equation in the case of time \emph{dependent} Hamiltonians, as we will see in the next section.
+Whilst matrix exponentiation is a way to efficiently evolve systems with time-independent Hamiltonians, if you only exponentiate a matrix once, you don't much care about the time complexity of doing so. It is mostly of interest because the real power of these exponentiation methods is as a building block for methods of approximate solutions to the Schr\"odinger equation in the case of time \emph{dependent} Hamiltonians, as we will see in the next section.
 
 \subsection{Time-ordered exponentials and time-ordered products}
 
-As hinted to earlier, the solution \eqref{eq:formal_solution} is not the whole picture. It can only be taken at face value if the Hamiltonian at each moment in time commutes with itself at all other times [CITE SOMETHING]. In this case, once represented in a specific basis, the solution to the Schr\"odinger equation is again the matrix multiplication
+As hinted to earlier, the solution \eqref{eq:formal_solution} is not the whole picture. It can only be taken at face value if the Hamiltonian at each moment in time commutes with itself at all other times (we will see shortly why this is). If it does---that is, if $[\hat H(t_1^\prime), \hat H(t_2^\prime)] = 0$ for all $t^\prime_1, t^\prime_2 \in [t_0, t]$, then \eqref{eq:formal_solution} is the solution to the Schr\"dinger equation, and once represented in a specific basis can be written
 \begin{align}
 \vec \psi(t) = U(t, t_0) \vec \psi(t_0),
 \end{align}
@@ -93,7 +93,7 @@ with
 \begin{align}
 U(t, t_0) = \ee^{-\frac \ii \hbar \int_{t_0}^t H(t^\prime)\,\dd t^\prime},
 \end{align}
-i.e. with an integral in the exponent rather than a simple multiplication by a time interval. Since matrix addition can be performed elementwise, so can the integral in the exponent, yielding a matrix which once exponentiated will give the evolution operator $U(t, t_0)$ for the solution to the Schr\"odinger equation. If the Hamiltonian at each moment in time does not commute with itself at all other times, however, then the unitary evolution operator for the solution to the Schr\"odinger equation is instead given by the following \emph{time-ordered exponential} [CITE]:
+i.e. with an integral in the exponent rather than a simple multiplication by a time interval. Since matrix addition can be performed elementwise, so can the integral in the exponent, yielding a matrix which once exponentiated will give the evolution operator $U(t, t_0)$ for the solution to the Schr\"odinger equation. If the Hamiltonian at each moment in time does not commute with itself at all other times, however, then the unitary evolution operator for the solution to the Schr\"odinger equation is instead given by the following \emph{time-ordered exponential} \cite[p.~193]{tannor_introduction_2007}:
 \begin{align}\label{eq:time_ordered_exponential}
 U(t, t_0) = \mathcal{T}\left\{\ee^{-\frac \ii \hbar \int_{t_0}^t H(t^\prime)\,\dd t^\prime}\right\}.
 \end{align}
@@ -102,6 +102,8 @@ In this expression, $\mathcal{T}$ denotes the \emph{time-ordering operator}. The
 \begin{align}
 \mathcal{T}\left\{H(4)H(1)H(2)H(5)H(3)\right\} = H(5)H(4)H(3)H(2)H(1).
 \end{align}
+
+We see now why the time-ordering can be neglected when $H(t)$ commutes with itself at all times. When it does, all possible reorderings of a product of copies $H(t)$ are already equal, and so a time-ordering operator leaves the actual value of the product unchanged.
 
 Despite appearances, this time-ordered exponential is perfectly concretely defined via the definitions of all the operations involved that we have described so far, and can---with some effort---be typed into a computer and evaluated directly. Even though this is not how I have evaluated time-ordered exponentials in my simulations of atomic systems, I'll quickly elaborate on this just to emphasise the concreteness of all these operations.
 
@@ -137,8 +139,8 @@ H(t_n^\prime)\cdots H(t_2^\prime)H(t_1^\prime).
 
 This is now a perfectly concrete expression, with each term comprising an integral over an $n$-simplex\footnote{A simplex is the generalisation of a triangle to higher dimensions, i.e. a 3-simplex is a tetrahedron.} of a product of $n$ matrices.
 
-This expression for the unitary evolution operator is called the Dyson series [CITE]. It is not generally used for time-dependent simulations, though it is the basis for time-dependent perturbation theory, and sees use in high energy physics [CITE] for computing transition amplitudes between incoming and outgoing waves in scattering problems (in which $U$ is called the $S$-matrix). In these problems, $H$ is an interaction Hamiltonian containing terms for all particle interactions being considered. Accordingly, the integrand for the $n^\up{th}$ term, being a product of $n$ copies of $H$ evaluated at different times, contains one term for each possible sequence of $n$ particle interactions.
-The integral itself can be considered a sum of transition amplitudes over all possible times that each interaction could have occurred. Indeed, each term corresponds to a Feynman diagram with $n$ nodes [CITE].
+This expression for the unitary evolution operator is called the Dyson series \cite{dyson_s_1949}. It is not generally used for time-dependent simulations, though it is the basis for time-dependent perturbation theory, and sees use in high energy physics \cite{kaplunovsky_perturbation_2016,dyson_s_1949} for computing transition amplitudes between incoming and outgoing waves in scattering problems (in which $U$ is called the $S$-matrix). In these problems, $H$ is an interaction Hamiltonian containing terms for all particle interactions being considered. Accordingly, the integrand for the $n^\up{th}$ term, being a product of $n$ copies of $H$ evaluated at different times, contains one term for each possible sequence of particle interactions.
+The integral itself can be considered a sum of transition amplitudes over all possible times that each interaction could have occurred. Indeed, each term in the Dyson series corresponds to a number of Feynman diagrams with $n$ nodes \cite{kaplunovsky_perturbation_2016}.
 
 The Dyson series isn't really suited to time-dependent simulations, though perturbation theory is useful for approximate analytics. For one, the series must be truncated at some point, and the result won't be a $U$ that is actually unitary.\footnote{Although unitarity is not often a strict requirement - we also frequently solve \eqref{eq:schrodinger_equation_matrix_vector} directly with fourth order Runge--Kutta, which is also not unitary.}. Also, we are typically interested in the intermediate states, not just the final state of a system or an average transition rate, as one might want to compute in a scattering problem.
 
@@ -151,7 +153,7 @@ U(t, t_0) &= \mathcal{T}\left\{\ee^{-\frac \ii \hbar \int_{t_0}^t H(t^\prime)\,\
 
 where here $\upDelta t = (t - t_0)/N$ and $t_n = t_0 + n\upDelta t$. Note that the product limits are written in the reverse of the usual order---this is important in order to produce terms with smaller $n$ on the right and larger $n$ on the left of the resulting product. You can convince yourself that \eqref{eq:dyson_series} is equivalent to \eqref{eq:time_ordered_exp_product} this by replacing the integral in the exponent with a sum---as per the Riemann definition of an integral---and expanding the exponential according to its Taylor series. Expanding each exponential in \eqref{eq:time_ordered_exp_product} as a Taylor Series and collecting terms of equal powers of $H$ then reveals that the two Taylor series are identical.
 
-In any case, \eqref{eq:time_ordered_exp_product} paints an intuitive picture of solving the Schr\"odinger equation: one evolves the initial state vector in time by evolving it according to constant Hamiltonians repeatedly over small time intervals. This has the desirable property that all intermediate state vectors are computed at the intermediate steps, meaning one can study the dynamics of the system and not just obtain the final state. This is of course useful for comparison with experiments, plenty of which involve time-dependent data acquisition and not just post-mortem analysis of some evolution.
+In any case, \eqref{eq:time_ordered_exp_product} paints an intuitive picture of solving the Schr\"odinger equation: one evolves the initial state vector in time by evolving it according to constant Hamiltonians repeatedly over small time intervals\footnote{This is the usual definition of the solution to a differential equation, which is why I prefer to think of the product formula \eqref{eq:time_ordered_exp_product} as the \emph{definition} of the solution to the Schr\"odinger equation, and the time-ordered exponential as merely a shorthand notation for it.}. This has the desirable property that all intermediate state vectors are computed at the intermediate steps, meaning one can study the dynamics of the system and not just obtain the final state. This is of course useful for comparison with experiments, plenty of which involve time-dependent data acquisition and not just post-mortem analysis of some evolution.
 
 Numerically, we can't actually take $N\rightarrow\infty$, or equivalently $\upDelta t \rightarrow 0$, and so we instead choose a $\upDelta t$ smaller than the timescale of any time-dependence of $H$, and step through time using
 
@@ -165,13 +167,13 @@ Thus the case of a time-dependent Hamiltonian reduces to repeated application of
 
 \subsection{The operator product/split-step method}
 
-Here I'll present decompositions similar to \eqref{eq:first_order_product}, but which use variable timesteps to achieve an accuracy to higher order in $\upDelta t$. I'll present them at the same time as addressing another problem, which is that Hamiltonians are often not in a simple enough form to be exponentiated efficiently at all, making \eqref{eq:first_order_product} difficult to evaluate. Often Hamiltonians are a sum of non-commuting operators (such as kinetic and potential terms), with time dependence such that any diagonalisation of the overall Hamiltonian at one point in time will not diagonalise it at another point in time, with the system size large enough for numerical diagonalisation to be prohibitively expensive. In these cases, we can use methods called \emph{split-step} or \emph{operator product} methods, which allow one to approximately exponentiate the entire Hamiltonian based on having exact diagonalisations of its component terms. In the case of time-dependent Hamiltonians, this allows us to avoid rediagonalising at every timestep whenever the time-dependence can be expressed as scalar coefficients multiplying time-independent operators:
+Here I'll review decompositions similar to \eqref{eq:first_order_product}, but which use variable timesteps to achieve an accuracy to higher order in $\upDelta t$. I'll present them at the same time as addressing another problem, which is that Hamiltonians are often not in a simple enough form to be exponentiated efficiently at all, making \eqref{eq:first_order_product} difficult to evaluate. Often Hamiltonians are a sum of non-commuting operators (such as kinetic and potential terms), with time dependence such that any diagonalisation of the overall Hamiltonian at one point in time will not diagonalise it at another point in time, with the system size large enough for numerical diagonalisation to be prohibitively expensive. In these cases, we can use methods called \emph{split-step} or \emph{operator product} methods, which allow one to approximately exponentiate the entire Hamiltonian based on having exact diagonalisations of its component terms. In the case of time-dependent Hamiltonians, this allows us to avoid rediagonalising at every timestep whenever the time-dependence can be expressed as scalar coefficients multiplying time-independent operators:
 \begin{align}
 \hat H(t) = \alpha(t)\hat H_1 + \beta(t)\hat H_2 + \cdots,
 \end{align}
 since multiplication of a matrix by a scalar merely scales its eigenvalues, leaving its eigenbasis unchanged.
 
-There is little downside to having an only approximate exponentiation of the Hamiltonian when the timestepping is already only approximate, so long as we ensure that neither source of error is much greater than the other. To this end I'll show split-step methods that have (global) error $\Ord{\upDelta t}$, $\Ord{\upDelta t^2}$ and $\Ord{\upDelta t^4}$. In section [secref:continuous degrees of freedom], we'll see how this method applies to the case of a spatial wavefunction obeying the Gross--Pitaevskii equation.
+There is little downside to having an only approximate exponentiation of the Hamiltonian when the timestepping is already only approximate, so long as we ensure that neither source of error is much greater than the other. To this end I'll show split-step methods that have (global) error $\Ord{\upDelta t}$, $\Ord{\upDelta t^2}$ and $\Ord{\upDelta t^4}$. In section \ref{sec:continuous_dof}, we'll see how this method applies to the case of a spatial wavefunction obeying the Gross--Pitaevskii equation.
 
 \subsubsection{First order split-step}
 Say we have (the matrix representation of) a Hamiltonian that is the sum of two non-commuting terms:\footnote{From here on, component terms of the Hamiltonian will be written with general time dependence, even though it is understood that these methods are mostly useful for the case where that time dependence can be written as scalar coefficients multiplying otherwise time-independent matrices.}
@@ -203,7 +205,7 @@ So far all we've done is justify \eqref{eq:first_order_product}. Now we'll ackno
 \begin{align}
 U(t_{n+1}, t_n) = \ee^{-\frac \ii \hbar \left(H_1(t_n) + H_2(t_n)\right)\upDelta t} + \Ord{\upDelta t^2}.
 \end{align}
-Using the Baker--Campbell--Hausdorff formula [CITE], we can expand the exponential as:
+Using the Baker--Campbell--Hausdorff formula \cite[p.~158]{tannor_introduction_2007}, we can expand the exponential as:
 \begin{align}
 \ee^{-\frac \ii \hbar \left(H_1(t_n) + H_2(t_n)\right)\upDelta t}
 &= \ee^{-\frac \ii \hbar H_1(t_n)\upDelta t}
@@ -224,7 +226,7 @@ where
 U_1(t_{n+1}, t_n) = \ee^{-\frac \ii \hbar H_1(t_n)\upDelta t}
                     \ee^{-\frac \ii \hbar H_2(t_n)\upDelta t}.
 \end{align}
-Using the diagonalisation method of matrix exponentiation discussed in [SECREF], this unitary $U_1$ can be used to step a state vector through time with only matrix-vector multiplications and scalar exponentiation, where separate diagonalisations of $H_1$ and $H_2$ are either analytically known or pre-computed, even though a diagonalisation of the total Hamiltonian $H$ may not be feasible.
+Using the diagonalisation method of matrix exponentiation discussed in section \ref{sec:matrix_exp_diagonalisation}, this unitary $U_1$ can be used to step a state vector through time with only matrix-vector multiplications and scalar exponentiation, where separate diagonalisations of $H_1$ and $H_2$ are either analytically known or pre-computed, even though a diagonalisation of the total Hamiltonian $H$ may not be feasible.
 
 Crucially, if $H_1$ and $H_2$ act on different subspaces of the overall Hilbert space, with respective dimensionalities $n_1$ and $n_2$, that is, $H_1(t) = \tilde H_1(t)\otimes\mathbb{I}_{n_2} $ and $H_2(t) = \mathbb{I}_{n_1}\otimes\tilde H_2(t)$, where $\mathbb{I}_m$ is the $m\times m$ identity matrix, then the matrix-vector products involved in applying $U_1$ to a state vector can be much faster ($\Ord{n_1^2 n_2 + n_1 n_2^2}$ rather than $\Ord{n_1^2 n_2^2}$) than if the Hamiltonian weren't split into two terms, even if an analytic diagonalisation of the total Hamiltonian were available:
 
@@ -514,7 +516,7 @@ Although I find this argument compelling for second-order split-step, it's less 
 
 % \end{itemize}
 
-\section{Continuous degrees of freedom}
+\section{Continuous degrees of freedom}\label{sec:continuous_dof}
 The single-particle, non-relativistic, scalar Schr\"odinger wave equation, as distinct from the general Schr\"odinger equation [EQREF], is:
 
 [EQUATION].

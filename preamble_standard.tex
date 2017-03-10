@@ -49,7 +49,7 @@
 
 
 % Minion pro for alphanumeric symbols, inlcuding Greek:
-\setmathfont{Minion Pro}[
+\setmathfont{MinionPro}[
     range={up}/{latin,Latin,num,Greek,greek},
     SizeFeatures = {
         {Size = -8.41, Font = MinionPro-Capt},
@@ -57,7 +57,7 @@
         {Size = 13.01-19.91, Font = MinionPro-Subh},
         {Size = 19.91-, Font = MinionPro-Disp}
     }]
-\setmathfont{Minion Pro Italic}[
+\setmathfont{MinionPro-It}[
     range={it}/{latin,Latin,num,Greek,greek},
     SizeFeatures = {
         {Size = -8.41, Font = MinionPro-ItCapt},
@@ -65,7 +65,7 @@
         {Size = 13.01-19.91, Font = MinionPro-ItSubh},
         {Size = 19.91-, Font = MinionPro-ItDisp}
     }]
-\setmathfont{Minion Pro Bold}[
+\setmathfont{MinionPro-Bold}[
     range={bfup}/{latin,Latin,num,Greek,greek},
     SizeFeatures = {
         {Size = -8.41, Font = MinionPro-BoldCapt},
@@ -73,7 +73,7 @@
         {Size = 13.01-19.91, Font = MinionPro-BoldSubh},
         {Size = 19.91-, Font = MinionPro-BoldDisp}
     }]
-\setmathfont{Minion Pro Bold Italic}[
+\setmathfont{MinionPro-BoldIt}[
     range={bfit}/{latin,Latin,num,Greek,greek},
     SizeFeatures = {
         {Size = -8.41, Font = MinionPro-BoldItCapt},
@@ -86,12 +86,12 @@
 \DeclareMathAlphabet{\mathbb}{U}{msb}{m}{n}
 
 % Use swashed Minion Pro for mathcal:
-% \setmathfont[range=cal,Contextuals=Swash]{Minion Pro Italic}
+% \setmathfont[range=cal,Contextuals=Swash]{MinionPro-It}
 
 % Workaround for bug where the above commented out line doesn't work - it works in xelatex and will
 % presumably be fixed for lualatex in the future. In the meantime we define a text font face that
 % uses swashed Minion Pro, and redefine the \mathcal command to use it:
-\newfontface\swash[Contextuals=Swash]{Minion Pro Italic}
+\newfontface\swash[Contextuals=Swash]{MinionPro-It}
 \renewcommand\mathcal[1]{\mathmbox{\textrm{\swash #1}}}
 
 % redefine \texttt to be coloured:
