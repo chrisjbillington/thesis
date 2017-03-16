@@ -11,6 +11,8 @@
 %%%   * Replace ", editor(s)" with "(editor(s))" in incollection/inproceedings
 %%%   * Lowercase and emphasise title of incollection/inproceedings
 %%% ... by R. P. Anderson (Monash University, Australia), 27 May 2014 (updated 16 June 2015)
+%%%   * First initial only of author names
+%%%    Editied by Chris Billington 10 March 2017
 %%% -------------------------------------------------------------------------------------------------
 %%% Modification of BibTeX style file /usr/local/texlive/2009/texmf-dist/bibtex/bst/base/unsrt.bst
 %%% ... by urlbst, version 0.7 (marked with "% urlbst")
@@ -422,7 +424,7 @@ FUNCTION {format.names}
   s num.names$ 'numnames :=
   numnames 'namesleft :=
     { namesleft #0 > }
-    { s nameptr "{ff~}{vv~}{ll}{, jj}" format.name$ 't :=
+    { s nameptr "{f. }{vv~}{ll}{, jj}" format.name$ 't :=
       nameptr #1 >
 	{ namesleft #1 >
 	    { ", " * t * }
