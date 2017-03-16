@@ -8,6 +8,9 @@
 \let\oldtilde\tilde
 \renewcommand{\tilde}[1]{\skew{1.5}\oldtilde{\mathmbox{#1}}}
 
+% \dot:
+\let\olddot\dot
+\renewcommand{\dot}[1]{\skew{1.5}\olddot{\mathmbox{#1}}}
 
 % \vec: Bold vector. Italic or not depending on unicode-math options.
 \renewcommand{\vec}[1]{\symbf{#1}}
