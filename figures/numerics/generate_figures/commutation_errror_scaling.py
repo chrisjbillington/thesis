@@ -3,7 +3,9 @@ import numpy as np
 import h5py
 from matplotlib import rcParams
 import matplotlib
-# matplotlib.use('PDF')
+matplotlib.use('PDF')
+import matplotlib.gridspec as gridspec
+import matplotlib.pyplot as plt
 
 ### Text ###
 rcParams['font.family'] = 'serif'
@@ -30,7 +32,7 @@ rcParams['ytick.minor.size'] = 0
 ### Legends ###
 rcParams['legend.fontsize'] = 8.5 # memoir \scriptsize for default 10pt
 rcParams['legend.borderpad'] = 0
-rcParams['legend.handlelength'] = 1.0 # Big enough for multiple dashes or dots
+rcParams['legend.handlelength'] = 1.5 # Big enough for multiple dashes or dots
 rcParams['legend.handletextpad'] = 0.3
 rcParams['legend.labelspacing'] = 0.3
 rcParams['legend.frameon'] = False
@@ -53,11 +55,61 @@ N = 1024
 b = 3
 x = np.zeros((N, N), dtype=complex)
 
+# Constants for central finite differences:
+D_2ND_ORDER_1 = 1.0/2.0
+
+D_4TH_ORDER_1 = 2.0/3.0
+D_4TH_ORDER_2 = -1.0/12.0
+
+D_6TH_ORDER_1 = 3.0/4.0
+D_6TH_ORDER_2 = -3.0/20.0
+D_6TH_ORDER_3 = 1.0/60.0
+
+D2_2ND_ORDER_0 = -2.0
+D2_2ND_ORDER_1 = 1.0
+
+D2_4TH_ORDER_0 = -5.0/2.0
+D2_4TH_ORDER_1 = 4.0/3.0
+D2_4TH_ORDER_2 = -1.0/12.0
+
 D2_6TH_ORDER_0 = -49.0/18.0
 D2_6TH_ORDER_1 = 3.0/2.0
 D2_6TH_ORDER_2 = -3.0/20.0
 D2_6TH_ORDER_3 = 1.0/90.0
 
+
+# Finite differences matrices - first and second derivatives to second, fourth
+# and sixth order:
+
+grad_2 = np.zeros((N, N))
+grad_2 += np.diag(np.full(N-1, D_2ND_ORDER_1), -1)
+grad_2 += np.diag(np.full(N-1, D_2ND_ORDER_1), +1)
+
+grad2_2 = np.zeros((N, N))
+grad2_2 += np.diag(np.full(N-1, D2_2ND_ORDER_1), -1)
+grad2_2 += np.diag(np.full(N-0, D2_2ND_ORDER_0), +0)
+grad2_2 += np.diag(np.full(N-1, D2_2ND_ORDER_1), +1)
+
+grad_4 = np.zeros((N, N))
+grad_4 += np.diag(np.full(N-2, D_4TH_ORDER_2), -2)
+grad_4 += np.diag(np.full(N-1, D_4TH_ORDER_1), -1)
+grad_4 += np.diag(np.full(N-1, D_4TH_ORDER_1), +1)
+grad_4 += np.diag(np.full(N-2, D_4TH_ORDER_2), +2)
+
+grad2_4 = np.zeros((N, N))
+grad2_4 += np.diag(np.full(N-2, D2_4TH_ORDER_2), -2)
+grad2_4 += np.diag(np.full(N-1, D2_4TH_ORDER_1), -1)
+grad2_4 += np.diag(np.full(N-0, D2_4TH_ORDER_0), +0)
+grad2_4 += np.diag(np.full(N-1, D2_4TH_ORDER_1), +1)
+grad2_4 += np.diag(np.full(N-2, D2_4TH_ORDER_2), +2)
+
+grad_6 = np.zeros((N, N))
+grad_6 += np.diag(np.full(N-3, D_6TH_ORDER_3), -3)
+grad_6 += np.diag(np.full(N-2, D_6TH_ORDER_2), -2)
+grad_6 += np.diag(np.full(N-1, D_6TH_ORDER_1), -1)
+grad_6 += np.diag(np.full(N-1, D_6TH_ORDER_1), +1)
+grad_6 += np.diag(np.full(N-2, D_6TH_ORDER_2), +2)
+grad_6 += np.diag(np.full(N-3, D_6TH_ORDER_3), +3)
 
 grad2_6 = np.zeros((N, N))
 grad2_6 += np.diag(np.full(N-3, D2_6TH_ORDER_3), -3)
@@ -67,6 +119,7 @@ grad2_6 += np.diag(np.full(N-0, D2_6TH_ORDER_0), +0)
 grad2_6 += np.diag(np.full(N-1, D2_6TH_ORDER_1), +1)
 grad2_6 += np.diag(np.full(N-2, D2_6TH_ORDER_2), +2)
 grad2_6 += np.diag(np.full(N-3, D2_6TH_ORDER_3), +3)
+
 
 
 def random_banded_matrix(b):
@@ -139,15 +192,21 @@ def get_err(args):
 
     return sizes, errors
 
-import matplotlib.pyplot as plt
 
-if __name__ == '__main__':
+def generate_data():
     from multiprocessing import Pool
 
-    grad2_6_size, grad2_6_err = get_err((grad2_6, 3))
+    _, grad_2_err = get_err((grad_2, 1))
+    _, grad2_2_err = get_err((grad2_2, 1))
+
+    _, grad_4_err = get_err((grad_4, 2))
+    _, grad2_4_err = get_err((grad2_4, 2))
+
+    _, grad_6_err = get_err((grad_6, 3))
+    _, grad2_6_err = get_err((grad2_6, 3))
 
     pool = Pool(10)
-    # sizes, errors = get_err(random_banded_matrix(b))
+
     with h5py.File('commutation_error_scaling.h5') as f:
         for b in [1, 2, 3]:
             results = pool.map(get_err, [(random_banded_matrix(b), b) for i in range(20)])
@@ -156,20 +215,100 @@ if __name__ == '__main__':
             sizes = results[0][0]
             f[f'{b}:mean_err'] = mean_err
             f[f'{b}:std_err'] = std_err
+
         f[f'sizes'] = sizes
-    
-    # plt.loglog(sizes, mean_err, 'b-')
-    plt.loglog(grad2_6_size, grad2_6_err, 'bo-', label=R'$\nabla^2$ (FD)')
-    plt.fill_between(sizes, (mean_err - std_err), (mean_err + std_err),
-                     alpha=0.5, label='random ($1\sigma$ range)')
-    plt.plot(sizes, mean_err, 'bo')
 
-    plt.plot(sizes, 1/np.sqrt(sizes), 'k--', label=R'$s^{-\frac{1}{2}}$')
-    # plt.plot(sizes, mean_err[-1] * np.sqrt(sizes[-1]/sizes), 'k--')
-    # plt.errorbar(nums, errs/errs[-1], yerr=errs/errs[-1]/np.sqrt(nums))
-    
-    plt.xlabel('submatrix size $s$')
-    plt.ylabel(R'Commutation error $\left(N^{-2}\sum_{ij} |\left[B, C\right]_{ij}|^2\right)^{-\frac{1}{2}}$')
+        f['grad_2_err'] = grad_2_err
+        f['grad2_2_err'] = grad2_2_err
+        f['grad_4_err'] = grad_4_err
+        f['grad2_4_err'] = grad2_4_err
+        f['grad_6_err'] = grad_6_err
+        f['grad2_6_err'] = grad2_6_err
+
+def make_figure():
+    with h5py.File('commutation_error_scaling.h5', 'r') as f:
+        mean_err_random_b1 = f['1:mean_err'][:]
+        std_err_random_b1 = f['1:std_err'][:]
+        mean_err_random_b2 = f['2:mean_err'][:]
+        std_err_random_b2 = f['2:std_err'][:]
+        mean_err_random_b3 = f['3:mean_err'][:]
+        std_err_random_b3 = f['3:std_err'][:]
+        grad_2_err = f['grad_2_err'][:]
+        grad2_2_err = f['grad2_2_err'][:]
+        grad_4_err = f['grad_4_err'][:]
+        grad2_4_err = f['grad2_4_err'][:]
+        grad_6_err = f['grad_6_err'][:]
+        grad2_6_err = f['grad2_6_err'][:]
+        sizes = f['sizes'][:]
+
+
+    FIG_WIDTH = 4.5
+    FIG_HEIGHT = 2.25
+
+    fig = plt.figure(figsize=(FIG_WIDTH, FIG_HEIGHT))
+    gs = gridspec.GridSpec(1, 3, left=0.12, bottom=0.12,
+                           right=0.985, top=0.95, wspace=0.075, hspace=0.075)
+
+    plt.subplot(gs[:,0])
+    plt.gca().tick_params(direction='in')
+    plt.loglog(sizes[1:], 1/np.sqrt(sizes[1:]), 'k--', label=R'$s^{-\frac{1}{2}}$')
+    plt.fill_between(sizes,
+                     (mean_err_random_b1 - std_err_random_b1),
+                     (mean_err_random_b1 + std_err_random_b1),
+                      alpha=0.5)
+    plt.plot(sizes, mean_err_random_b1, 'bo', label='random')
+
+    plt.loglog(sizes, grad2_2_err, 'bo-', label=R'$\nabla^2$ (FD)')
+    plt.loglog(sizes, grad_2_err, 'bo-', label=R'$\nabla^2$ (FD)')
+
+    plt.axis([1, 2000, 0.00003, 1])
+
+    plt.ylabel(R'commutation error')
+
+    # plt.ylabel(R'commutation error $\left(N^{-2}\sum_{ij} '
+    #            R'|\left[B, C\right]_{ij}|^2\right)^{-\frac{1}{2}}$')
+
     plt.legend()
-    plt.show()
 
+    plt.subplot(gs[:,1])
+    plt.gca().tick_params(direction='in')
+    plt.loglog(sizes[1:], 1/np.sqrt(sizes[1:]), 'k--', label=R'$s^{-\frac{1}{2}}$')
+    plt.fill_between(sizes,
+                     (mean_err_random_b2 - std_err_random_b2),
+                     (mean_err_random_b2 + std_err_random_b2),
+                      alpha=0.5)
+    plt.plot(sizes, mean_err_random_b2, 'bo', label='random')
+
+    plt.loglog(sizes, grad2_4_err, 'bo-', label=R'$\nabla^2$ (FD)')
+    plt.loglog(sizes, grad_4_err, 'bo-', label=R'$\nabla^2$ (FD)')
+
+    plt.axis([1, 2000, 0.00003, 1])
+    plt.legend()
+    plt.gca().yaxis.set_ticklabels([])
+
+    plt.subplot(gs[:,2])
+    plt.gca().tick_params(direction='in')
+    plt.loglog(sizes[1:], 1/np.sqrt(sizes[1:]), 'k--', label=R'$s^{-\frac{1}{2}}$')
+    plt.fill_between(sizes,
+                     (mean_err_random_b3 - std_err_random_b3),
+                     (mean_err_random_b3 + std_err_random_b3),
+                      alpha=0.5)
+    plt.plot(sizes, mean_err_random_b3, 'bo', label='random')
+
+    plt.loglog(sizes, grad2_6_err, 'bo-', label=R'$\nabla^2$ (FD)')
+    plt.loglog(sizes, grad_6_err, 'bo-', label=R'$\nabla^2$ (FD)')
+
+    plt.axis([1, 2000, 0.00003, 1])
+    plt.legend()
+    plt.gca().yaxis.set_ticklabels([])
+
+    fig.text(0.455, 0.03, 'submatrix size $s$', va='center')
+    
+
+    
+    # plt.show()
+    plt.savefig('../commutation_error.pdf')
+
+if __name__ == '__main__':
+    # generate_data()
+    make_figure()
