@@ -389,7 +389,7 @@ But the more submatrices, the more commutation error. Extra error can be made up
 \begin{figure}[t]
     \centerfloat
     \includegraphics[width=\textwidth]{figures/numerics/commutation_error.pdf}
-    \caption{Numerical experiment to determine how the commutation error scales with the submatrix size when splitting certain banded matrices into the sum of block-diagonal matrices and using a split-operator method to exponentiate the sum. From left to right, matrices with bandwidth $b=1$, $b=1$ and $b=2$ are considered. For each bandwidth, the matrices for the finite difference schemes of the order resulting in that bandwidth for first and second derivatives are considered, as well as random matrices of the given bandwidth. The random matrices have their real and imaginary parts of their nonzero elements drawn from standard normal distributions. All matrices are $1024\times1024$. Calculations with random matrices were performed on 20 independent random matrices, and the mean and standard deviation (shaded) of the results plotted. The error metric is the \textsc{rms} element of the commutator $[B, C]$, where the orginal matrix $A$ is split into the sum of block-diagonal matrices $B + C$ using a submatrix size of $s$ (desribed in-text). The \textsc{rms} error in a vector propagated with the split-operator method is proportional this error metric. The result in all cases is that the commutator error, and therefore the error in the split-operator method scales with the submatrix size as $s^{-\frac12}$.}
+    \caption{Numerical experiment to determine how the commutation error scales with the submatrix size when splitting certain banded matrices into the sum of block-diagonal matrices and using a split-operator method to exponentiate the sum. From left to right, matrices with bandwidth $b=1$, $b=1$ and $b=2$ are considered. For each bandwidth, the matrices for the finite difference schemes of the order resulting in that bandwidth for first and second derivatives are considered, as well as random matrices of the given bandwidth. The random matrices have real and imaginary parts of each element within the band drawn from standard normal distributions. All matrices are $1024\times1024$. Calculations with random matrices were performed on 20 independent random matrices, and the mean and standard deviation (shaded) of the results plotted. The error metric is the \textsc{rms} element of the commutator $[B, C]$, where the orginal matrix $A$ is split into the sum of block-diagonal matrices $B + C$ using a submatrix size of $s$ (desribed in-text). The \textsc{rms} error in a vector propagated with the split-operator method is proportional this error metric. The result in all cases is that the commutator error, and therefore the error in the split-operator method scales with the submatrix size as $s^{-\frac12}$.}
     \label{fig:commutation_error}
 \end{figure}
 
@@ -510,7 +510,60 @@ Although I find this argument compelling for second-order split-step, it's less 
 
 \section{For everything else, there's fourth-order Runge--Kutta}
 
-[summarise and say why it's more general. Biggest downside is error isn't bounded, other downside related to what the RK4ILIP section tries to improve]
+Fourth-order Runge--Kutta (\textsc{rk4}) is the enduring workhorse of numerical integration methods. Of the Runge--Kutta methods, it offers a good balance of accuracy and computational cost. When a problem does not have the properties that allow manifestly unitary or error-bounded methods to be used, or when enough computing power can be deployed so as to make these concerns irrelevant, and the programmer's time more important, fourth order Runge--Kutta is a good choice.
+
+It is not manifestly unitary, and its error is not bounded. For a given integration step size, the error will eventually diverge exponentially. This divergence can be delayed, but not prevented, by decreasing the step size. Nonetheless for many problems this is not a concern in practice.
+
+The advantages of fourth-order Runge--Kutta are compelling: it's global error is fourth order in the integration timestep, involves four function evaluations per timestep, requires only linear arithmetic operations outside of the function evaluations, and can be applied any problem that can be written in the form
+\begin{align}
+\dv t \vec x = f(\vec x, t),
+\end{align}
+for some (possibly nonlinear) function $f$, where $\vec{x}$ is a vector of dynamical variables, often in our case the components of a state vector, or for classical dynamics the positions and velocities of an ensemble of particles\footnote{For classical particle dynamics, often lower order symplectic methods such as the leapfrog method [CITE] can be preferable, but nonetheless it is hard to overstate the usefulness of a general purpose algorithm such as \textsc{rk4} that can be deployed as a first attempt, or as a plan B once the assumptions required by another algorithm are violated}. Note that this formation allows for initial value problems with coupled \textsc{ode}s, discretised \textsc{pde}s, as well as second or higher order differential equations, since an equation of the form
+\begin{align}
+\dv[2] t \vec x = f(\vec x, t)
+\end{align}
+can be rewritten
+\begin{align}
+\dv t \left(\vec x, \dot{\vec x}\right) = \left(\dot{\vec x}, f(\vec x, \dot{\vec x}, t)\right),
+\end{align}
+treating the time derivative of each element of $\vec x$ as simply another coupled dynamical variable.
+
+Not unrelated to its ease of implementation, the method itself can be stated concisely. Propagation of the dynamical variables for one timestep from time $t$ to time $t + \upDelta t$ is computed as follows:
+\begin{align}
+\vec k_1 &= f(\vec x(t), t),\nonumber\\
+\vec k_2 &= f(\vec x(t) + \tfrac12 \vec k_1\upDelta t, t + \tfrac12\upDelta t),\nonumber\\
+\vec k_3 &= f(\vec x(t) + \tfrac12 \vec k_2\upDelta t, t + \tfrac12\upDelta t),\nonumber\\
+\vec k_4 &= f(\vec x(t) + \vec k_3\upDelta t, t + \upDelta t),\nonumber\\
+\vec x(t + \upDelta t) &= \vec x(t)
++ \tfrac{\upDelta t}6(\vec k_1 + 2\vec k_2 + 2\vec k_3 + \vec k_4).\label{eq:rk4}
+\end{align}
+
+Each step is self-contained, that is, the algorithm does not contain any state from previous steps. This is appealing as it means that $f$ can change discontinuously between timesteps without giving rise to Runge's phenomenon [CITE] in the approximate solutions $\vec x(t)$, as can be the case with multistep methods which do retain some dependency on previous steps.
+$\vec x(t)$ can also be modified discontinuously between steps without causing problems, as is required by Monte-Carlo wavefunction or quantum jump methods [CITE], or even in the imaginary time evolution method [SEE SECTION SECREF] which requires normalisation of the state vector in between steps. Fourth order Runge--Kutta is therefore quite compatible with stochastic processes and many other models which may not be described by a differential equation alone.
+
+One downside is that the timestep used must be much smaller than the timescale on which $\vec x$ changes - even if $\vec x$'s time variation is highly regular. If $x$'s time variation is dominated by the simple accumulation of complex phase at some angular frequency---as is often the case in quantum mechanics---the timesteps used for \textsc{rk4} must be small enough to resolve these circles about the complex plane. This is in contrast to the exponentiation methods, for which an energy offset (and hence overall change in the angular frequency at which the state vector's elements accumulate phase) is largely irrelevant. Energy offsets or use of an interaction picture can mitigate this problem but requires some foresight, and may not be possible if the required energy offsets change in time or are not known analytically in advance. The method I develop in section [SECREF] is a partial remedy for this specific problem, which in my opinion is the biggest weakness of fourth order Runge--Kutta as applied to quantum state evolution, when compared to the unitary methods.
+
+\subsection{Complexity and parallelisability for the Schr\"odinger equation}
+
+Excluding the evaluation of $\vec f$, \textsc{rk4} requires a number of arithmetic operations proportional to the number of elements in $\vec x$, and so contributes time-complexity $\Ord{n}$ to the overall calculation, where $n$ is the number of elements in $\vec x$. Since $f$ itself usually doesn't run in linear time, the computational time complexity of \textsc{rk4} is usually therefore that of evaluating $f$. Its parallelisability also comes down to that of $f$, since equations (\ref{eq:rk4}) above treat each element of $\vec x$ completely independently, with any couplings computed within $f$.
+
+For the Schr\"odinger equation in a concrete basis, $f$ is
+\begin{align}
+f(\vec \psi, t) = -\frac\ii\hbar H(t)\vec \psi,
+\end{align}
+where $\vec \psi$ is the state vector in the given basis and $H(t)$ is the matrix representation of the Hamiltonian in that basis\footnote{For the Gross--Pitaevskii equation this would be a nonlinear $H(\vec \psi, t)$, and everything else in this section still applies.}. Fourth order Runge--Kutta is therefore as computationally expensive and parallelisable as computing the matrix-vector product $H(t)\vec\psi$. In the worst case this multiplication is $\Ord{n^2}$ in the size of the Hilbert space and barely parallelisable at all, if $H$ is dense. But in the common case (as mentioned in section \ref{sec:split-step}), of $H$ being a sum of terms which act on different subspaces, i.e.
+\begin{align}
+H(t) = \sum_{i=1}^N \mathbb{I}_{n_1} \otimes \cdots  \otimes \mathbb{I}_{n_{i-1}}
+\otimes  H_i(t) \otimes  
+ \mathbb{I}_{n_{i+1}} \otimes \cdots \otimes \mathbb{I}_{n_N}
+\end{align}
+where $n_i$ is the dimensionality of the subspace acted on by the $i^\up{th}$ term, then things are much better. If each term is dense, then the overall cost of evaluating the product $H(t)\vec\psi$ is $\Ord{\sum_i n_i^2}$, which can be considerably less than the $\Ord{n^2} = \Ordx{\left(\sum_i n_i\right)^2}$ of evaluating a single matrix-vector product. And if each term is a banded matrix with bandwidth $b_i$, then the individual matrix-vector products are $\Ord{n_i b_i}$ instead of $\Ord{n_i^2}$, and the cost of evaluating $H(t)\vec\psi$ becomes $\Ord{\sum_i n_i b_i}$. This is identical to the earlier result for the split-operator method once the trick of splitting up banded matrices into block-diagonal matrices was applied (section [SECREF]), but with much less work. Representing $H(t)$ as a sum of terms over different subspaces is no extra work---this is the form we are likely to be writing Hamiltonians in already, and constructing the total $H(t)$ is often not useful. Have you ever considered constructing the matrix form of say, $\frac {\hat p_x^2} {2m} + \frac {\hat p_y^2} {2m}$ for some finite difference or pseudospectral representations of $\hat p_x$ and $\hat p_y$? I can't think of a reason to do so. No, we are already applying these operators to different subspaces of the Hilbert space and then summing the results without thinking twice about it, and so the above analysis mostly serves as a reminder that what we are already doing most of the time is in fact very efficient. 
+
+Parallelisation, provided one or more of the matrices are banded, is also straightforward, since if $A$ is banded with bandwidth $b$, then
+\begin{align}
+(A \vec \psi)_i = \sum_{j=-b}^b A_{i, i+j} \psi_j,
+\end{align}
+that is, calculation of an element of $A\vec\psi$ requires only the corresponding element of $\vec \psi$ and its nearest $b$ neighbours on each side. One can therefore divide up the state vector into contiguous regions (in the subspace in which $A$ acts), and compute different elements of the product on different compute threads, requiring an exchange of only $b$ elements at each boundary\footnote{A note about minimising latency: at the start of an \textsc{rk4} substep, have each thread send the required elements at the edges of its region in each subspace to its neighbouring threads \emph{first}. \emph{Then} compute $H(t)\vec\psi$ on the interior elements. If each thread has a sufficiently large workload, then by the time this is complete, the data from neighbouring regions will have arrived and threads will have not spend any time waiting for each other.} between neighbouring threads.
 
 % \subsection{The interaction picture}
 
