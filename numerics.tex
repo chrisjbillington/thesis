@@ -332,24 +332,6 @@ When one or more terms in the Hamiltonian has a matrix representation which is b
     \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c \\
 \end{smallmatrix} \right]\nonumber\\
 & =\left[ \begin{smallmatrix}
-     c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
-     b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
-     a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
-    \mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
-    \mb&\mb& a & b &c/2&d/2&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
-    \mb&\mb&\mb& a &b/2&c/2&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
-    \mb&\mb&\mb&\mb&\md&\md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
-    \mb&\mb&\mb&\mb&\mb&\md&\md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb\\
-    \mb&\mb&\mb&\mb&\mb&\mb&\md&\md&c/2&d/2& e &\mb&\mb&\mb&\mb&\mb\\
-    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&b/2&c/2& d & e &\mb&\mb&\mb&\mb\\
-    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb\\
-    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb\\
-    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b &c/2&d/2&\md&\mb\\
-    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a &b/2&c/2&\md&\md\\
-    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&\md&\md\\
-    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&\md\\
-\end{smallmatrix} \right]
-+\left[ \begin{smallmatrix}
     \md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
     \md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
     \md&\md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
@@ -366,7 +348,25 @@ When one or more terms in the Hamiltonian has a matrix representation which is b
     \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&b/2&c/2& d & e \\
     \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d \\
     \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c \\
-\end{smallmatrix} \right]\\
+\end{smallmatrix} \right]
++ \left[ \begin{smallmatrix}
+     c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+     b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+     a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb& a & b & c & d & e &\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb& a & b &c/2&d/2&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb& a &b/2&c/2&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\md&\md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\md&\md&\md&\md&\md&\mb&\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\md&\md&c/2&d/2& e &\mb&\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&b/2&c/2& d & e &\mb&\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b & c & d & e &\mb&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a & b &c/2&d/2&\md&\mb\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb& a &b/2&c/2&\md&\md\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&\md&\md\\
+    \mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\mb&\md&\md&\md\\
+\end{smallmatrix} \right]\nonumber\\
 &= B + C,
 \end{align}
 where zero-valued matrix elements outside the band are omitted, and those within the band replaced with dots. In this example, we first take the original $16\times16$ matrix $A$, and create four $4\times4$ nonoverlapping submatrices whose diagonals lie along $A$'s main diagonal. These submatrices don't quite cover all of $A$'s nonzero elements, however, so we expand each submatrix (except the final one) from its bottom-right by two elements, making it a $6\times 6$ matrix. The submatrices are no longer non-overlapping, so we take every second one and put it in a matrix $B$, every other one and put it in a matrix $C$ such that $B$ and $C$ are both block diagonal, divide the elements they have in common by two so we don't double count them, and then declare that $A=B+C$. In the general case, the amount of overlap between the submatrices required to encompass all of $A$ is equal to the bandwidth $b$ of $A$ (in this case $b=2$ since $A$ has two non-main diagonals on each side of its main diagonal).
@@ -563,7 +563,7 @@ Parallelisation, provided one or more of the matrices are banded, is also straig
 \begin{align}
 (A \vec \psi)_i = \sum_{j=-b}^b A_{i, i+j} \psi_j,
 \end{align}
-that is, calculation of an element of $A\vec\psi$ requires only the corresponding element of $\vec \psi$ and its nearest $b$ neighbours on each side. One can therefore divide up the state vector into contiguous regions (in the subspace in which $A$ acts), and compute different elements of the product on different compute threads, requiring an exchange of only $b$ elements at each boundary\footnote{A note about minimising latency: at the start of an \textsc{rk4} substep, have each thread send the required elements at the edges of its region in each subspace to its neighbouring threads \emph{first}. \emph{Then} compute $H(t)\vec\psi$ on the interior elements. If each thread has a sufficiently large workload, then by the time this is complete, the data from neighbouring regions will have arrived and threads will have not spend any time waiting for each other.} between neighbouring threads.
+that is, calculation of an element of $A\vec\psi$ requires only the corresponding element of $\vec \psi$ and its nearest $b$ neighbours on each side. One can therefore divide up the state vector into contiguous regions (in the subspace in which $A$ acts), and compute different elements of the product on different compute threads, requiring an exchange of only $b$ elements at each boundary\footnote{A note about minimising latency: at the start of an \textsc{rk4} substep, have each thread send the required elements at the edges of its region in each subspace to its neighbouring threads \emph{first}. \emph{Then} compute $H(t)\vec\psi$ on the interior elements. If each thread has a sufficiently large workload, then by the time this is complete, the data from neighbouring regions will have arrived and threads will not have spent any time waiting for each other.} between neighbouring threads.
 
 % \subsection{The interaction picture}
 
