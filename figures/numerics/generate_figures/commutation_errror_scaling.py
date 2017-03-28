@@ -43,12 +43,22 @@ rcParams['text.latex.preamble'] = ['\\usepackage{upgreek}']
 
 
 colors_rgb = {'red': (200,80,80),
-          'green': (80,200,130),
-          'blue': (80,160,200),
-          'orange': (240,170,50)}
+              'green': (80,200,130),
+              'blue': (80,160,200),
+              'orange': (240,170,50)}
+
 
 # Convert to float colours:
 colors = {name: [chan/255 for chan in value] for name, value in colors_rgb.items()}
+
+random_color = colors['red']
+grad_color = colors['orange']
+grad2_color = colors['blue']
+
+random_marker = 'v'
+grad_marker = 's'
+grad2_marker = 'o'
+
 
 
 N = 1024
@@ -225,6 +235,7 @@ def generate_data():
         f['grad_6_err'] = grad_6_err
         f['grad2_6_err'] = grad2_6_err
 
+
 def make_figure():
     with h5py.File('commutation_error_scaling.h5', 'r') as f:
         mean_err_random_b1 = f['1:mean_err'][:]
@@ -255,15 +266,21 @@ def make_figure():
     plt.fill_between(sizes,
                      (mean_err_random_b1 - std_err_random_b1),
                      (mean_err_random_b1 + std_err_random_b1),
-                      alpha=0.5)
-    plt.plot(sizes, mean_err_random_b1, 'bo', label='random')
+                     facecolor=random_color,
+                     alpha=0.5)
 
-    plt.loglog(sizes, grad2_2_err, 'bo-', label=R'$\nabla^2$ (FD)')
-    plt.loglog(sizes, grad_2_err, 'bo-', label=R'$\nabla^2$ (FD)')
+    plt.plot(sizes, mean_err_random_b1, marker=random_marker, linestyle='',
+             color=random_color, markeredgecolor=random_color, label='random')
+
+    plt.loglog(sizes, grad2_2_err, marker=grad2_marker,
+             color=grad2_color, markeredgecolor=grad2_color, label=R'$\partial_x^2$ 2$^{\rm nd}$ order \textsc {fd}')
+    plt.loglog(sizes, grad_2_err, marker=grad_marker,
+             color=grad_color, markeredgecolor=grad_color, label=R'$\partial_x$ 2$^{\rm nd}$ order \textsc {fd}')
 
     plt.axis([1, 2000, 0.00003, 1])
+    plt.annotate(R'$b=1$', xy=(0.75, 0.925), xycoords='axes fraction')
 
-    plt.ylabel(R'commutation error')
+    plt.ylabel(R'\textsc{rms} commutator matrix element')
 
     # plt.ylabel(R'commutation error $\left(N^{-2}\sum_{ij} '
     #            R'|\left[B, C\right]_{ij}|^2\right)^{-\frac{1}{2}}$')
@@ -276,15 +293,20 @@ def make_figure():
     plt.fill_between(sizes,
                      (mean_err_random_b2 - std_err_random_b2),
                      (mean_err_random_b2 + std_err_random_b2),
-                      alpha=0.5)
-    plt.plot(sizes, mean_err_random_b2, 'bo', label='random')
+                     facecolor=random_color,
+                     alpha=0.5)
+    plt.plot(sizes, mean_err_random_b2, marker=random_marker, linestyle='',
+             color=random_color, markeredgecolor=random_color, label='random')
 
-    plt.loglog(sizes, grad2_4_err, 'bo-', label=R'$\nabla^2$ (FD)')
-    plt.loglog(sizes, grad_4_err, 'bo-', label=R'$\nabla^2$ (FD)')
+    plt.loglog(sizes, grad2_4_err, marker=grad2_marker,
+             color=grad2_color, markeredgecolor=grad2_color, label=R'$\partial_x^2$ 4$^{\rm th}$ order \textsc {fd}')
+    plt.loglog(sizes, grad_4_err, marker=grad_marker,
+             color=grad_color, markeredgecolor=grad_color, label=R'$\partial_x$ 4$^{\rm th}$ order \textsc {fd}')
 
     plt.axis([1, 2000, 0.00003, 1])
     plt.legend()
     plt.gca().yaxis.set_ticklabels([])
+    plt.annotate(R'$b=2$', xy=(0.75, 0.925), xycoords='axes fraction')
 
     plt.subplot(gs[:,2])
     plt.gca().tick_params(direction='in')
@@ -292,15 +314,20 @@ def make_figure():
     plt.fill_between(sizes,
                      (mean_err_random_b3 - std_err_random_b3),
                      (mean_err_random_b3 + std_err_random_b3),
-                      alpha=0.5)
-    plt.plot(sizes, mean_err_random_b3, 'bo', label='random')
+                     facecolor=random_color,
+                     alpha=0.5)
+    plt.plot(sizes, mean_err_random_b3, marker=random_marker, linestyle='',
+             color=random_color, markeredgecolor=random_color, label='random')
 
-    plt.loglog(sizes, grad2_6_err, 'bo-', label=R'$\nabla^2$ (FD)')
-    plt.loglog(sizes, grad_6_err, 'bo-', label=R'$\nabla^2$ (FD)')
+    plt.loglog(sizes, grad2_6_err, marker=grad2_marker,
+             color=grad2_color, markeredgecolor=grad2_color,  label=R'$\partial_x^2$ 6$^{\rm th}$ order \textsc {fd}')
+    plt.loglog(sizes, grad_6_err, marker=grad_marker,
+             color=grad_color, markeredgecolor=grad_color, label=R'$\partial_x$ 6$^{\rm th}$ order \textsc {fd}')
 
     plt.axis([1, 2000, 0.00003, 1])
     plt.legend()
     plt.gca().yaxis.set_ticklabels([])
+    plt.annotate(R'$b=3$', xy=(0.75, 0.925), xycoords='axes fraction')
 
     fig.text(0.455, 0.03, 'submatrix size $s$', va='center')
     
