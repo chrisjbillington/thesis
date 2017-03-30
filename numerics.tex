@@ -606,7 +606,20 @@ Imagine a two dimensional spatial region within which we are solving the single-
 
 Lets say we discretise space in an equally-spaced $N_x\times N_y = 5\times 5$ rectangular grid,\footnote{For the sake of example---$256\times256$ is a more realistic minimum.} with spacing $\upDelta x$, and only represent the wavefunction at those $25$ points in space. The state vector can then be represented by a list of $25$ complex numbers, each taken to be the wavefunction's value at the spatial position corresponding to one gridpoint. This $25$-vector is now a concrete representation of our state vector.
 
-[FIGURE SHOWING UNWRAPPING OF 2D REGION INTO COLUMN VECTOR. PERHAPS 2D REGION IS CONTINUOUS WITH A GRID SUPERIMPOSED ON IT, AND LINES JOIN EACH GRIDPOINT TO THE VECTOR AT RIGHT]
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics[width=\textwidth]{figures/numerics/vector_unravel.pdf}
+    \caption{[Vector unravelling]}
+    \label{fig:vector_unravel}
+\end{figure}
+
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics[width=\textwidth]{figures/numerics/potential_unravel.pdf}
+    \caption{[Potential unravelling]}
+    \label{fig:potential_unravel}
+\end{figure}
+
 
 But at what point did we choose a basis just now---what are the basis vectors? This just looks like discretising space at a certain resolution, rather than the formal process of choosing a basis and projecting the state vector and operators onto each basis vector, as outlined in [SECREF ABOVE]. Assuming what we've done is equivalent to choosing a basis, that basis has a finite number ($25$) of basis vectors, which means it cannot be complete, since state vectors we're approximately representing with it require an infinite number of complex numbers to be described exactly.\footnote{One for each position within the two dimensional space we're representing.} So what do the basis functions look like, and what state vectors have we implicitly excluded from simulation by choosing a basis that is incomplete?
 
