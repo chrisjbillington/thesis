@@ -620,6 +620,14 @@ Lets say we discretise space in an equally-spaced $N_x\times N_y = 5\times 5$ re
     \label{fig:potential_unravel}
 \end{figure}
 
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics[width=\textwidth]{figures/numerics/basis_vecs.pdf}
+    \caption{[basis vecs]}
+    \label{fig:basis_vecs}
+\end{figure}
+
+
 
 But at what point did we choose a basis just now---what are the basis vectors? This just looks like discretising space at a certain resolution, rather than the formal process of choosing a basis and projecting the state vector and operators onto each basis vector, as outlined in [SECREF ABOVE]. Assuming what we've done is equivalent to choosing a basis, that basis has a finite number ($25$) of basis vectors, which means it cannot be complete, since state vectors we're approximately representing with it require an infinite number of complex numbers to be described exactly.\footnote{One for each position within the two dimensional space we're representing.} So what do the basis functions look like, and what state vectors have we implicitly excluded from simulation by choosing a basis that is incomplete?
 
