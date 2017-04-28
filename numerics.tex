@@ -4,7 +4,7 @@ This chapter comprises a summary of some of the methods used by cold atom physic
 
 Here I explain some fundamentals of representing quantum mechanical problems on a computer and then present my favourite algorithms for propagating state vectors and wavefunctions in time. To spoil the surprise: my favourite timestepping algorithms are the 4th-order split-step method and (unoriginally) 4th-order Runge--Kutta, and my favourite method of evaluating spatial derivatives is moderate (6th or so) order finite differences. I think Fourier transforms for spatial derivatives are overrated, and I show that the finite element discrete variable representation (\textsc{fedvr}) is, despite appearances, actually less computationally efficient than simple finite differences for producing equally accurate solutions to the spatial Scr\"odinger equation. I also mention some methods of finding groundstates and other stationary states, and in section \ref{sec:rk4ilip} I present a modification to 4th-order Runge--Kutta that enables it to take larger timesteps for certain problems.
 
-\section{From the abstract to the concrete: neglect, discretisation and representation}
+\section{From the abstract to the concrete: neglect, discretisation and representation}\label{sec:neglect_discretisation}
 
 To numerically simulate a quantum mechanical system, one must evolve a state vector in time according to the Schr\"odinger equation:
 \begin{align}\label{eq:schrodinger_equation}
@@ -586,30 +586,28 @@ The constant factors that big-O notation disregards also favour \textsc{rk4} whe
 % \end{itemize}
 
 \section{Continuous degrees of freedom}\label{sec:continuous_dof}
-The single-particle, non-relativistic, scalar Schr\"odinger wave equation, as distinct from the general Schr\"odinger equation [EQREF], is:
+The single-particle, non-relativistic, scalar Schr\"odinger wave equation, as distinct from the general Schr\"odinger equation \eqref{eq:schrodinger_equation}, is:
+\begin{align}
+\ii\hbar\pdv{}{t}\psi(\vec r, t) = \left[-\frac{\hbar^2}{2m} \nabla^2 + V(\vec r)\right]\psi(\vec r, t).
+\end{align}
+Sinilarly, ss mentioned in [SECREF INTRODUCTION], the equation for the single-particle wavefunction of an atom in a single-component Bose--Einstein condensate is the Gross--Pitaevskii equation
+\begin{align}
+\ii\hbar\pdv{}{t}\psi(\vec r, t) = \left[-\frac{\hbar^2}{2m} \nabla^2 + V(\vec r) + g\abs{\psi(\vec r, t)}^2\right]\psi(\vec r, t),
+\end{align}
+where $\psi(\vec r, t) = \sqrt{N}\braket{\vec r}{\psi(t)}$ is the single-particle wavefunction scaled by the square root number of atoms $N$.
 
-[EQUATION].
-
-As mentioned in [SECREF], the equation for the single-particle wavefunction of an atom in a single-component Bose--Einstein condensate is the Gross--Pitaevskii equation
-
-[EQUATION],
-
-where $\psi(\vec r) = \sqrt{N}\braket{\vec r}{\psi}$ is the single-particle wavefunction scaled by the square root number of atoms $N$.
-
-Both these equations are partial differential equations involving both spatial and temporal derivatives. But in quantum mechanics all state vectors can be mapped to column vectors and all operators to matrices. Spatial wavefunctions are no exception to the former and differential operators such as $\grad^2$ are no exception to the latter. So what do these vectors and operators look like? That depends on whether we choose to discretise space on a grid, or use a functional basis (and on which functional basis we choose). As we'll see below, however, spatial discretisation is actually just a particular choice of functional basis, namely the Fourier basis.
+Both these equations are partial differential equations involving both spatial and temporal derivatives. But in numerical quantum mechanics all state vectors are mapped to column vectors and all operators to matrices. Spatial wavefunctions are no exception to the former and differential operators such as $\grad^2$ are no exception to the latter--these objects can be thought of as infinite-dimensional vectors and matrices. So the above two equations are the general Schr\"odinger equation \eqref{eq:schrodinger_equation}, given specific Hamiltonians, an represented in a concrete---albeit infinite-dimensional--basis. But we can only perform a finite number of computations, so what do these vectors and operators look like once we reduce them to something finite? That depends on whether we choose to discretise space on a grid, or use a functional basis (and on which functional basis we choose). As we'll see, however, spatial discretisation is actually just a special case of a functional basis, namely the Fourier basis, plus an additional approximation or two. The resulting matrices are \emph{banded}, justifying the previous two sections' obsession with dealing with banded matrices efficiently.
 
 \subsection{Spatial discretisation on a uniform grid: the Fourier basis}
 
-[This section incomplete: TODO: Simplify all the algebra by giving everything a single index instead of 2 indices for the 2D examples - it's too confusing with two indices on everything. Distinguish discrete vs continuous eigenkets with a different symbol - maybe a tilde over the $\vec r$ or something like that]
+Imagine a two dimensional spatial region within which we are solving the single-component Gross--Pitaevskii equation, evolving an initial condensate wavefunction in time. Having specified which degrees of freedom we want to simulate (two continuous degrees of freedom, one for each spatial dimension), the next step according to the method outlined in section \ref{sec:neglect_discretisation} is to choose a basis in which to represent this state vector.
 
-Imagine a two dimensional spatial region within which we are solving the single-component Gross--Pitaevskii equation, evolving an initial condensate wavefunction in time. Having specified which degrees of freedom we want to simulate (two continuous degrees of freedom, one for each spatial dimension), the next step according to the method outlined in [SECREF ABOVE] is to choose a basis in which to represent this state vector.
-
-Lets say we discretise space in an equally-spaced $N_x\times N_y = 5\times 5$ rectangular grid,\footnote{For the sake of example---$256\times256$ is a more realistic minimum.} with spacing $\upDelta x$, and only represent the wavefunction at those $25$ points in space. The state vector can then be represented by a list of $25$ complex numbers, each taken to be the wavefunction's value at the spatial position corresponding to one gridpoint. This $25$-vector is now a concrete representation of our state vector.
+Let's say we discretise space in an equally-spaced $n_x\times n_y = 7\times 7$ rectangular grid,\footnote{For the sake of example---$256\times256$ is a more realistic minimum.} with spacings $\upDelta x$ and $\upDelta y$, and only represent the wavefunction at those $49$ points in space. The state vector can then be represented by a list of $49$ complex numbers, each taken to be the wavefunction's value at the spatial position corresponding to one gridpoint. This $49$-vector is now a concrete representation of our state vector (\figref{fig:vector_unravel}).
 
 \begin{figure}[t]
     \centerfloat
     \includegraphics[width=\textwidth]{figures/numerics/vector_unravel.pdf}
-    \caption{[Vector unravelling]}
+    \caption{Discretising a function over two dimensional space on a grid yields a list of coefficients, one for each gridpoint. These can be arranged as a column vector, and in this way a two dimensional wavefunction approximated by a finite-dimensional state vector. Computationally we don't normally treat this state vector as a column vector---it is more convenient to leave it as a two-dimensional array. But conceptually it is a single vector living in the product space of the discretised $x$ and $y$ spaces.}
     \label{fig:vector_unravel}
 \end{figure}
 
@@ -620,6 +618,94 @@ Lets say we discretise space in an equally-spaced $N_x\times N_y = 5\times 5$ re
     \label{fig:potential_unravel}
 \end{figure}
 
+We can also evaluate the potential (and nonlinear term in the case of the Gross--Pitaevskii equation) at each gridpoint and declare this a diagonal operator (\figref{fig:potential_unravel}). Finally, we could use finite differences to compute the Laplacian - equivalent to replacing the Laplacian with a matrix
+\begin{align}
+L = L_x \otimes \mathbb{I}_{n_y} + \mathbb{I}_{n_x} \otimes L_y 
+\end{align} 
+where $L_x$ and $L_y$ are (banded) matrices for finite difference approximations to second derivatives in each direction. We might also use discrete Fourier transforms to evaluate the Laplacian, since
+\begin{align}
+\nabla^2\psi(\vec r) = \mathcal{F}^{-1}\left\{-k^2\mathcal{F}\{\psi(\vec r)\}(\vec k)\right\},
+\end{align}
+where $ k = \abs{\vec k}$.
+
+This is all well and good, and it works. But at what point did we choose a basis just now---what are the basis vectors? This just looks like discretising space at a certain resolution, rather than the formal process of choosing a basis and projecting the state vector and operators onto each basis vector, as outlined in section \ref{sec:neglect_discretisation}. Assuming what we've done is equivalent to choosing a basis, that basis has a finite number ($49$) of basis vectors, which means it cannot be complete, since state vectors we're approximately representing with it require an infinite number of complex numbers to be described exactly.\footnote{One for each position within the two dimensional space we're representing.} So what do the basis functions look like, and what state vectors have we implicitly excluded from simulation by choosing a basis that is incomplete?
+
+Prior to discretising, the spatial wavefunction $\psi(\vec r, t) = \braket{\vec r}{\psi(t)}$ was already the representation of the abstract state vector $\ket{\psi}$ in the ``spatial basis"---a basis in which the basis vectors $\{\ket{\vec r}\}$ are Dirac deltas positioned at each point in space. The value of the wavefunction $\psi(\vec r)$ for a specific $\vec r$ is then simply a coefficient saying how much of the basis vector $\ket{\vec r}$ to include in the overall state vector. What we have \emph{not} done is chosen a subset of these Dirac delta basis functions as our basis. This would be very strange---our representation of the wavefunction would allow it to be nonzero at the gridpoints, but not in between, like a comb. Spatially separated Dirac deltas do not spatially overlap at all; the matrix elements of the kinetic energy operator:
+\begin{align}
+\matrixel{\vec r_i}{\hat K}{\vec r_j} = \int \delta(\vec r - \vec r_i)\left(-\frac{\hbar^2}{2m}\grad^2\right)\delta(\vec r - \vec r_j)\,\dd \vec r
+\end{align}
+would all be zero for $i\neq j$, disallowing any flow of amplitude from one point in space to another by virtue of it not being able to pass through the intervening points.
+
+Neither have we implicitly chosen a set of two-dimensional boxcar functions centred on each gridpoint with width $\upDelta x$ and $\upDelta y$ in each direction respectively. These cover all space in between gridpoints, but are are not twice differentiable everywhere, and hence the kinetic energy operator's matrix elements cannot be evaluated\footnote{Delta functions aren't twice differentiable either, so this itself isn't a fatal flaw--but even if one defines the boxcar functions as the limit of twice differentiable functions becoming increasingly square with some parameter, the limit for the kinetic energy matrix elements between adjacent boxcars goes to infinity.}. No, neither of these bases makes sense. To interpret our spatial grid as a basis, we need a set of functions $\phi_{ij}(r)$ (where $i$ and $j$ are the indices of the gridpoints in the $x$ and $y$ directions respectively) that are orthonormal, are nonzero only at one gridpoint and are zero at all others, and are twice differentiable everywhere in our spatial region. Infinite choices are available, differing in which subspace of the original Hilbert space they cover. A sensible heuristic for choosing one is that we want to be able to represent the state vectors whose wavefunctions do not change much between adjacent gridpoints, and we are happy for the necessary incompleteness of our basis to exclude wavefunctions with any sort of structure in between gridpoints.
+
+\subsubsection{The discrete Fourier transform to the rescue}
+
+It turns out that discretising space in this way can indeed be equivalent to choosing a sensible basis. This is made clearer by first discretising in Fourier space instead, and seeing how this can imply a discretisation in real space.
+
+One possible basis for representing all possible state vectors is the Fourier basis $\{\ket{\vec k_{ij}}\}$. With it, any state vector (whose wavefunction is nonzero only within the \textsc{2d} region) can be represented as the sum of basis vectors whose wavefunctions are \textsc{2d} plane waves, also localised to the 2D region:
+\begin{align}\label{eq:spatial_plane_wave_basis}
+\braket{\vec r}{\vec k_{ij}} = \begin{cases}
+\frac 1 {\sqrt A} e^{i\vec k_{ij}\cdot\vec r}\qquad (\vec r\ \textrm{within \textsc{2d} region})\\
+0\qquad(\vec r\ \textrm{not within \textsc{2d} region}),
+\end{cases}
+\end{align}
+where $A$ is the area of the \textsc{2d} region and the wavevector of each plane wave is
+\begin{align}
+\vec k_{ij} = \left[ \tfrac {2\pi i}{L_x}, \tfrac {2\pi j}{L_y}\right]^\up{T},
+\end{align}
+where $i$ and $j$ are (possibly negative) integers. Any state vector whose wavefunction is localised to the \textsc{2d} region can then be written as the infinite sum:
+\begin{align}
+\ket\psi &= \sum_{i=0}^\infty\sum_{j=0}^\infty \braket{\vec k_{i,j}}\psi \ket{\vec k_{i,j}}\\
+\Rightarrow \psi(\vec r) &= \braket{\vec r}{\psi} = \begin{cases}
+\sum_{i=0}^\infty\sum_{j=0}^\infty \braket{\vec k_{ij}}\psi \frac 1 {\sqrt A} e^{i\vec k_{ij}\cdot\vec r}
+\qquad (\vec r\ \textrm{within \textsc{2d} region})\\
+0\qquad(\vec r\ \textrm{not within \textsc{2d} region}).
+\end{cases}
+\end{align}
+So $\{\braket{\vec k_{ij}}\psi\}$ are simply the coefficients of the \textsc{2d} Fourier series of $\psi(\vec r)$.
+
+What does this have to do with our discretised space? These basis functions $\{\braket{\vec r}{\vec k_{ij}}\}$ don't have the required properties for a spatial discrete basis. For one, there are an infinite number of them, and we require 49 for our 7$\times$7 example. Secondly, all of them are nonzero everywhere within the \textsc{2d} region, whereas we require each basis function to be nonzero at exactly one of out 25 gridpoints.
+
+We can solve the first problem by truncating the Fourier series. By only including basis vectors $\ket{\vec k_{ij}}$ for which:
+\begin{align}
+\begin{cases}
+i \in [-\tfrac{n_x}2, \tfrac{n_x}2 - 1] \qquad (n_x\ \textrm{even})\\
+i \in [-\tfrac{n_x - 1}2, \tfrac{N_x - 1}2] \qquad (n_x\ \textrm{odd})
+\end{cases}
+\end{align}
+and
+\begin{align}
+\begin{cases}
+j \in [-\tfrac{n_y}2, \tfrac{n_y}2 - 1] \qquad (n_y\ \textrm{even})\\
+j \in [-\tfrac{n_y - 1}2, \tfrac{n_y - 1}2] \qquad (n_y\ \textrm{odd})
+\end{cases}
+\end{align}
+we include only the $n_x$ and $n_y$ longest wavelengths in each respective spatial dimension. This is a sensible truncation with a physically meaningful interpretation. By making it, we are no longer able to represent state vectors with short wavelength components. Because the kinetic energy operator, when represented in the Fourier basis, is:
+\begin{align}
+\matrixel{\vec k_{ij}}{\hat K}{\vec k_{i^\prime j^\prime}} = \frac{\hbar^2 k^2}{2m}\updelta_{ii^\prime}\updelta_{jj^\prime},
+\end{align}
+where $k = |\vec k_{ij}|$, by excluding basis vectors with larger wavevectors, we are excluding state vectors with large kinetic energy. Thus the truncation is a kinetic energy cutoff, and is an accurate approximation whenever a simulation is such that the system is unlikely to obtain kinetic energies above the cutoff.\footnote{Because a \emph{square} region in Fourier space is being carved out, by limiting each of $k_x$ and $k_y$ to finite ranges rather than the total wavenumber $k = \sqrt{k_x^2 + k_y^2}$, there is no single kinetic energy cutoff so to speak. Nonetheless there is a maximum wavenumber $k_\up{max} = \min(\{|k_x|\} \cup \{|k_y|\})$ defining a kinetic energy cutoff $K_\up{max} = \hbar^2k_\up{max}^2/(2m)$ below which kinetic energies definitely are representable and above which they may not be.} It also matches our earlier intuition that our basis should represent wavefunctions that don't vary much between gridpoints---here we are discarding short wavelengths and hence limiting wavefunctions we can represent to ones that vary slowly in space compared to the cutoff wavelength.
+
+Now we have a set of basis vectors---a discrete Fourier basis---but their spatial wavefunctions still don't have the property of being nonzero only at a single gridpoint each. On the contrary, each plane wave has has a constant amplitude everywhere in space. But consider the following superposition of Fourier basis vectors:
+\begin{align}\label{eq:DFT_basischange}
+\ket{\vec r_{ij}} = \sum_{i^\prime}^{n_x}\sum_{j^\prime}^{n_y} e^{-i \vec k_{i^\prime j^\prime} \cdot \vec r_{i j}}\ket{\vec k_{i^\prime j^\prime}}
+\end{align}
+
+with $\vec r_{i j} = (i \upDelta x, j \upDelta y)^\up{T}$ and. The set of vectors $\{\ket{\vec r_{i, j}}\}$ are also an orthonormal basis, related to the discrete Fourier basis by a unitary transformation with matrix elements:
+\begin{align}
+U_{\textsc{dft2}, i^\prime j^\prime ij} = \braket{\vec k_{i^\prime j^\prime}}{\vec r_{i j}} = e^{-i \vec k_{i^\prime j^\prime} \cdot \vec r_{i j}}.
+\end{align}
+
+This unitary transformation is in fact a two-dimensional discrete Fourier transform (hence the subscript), and the basis vectors $\{\ket{\vec r_{i, j}}\}$ have spatially localised wavefunctions that are nonzero only at one of the spatial gridpoints. Vectors and matrices can be transformed from their discrete Fourier space representation to their discrete real-space representation and back using the unitary $U_{\textsc{dft2}}$:
+
+\begin{align}
+\vec\psi_\up{real} &= U^\dagger_{\textsc{dft2}} \vec \psi_\up{Fourier}\\
+\vec\psi_\up{Fourier} &= U_{\textsc{dft2}} \vec \psi_\up{real}\\
+A_\up{real} &= U^\dagger_{\textsc{dft2}} A_\up{Fourier} U_{\textsc{dft2}}\\
+A_\up{Fourier} &= U_{\textsc{dft2}} A_\up{Real} U^\dagger_{\textsc{dft2}}.
+\end{align}
+where $\vec\psi_\up{real}$ is the vector of coefficients $\psi_{\up{real},ij}= \braket{\vec r_{ij}}{\psi}$ for representing a state vector in the discrete real space basis, $\vec\psi_\up{Fourier}$ is the vector of coefficients $\psi_{\up{Fourier}, ij} = \braket{\vec k_{ij}}{\psi}$ for the state vector in the discrete Fourier basis, and $A_\up{real}$ and $A_\up{Fourier}$ are the representations of some operator $A$ in the discrete real and Fourier bases respectively, with matrix elements $A_{\up{real}, ij i^\prime j^\prime} = \matrixel{\vec r_{ij}}{\hat A}{\vec r_{i^\prime j^\prime}}$ and $A_{\up{Fourier},ij i^\prime j^\prime} = \matrixel{\vec k_{ij}}{\hat A}{\vec k_{i^\prime j^\prime}}$.
+
 \begin{figure}[t]
     \centerfloat
     \includegraphics[width=\textwidth]{figures/numerics/basis_vecs.pdf}
@@ -627,121 +713,48 @@ Lets say we discretise space in an equally-spaced $N_x\times N_y = 5\times 5$ re
     \label{fig:basis_vecs}
 \end{figure}
 
-
-
-But at what point did we choose a basis just now---what are the basis vectors? This just looks like discretising space at a certain resolution, rather than the formal process of choosing a basis and projecting the state vector and operators onto each basis vector, as outlined in [SECREF ABOVE]. Assuming what we've done is equivalent to choosing a basis, that basis has a finite number ($25$) of basis vectors, which means it cannot be complete, since state vectors we're approximately representing with it require an infinite number of complex numbers to be described exactly.\footnote{One for each position within the two dimensional space we're representing.} So what do the basis functions look like, and what state vectors have we implicitly excluded from simulation by choosing a basis that is incomplete?
-
-As a sidenote, spatial wavefunctions are often described as the representation of wavefuctions in the ``spatial basis"---a basis in which the basis vectors $\{\ket{\vec r}\}$ are Dirac-deltas centred on each point in space [CITE DIRAC'S BOOK MAYBE]. The wavefunction $\psi(\vec r)$ is then simply a coefficient saying how much of the basis vector $\ket{\vec r}$ (the spatial representation of which is a Dirac delta centred on the position $\vec r$) to include in the overall state vector. What we have \emph{not} done is chosen a subset of these Dirac delta basis functions\footnote{Strictly, distribtuions, not functions, but ``basis distributions" just doesn't have the right ring to it.} as our basis. This would be very strange---our representation of the wavefunction would allow it to have a value at one gridpoint, and at the next gridpoint, but not in between. Spatially separated Dirac deltas do not spatially overlap at all; the matrix elements of the kinetic energy operator:
+The spatial representation of the basis vectors $\{\ket{\vec r_{ij}}\}$ can be computed using \eqref{eq:spatial_plane_wave_basis} as:
 \begin{align}
-\matrixel{\vec r_i}{\hat K}{\vec r_j} = \int \delta(\vec r - \vec r_i)\left(-\frac{\hbar^2}{2m}\grad^2\right)\delta(\vec r - \vec r_j)\,\dd \vec r
-\end{align}
-would all be zero for $i\neq j$, disallowing any flow of amplitude from one point in space to another by virtue of it not being able to pass through the intervening points. Neither have we chosen a set of two-dimenstional boxcar functions centred on each gridpoint with width $\upDelta x$ in each direction. These cover all space in between gridpoints, but are no good because they are not twice differentiable everywhere, and hence the kinetic energy operator's matrix elements cannot be evaluated. No, neither of these bases will do. To interpret our spatial grid as a basis, we need a set of functions [$FUNC_{ij}(r)$] (where $i$ and $j$ are the indices of the gridpoints in the $x$ and $y$ directions respectively) that have unit norm, are nonzero only at one gridpoint and are zero at all others, and are twice differentiable everywhere in our spatial region. Infinite choices present themselves to us, differing only in their incompleteness---the choice of which state vectors they will and won't be able to represent. A sensible choice is that we want to be able to represent the state vectors whose wavefunctions do not change much between adjacent gridpoints, and we are happy for the necessary incompleteness of our basis to exclude wavefunctions with any sort of structure in between gridpoints.
-
-\subsubsection{The discrete Fourier transform to the rescue}
-
-It turns out that discretising space in this way can indeed be equivalent to choosing an entirely sensible basis. This is made clearer by thinking in terms of what we have done in Fourier space, which I'll quickly go through now.
-
-One possible basis for representing all possible state vectors is the Fourier basis $\{\ket{\vec k_{i,j}}\}$. With it, any state vector (whose wavefunction is nonzero only within the $2D$ region)can be represented as the sum of basis vectors whose wavefunctions are $2$D plane waves, also localised to the 2D region:
-\begin{align}\label{eq:spatial_plane_wave_basis}
-\braket{\vec r}{\vec k_{i,j}} = \begin{cases}
-\frac 1 {\sqrt A} e^{i\vec k_{i,j}\cdot\vec r}\qquad (\vec r\ \textrm{within 2D region})\\
-0\qquad(\vec r\ \textrm{not within 2D region}),
+\phi_{ij}(\vec r) &= \braket{\vec r}{\vec r_{i j}} = \sum_{i^\prime j^\prime} e^{-\ii \vec k_{i^\prime j^\prime} \cdot \vec r_{i j}}\braket{\vec r}{\vec k_{i^\prime j^\prime}}\\
+\Rightarrow \phi_{ij}(\vec r) &=\begin{cases}
+\sum_{i^\prime j^\prime} \frac 1 {\sqrt A} e^{\ii \vec k_{i^\prime j^\prime} \cdot (\vec r - \vec r_{i j})}\qquad (\vec r\ \textrm{within \textsc{2d} region})\\
+0\qquad(\vec r\ \textrm{not within \textsc{2d} region}),
 \end{cases}
 \end{align}
-where $A$ is the area of the $2D$ region and the wavevector of each plane wave is
-\begin{align}
-\vec k_{i,j} = \left[ \tfrac {2\pi i}{L_x}, \tfrac {2\pi j}{L_y}\right]^\up{T},
-\end{align}
-where $i$ and $j$ are (possibly negative) integers. Any state vector localised to the 2D region can then be written as the infinite sum:
-\begin{align}
-\ket\psi &= \sum_{i=0}^\infty\sum_{j=0}^\infty \braket{\vec k_{i,j}}\psi \ket{\vec k_{i,j}}\\
-\Rightarrow \psi(\vec r) &= \begin{cases}
-\sum_{i=0}^\infty\sum_{j=0}^\infty \braket{\vec k_{i,j}}\psi \frac 1 {\sqrt A} e^{i\vec k_{i,j}\cdot\vec r}
-\qquad (\vec r\ \textrm{within 2D region})\\
-0\qquad(\vec r\ \textrm{not within 2D region}).
-\end{cases}
-\end{align}
-So $\{\braket{\vec k_{i,j}}\psi\}$ are simply the coefficients of the $2$D Fourier series of $\psi(\vec r)$.
+and an example is plotted in \figref{fig:basis_vecs}.
 
-What does this have to do with our discretised space? These basis functions $\{\braket{\vec r}{\vec k_{i,j}}\}$ don't have the required properties for a discrete basis. For one, there are an infinite number of them, and we require $25$. Secondly, all of them are nonzero everywhere within the 2D region, whereas we require each basis function to be nonzero at exactly one of out 25 gridpoints.
-
-We can solve the first problem by truncating the Fourier series. By only including basis vectors $\ket{\vec k_{i,j}}$ for which:
-\begin{align}
-\begin{cases}
-i \in [-\tfrac{N_x}2, \tfrac{N_x}2 - 1] \qquad (N_x\ \textrm{even})\\
-i \in [-\tfrac{N_x - 1}2, \tfrac{N_x - 1}2] \qquad (N_x\ \textrm{odd})
-\end{cases}
-\end{align}
-and
-\begin{align}
-\begin{cases}
-j \in [-\tfrac{N_y}2, \tfrac{N_y}2 - 1] \qquad (N_y\ \textrm{even})\\
-j \in [-\tfrac{N_y - 1}2, \tfrac{N_y - 1}2] \qquad (N_y\ \textrm{odd})
-\end{cases}
-\end{align}
-we include only the $Nx$ and $N_y$ (both equal to $5$ in our example) longest wavelengths in each respective spatial dimension. This is a sensible truncation with a physically meaningful interpretation. By making it, we are no longer able to represent state vectors with short wavelength components. Because the kinetic energy operator, when represented in the Fourier basis, is:
-\begin{align}
-\matrixel{\vec k_{i,j}}{\hat K}{\vec k_{i^\prime j^\prime}} = \frac{\hbar^2 k^2}{2m}\updelta_{ii^\prime}\updelta_{jj^\prime},
-\end{align}
-where $k = |\vec k_i|$, by excluding basis vectors with larger wavevectors, we are excluding state vectors with large kinetic energy. Thus the truncation is a kinetic energy cutoff, and is an accurate approximation whenever a simulation is such that the system is unlikely to obtain kinetic energies above the cutoff.\footnote{Because a \emph{square} region in Fourier space is being carved out, by limiting each of $k_x$ and $k_y$ to finite ranges rather than the total wavenumber $k = \sqrt{k_x^2 + k_y^2}$, there is no single kinetic energy cutoff so to speak. Nonetheless there is a maximum wavenumber $k_\up{max} = \min(\{|k_x|\} \cup \{|k_y|\})$ defining a kinetic energy cutoff $K_\up{max} = \hbar^2k_\up{max}^2/(2m)$ below which kinetic energies definitely are representable and above which they may not be.}
-
-Now we have 25 basis vectors---a discrete Fourier basis---but their spatial wavefunctions still don't have the property of being nonzero only at a single gridpoint each. On the contrary, each plane wave has has a constant amplitude everywhere in space. But consider the following superposition of Fourier basis vectors:
-\begin{align}\label{eq:DFT_basischange}
-\ket{\vec r_{i, j}} = \sum_{i^\prime, j^\prime} e^{-i \vec k_{i^\prime, j^\prime} \cdot \vec r_{i, j}}\ket{\vec k_{i^\prime,j^\prime}}
-\end{align}
-
-with $\vec r_{i, j} = (i \upDelta x, j \upDelta y)^\up{T}$ and $i, j \in [0, 4]$.
-This is simply a unitary transformation of the truncated Fourier basis, with the unitary transformation matrix elements:
-\begin{align}
-\hat U_{\textsc{dft2}; i^\prime, j^\prime;i,j} = \braket{\vec k_{i^\prime, j^\prime}}{\vec r_{i, j}} = e^{-i \vec k_{i^\prime, j^\prime} \cdot \vec r_{i, j}}.
-\end{align}
-This transformation is in fact a discrete Fourier transform (hence the subscript), and the basis vectors $\{\ket{\vec r_{i, j}}\}$ have spatially localised wavefunctions that are nonzero only at one of the spatial gridpoints, so we refer to them as a discrete real-space basis. State vectors and operators can be transformed from their discrete Fourier space representation to their discrete real-space representation and back using the unitary $\hat U_{\textsc{dft2}}$:
-\begin{align}
-\braket{\vec r_{i, j}}{\psi} = \sum_{i^\prime, j^\prime} \hat U^\dagger_{\textsc{dft2}; i, j;i^\prime,j^\prime} \braket{\vec k_{i^\prime, j^\prime}}{\psi}\\
-\braket{\vec k_{i, j}}{\psi} = \sum_{i^\prime, j^\prime} \hat U_{\textsc{dft2}; i^\prime, j^\prime;i,j} \braket{\vec r_{i^\prime, j^\prime}}{\psi}
-\end{align}
-
-[TODO OPERATOR TRANSFORMATIONS ONCE INDEXING IMPROVED AND VECTOR REPRESENTATIONS INTRODUCED]
-
-The spatial representation of the basis vectors $\{\ket{\vec r_{i, j}}\}$ can be computed using \eqref{eq:spatial_plane_wave_basis} as:
-\begin{align}
-\phi_{i,j}(\vec r) &= \braket{\vec r}{\vec r_{i, j}} = \sum_{i^\prime, j^\prime} e^{-i \vec k_{i^\prime, j^\prime} \cdot \vec r_{i, j}}\braket{\vec r}{\vec k_{i^\prime,j^\prime}}\\
-\Rightarrow \phi_{i,j}(\vec r) &=\begin{cases}
-\sum_{i^\prime, j^\prime} \frac 1 {\sqrt A} e^{i \vec k_{i^\prime, j^\prime} \cdot (\vec r - \vec r_{i, j})}\qquad (\vec r\ \textrm{within 2D region})\\
-0\qquad(\vec r\ \textrm{not within 2D region}),
-\end{cases}
-\end{align}
-and are plotted in [TODO MAKE FIGURE].
-
-These functions are sometimes called \emph{periodic sinc functions}, or \emph{band-limited delta functions} [CITE]. Each of them is zero at all of our gridpoints except one, and and they form an orthonormal basis set. They satisfy all of our requirements to be a basis corresponding to our gridded discretisation of space. Thus, the approach of discretising space on a grid is indeed equivalent to choosing a (necessarily incomplete) orthonormal basis in which to work.
+These functions are sometimes called \emph{periodic sinc functions}, or \emph{band-limited delta functions} [CITE]. Each of them is zero at all of the gridpoints except one, and and they form an orthonormal basis set. They satisfy all of our requirements to be a basis corresponding to our gridded discretisation of space. Thus, the approach of discretising space on a grid is indeed equivalent to choosing a (necessarily incomplete) orthonormal basis in which to work.
 
 One thing to note is that these functions are periodic. By using the Fourier basis in the way we have to restrict our basis to cover only a finite region of both Fourier space and real space, we have necessarily imposed periodicity on the problem. This periodicity shows itself when we compute matrix elements of operators in this basis - if we compute the kinetic energy operator's matrix elements for example, it will couple basis states across the boundary of the region, resulting in spatial periodicity---a wavepacket moving rightward through the right boundary will emerge moving rightward from the left boundary.
 
-Perhaps less obviously, the basis is also periodic in Fourier space, and so a wavepacket moving out of the region of Fourier space simulated will also wrap around to the opposite side of Fourier space. In real space, this may appear as a wavepacket undergoing acceleration only to suddenly reverse its velocity as if reflecting off a barrier [SEE FIG TODO FOR EXAMPLE]. This effect is entirely unphysical\footnote{With the possible exception of the region of Fourier space being simulated corresponding to the first Brillouin zone of a lattice potential, in which case these velocity reversals are Bloch oscillations.} and should be taken as a sign that the spatial grid is not fine enough for the dynamics being simulated.
+Perhaps less obviously, the basis is also periodic in Fourier space, and so a wavepacket moving out of the region of Fourier space simulated will also wrap around to the opposite side of Fourier space. In real space, this may appear as a wavepacket undergoing acceleration only to suddenly reverse its velocity as if reflected off a barrier. This effect is entirely unphysical\footnote{With the possible exception of the region of Fourier space being simulated corresponding to the first Brillouin zone of a lattice potential, in which case these velocity reversals would correspond to Bloch oscillations.} and should be taken as a sign that the spatial grid is not fine enough for the dynamics being simulated.
 
-\subsubsection{Matrix elements using DFT basis}
+The discrete Fourier basis we've described is one example of a \emph{spectral basis}, and a numerical method which represented the state vector solely in this basis would be called a \emph{spectral method}. Other choices of basis functions, such as polynomials ([SECREF FEDVR]) or harmonic oscillator basis functions ([SECREF]) lead one to other spectral methods. Perhaps surprisingly, the corresponding discrete spatial basis discussed above, despite being related to the Fourier basis by a unitary transformation, is instead called a \emph{pseudospectral} basis, and a method representing the state vector in this basis a \emph{pseudospectral method}. Although it is ``just another basis", the fact that the basis functions are zero at all spatial points bar one each leads to the possibility of a further approximation when representing some operators, which makes bases with this property especially useful. I describe this in the following section.
 
-We now have a finite basis $\{\ket{\vec r_{i, j}}\}$ that matches our intuitions somewhat for representing a wavefunction at a set of gridpoints. A state vector\footnote{Or rather, a state vector's projection onto the subspace being simulated.} can be represented as a linear sum of these basis vectors, with the coefficient for each one simply being equal to the value of that state vector's wavefunction at the gridpoint where that basis vector is nonzero:
-\begin{align}
-\ket{\psi} = \sum_{i, j} c_{i, j} \ket{\vec r_{i, j}},
+\subsubsection{Vector and matrix elements in the Fourier and pseudospectral bases}
+
+We now have a finite basis $\{\ket{\vec r_{ij}}\}$ that matches our intuitions somewhat for representing a wavefunction at a set of gridpoints. A state vector can be approximated as a linear sum of these basis vectors, with the coefficient for each one being equal to the projection of state vector's wavefunction onto the basis vector's wavefunction:
+\begin{align}\label{eq:vector_elements_pseudospectral}
+\ket{\psi} \approx \sum_{ij} \psi_{ij} \ket{\vec r_{i j}},
 \end{align}
 where
 \begin{align}
-c_{i ,j} = \braket{\vec r_{i, j}}{\psi} = \psi(\vec r_{i, j}).
+\psi_{i j} = \int \phi_{ij}^*(\vec r) \psi(\vec r) \dd{\vec r}
 \end{align}
+In practice however this integral is rarely done. Instead, $\psi_{ij}$ is simply taken to be the value of the exact wavefunction at the point $\vec r_{ij}$. To see why this is a good approximation, imagine that the approximation \eqref{eq:vector_elements_pseudospectral} were exact, that is, $\psi(\vec r)$ were exactly equal to a linear sum of the functions $\{\phi_{ij}(\vec r)\}$. Since all the basis functions are zero at the point $\vec r_{ij}$ except for $\phi_{ij}$, the value of $\psi(\vec r_{ij})$ must come 
 
 Armed with a basis, we can now proceed to calculate matrix elements of the Hamiltonian, and then proceed to solve the differential equation [TODO EQREF 3.3] to determine how the coefficients $\{c_{i,j}\}$ evolve in time.
 
 The specific properties of our basis make it quite useful for a range of common Hamiltonians. For example, let's take the single particle Schr\"odinger Hamiltonian:
 \begin{align}
-\hat H_\textrm{Schr\"o} = -\frac{\hbar^2 \hat k ^2}{2m}  + V(\hat {\vec r}),
+\hat H_\textrm{Schr\"o} = \frac{\hbar^2 \hat k ^2}{2m}  + V(\hat {\vec r}),
 \end{align}
 where $\hat k = |\hat{\vec k}|$.
 
 The two terms, kinetic and potential, are each diagonal in different bases. The kinetic term is diagonal in the Fourier basis:
 
 \begin{align}
-\matrixel{\vec k^\prime}{-\frac{\hbar^2 \hat k^2}{2m}}{\vec k} = -\frac{\hbar^2 k^2}{2m}\delta(\vec k - \vec k^\prime),
+\matrixel{\vec k^\prime}{\frac{\hbar^2 \hat k^2}{2m}}{\vec k} = \frac{\hbar^2 k^2}{2m}\delta(\vec k - \vec k^\prime),
 \end{align}
 where $k = |\vec k|$, and the potential term is diagonal in the spatial basis:
 \begin{align}
@@ -749,7 +762,7 @@ where $k = |\vec k|$, and the potential term is diagonal in the spatial basis:
 \end{align}
 Equivalent relations hold for our discrete Fourier and spatial basis:
 \begin{align}
-\matrixel{\vec k_{i^\prime, j^\prime}}{-\frac{\hbar^2 \hat k^2}{2m}}{\vec k_{i, j}} = -\frac{\hbar^2 k_{i, j}^2}{2m}\delta_{i^\prime i}\delta_{j^\prime j},
+\matrixel{\vec k_{i^\prime, j^\prime}}{\frac{\hbar^2 \hat k^2}{2m}}{\vec k_{i, j}} = \frac{\hbar^2 k_{i, j}^2}{2m}\delta_{i^\prime i}\delta_{j^\prime j},
 \end{align}
 \begin{align}
 \matrixel{\vec r_{i^\prime, j^\prime}}{V(\hat{\vec r})}{\vec r_{i, j}} = V(\vec r_{i, j}) \delta_{i^\prime i}\delta_{j^\prime j}.
