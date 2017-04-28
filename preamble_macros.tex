@@ -18,6 +18,10 @@
 % Bras, kets, brakets, ketbras, expectation values, and matrix elements. Versions that don't resize
 % start with a lowercase letter, versions that will resize start with uppercase letter:
 
+\let\oldabs\abs
+\renewcommand\abs[1]{\oldabs*{#1}}
+\newcommand\Abs[1]{\oldabs{#1}}
+
 \let\oldbra\bra
 \renewcommand\bra[1]{\oldbra*{#1}}
 \newcommand\Bra[1]{\oldbra{#1}}
