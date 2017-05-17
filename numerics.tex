@@ -696,7 +696,7 @@ with $\vec r_{i j} = (i \upDelta x, j \upDelta y)^\up{T}$ and. The set of vector
 U_{\textsc{dft2}, i^\prime j^\prime ij} = \braket{\vec k_{i^\prime j^\prime}}{\vec r_{i j}} = e^{-i \vec k_{i^\prime j^\prime} \cdot \vec r_{i j}}.
 \end{align}
 
-This unitary transformation is in fact a two-dimensional discrete Fourier transform (hence the subscript), and the basis vectors $\{\ket{\vec r_{i, j}}\}$ have spatially localised wavefunctions that are nonzero only at one of the spatial gridpoints. Vectors and matrices can be transformed from their discrete Fourier space representation to their discrete real-space representation and back using the unitary $U_{\textsc{dft2}}$:
+This unitary transformation is in fact a two-dimensional discrete Fourier transform (hence the subscript), and the basis vectors $\{\ket{\vec r_{ij}}\}$ have spatially localised wavefunctions that are nonzero only at one of the spatial gridpoints. Vectors and matrices can be transformed from their discrete Fourier space representation to their discrete real-space representation and back using the unitary $U_{\textsc{dft2}}$:
 
 \begin{align}
 \vec\psi_\up{real} &= U^\dagger_{\textsc{dft2}} \vec \psi_\up{Fourier}\\
@@ -704,7 +704,7 @@ This unitary transformation is in fact a two-dimensional discrete Fourier transf
 A_\up{real} &= U^\dagger_{\textsc{dft2}} A_\up{Fourier} U_{\textsc{dft2}}\\
 A_\up{Fourier} &= U_{\textsc{dft2}} A_\up{Real} U^\dagger_{\textsc{dft2}}.
 \end{align}
-where $\vec\psi_\up{real}$ is the vector of coefficients $\psi_{\up{real},ij}= \braket{\vec r_{ij}}{\psi}$ for representing a state vector in the discrete real space basis, $\vec\psi_\up{Fourier}$ is the vector of coefficients $\psi_{\up{Fourier}, ij} = \braket{\vec k_{ij}}{\psi}$ for the state vector in the discrete Fourier basis, and $A_\up{real}$ and $A_\up{Fourier}$ are the representations of some operator $A$ in the discrete real and Fourier bases respectively, with matrix elements $A_{\up{real}, ij i^\prime j^\prime} = \matrixel{\vec r_{ij}}{\hat A}{\vec r_{i^\prime j^\prime}}$ and $A_{\up{Fourier},ij i^\prime j^\prime} = \matrixel{\vec k_{ij}}{\hat A}{\vec k_{i^\prime j^\prime}}$.
+where $\vec\psi_\up{real}$ is the vector of coefficients $\psi_{\up{real},ij}= \braket{\vec r_{ij}}{\psi}$ for representing a state vector in the discrete real space basis, $\vec\psi_\up{Fourier}$ is the vector of coefficients $\psi_{\up{Fourier}, ij} = \braket{\vec k_{ij}}{\psi}$ for the state vector in the discrete Fourier basis, and $A_\up{real}$ and $A_\up{Fourier}$ are the representations of some operator $\hat A$ in the discrete real and Fourier bases respectively, with matrix elements $A_{\up{real}, ij i^\prime j^\prime} = \matrixel{\vec r_{ij}}{\hat A}{\vec r_{i^\prime j^\prime}}$ and $A_{\up{Fourier},ij i^\prime j^\prime} = \matrixel{\vec k_{ij}}{\hat A}{\vec k_{i^\prime j^\prime}}$.
 
 \begin{figure}[t]
     \centerfloat
@@ -739,13 +739,18 @@ We now have a finite basis $\{\ket{\vec r_{ij}}\}$ that matches our intuitions s
 \end{align}
 where
 \begin{align}
-\psi_{i j} = \int \phi_{ij}^*(\vec r) \psi(\vec r) \dd{\vec r}
+\psi_{i j} = \int \phi_{ij}^*(\vec r) \psi(\vec r) \dd{\vec r}.
 \end{align}
-In practice however this integral is rarely done. Instead, $\psi_{ij}$ is simply taken to be the value of the exact wavefunction at the point $\vec r_{ij}$. To see why this is a good approximation, imagine that the approximation \eqref{eq:vector_elements_pseudospectral} were exact, that is, $\psi(\vec r)$ were exactly equal to a linear sum of the functions $\{\phi_{ij}(\vec r)\}$. Since all the basis functions are zero at the point $\vec r_{ij}$ except for $\phi_{ij}$, the value of $\psi(\vec r_{ij})$ must come 
+In practice however this integral is rarely done. Instead, $\psi_{ij}$ is simply taken to be the value of the exact wavefunction $\psi(\vec r) = \braket{\vec r}{\psi}$ at the point $\vec r = \vec r_{ij}$:
+\begin{align}\label{eq:pseudospectral_vector}
+\psi_{i j} \approx \psi(\vec r_{ij})
+\end{align}
+ To see why this is a good approximation, imagine that the approximation \eqref{eq:vector_elements_pseudospectral} were exact, that is, $\psi(\vec r)$ were exactly equal to a linear sum of the functions $\{\phi_{ij}(\vec r)\}$. Since all the basis functions are zero at the point $\vec r_{ij}$ except for $\phi_{ij}$, the value of $\psi(\vec r_{ij})$ must come solely from the $\psi(\vec r)$'s projection onto the basis function $\phi_{ij}(r)$. Since approximating \eqref{eq:vector_elements_pseudospectral} underlies the results of any simulation that discretises a state vector in this way, treating it as exact for the initial projection onto the discrete basis is making an assumption no worse than that already being relied upon.
 
-Armed with a basis, we can now proceed to calculate matrix elements of the Hamiltonian, and then proceed to solve the differential equation [TODO EQREF 3.3] to determine how the coefficients $\{c_{i,j}\}$ evolve in time.
 
-The specific properties of our basis make it quite useful for a range of common Hamiltonians. For example, let's take the single particle Schr\"odinger Hamiltonian:
+Armed with a basis, and having computed an initial state vector, we can now proceed to calculate matrix elements of the Hamiltonian, after which we can proceed to solve the differential equation \eqref{eq:schrodinger_equation_matrix_vector} to determine how the coefficients $\{\psi_{ij}\}$ evolve in time.
+
+The specific properties of our Fourier/pseudospectral basis make it quite useful for a range of common Hamiltonians. For example, let's take the single particle Schr\"odinger Hamiltonian:
 \begin{align}
 \hat H_\textrm{Schr\"o} = \frac{\hbar^2 \hat k ^2}{2m}  + V(\hat {\vec r}),
 \end{align}
@@ -760,15 +765,49 @@ where $k = |\vec k|$, and the potential term is diagonal in the spatial basis:
 \begin{align}
 \matrixel{\vec r^\prime}{V(\hat{\vec r})}{\vec r} = V(\vec r) \delta(\vec r - \vec r^\prime).
 \end{align}
-Equivalent relations hold for our discrete Fourier and spatial basis:
+The kinetic term is also diagonal our discrete Fourier basis:
 \begin{align}
-\matrixel{\vec k_{i^\prime, j^\prime}}{\frac{\hbar^2 \hat k^2}{2m}}{\vec k_{i, j}} = \frac{\hbar^2 k_{i, j}^2}{2m}\delta_{i^\prime i}\delta_{j^\prime j},
+K_{\up{Fourier}, i^\prime j^\prime i j} = \matrixel{\vec k_{i^\prime j^\prime}}{\frac{\hbar^2 \hat k^2}{2m}}{\vec k_{i j}} = \frac{\hbar^2 k_{i j}^2}{2m}\delta_{i^\prime i}\delta_{j^\prime j},
 \end{align}
+however---perhaps surprisingly---the potential term is not diagonal in the pseudospectral basis, only approximately so:
+\begin{align}\label{eq:pseudospectral_operator}
+V_{\up{real}, i^\prime j^\prime i j} = \matrixel{\vec r_{i^\prime j^\prime}}{V(\hat{\vec r})}{\vec r_{i j}} \approx V(\vec r_{i j}) \delta_{i^\prime i}\delta_{j^\prime j}.
+\end{align}
+Nonetheless, equation \eqref{eq:pseudospectral_operator} is in practice treated as exact for the purpose of computing matrix elements in the discrete basis of operators that are diagonal in the full spatial basis. As above with projecting a state vector using simply the values of a wavefunction at the gridpoints (rather than doing integrals), treating this approximation as exact is equivalent to making the assumption that the potential $V(\vec r)$ is already accurately representable in the discrete basis as:
 \begin{align}
-\matrixel{\vec r_{i^\prime, j^\prime}}{V(\hat{\vec r})}{\vec r_{i, j}} = V(\vec r_{i, j}) \delta_{i^\prime i}\delta_{j^\prime j}.
+V(\vec r) \approx \sum_{ij} V(\vec r_{ij}) \phi^\ast_{ij}(\vec r)\phi_{ij}(\vec r),
+\end{align}
+and so similarly is going to be a good approximation whenever the discrete basis is well able to represent the potential. So long as your discrete basis can accurately represent the state vectors and spatially-diagonal operators you will be using, it makes little difference whether you project those vectors and operators onto the basis using integrals or using simply their values at the gridpoints.
+
+This alternate method of projection has a name, it is called a \emph{collocation}\cite[p227]{tannor_introduction_2007}. Using a collocation instead of a vector projection amounts to treating our basis vectors as a scheme for interpolating state vectors and operators in between gridpoints, given their values at the points. Another way to interpret collocation is to say that we are evaluating the vector projections using integrals after all, however, we're numerically computing those integrals using a quadrature scheme, only evaluating the integrand at the gridpoints and performing a discrete sum\cite[p283]{tannor_introduction_2007}. Collocation is what puts the \emph{pseudo} in pseudospectral---if we evaluated all these operators using integrals instead, we would be treating the discrete spatial basis exactly the same as any spectral basis. Compared to a purely spectral method, pseudospectral methods are of comparable accuracy\cite{orszag_comparison_1972}. This makes intuitive sense---discrete sums instead of integrals is how we are going to do all inner products once we are in the discrete basis---so it can't be much worse to use the same method to approximate operators and initial state vectors. 
+
+Finally we can write all the matrix elements of $\hat H_\textrm{Schr\"o}$ in a single basis, and thus our discretised, pseudospectral two-dimensional Schr\"odinger wave equation:
+\begin{align}
+\ii\hbar\dv{t}\psi_{i^\prime j^\prime}(t) &= \sum_{ij} H_{i^\prime j^\prime, ij}(t) \psi_{ij}(t)\\
+\Rightarrow \ii\hbar\dv{t}\psi_{i^\prime j^\prime}(t) &=\sum_{ij}
+\left[
+U^\dagger_{\textsc{dft2}}K_\up{Fourier}U_{\textsc{dft2}}
+ + V_\up{real}(t)
+\right]_{i^\prime j^\prime, ij}\psi_{ij}(t),
+\end{align}
+where we have used the discrete Fourier transform to transform the kinetic energy operator into the discrete real space basis, and allowed the potential operator to be possibly time dependent.
+
+The right hand side of this expression can now simply be evaluated, yielding the time derivative of each component $\psi_{ij}(t)$ of the discrete state vector $\vec\psi(t)$:
+\begin{align}
+\dv{t}\vec\psi(t) &= -\frac{\ii}{\hbar} \left[U^\dagger_{\textsc{dft2}}K_\up{Fourier}U_{\textsc{dft2}}\vec\psi(t) + V_\up{real}(t)\vec\psi(t)\right]\\
+\Rightarrow \dv{t}\vec\psi(t) &= -\frac{\ii}{\hbar} \left[
+\fft_2^{-1}\left\{\frac{\hbar^2 \tilde{\vec k}^{\odot2}}{2m}\odot\fft_2\left\{\vec\psi(t)\right\}\right\}
++ V(\tilde{\vec r}, t)\odot\vec\psi(t)\right],\label{eq:discrete_fft_de}
+\end{align}
+where $\fft_2$ is the two dimensional fast Fourier transform, an efficient implementation of the discrete Fourier transform (taking time $\Ord{n \log n}$ in the size of each dimension), $\tilde{\vec r}$ is a vector (of vectors) containing each discrete position vector (such that $V(\tilde{\vec r}, t)$ is a vector (of scalars) containing the potential evaluated at each discrete position), $\tilde{\vec k}$ is a vector (of vectors) containing each discrete $k$-vector, such that $\tilde{\vec k}^{\odot2}$ is a vector (of scalars) containing the squared magnitude of each discrete $k$-vector, and 
+$\odot$ represents elementwise multiplication (or exponentiation) of vectors. Other than $\vec \psi$, these vectors are more akin to arrays used in programming languages than to members of a vector space, hence the somewhat clunky notation in \eqref{eq:discrete_fft_de}. Comparison with the continuous version of equation \label{eq:discrete_fft_de}, since elementwise multiplication of functions is a more common operation in mathematics, might be clarifying:
+\begin{align}
+\dv{t}\psi(\vec r, t) &= -\frac{\ii}{\hbar} \left[
+% \mathcal{F}^{-1}\left\{\frac{\hbar^2 k}^2}{2m}\mathcal{F}\left\{\psi(\vec r, t)\right\}\right\}
+% + V(\tilde{\vec r}, t)\odot\vec\psi(t)
+\right],
 \end{align}
 
-But to obtain our differential equation, we need all the matrix elements of $\hat H_\textrm{Schr\"o}$ in a single basis.
 
 \subsection{Finite differences}
 \begin{itemize}
