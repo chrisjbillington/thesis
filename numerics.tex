@@ -455,7 +455,7 @@ For constant error we set $\upDelta t^a s^{-\frac12} \propto 1$ and get that the
 
 So the conlusion is: use the smallest submatrices possible when decomposing a banded matrix into a sum of two block-diagonal matrices. The decrease in computational costs, even when the increased error is compensated for by a smaller timestep, is worth it.
 
-\subsubsection{Limitations and nonlinearity}
+\subsubsection{Limitations and nonlinearity}\label{sec:limitations_nonlinearity}
 
 The split-step method is quite powerful and general. It allows you to approximately decompose the exponentiation of a Hamiltonian into exponentiations of its component terms, in the subspaces that they act on, and avoids exponentiating large banded matrices; saving on computing power immensely compared to exponentiating the full Hamiltonian. It is unitary (when the Hamiltonian is actually Hermitian), and stable---that is, unlike Runge--Kutta methods, the method's truncation error does not grow without limit but is bounded (disregarding floating point rounding error, which is much smaller than the truncation error of either method) \cite{schneider_parallel_2006}. So there is no need to take much smaller timesteps than one otherwise would at earlier times in order to ensure the error remains acceptable at later times---an appropriate timestep at earlier times will be appropriate at later times, \emph{ceteris paribus}. This is extremely appealing. And, whilst higher order split-step methods quickly become unwieldy \cite{schneider_parallel_2006}, fourth order accuracy is quite acceptable for many problems.
 
@@ -507,7 +507,7 @@ So now we can put some conditions on what types of nonlinear operators can be us
 
 Although I find this argument compelling for second-order split-step, it's less obvious that it should hold for fourth-order split-step as well, which, even though it is based on multiple applications of second-order split-step, involves a substep that is backwards in time. `Evaluate the nonlinear operator based on the state vector at this specific time' becomes ambiguous when that moment in time is traversed in both directions by two different sub-steps. However, \cite{javanainen_symbolic_2006} have verified using computer symbolic algebra that indeed, up to even higher order split-step methods, putting the nonlinear density term last in the splitting and always evaluating it using the value of the intermediate state vector immediately prior results in the method having the same order accuracy in $\upDelta t$ as for linear operators only. Given this and my argument above, as well as the reasoning that the second-order split-step method has no way of `knowing' whether it is acting backward in time or not when embedded in a higher-order split step method, I would expect the same to hold for all nonlinear operators meeting the above two conditions, though I haven't shown this explicitly.
 
-\section{For everything else, there's fourth-order Runge--Kutta}
+\section{For everything else, there's fourth-order Runge--Kutta}\label{sec:rk4}
 
 Fourth-order Runge--Kutta (\textsc{rk4}) is the enduring workhorse of numerical integration methods. Of the Runge--Kutta methods, it offers a good balance of accuracy and computational cost. When a problem does not have the properties that allow manifestly unitary or error-bounded methods to be used, or when enough computing power can be deployed so as to make these concerns irrelevant, and the programmer's time more important, fourth order Runge--Kutta is a good choice.
 
@@ -587,7 +587,7 @@ The constant factors that big-O notation disregards also favour \textsc{rk4} whe
 
 \section{Continuous degrees of freedom}\label{sec:continuous_dof}
 The single-particle, non-relativistic, scalar Schr\"odinger wave equation, as distinct from the general Schr\"odinger equation \eqref{eq:schrodinger_equation}, is:
-\begin{align}
+\begin{align}\label{eq:schrodinger_wave_equation}
 \ii\hbar\pdv{}{t}\psi(\vec r, t) = \left[-\frac{\hbar^2}{2m} \nabla^2 + V(\vec r)\right]\psi(\vec r, t).
 \end{align}
 Sinilarly, ss mentioned in [SECREF INTRODUCTION], the equation for the single-particle wavefunction of an atom in a single-component Bose--Einstein condensate is the Gross--Pitaevskii equation
@@ -793,23 +793,51 @@ U^\dagger_{\textsc{dft2}}K_\up{Fourier}U_{\textsc{dft2}}
 where we have used the discrete Fourier transform to transform the kinetic energy operator into the discrete real space basis, and allowed the potential operator to be possibly time dependent.
 
 The right hand side of this expression can now simply be evaluated, yielding the time derivative of each component $\psi_{ij}(t)$ of the discrete state vector $\vec\psi(t)$:
-\begin{align}
+\begin{align}\label{eq:discrete_de_matrices}
 \dv{t}\vec\psi(t) &= -\frac{\ii}{\hbar} \left[U^\dagger_{\textsc{dft2}}K_\up{Fourier}U_{\textsc{dft2}}\vec\psi(t) + V_\up{real}(t)\vec\psi(t)\right]\\
 \Rightarrow \dv{t}\vec\psi(t) &= -\frac{\ii}{\hbar} \left[
 \fft_2^{-1}\left\{\frac{\hbar^2 \tilde{\vec k}^{\odot2}}{2m}\odot\fft_2\left\{\vec\psi(t)\right\}\right\}
 + V(\tilde{\vec r}, t)\odot\vec\psi(t)\right],\label{eq:discrete_fft_de}
 \end{align}
 where $\fft_2$ is the two dimensional fast Fourier transform, an efficient implementation of the discrete Fourier transform (taking time $\Ord{n \log n}$ in the size of each dimension), $\tilde{\vec r}$ is a vector (of vectors) containing each discrete position vector (such that $V(\tilde{\vec r}, t)$ is a vector (of scalars) containing the potential evaluated at each discrete position), $\tilde{\vec k}$ is a vector (of vectors) containing each discrete $k$-vector, such that $\tilde{\vec k}^{\odot2}$ is a vector (of scalars) containing the squared magnitude of each discrete $k$-vector, and 
-$\odot$ represents elementwise multiplication (or exponentiation) of vectors. Other than $\vec \psi$, these vectors are more akin to arrays used in programming languages than to members of a vector space, hence the somewhat clunky notation in \eqref{eq:discrete_fft_de}. Comparison with the continuous version of equation \label{eq:discrete_fft_de}, since elementwise multiplication of functions is a more common operation in mathematics, might be clarifying:
+$\odot$ represents elementwise multiplication (or exponentiation) of vectors. Other than $\vec \psi$, these vectors are more akin to arrays used in programming languages than to members of a vector space, hence the somewhat clunky notation in \eqref{eq:discrete_fft_de}. Comparison with the continuous version of equation \eqref{eq:discrete_fft_de} (i.e. the Schr\"odinger wave equation \eqref{eq:schrodinger_wave_equation}), since elementwise multiplication of functions is a more common operation in mathematics, might be clarifying:
 \begin{align}
-\dv{t}\psi(\vec r, t) &= -\frac{\ii}{\hbar} \left[
-% \mathcal{F}^{-1}\left\{\frac{\hbar^2 k}^2}{2m}\mathcal{F}\left\{\psi(\vec r, t)\right\}\right\}
-% + V(\tilde{\vec r}, t)\odot\vec\psi(t)
+\pdv{t}\psi(\vec r, t) &= -\frac{\ii}{\hbar} \left[
+\mathcal{F}^{-1}\left\{
+\frac{\hbar^2 k^2}{2m}\mathcal{F}\left\{\psi(\vec r, t)\right\}(\vec k)
+\right\}(\vec r)
++ V(\vec r, t)\psi(\vec r, t)
 \right],
 \end{align}
+where $\mathcal{F}$ is the continuous Fourier transform, and $k$ as always is $\abs{\vec k}$. So we see that the discretised Schr\"odinger equation for a single particle in a potential really is the same as evaluating the continuous equation at a set of gridpoints, evaluating spatial derivatives in Fourier space, and replacing the continuous Fourier transform with its discrete equivalent.
 
+Here is an example of how one might compute the \textsc{rhs} of \eqref{eq:discrete_fft_de} in Python code:
+
+\python{code_listings/dpsi_dt_fourier.py}
+
+Where the example is for a time-independent potential. If the potential were time dependent, \texttt{V\_real} within the function \texttt{dpsi\_dt(t, psi)} would need to be replaced with a call to a function that returned an array for \texttt{V\_real} at time \texttt{t}.
+
+Starting with some initial discrete wavefunction, this could then be solved with a forward differencing scheme like fourth order Runge--Kutta (section \ref{sec:rk4}):
+
+\python{code_listings/rk4.py}
+
+The discretised differential equation \eqref{eq:discrete_de_matrices} can also be solved using a split-step method (section \ref{sec:split-step}). For example, here is how one might implement second or fourth-order split-step (only a single timestep shown):
+
+\python{code_listings/fourier_split_step.py}
+
+In all the above code examples, a nonlinear term as in the case of the Gross-Pitaevskii equation can be included in the potential simply by adding a term \texttt{g * np.abs(psi)**2} to the potential \texttt{V\_real} wherever it appears. As discussed in section \ref{sec:limitations_nonlinearity}, the nonlinearity poses no problem for the split-step methods so long as the potential term of the Hamiltonian is evaluated as the outermost sandwich of exponentials in the second-order split step method (which comprises the sub-steps of fourth-order split-step).
 
 \subsection{Finite differences}
+Fourier split-step, or using discrete Fourier transforms to evaluate the spatial derivatives at each gridpoint in order to time-evolve using Runge--Kutta are effective and versatile numerical methods. Replacing the discretised kinetic energy operator with a further approximation in terms of finite differences can however sometimes be of benefit.
+
+The use of discrete Fourier transforms in the previous section can be seen as replacing the Laplacian operator in the Schr\"odinger wave equation \eqref{eq:schrodinger_wave_equation} with the equivalent operation in Fourier space:
+\begin{align}\label{eq:dft_laplacian}
+\nabla^2\psi(\tilde{\vec r}) \approx \fft_2^{-1}\left\{\tilde{\vec k}^{\odot 2} \odot \fft_2\left\{\psi(\tilde{\vec r})\right\}\right\},
+\end{align}
+where as before $\tilde{\vec r}$ is a vector (of vectors) containing the discrete positions, $\vec{\tilde k}$ is a vector (of vectors) containing discrete $k$-vectors such that $\vec{\tilde k}^{\odot 2}$ is a vector (of scalars) containing the squared magnitudes of each $k$-vector, and $\odot$ represents elementwise multiplication or exponentiation of vectors.
+
+Equation \eqref{eq:dft_laplacian} is exact for any wavefunction $\psi(\vec r)$ which is periodic and band-limited to the discrete Fourier space (and thus exactly representable as a vector $\vec \psi$ of its values at each gridpoint), which is why the Fourier method of computing derivatives this way is sometimes said to be accurate to ``infinite order" [CITE] in the grid spacings $\upDelta x$ and $\upDelta y$, in contrast to finite differencing schemes which are second, fourth, sixth order etc. In practice the Fourier method for derivatives is often used for wavefunctions which are \emph{not} intended to be periodic (the periodicity imposed by using the method is unphysical), and so for these it has merely very high order accuracy, not literally infinite. 
+
 \begin{itemize}
     \item Simple, equal to fixed order approximation to fourier method.
     \item But can be made non-periodic
