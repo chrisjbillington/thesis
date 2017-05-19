@@ -779,9 +779,11 @@ V(\vec r) \approx \sum_{ij} V(\vec r_{ij}) \phi^\ast_{ij}(\vec r)\phi_{ij}(\vec 
 \end{align}
 and so similarly is going to be a good approximation whenever the discrete basis is well able to represent the potential. So long as your discrete basis can accurately represent the state vectors and spatially-diagonal operators you will be using, it makes little difference whether you project those vectors and operators onto the basis using integrals or using simply their values at the gridpoints.
 
-This alternate method of projection has a name, it is called a \emph{collocation}\cite[p227]{tannor_introduction_2007}. Using a collocation instead of a vector projection amounts to treating our basis vectors as a scheme for interpolating state vectors and operators in between gridpoints, given their values at the points. Another way to interpret collocation is to say that we are evaluating the vector projections using integrals after all, however, we're numerically computing those integrals using a quadrature scheme, only evaluating the integrand at the gridpoints and performing a discrete sum\cite[p283]{tannor_introduction_2007}. Collocation is what puts the \emph{pseudo} in pseudospectral---if we evaluated all these operators using integrals instead, we would be treating the discrete spatial basis exactly the same as any spectral basis. Compared to a purely spectral method, pseudospectral methods are of comparable accuracy\cite{orszag_comparison_1972}. This makes intuitive sense---discrete sums instead of integrals is how we are going to do all inner products once we are in the discrete basis---so it can't be much worse to use the same method to approximate operators and initial state vectors. 
+This alternate method of projection has a name, it is called \emph{collocation}\cite[p227]{tannor_introduction_2007}. Using collocation instead of vector projection amounts to treating our basis vectors as a scheme for interpolating state vectors and operators in between gridpoints, given their values at the points, rather than as basis vectors to project upon. Another way to interpret collocation is to say that we are evaluating the vector projections using integrals after all, however, we're numerically computing those integrals using a quadrature scheme, only evaluating the integrand at the gridpoints and performing a discrete sum\cite[p283]{tannor_introduction_2007}. Collocation is what puts the \emph{pseudo} in pseudospectral---if we evaluated all these operators using integrals instead, we would be treating the discrete spatial basis exactly the same as any spectral basis. 
 
-Finally we can write all the matrix elements of $\hat H_\textrm{Schr\"o}$ in a single basis, and thus our discretised, pseudospectral two-dimensional Schr\"odinger wave equation:
+Compared to a purely spectral method, pseudospectral methods are of comparable accuracy\cite{orszag_comparison_1972}. This makes intuitive sense---discrete sums instead of integrals is how we are going to do all inner products once we are in the discrete basis---so it can't be much worse to use the same method to approximate operators and initial state vectors. The sole downside of pseudospectral methods, according to \cite{orszag_comparison_1972}, is that the error can lead to instability in the presence of certain nonlinearities. Specifically, if long wavelength waves interact in a way that would produce wavelengths shorter than two grid spacings (the Nyquist wavelength), pseudospectral methods will produce longer wavelength waves instead, whereas in a purely spectral method the interaction would not occur, being due to couplings to a fourier mode outside the discrete Fourier basis. This \emph{aliasing} can cause instability, but can be circumvented with smoothing techniques \cite{phillips_example_1959}. This is no great downside: if you want to simulate short length scales, you need to choose a grid spacing small enough to represent them, whereas if short wavelengths are produced despite your willingness to ignore them, you must smooth them away before they are aliased into long wavelengths that you do care about.
+
+Finally, armed with a kinetic energy operator in Fourier space and a pseudospectral approximation to the potential operator in real space, we can write all the matrix elements of $\hat H_\textrm{Schr\"o}$ in a single basis, and thus our discretised, pseudospectral two-dimensional Schr\"odinger wave equation:
 \begin{align}
 \ii\hbar\dv{t}\psi_{i^\prime j^\prime}(t) &= \sum_{ij} H_{i^\prime j^\prime, ij}(t) \psi_{ij}(t)\\
 \Rightarrow \ii\hbar\dv{t}\psi_{i^\prime j^\prime}(t) &=\sum_{ij}
@@ -821,28 +823,81 @@ Starting with some initial discrete wavefunction, this could then be solved with
 
 \python{code_listings/rk4.py}
 
-The discretised differential equation \eqref{eq:discrete_de_matrices} can also be solved using a split-step method (section \ref{sec:split-step}). For example, here is how one might implement second or fourth-order split-step (only a single timestep shown):
+The discretised differential equation \eqref{eq:discrete_de_matrices} can also be solved using a split-step method (section \ref{sec:split-step}), since the Hamiltonian matches the requirements of being written as a sum of terms for which individually an eigenbasis is known (the discrete real space basis for the potential term, and the Fourier basis for the kinetic term). For example, here is how one might implement second or fourth-order split-step (only a single timestep shown):
 
 \python{code_listings/fourier_split_step.py}
 
 In all the above code examples, a nonlinear term as in the case of the Gross-Pitaevskii equation can be included in the potential simply by adding a term \texttt{g * np.abs(psi)**2} to the potential \texttt{V\_real} wherever it appears. As discussed in section \ref{sec:limitations_nonlinearity}, the nonlinearity poses no problem for the split-step methods so long as the potential term of the Hamiltonian is evaluated as the outermost sandwich of exponentials in the second-order split step method (which comprises the sub-steps of fourth-order split-step).
 
 \subsection{Finite differences}
-Fourier split-step, or using discrete Fourier transforms to evaluate the spatial derivatives at each gridpoint in order to time-evolve using Runge--Kutta are effective and versatile numerical methods. Replacing the discretised kinetic energy operator with a further approximation in terms of finite differences can however sometimes be of benefit.
+Fourier split-step, or using discrete Fourier transforms to evaluate the spatial derivatives at each gridpoint in order to time-evolve using Runge--Kutta are effective and versatile numerical methods.
 
 The use of discrete Fourier transforms in the previous section can be seen as replacing the Laplacian operator in the Schr\"odinger wave equation \eqref{eq:schrodinger_wave_equation} with the equivalent operation in Fourier space:
 \begin{align}\label{eq:dft_laplacian}
-\nabla^2\psi(\tilde{\vec r}) \approx \fft_2^{-1}\left\{\tilde{\vec k}^{\odot 2} \odot \fft_2\left\{\psi(\tilde{\vec r})\right\}\right\},
+\nabla^2\psi(\tilde{\vec r}) \approx \fft_2^{-1}\left\{-\tilde{\vec k}^{\odot 2} \odot \fft_2\left\{\psi(\tilde{\vec r})\right\}\right\},
 \end{align}
-where as before $\tilde{\vec r}$ is a vector (of vectors) containing the discrete positions, $\vec{\tilde k}$ is a vector (of vectors) containing discrete $k$-vectors such that $\vec{\tilde k}^{\odot 2}$ is a vector (of scalars) containing the squared magnitudes of each $k$-vector, and $\odot$ represents elementwise multiplication or exponentiation of vectors.
+where as before $\tilde{\vec r}$ is a vector (of vectors) containing the discrete positions, $\vec{\tilde k}$ is a vector (of vectors) containing discrete $k$-vectors such that $\vec{\tilde k}^{\odot 2}$ is a vector (of scalars) containing the squared magnitudes of each $k$-vector, and $\odot$ represents elementwise multiplication or exponentiation of vectors. More generally for any derivative,
+\begin{align}\label{eq:dft_derivative}
+\pdv{x}\psi(\tilde{\vec r}) \approx \fft_2^{-1}\left\{\ii\tilde{\vec k}_x \odot \fft_2\left\{\psi(\tilde{\vec r})\right\}\right\},
+\end{align}
+where $\tilde{\vec k}_x$ is a vector (of scalars) containing the discrete angular wavenumbers for the $x$ spatial dimension.
 
-Equation \eqref{eq:dft_laplacian} is exact for any wavefunction $\psi(\vec r)$ which is periodic and band-limited to the discrete Fourier space (and thus exactly representable as a vector $\vec \psi$ of its values at each gridpoint), which is why the Fourier method of computing derivatives this way is sometimes said to be accurate to ``infinite order" [CITE] in the grid spacings $\upDelta x$ and $\upDelta y$, in contrast to finite differencing schemes which are second, fourth, sixth order etc. In practice the Fourier method for derivatives is often used for wavefunctions which are \emph{not} intended to be periodic (the periodicity imposed by using the method is unphysical), and so for these it has merely very high order accuracy, not literally infinite. 
+Equations \eqref{eq:dft_laplacian} and \eqref{eq:dft_derivative} are exact for any wavefunction $\psi(\vec r)$ which is periodic and band-limited to the discrete Fourier space (and thus exactly representable as a vector $\vec \psi$ of its values at each gridpoint), which is why the Fourier method of computing derivatives this way is sometimes said to be accurate to ``infinite order" [CITE] in the grid spacings $\upDelta x$ and $\upDelta y$, in contrast to fixed-order approximations to derivatives which are second, fourth, sixth order etc. In practice the Fourier method for derivatives is often used for wavefunctions which are \emph{not} intended to be periodic (the periodicity imposed by using the method is unphysical), and so for these it has merely very high order accuracy, not literally infinite. 
+
+In any case, such high accuracy is not often necessary---if one is using only an $\Ord{\upDelta t^4}$ accurate timestepping scheme, then the timestepping may be the limiting factor in overall accuracy and it might be wise to decrease the accuracy of computing spatial derivatives if there is otherwise a benefit to doing so.
+
+To that end, the Fourier method of derivatives may be replaced with \emph{finite differences} instead. Although finite differences are usually derived as approximations to derivatives directly from the definition of the derivative without reference to discrete Fourier transforms, they can be considered fixed-order approximations to the Fourier method \cite{fornberg_pseudospectral_1987}. Thus operators whose form in Fourier space corresponds to a derivative of some order can be approximated with finite differences:
+\begin{align}
+U^\dagger_{\textsc{dft2}} k_x U_{\textsc{dft2}}\psi(\tilde{\vec r}) = 
+-\ii\delta^{(n)}_{\upDelta x} \otimes \mathbb{I}_{n_y}\psi(\tilde{\vec r}) + \Ord{\upDelta x^n}
+\end{align} 
+where $k_x$ is the diagonal matrix of the discrete angular wavenumbers for the $x$ spatial dimension and $\delta^{(n)}_{\upDelta x}$ is the matrix representing $n^\up{th}$ order finite difference approximation to the first derivative using grid spacing $\upDelta x$. The matrix elements of this and some other central finite differences are shown in \tableref{table:fd_matrixels}.
+
+\begin{table}\label{table:fd_matrixels}
+\centering
+\begin{tabular}[c]{|r||rrrrrrr|}
+\hline
+ & $k=-3$ & $k=-2$ & $k=-1$ & $k=0$ & $k=1$ & $k=2$ & $k=3$\\
+\hline
+$\upDelta x\left(\delta^{(2)}_{\upDelta x}\right)_{i, i+k}$ 
+& & & $-\frac{1}{2}$ & $0$ & $\frac{1}{2}$ & & \\
+$\upDelta x\left(\delta^{(4)}_{\upDelta x}\right)_{i, i+k}$ 
+& & $\frac{1}{12}$ & $-\frac{2}{3}$ & $0$ & $\frac{2}{3}$ & $-\frac{1}{12}$ & \\
+$\upDelta x\left(\delta^{(6)}_{\upDelta x}\right)_{i, i+k}$ 
+& $-\frac{1}{60}$ & $\frac{3}{20}$ & $-\frac{3}{4}$ & $0$ & $\frac{3}{4}$ & $-\frac{3}{20}$ & $\frac{1}{60}$\\
+$\upDelta x^2\left(\delta^{2 (2)}_{\upDelta x}\right)_{i, i+k}$ 
+& & & $1$ & $-2$ & $1$ & & \\
+$\upDelta x^2\left(\delta^{2 (4)}_{\upDelta x}\right)_{i, i+k}$ 
+& & $-\frac{1}{12}$ & $\frac{4}{3}$ & $-\frac{5}{2}$ & $\frac{4}{3}$ & $-\frac{1}{12}$ & \\
+$\upDelta x^2\left(\delta^{2 (6)}_{\upDelta x}\right)_{i, i+k}$ 
+& $\frac{1}{90}$ & $-\frac{3}{20}$ & $\frac{3}{2}$ & $-\frac{49}{18}$ & $\frac{3}{2}$ & $-\frac{3}{20}$ & $\frac{1}{90}$\\
+\hline
+\end{tabular}
+\caption{Matrix elements \cite{fornberg_generation_1988} for some finite-differencing schemes for first ($\delta^{(n)}_{\upDelta x}$) and second ($\delta^{2 (n)}_{\upDelta x}$) derivatives using central finite differences of various orders $n$ for uniform grid spacing $\upDelta x$. All finite difference matrices are banded; each column here shows the matrix elements of $k^\up{th}$ diagonal, which are all identical. Elements outside of each matrix's band are left blank. Each matrix element is shown multiplied by factors of $\upDelta x$ for clarity.}
+\end{table}
+
+The fact that the finite difference matrices are banded allows them to applied as a ``stencil" to a discrete state vector, computing an approximation to some linear sum of derivative operators at each point of discrete space by consideration of only that point and a small number of surrounding point. For example, a $\Ord{\upDelta x^2}$ approximation to the kinetic energy operator may be evaluated at each point as:
+\begin{align}
+U^\dagger_{\textsc{dft2}} \frac{\hbar^2 (k_x^2 + k_y^2)}{2m} U_{\textsc{dft2}}\psi(\tilde{\vec r}) = 
+-\ii\delta^{(n)}_{\upDelta x} \otimes \mathbb{I}_{n_y}\psi(\tilde{\vec r}) + \Ord{\upDelta x^n}
+\end{align} 
+
+[bandedness and the fact that each operator acts only in one dimension means they can be applied as a stencil, for example the laplacian:]
+
+[finite differences also compatible with non-uniformly spaced grids, leading to different matrix elements \cite{fornberg_generation_1988}, and breaking the interpretation of them as approximations to the Fourier method of computing derivatives, since discrete fourier transforms require uniformly spaced grids. Non-uniform grids can be very useful for some physics problems, such as modelling electron wavefunctions in a coulomb potential, in which energy scales are much larger, and hence wavelengths smaller, at small distances from the centre of the potential than large distances. For those problems one could transform the schrodinger equation into spherical coordinates and have a non-uniform grid in the radial direction. This point is made by [cite FEDVR paper] in the context of a finite element method [see section blah], but it's worth noting that finite differences, which are simpler to implement than finite elements, are also compatible with non uniform grids such as this.]
+
+\begin{align}
+\delta^{(2)}_{x, \upDelta x}\left[\psi\right](\vec r_{ij}) = 
+\frac{1}{2\upDelta x}\left(\psi(x_{i + 1}, y_j) - \psi(x_{i - 1}, y_j)\right)\\
+\frac{1}{2\upDelta x}\left(\psi(x_{i + 1}, y_j) - \psi(x_{i - 1}, y_j)\right)\\
+\end{align}
+
 
 \begin{itemize}
     \item Simple, equal to fixed order approximation to fourier method.
     \item But can be made non-periodic
     \item Computationally efficient compared to FFTs in Runge--Kutta.
-    \item Computationally efficient compared to FFTs in split-step (banded matrices amentable to splitting into sum of two block-diagonal matrices).
+    \item Computationally efficient compared to FFTs in split-step (banded matrices amenable to splitting into sum of two block-diagonal matrices).
     \item Parallelisable in both cases, with number of points needing to be exchanged related to the order of the finite difference (2nd order, 1 point, 4th order, 2 points etc).
     \item Single-core efficiecy compared to FFTs not observable in practice on current computers---to see it you need more points than fit in CPU cache and so both of them are limited by memory bandwidth and $\Ord{n}$ with big coefficient. But FD are parallelisable without shared data, whereas parallel FFTs scale poorly - the amount of data needing to be sent per node increases with the number of nodes. But, on a GPU where all data is available, parallel FFTs can be pretty good.
     \item Also good compared to FFTs in that many problems are not actually periodic, and imposing periodicity on them can cause problems - finite differences give you a fair bit of freedom to make your own boundary conditions.
