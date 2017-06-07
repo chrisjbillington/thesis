@@ -41,7 +41,8 @@ import matplotlib.dates as mdates
 plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
 # plt.gca().xaxis.set_major_locator(mdates.DayLocator())
 
-plt.step(dates, wordcounts, where='post')
+# plt.step(dates, wordcounts, where='post')
+plt.plot(dates, wordcounts, 'ko', markersize=1)
 plt.grid(True)
 plt.ylabel('wordcount')
 
