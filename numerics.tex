@@ -970,7 +970,73 @@ Why is this exciting? Well, it means that the operator can be written like this:
 
 Which is very similar to the splitting of finite-difference matrices in section [SECREF], and in the same way allows the matrix or its exponentiation to be efficiently applied to a state vector in parallel. The difference between this and the finite differences case is the number of points of overlap between the two matrices, which corresponds to the amount of data that must be transferred between parallel threads or cluster nodes during a parallel computation. In finite differences, the number of points that must be exchanged at boundaries in each step or sub-step of whichever time propagation method is used is equal to the bandwidth of the matrix. In \textsc{fedvr}, so long as the boundaries of the regions of space assigned to each thread or cluster node aligns with the border between two elements, \emph{only one} point must be exchanged. Increasing the number of points within each element - but reducing the number of elements so as to keep the total number of points constant, decreases the discretisation error of the method, but still, only one point needs to be exchanged at boundaries. Whereas with finite differences, increasing the order of the finite difference scheme requires more points to be exchanged at the boundaries. So it would seem that \textsc{fedvr} ought to scale much better in parallel implementations, which is a large part of its appeal [CITE].
 
-However, I've noticed that when using both \textsc{fedvr} and finite differences to simulate Bose--Einstein condensates using the Gross--Pitaevskii equation, smaller timesteps are required when using the \textsc{fedvr} method [SHOULD I SHOW THIS EXPLICITLY?] in otherwise comparable setups. By this I mean that, without damping, the error of the \textsc{gpe} simulated using \textsc{rk4} always eventually diverges, but there is a timestep size at which is does so almost immediately, and so in practice timesteps smaller than this are required (how much smaller depending on how long you want to simulate for). Similarly in split-step methods, although the error is bounded, there is a timestep size at which the error rapidly grows to that bound and the wavefunction no longer even approximately resembles the true solution. Below this threshold timestep, the error scales as $\Ord{\upDelta t^4}$ for \textsc{rk4}, and $\Ord{\upDelta t^4}$, $\Ord{\upDelta t^2}$, $\Ord{\upDelta t}$ for fourth, second, and first order split-step respectively, as expected. But in practice, all these methods are so accurate that one desires to use the largest timestep one can without this blowup (or soft-blowup in the case of the unitary split-step methods) occurring during the time interval one wants to simulate. And my observation was that the threshold timestep is always smaller for \textsc{fedvr} than for finite differences or the Fourier method for determining spatial derivatives, necessitating smaller timesteps for stability or the same degree of pseudo-stability.
+However, I've noticed that when using both \textsc{fedvr} and finite differences to simulate Bose--Einstein condensates using the Gross--Pitaevskii equation, smaller timesteps are required when using the \textsc{fedvr} method [SHOULD I SHOW THIS EXPLICITLY?] in otherwise comparable setups. By this I mean that, without damping, the error of the \textsc{gpe} simulated using \textsc{rk4} (which is a conditionally stable algorithm), there is a timestep size at which the simulation is unstable and diverges. Similarly in split-step methods, although the error is bounded, there is a timestep size at which the error rapidly grows to that bound and the wavefunction no longer even approximately resembles the true solution. Below this threshold timestep, the error scales as $\Ord{\upDelta t^4}$ for \textsc{rk4}, and $\Ord{\upDelta t^4}$, $\Ord{\upDelta t^2}$, $\Ord{\upDelta t}$ for fourth, second, and first order split-step respectively, as expected. But in practice, all these methods are so accurate that one desires to use the largest timestep one can without this blowup (or soft-blowup in the case of the unitary split-step methods) occurring during the time interval one wants to simulate. And my observation was that the threshold timestep is always smaller for \textsc{fedvr} than for finite differences or the Fourier method for determining spatial derivatives, necessitating smaller timesteps for stability or the same degree of pseudo-stability.
+
+So why is this? For \textsc{rk4}, what is the stability critereon and why might \textsc{fedvr} violate it mkore easily than finite differences? And how might we understand the sudden decrease in accuracy of the split-step methods at a similar threshold timestep size, despite them being unconditionally stable?
+
+The stability critereon for \textsc{rk4} when applied to a linear differential equation of the form:
+
+\begin{align}
+\dv{\vec\psi}{t} = A\vec\psi,
+\end{align}
+where A is a matrix with all imaginary eigenvalues (as is the case for Hamiltonian evolution where $A=-\frac \ii \hbar H$), is\cite{caplan_numerical_2011-1}:
+\begin{align}
+\upDelta t < \frac{2 \sqrt 2}{|\lambda|_\up {max}}
+\end{align}
+where $|\lambda|_\up {max}$ is the absolute value of the largest (by absolute value) eigenvalue of $A$.
+
+The Gross--Pitaevskii equation is not linear, but we'll put that to the side for the moment---it will be relevant shortly. In the linear case of the Schr\"odinger wave equation, the maximum absolute value of $A$'s eigenvalues will be the maximum absolute eigenvalue from the kinetic term, plus the maximum absolute eigenvalue from the potential term. Using the Fourier pseudospectral method to compute spatial derivatives, the largest eigenvalue of the kinetic part of the Hamiltonian is that of the Nyquist mode with $k_\up{Nyquist} = \pi / \upDelta x$ for grid spacing $\upDelta x$, and this is approximately true of finite differences as well, leading to:
+\begin{align}
+|\lambda|_\up {max} &\approx \Abs{-\frac \ii \hbar \frac{\hbar^2 k_\up{Nyquist}}{2m}}
++ \Abs{-\frac \ii \hbar V(\vec r)}_\up{max}\\
+\Rightarrow \upDelta t &\lessapprox \frac{2\sqrt 2 \hbar}
+{\frac{\hbar^2\pi^2}{2m \upDelta x^2} + \abs{V(\vec r)}_\up{max}}.
+\end{align}
+In the limit of small $\upDelta x$, the kinetic term dominates and the stability criterion becomes:
+\begin{align}
+\upDelta t &\lessapprox \frac{4\sqrt 2 m \upDelta x^2}{\pi^2 \hbar},
+\end{align}
+whereas in the limit of large potential:
+\begin{align}
+\upDelta t &\lessapprox \frac{2\sqrt 2\hbar}{\abs{V(\vec r)}_\up{max}}.
+\end{align}
+These results match our intuition somewhat in terms of dynamical phase evolution---eigenvalues of the Hamiltonian are energies and determine how quickly the elements of the state vector accumulate dynamical phase. For each circle around the complex plane that a dynamical phase of $2\pi$ entails, we expect to require at least a few timesteps to resolve said circle, and the above shows that 'a few' means at least $2\sqrt{2}$.
+
+As a sidenote, if it is known which term of the Hamiltonian dominates the stability criterion, that term can be removed by use of an \emph{interaction picture} [CITE, SECREF?], essentially treating the dynamical phase evolution due to that term analytically. And if the term is not constant, but is \emph{almost} constant, one can still treat \emph{most} of the dynamical phase evolution analytically, transforming the differential equation onto one with much smaller eigenvalues for that term, in both cases allowing one to take potentially much larger timesteps due to the above reasoning. Fourth order Runge--Kutta in the interaction picture (\textsc{rk4ip}) [CITE] uses an interaction picture to treat the kinetic term of the Schr\"odinger or Gross--Pitaevskii equation analytically, whereas my `fourth order Runge--Kutta in an instantaneous, local interaction picture' method presented in section [SECREF] removes (most of) the potential term. Both methods allow larger timesteps to be taken, but in different circumstances depending on which term is dominating the Hamiltonian.
+
+The problem with \textsc{fedvr} then, is that it requires smaller timesteps than finite differences because its kinetic energy operator has larger eigenvalues than an equally accurate finite difference method. How much larger?
+
+[POSSIBLY MOVE THIS ARGUMENT TO EARLIER IN THIS SECTION]
+
+In order to make a fair comparison, we need to know how many \textsc{dvr} basis functions are required per element in order to compute equally accurate second derivatives as a given finite difference scheme. With $N$ points per element, \textsc{fedvr} represents the state vector within each element in a spectral basis of polynomials up to degree $N - 1$. Therefore a polynomial of degree $N - 1$ or less can be represented exactly, any other function is subject to truncation error. If one varies the number of points per element, varying the number of elements in order to keep the total number of points constant, the truncation error in representing an arbitrary function in this basis is therefore $\Ord{\upDelta x^N}$, where $\upDelta x$ is either the size of each element, or equivalently the average spacing between grid points (these two differing only by a constant factor if the total number of points is held constant).
+
+In \textsc{fedvr} the derivative operator, regardless of whether its matrix elements are computed with integrals or the quadrature rule, is exact \cite{schneider_discrete_2005}. The relevant error in a derivative of a wavefunction is therefore determined by this truncation error of representing it in the spectral basis in the first place:
+
+\begin{align}
+\psi_\up{approx}(x_i) = \psi_\up{exact}(x_i) + \Ord{\upDelta x^N}\\
+\Rightarrow\psi^{\prime \prime}_\up{approx}(x_i) =  \psi^{\prime\prime}_\up{exact}(x_i) + \Ord{\upDelta x^{N-2}}.
+\end{align} 
+
+Central finite difference approximations to second derivatives on the other hand have error $\Ord{\upDelta x^{N - 1}}$ where N is the total number of points used to compute the derivative at each point (for example the 3-point central finite difference rule for second derivatives has error $\Ord{\upDelta x^2}$, the 5 point rule is accurate to $\Ord{\upDelta x^4}$, etc). With this knowledge we can translate our question
+
+\begin{quote}
+Which is less computationally intensive to simulate the \textsc{gpe} or Schr\"odinger wave equation: $m^\up{th}$-order accurate \textsc{fedvr} or $m^\up{th}$-order accurate finite differences?
+\end{quote}
+to
+\begin{quote}
+which is less computationally intensive to simulate the \textsc{gpe} or Schr\"odinger wave equation: $m+2$ points-per-element \textsc{fedvr} or $m+1$ point central finite differences?
+\end{quote}
+The argument in favour of \textsc{fedvr} is that as $m$ grows, finite differences require an increasing number of points to be exchanged at the boundaries between cluster nodes/threads etc in a parallel implementation, whereas so long as the border between spatial regions allocated to different cluster nodes aligns with the border between elements, only one point need be exchanged per timestep in \textsc{fedvr}, no matter how many points per element there are. Therefore, in the limit of high accuracy, \textsc{fedvr} wins.
+
+The problem with this argument is that it compares only the amount of work that needs to be done \emph{per timestep}. But, since the allowed timestep size required for stability (at least for fourth order Runge--Kutta, I'll argue shortly why I think this generalises to other timestepping schemes as well) depends on the maximum eigenvalues of the kinetic energy operator, and the kinetic energy operator is not the same as $m$ grows, more work is needed to show which method is least computationally expensive per unit \emph{simulation time}.
+
+The maximum eigenvalue of the kinetic energy operator when approximated using central finite differences does not change appreciably as the number of points used to compute derivatives increases --- indeed, the eigenspectrum converges to that of the Fourier method [CITE], with maximum eigenvalue equal to the kinetic energy of the Nyquist mode. The kinetic energy operator approximated with \textsc{fedvr} on the other hand does not have an approximately constant maximum eigenvalue as one increases the number of points per element whilst holding the total number of gridpoints constant [SEE FIG]
+
+
+
+First in order to make a fair comparison, we need to know how many \textsc{dvr} basis functions are required per element in order to compute equally accurate second derivatives as a given finite difference scheme. Gauss--Lobatto quadrature with $N$ points can compute an integral exactly if the integrand is a polynomial of degree $2N - 2$ or less \cite{schneider_discrete_2005}---This means that the error in evaluating an integral using the quadrature rule is $\Ord{\upDelta x^{2N - 1}}$ where $\upDelta x$ is the size of the element. If one has a fixed number of points overall, but is varying the number of points per element (varying the number of elements to keep the number of points in total approximately fixed), then the $\upDelta x$ in the integration error $\Ord{\upDelta x^{2N - 1}}$ can equivalently be considered to be the average spacing between points, which differs from the width of an element in this case by a constant factor. This will be useful for making fair comparisons to finite differences.
+
+Having $N$ points, the basis functions of $N$-points-per-element \textsc{fedvr} basis are polynomials of order $N - 1$. This means that the integrand
 
 The origin of this maximum timestep is the minimum spatial grid size $\upDelta x_\up {min}$. Although the rigorous result is shown with proper stability analysis, the heuristic reasoning goes like this: one can ask, what is the fastest speed that information can propagate in my system? Approximating that the kinetic term of the \textsc{gpe} dominates the dispersion relation, for a uniform grid this speed will be the group velocity of the Nyquist mode, which has wavelength $2\upDelta x$. More generally for a nonuniform grid it will be the same velocity but for the fastest `local' Nyquist mode with wavelength $2\upDelta x_\up {min}$ where $\upDelta x_\up {min}$ is the smallest grid spacing present. The dispersion relation then gives us the group velocity of this mode:
 

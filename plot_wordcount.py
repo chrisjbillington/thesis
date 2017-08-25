@@ -3,7 +3,7 @@ from subprocess import run, PIPE
 import datetime
 from matplotlib.dates import date2num
 
-os.chdir('/home/bilbo/thesis')
+os.chdir('/home/cjb7/thesis')
 
 wordcounts = []
 dates = []
