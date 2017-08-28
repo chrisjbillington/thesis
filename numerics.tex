@@ -954,13 +954,23 @@ The use of unequally spaced points increases the accuracy of integrals evaluated
 
 By choosing a quadrature scheme with two points located exactly on each edge of the integration regions, such as \emph{Gauss-Lobatto} quadrature [CITE], the elements of the \textsc{fedvr} method can be joined together, with adjacent elements sharing these edge points (see figure [FIGREF]). This allows one to represent a wavefunction as a list of coefficients for how much of each basis polynomial in each element contributes to it, with the extra condition that some of these coefficients --- those corresponding to the edge points --- must be equal in order to ensure the wavefunction is continuous across the boundaries between elements.
 
-[FIGURE OF THE FEDVR BASIS?]
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics{figures/numerics/fedvr_basis.pdf}
+    \caption{CAPTION}
+    \label{fig:fedvr_basis}
+\end{figure}
 
 With some care taken in regard to the points shared between the elements, the \textsc{fedvr} method provides one with a means of approximating wavefunctions as a finite sum of basis functions, and of approximately calculating the matrix elements of operators in this basis. After that, one can simply apply the operators to the state vectors in order to compute time derivatives, and propagate in time using fourth order Runge--Kutta or similar [SEE SECREF], or one can exponentiate the operators, all at once or one at a time, as part of a split-step method [SEC SECREF]. The \textsc{FEDVR} method does not require anything in particular about time propagation --- like finite differences or the Fourier pseudospectral method, it is only a way of spatially discretising the differential equation you are trying to solve.
 
-Now we arrive at what makes the \textsc{FEDVR} method exciting for those who want to massively parallelise their simulations. When one calculates the matrix representation of, say, a one-dimensional differential operator in the \textsc{fedvr} basis, it looks like this:
+Now we arrive at what makes the \textsc{FEDVR} method exciting for those who want to massively parallelise their simulations. When one calculates the matrix representation of, say, a one-dimensional differential operator in the \textsc{fedvr} basis, one gets matrices that look like \figref{fig:fedvr_D2_operator}.
 
-[MATRIX]
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics{figures/numerics/fedvr_D2_operator.pdf}
+    \caption{The matrix form of the second derivative operator in \textsc{fedvr}, for 5 elements each with ten \textsc{dvr} points. The colour scale is logarithmic, showing the log of the absolute values of the matrix elements $\delta^2_{ij}$ scaled by $\upDelta x_\up{av}^2$, where $\upDelta x_\up{av}$ is the average spacing between the unequally spaced grid points. Zero matrix elements are shown as white. One can see that the second derivative at each grid point is computed using only the points within the same element, except for one point shared by adjacent elements, at which the second derivative depends on points in both adjacent elements.}
+    \label{fig:fedvr_D2_operator}
+\end{figure}
 
 With this almost-block-diagonal form. This is because when the state vector is acted upon by some operator, the result for most points in the resulting vector depends only on the points in the input vector \emph{within the same element}. The exceptions are the points shared between elements---for which the value in the output vector depends on the points in the input vector in \emph{both} adjacent elements, which is why the matrix is not perfectly block diagonal.
 
@@ -1032,7 +1042,12 @@ The problem with this argument is that it compares only the amount of work that 
 
 The maximum eigenvalue of the kinetic energy operator when approximated using central finite differences does not change appreciably as the number of points used to compute derivatives increases --- indeed, the eigenspectrum converges to that of the Fourier method [CITE], with maximum eigenvalue equal to the kinetic energy of the Nyquist mode. The kinetic energy operator approximated with \textsc{fedvr} on the other hand does not have an approximately constant maximum eigenvalue as one increases the number of points per element whilst holding the total number of gridpoints constant [SEE FIG]
 
-
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics{figures/numerics/fedvr_eigenvalue_scaling.pdf}
+    \caption{Scaling of maximum (by absolute value) eigenvalue of second derivative operator with respect to the order of accuracy for finite differences and \textsc{fedvr}. Results were numerically computed by constructing a $721\times721$ matrix (chosen to allow various combinations of number of \textsc{dvr} points per element whilst holding total points constant) for each point and numerically diagonalising. The largest eigenvalue for \textsc{fedvr} can be seen to scale quadratically with the order of accuracy, whereas for finite differences the maximum eigenvalue approaches that of the Fourier method.}
+    \label{fig:fedvr_eigenvalue_scaling}
+\end{figure}
 
 First in order to make a fair comparison, we need to know how many \textsc{dvr} basis functions are required per element in order to compute equally accurate second derivatives as a given finite difference scheme. Gauss--Lobatto quadrature with $N$ points can compute an integral exactly if the integrand is a polynomial of degree $2N - 2$ or less \cite{schneider_discrete_2005}---This means that the error in evaluating an integral using the quadrature rule is $\Ord{\upDelta x^{2N - 1}}$ where $\upDelta x$ is the size of the element. If one has a fixed number of points overall, but is varying the number of points per element (varying the number of elements to keep the number of points in total approximately fixed), then the $\upDelta x$ in the integration error $\Ord{\upDelta x^{2N - 1}}$ can equivalently be considered to be the average spacing between points, which differs from the width of an element in this case by a constant factor. This will be useful for making fair comparisons to finite differences.
 
