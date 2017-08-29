@@ -99,6 +99,8 @@ for i in range(2, 13):
     print(i, n_elements)
     elements = FiniteElements1D(N, n_elements, x_min, x_max)
 
+    x_operator = np.diag([left + x for left in elements.element_edges[:-1] for x in elements.element.points[:-1]] + [x_max])
+
     def make_total_operator(operator):
         total_operator = np.zeros((N*n_elements - n_elements + 1, N*n_elements - n_elements + 1))
         for i in range(n_elements):
@@ -115,7 +117,10 @@ for i in range(2, 13):
 
     D2_total = make_total_operator(D2)
 
-    vals, vecs = np.linalg.eig(D2_total)
+    # Make the commutator between this and x:
+    commutator = D2_total @ x_operator - x_operator @ D2_total
+
+    vals, vecs = np.linalg.eig(commutator)
 
     max_evals_fedvr.append(max(abs(vals)))
 
@@ -158,8 +163,12 @@ grad2_8 += np.diag(np.full(Npts-4, D2_8TH_ORDER_3), +4)
 Ns_FD = [2, 4, 6, 8]
 max_evals_fd = []
 
+x_operator = np.diag(np.linspace(x_min, x_max, Npts))
+
 for operator in [grad2_2, grad2_4, grad2_6, grad2_8]:
-    vals, vecs = np.linalg.eig(operator)
+    operator = operator / dx_av**2
+    commutator = operator @ x_operator - x_operator @ operator
+    vals, vecs = np.linalg.eig(commutator)
     max_evals_fd.append(max(abs(vals)))
 
 
@@ -171,17 +180,18 @@ gs = gridspec.GridSpec(1, 1, left=0.1, bottom=0.1,
                        right=0.8, top=0.9, wspace=0.2, hspace=0.075)
 
 
-plt.plot(np.array(Ns_fedvr) - 2, np.array(max_evals_fedvr)*dx_av**2, marker='o', linestyle='-',
+plt.plot(np.array(Ns_fedvr) - 2, np.array(max_evals_fedvr) * dx_av, marker='o', linestyle='-',
              color=colors['blue'], markeredgecolor=colors['blue'], label=R'$\textsc{fedvr}$')
 
-plt.plot(Ns_FD, max_evals_fd, marker='s', linestyle='-',
+plt.plot(Ns_FD,np.array( max_evals_fd) * dx_av, marker='s', linestyle='-',
              color=colors['orange'], markeredgecolor=colors['orange'],
              label='Finite differences')
 
 
-plt.axhline(np.pi**2, label='Fourier limit', linestyle='--', color='orange')
+plt.axhline(2*np.pi, label='Fourier limit', linestyle='--', color='orange')
 
-plt.xlabel(R'Order of accuracy in $\Delta x_{\rm av}$')
-plt.ylabel(R'$\Delta x_{\rm av}^2 \times \rho\left(\delta^{2 (n)}\right)$')
+plt.xlabel(R'Order of accuracy $n$ in $\Delta x_{\rm av}$')
+plt.ylabel(R'$\Delta x_{\rm av} \times \rho\left([X, \delta^{2 (n)}]\right)$')
 plt.legend(loc='upper left')
-plt.savefig('../fedvr_eigenvalue_scaling.pdf')
+plt.axis([0, 11.5, 0, 9])
+plt.savefig('../fedvr_commutation_error_scaling.pdf')

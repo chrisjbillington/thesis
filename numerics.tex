@@ -1066,6 +1066,13 @@ Then one can compute how long it takes for a pulse moving at this speed to propa
 
 This timescale answers the question ``What is the longest interval of time for which you can be guaranteed that no feature of the wavefunction has moved further than the smallest grid spacing?". This sets an upper limit for the timesteps that can be used to simulate the Gross--Pitaevskii equation regardless of which of the spatial or temporal discretisation schemes described so far is used. For linear differential equations this may not be true, since linear waves can pass through each other unaffected, but with the Gross--Pitaevsii equation's nonlinearity, one can see that if the nonlinear term is not evaluated at intervals at least as short as $\tau_\up d$, then it cannot be taking into account density fluctuations due to interference between high wavenumber modes, leading to inaccuracy. The higher the wavenumber of possible nodes, the shorter the timesteps must be to capture all their dynamics.
 
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics{figures/numerics/fedvr_commutation_error_scaling.pdf}
+    \caption{TODO CAPTION once mentioned in text about unitary methods}
+\end{figure}
+
+
 \begin{itemize}
     \item Summarise, don't go into detail. Just a different method of spatial discretisation.
     \item{Splits space into `elements'. Briefly mention what these are good for - funky boundary conditions and irregular grids mostly}
