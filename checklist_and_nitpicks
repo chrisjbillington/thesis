@@ -68,3 +68,5 @@ Ensure all acronyms are small caps
 Cite the geometric integrator lincoln sent me an email about
 
 Go through bibiolgraphy fixing everything
+
+RK4 not stable for any timestep - really? Maybe only for nonlinear problems. 
