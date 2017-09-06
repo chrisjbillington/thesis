@@ -73,7 +73,7 @@ D2_8TH_ORDER_4 = -9.0/5040
 
 from FEDVR import FiniteElements1D
 
-# Total spatial region over all MPI processes:
+# Total spatial region:
 x_min = -5
 x_max = 5
 
@@ -120,8 +120,8 @@ for i in range(2, 13):
     max_evals_fedvr.append(max(abs(vals)))
 
 
-# Finite differences matrices - first and second derivatives to second, fourth
-# and sixth order:
+# Finite differences matrices - second derivatives to second, fourth,
+# sixth and eighth order:
 
 grad2_2 = np.zeros((Npts, Npts))
 grad2_2 += np.diag(np.full(Npts-1, D2_2ND_ORDER_1), -1)
