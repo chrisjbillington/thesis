@@ -71,6 +71,14 @@ D2_8TH_ORDER_2 = -1008.0/5040
 D2_8TH_ORDER_3 = 128.0/5040
 D2_8TH_ORDER_4 = -9.0/5040
 
+D2_10TH_ORDER_0 = -73766/25200
+D2_10TH_ORDER_1 = 42000/25200
+D2_10TH_ORDER_2 = -6000/25200
+D2_10TH_ORDER_3 = 1000/25200
+D2_10TH_ORDER_4 = -125/25200
+D2_10TH_ORDER_5 = 8/25200
+
+
 from FEDVR import FiniteElements1D
 
 # Total spatial region:
@@ -153,12 +161,26 @@ grad2_8 += np.diag(np.full(Npts-0, D2_8TH_ORDER_0), +0)
 grad2_8 += np.diag(np.full(Npts-1, D2_8TH_ORDER_1), +1)
 grad2_8 += np.diag(np.full(Npts-2, D2_8TH_ORDER_2), +2)
 grad2_8 += np.diag(np.full(Npts-3, D2_8TH_ORDER_3), +3)
-grad2_8 += np.diag(np.full(Npts-4, D2_8TH_ORDER_3), +4)
+grad2_8 += np.diag(np.full(Npts-4, D2_8TH_ORDER_4), +4)
 
-Ns_FD = [2, 4, 6, 8]
+grad2_10 = np.zeros((Npts, Npts))
+grad2_10 += np.diag(np.full(Npts-5, D2_10TH_ORDER_5), -5)
+grad2_10 += np.diag(np.full(Npts-4, D2_10TH_ORDER_4), -4)
+grad2_10 += np.diag(np.full(Npts-3, D2_10TH_ORDER_3), -3)
+grad2_10 += np.diag(np.full(Npts-2, D2_10TH_ORDER_2), -2)
+grad2_10 += np.diag(np.full(Npts-1, D2_10TH_ORDER_1), -1)
+grad2_10 += np.diag(np.full(Npts-0, D2_10TH_ORDER_0), +0)
+grad2_10 += np.diag(np.full(Npts-1, D2_10TH_ORDER_1), +1)
+grad2_10 += np.diag(np.full(Npts-2, D2_10TH_ORDER_2), +2)
+grad2_10 += np.diag(np.full(Npts-3, D2_10TH_ORDER_3), +3)
+grad2_10 += np.diag(np.full(Npts-4, D2_10TH_ORDER_4), +4)
+grad2_10 += np.diag(np.full(Npts-5, D2_10TH_ORDER_5), +5)
+
+Ns_FD = [2, 4, 6, 8, 10]
+
 max_evals_fd = []
 
-for operator in [grad2_2, grad2_4, grad2_6, grad2_8]:
+for operator in [grad2_2, grad2_4, grad2_6, grad2_8, grad2_10]:
     vals, vecs = np.linalg.eig(operator)
     max_evals_fd.append(max(abs(vals)))
 
