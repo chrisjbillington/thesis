@@ -1,9 +1,10 @@
 from __future__ import division
+from collections import defaultdict
 import numpy as np
 
 from matplotlib import rcParams
 import matplotlib
-# matplotlib.use('PDF')
+matplotlib.use('PDF')
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 
@@ -71,6 +72,13 @@ def make_fd_operator(Npts, order):
     D2_8TH_ORDER_3 = 128.0/5040
     D2_8TH_ORDER_4 = -9.0/5040
 
+    D2_10TH_ORDER_0 = -73766/25200
+    D2_10TH_ORDER_1 = 42000/25200
+    D2_10TH_ORDER_2 = -6000/25200
+    D2_10TH_ORDER_3 = 1000/25200
+    D2_10TH_ORDER_4 = -125/25200
+    D2_10TH_ORDER_5 = 8/25200
+
     # Finite differences matrices - second derivatives to second, fourth,
     # sixth and eighth order:
 
@@ -111,8 +119,23 @@ def make_fd_operator(Npts, order):
         grad2_8 += np.diag(np.full(Npts-1, D2_8TH_ORDER_1), +1)
         grad2_8 += np.diag(np.full(Npts-2, D2_8TH_ORDER_2), +2)
         grad2_8 += np.diag(np.full(Npts-3, D2_8TH_ORDER_3), +3)
-        grad2_8 += np.diag(np.full(Npts-4, D2_8TH_ORDER_3), +4)
+        grad2_8 += np.diag(np.full(Npts-4, D2_8TH_ORDER_4), +4)
         return grad2_8
+
+    elif order == 10:
+        grad2_10 = np.zeros((Npts, Npts))
+        grad2_10 += np.diag(np.full(Npts-5, D2_10TH_ORDER_5), -5)
+        grad2_10 += np.diag(np.full(Npts-4, D2_10TH_ORDER_4), -4)
+        grad2_10 += np.diag(np.full(Npts-3, D2_10TH_ORDER_3), -3)
+        grad2_10 += np.diag(np.full(Npts-2, D2_10TH_ORDER_2), -2)
+        grad2_10 += np.diag(np.full(Npts-1, D2_10TH_ORDER_1), -1)
+        grad2_10 += np.diag(np.full(Npts-0, D2_10TH_ORDER_0), +0)
+        grad2_10 += np.diag(np.full(Npts-1, D2_10TH_ORDER_1), +1)
+        grad2_10 += np.diag(np.full(Npts-2, D2_10TH_ORDER_2), +2)
+        grad2_10 += np.diag(np.full(Npts-3, D2_10TH_ORDER_3), +3)
+        grad2_10 += np.diag(np.full(Npts-4, D2_10TH_ORDER_4), +4)
+        grad2_10 += np.diag(np.full(Npts-5, D2_10TH_ORDER_5), +5)
+        return grad2_10
 
     else:
         raise ValueError(order)
@@ -121,25 +144,44 @@ def make_fd_operator(Npts, order):
 from FEDVR import FiniteElements1D
 
 # Total spatial region:
-x_min = -5
-x_max = 5
+x_min = -10
+x_max = 10
 
-# total number of points:
-Npts = 721
-
-orders = [2, 4, 6, 8]
+orders = [2, 4, 6, 8, 10]
 n_elements = 20
 
-mean_bandwidths_fedvr = []
-Npts_fedvr_arr = []
 errors_fedvr = []
+errors_fd = defaultdict(list)
 
-for N in range(3, 10):
+mean_coupled_points_fedvr = []
+mean_coupled_points_fd = defaultdict(list)
+
+N_arr = range(3, 10)
+
+
+def V(x):
+    return x**2
+
+# Compute high accuracy energy for comparison:
+Npts = 1024
+x_fd = np.linspace(x_min, x_max, Npts)
+dx_fd = x_fd[1] - x_fd[0]
+D2_fd = make_fd_operator(Npts, order=10)/dx_fd**2
+D2_fd[0, :] = D2_fd[-1, :] = D2_fd[:, 0] = D2_fd[:, -1] = 0
+V_fd = 0.5 * np.diag(V(x_fd))
+H_fd = -0.5 * D2_fd + V_fd
+evals_fd, evecs_fd = np.linalg.eigh(H_fd)
+exact_E = min(evals_fd)
+print(f'exact: {exact_E}')
+
+for N in N_arr:
+    # how many other points are edge points coupled to?
+    edge_coupled_points = 2 * (N - 1)
+    interior_coupled_points = (N - 2)
+    mean_coupled_points = (edge_coupled_points + (N - 2) * interior_coupled_points) / (N - 1)
+
+    mean_coupled_points_fedvr.append(mean_coupled_points)
     Npts = (N -1) * n_elements + 1
-    mean_bandwidth = (((N - 2) * N + 2 * (2 * N - 1)) / N - 1) / 2
-    mean_bandwidths_fedvr.append(mean_bandwidth)
-    Npts_fedvr_arr.append(Npts)
-    print(f"N = {N}, Npts = {Npts}, mean_bandwidth = {mean_bandwidth}")
     elements = FiniteElements1D(N, n_elements, x_min, x_max)
 
     def make_total_operator(operator):
@@ -148,78 +190,67 @@ for N in range(3, 10):
             start = i*N - i
             end = i*N - i + N
             total_operator[start:end, start:end] += operator
-        # total_operator[0, :] = total_operator[-1, :] = total_operator[:, 0] = total_operator[:, -1] = 0
+        total_operator[0, :] = total_operator[-1, :] = total_operator[:, 0] = total_operator[:, -1] = 0
         return total_operator
 
     D2_single_element = elements.second_derivative_operator()
     D2_fedvr = make_total_operator(D2_single_element)
     x_fedvr = np.array(list(elements.points[:, :-1].flatten()) + [x_max])
-    V_fedvr = 0.5 * np.diag((x_fedvr-0.5)**2)
+    V_fedvr = 0.5 * np.diag(V(x_fedvr))
     H_fedvr = -0.5 * D2_fedvr + V_fedvr
     evals_fedvr, evecs_fedvr = np.linalg.eigh(H_fedvr)
 
-    error = abs((min(evals_fedvr) - 0.5) / 0.5)
+    print(f"N = {N}, Npts = {Npts} E = {min(evals_fedvr)}")
+    error_fedvr = abs((min(evals_fedvr) - exact_E) / exact_E)
 
-    errors_fedvr.append(error)
+    errors_fedvr.append(error_fedvr)
   
+    for order in orders:
+        mean_coupled_points_fd[order].append(order)
 
-bandwidths_fd = []
-Npts_fd_arr = []
-errors_fd = []
-
-for mean_bandwidth_fedvr, Npts_fedvr in zip(mean_bandwidths_fedvr, Npts_fedvr_arr):
-    bandwidth = int(round(mean_bandwidth_fedvr))
-    
-    order = bandwidth * 2
-    print(order)
-    if order > 8:
-        continue
-
-    Npts = int(round(Npts_fedvr * mean_bandwidth_fedvr / bandwidth))
-
-    bandwidths_fd.append(bandwidth)
-    Npts_fd_arr.append(Npts)
-
-    x_fd = np.linspace(x_min, x_max, Npts)
-    dx_fd = x_fd[1] - x_fd[0]
-    D2_fd = make_fd_operator(Npts, order)/dx_fd**2
-    D2_fd[0, :] = D2_fd[-1, :] = D2_fd[:, 0] = D2_fd[:, -1] = 0
-    V_fd = 0.5 * np.diag((x_fd-0.5)**2)
-    H_fd = -0.5 * D2_fd + V_fd
-    evals_fd, evecs_fd = np.linalg.eigh(H_fd)
-    error = abs((min(evals_fd) - 0.5) / 0.5)
-    errors_fd.append(error)
-
-mean_bandwidths_fedvr = np.array(mean_bandwidths_fedvr)
-Npts_fedvr_arr = np.array(Npts_fedvr_arr)
-
-bandwidths_fd = np.array(bandwidths_fd)
-Npts_fd_arr = np.array(Npts_fd_arr)
-
-
-computational_cost_fedvr = mean_bandwidths_fedvr * Npts_fedvr_arr
-computational_cost_fd = bandwidths_fd * Npts_fd_arr
-
-plt.semilogy(computational_cost_fedvr, errors_fedvr, 'o-')
-plt.semilogy(computational_cost_fd, errors_fd, 'o-')
-
-plt.show()
+        x_fd = np.linspace(x_min, x_max, Npts)
+        dx_fd = x_fd[1] - x_fd[0]
+        D2_fd = make_fd_operator(Npts, order)/dx_fd**2
+        D2_fd[0, :] = D2_fd[-1, :] = D2_fd[:, 0] = D2_fd[:, -1] = 0
+        V_fd = 0.5 * np.diag(V(x_fd))
+        H_fd = -0.5 * D2_fd + V_fd
+        evals_fd, evecs_fd = np.linalg.eigh(H_fd)
+        print(f"  FD{order} E = {min(evals_fd)}")
+        error_fd = abs((min(evals_fd) - exact_E) / exact_E)
+        errors_fd[order].append(error_fd)
 
 
 
+FIG_WIDTH = 3.25
+FIG_HEIGHT = 2.75
 
-# Ns_FD = [2, 4, 6, 8]
-# max_evals_fd = []
+fig = plt.figure(figsize=(FIG_WIDTH, FIG_HEIGHT))
 
-# for operator in [grad2_2, grad2_4, grad2_6, grad2_8]:
-#     vals, vecs = np.linalg.eig(operator)
-#     max_evals_fd.append(max(abs(vals)))
+plt.semilogy(N_arr, errors_fedvr, 'o-', label=R'$\textsc{fedvr}$')
+for order in orders:
+    plt.semilogy(N_arr, errors_fd[order], 'o-', label=R'$\textsc{fd}_{%s}$ equiv.' % str(order))
+
+equiv_err_lower_bound = []
+equiv_err_upper_bound = []
+
+for i, mean_coupled_points in enumerate(mean_coupled_points_fedvr):
+    # Round down to a multiple of two:
+    lower_bound_order = int(round(mean_coupled_points - mean_coupled_points % 2))
+    upper_bound_order = lower_bound_order + 2
+
+    # The errors of the two finite difference schemes with these orders
+    equiv_err_lower_bound.append(errors_fd[lower_bound_order][i])
+    equiv_err_upper_bound.append(errors_fd[upper_bound_order][i])
+
+plt.fill_between(N_arr, equiv_err_lower_bound, equiv_err_upper_bound, facecolor='grey', alpha=0.5)
+
+# plt.plot(N_arr, mean_coupled_points_fedvr, 'o-')
+# for order in orders:
+#     plt.plot(N_arr, mean_coupled_points_fd[order], 'o-')
 
 
-# FIG_WIDTH = 3.25
-# FIG_HEIGHT = 2.25
 
-# fig = plt.figure(figsize=(FIG_WIDTH, FIG_HEIGHT))
+
 # gs = gridspec.GridSpec(1, 1, left=0.1, bottom=0.1,
 #                        right=0.8, top=0.9, wspace=0.2, hspace=0.075)
 
@@ -234,7 +265,9 @@ plt.show()
 
 # plt.axhline(np.pi**2, label='Fourier limit', linestyle='--', color='orange')
 
-# plt.xlabel(R'Order of accuracy in $\Delta x_{\rm av}$')
-# plt.ylabel(R'$\Delta x_{\rm av}^2 \times \rho\left(\delta^{2 (n)}\right)$')
+plt.legend(loc='lower left')
+
+plt.xlabel(R'$\textsc{dvr}$ points per element')
+plt.ylabel(R'Fractional error in $E_0$')
 # plt.legend(loc='upper left')
-# plt.savefig('../fedvr_eigenvalue_scaling.pdf')
+plt.savefig('../fedvr_vs_fd_harmonic_groundstate.pdf')
