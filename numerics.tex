@@ -1094,6 +1094,13 @@ The numerical method being used is now fairly irrelevant: one must evaluate the 
     \label{fig:method_speeds}
 \end{figure}
 
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics{figures/numerics/stability.pdf}
+    \caption{TODO CAPTION once mentioned in text, not sure where to mention this in-text.}
+    \label{fig:stability}
+\end{figure}
+
 This leaves us with little remaining benefit to \textsc{fedvr} over finite differences in my opinion. The argument that \textsc{fedvr} scales better for parallel computation is unconvincing as argued above. The fact that it allows nonuniform grids is also not unique---central finite differences allow for nonuniform grids as well [CITE]. Reference [CITE THE PRE] compares the accuracy of finite differences to \textsc{fedvr} in the context of computing the groundstate energy of a harmonic oscillator using imaginary time evolution (see section [SECREF]), but only uses second-order finite differences in the comparison whereas higher-order \textsc{fedvr} schemes are used. If this restriction was in order to hold the number of points transferred at boundaries between parallel computing units constant (since second-order finite differences require, like \textsc{fedvr}, only one), then this was not a fair comparison as the number of points transferred does not limit computation time as I've shown--had the authors included comparisons with higher order finite differencing schemes, they would have resulted in comparable accuracy to the matching order \textsc{fedvr} runs, but completed in less time owing to the larger timesteps allowed by the increased range of stability of finite differences.
 
 Perhaps for problems with certain unusual boundary conditions or strangely shaped regions, or where one can construct a geometric integrator that conserves some quantities of interest other than merely the wavefunction norm, \textsc{fedvr} may still make sense. But unless there is a compelling reason, it seems that simple finite differences, as naïve as it might seem at first, remains a practical choice for highly accurate and potentially massively parallelised simulations of the \textsc{gpe}.
