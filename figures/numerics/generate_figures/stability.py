@@ -59,16 +59,20 @@ mu = 1.26804880139e-30 # Chemical potential of all simulations initial condition
 g = 5.07219520555e-51  # nonlinear constant
 
 FIG_WIDTH = 4.5
-FIG_HEIGHT = 4.5
+FIG_HEIGHT = 5.25
 
 fig = plt.figure(figsize=(FIG_WIDTH, FIG_HEIGHT))
 
-gs = gridspec.GridSpec(7, 20, left=0.1, bottom=0.05,
-                       right=0.975, top=0.95, wspace=0.2, hspace=0.075)
+gs = gridspec.GridSpec(8, 20, left=0.12, bottom=0.00,
+                       right=0.97, top=0.95, wspace=0.2, hspace=0.075)
 
 timesteps = ['0.25', '0.5', '1.0']
 
 ylim = [3e-15, 1e-5]
+
+labels = {'0.25': R'$\Delta t = \tau_{\rm d} / 4$',
+         '0.5': R'$\Delta t = \tau_{\rm d} / 2$',
+         '1.0': R'$\Delta t = \tau_{\rm d}$'}
 
 with h5py.File('stability_data.h5', 'r') as f:
 
@@ -78,10 +82,16 @@ with h5py.File('stability_data.h5', 'r') as f:
     for timestep in timesteps:
         dataset = f[template.format(timestep)]
         errors = np.abs(dataset['step err'])
-        plt.semilogy(dataset['time']*1e3, errors, label=fR'$\Delta t = {timestep}\tau_{{\rm d}}$')
+        plt.semilogy(dataset['time']*1e3, errors, label=labels[timestep])
 
     ax.set_ylim(ylim)
-    plt.legend(loc='lower right')
+    ax.set_xlim([0, 200])
+    ax.tick_params(direction="in")
+    plt.xticks([50,100, 150], ['']*3)
+    plt.yticks([1e-12, 1e-9, 1e-6])
+    ax.xaxis.set_label_position("top")
+    plt.xlabel(R'Schr${\rm \"o}$dinger wave equation')
+    plt.legend(loc='lower right', ncol=2, columnspacing=1)
 
     # Plot the error for TDSE_FSS4:
     ax = plt.subplot(gs[2:4, 0:9])
@@ -89,10 +99,14 @@ with h5py.File('stability_data.h5', 'r') as f:
     for timestep in timesteps:
         dataset = f[template.format(timestep)]
         errors = np.abs(dataset['step err'])
-        plt.semilogy(dataset['time']*1e3, errors, label=fR'$\Delta t = {timestep}\tau_{{\rm d}}$')
+        plt.semilogy(dataset['time']*1e3, errors, label=labels[timestep])
 
     ax.set_ylim(ylim)
-    plt.legend(loc='lower right')
+    ax.set_xlim([0, 200])
+    ax.tick_params(direction="in")
+    plt.xticks([50,100, 150], ['']*3)
+    plt.yticks([1e-12, 1e-9, 1e-6])
+    plt.legend(loc='upper right', ncol=2, columnspacing=1)
 
      # Plot the error for TDSE_RK4_FD6:
     ax = plt.subplot(gs[4:6, 0:9])
@@ -100,10 +114,14 @@ with h5py.File('stability_data.h5', 'r') as f:
     for timestep in timesteps:
         dataset = f[template.format(timestep)]
         errors = np.abs(dataset['step err'])
-        plt.semilogy(dataset['time']*1e3, errors, label=fR'$\Delta t = {timestep}\tau_{{\rm d}}$')
+        plt.semilogy(dataset['time']*1e3, errors, label=labels[timestep])
 
     ax.set_ylim(ylim)
-    plt.legend(loc='lower right')
+    ax.set_xlim([0, 200])
+    ax.tick_params(direction="in")
+    plt.xticks([50,100, 150])
+    plt.yticks([1e-12, 1e-9, 1e-6])
+    plt.legend(loc='upper right', ncol=2, columnspacing=1)
 
     # Plot the error for GPE_FSS2:
     ax = plt.subplot(gs[0:2, 9:18])
@@ -111,10 +129,18 @@ with h5py.File('stability_data.h5', 'r') as f:
     for timestep in timesteps:
         dataset = f[template.format(timestep)]
         errors = np.abs(dataset['step err'])
-        plt.semilogy(dataset['time']*1e3, errors, label=fR'$\Delta t = {timestep}\tau_{{\rm d}}$')
+        plt.semilogy(dataset['time']*1e3, errors, label=labels[timestep])
 
     ax.set_ylim(ylim)
-    plt.legend(loc='lower right')
+    ax.set_xlim([0, 200])
+    ax.tick_params(direction="in")
+    plt.xticks([50,100, 150], ['']*3)
+    plt.yticks([1e-12, 1e-9, 1e-6], ['']*3)
+    ax.yaxis.set_label_position("right")
+    plt.ylabel(R'$\textsc{fss2}$')
+    ax.xaxis.set_label_position("top")
+    plt.xlabel(R'Gross--Pitaevskii equation')
+    plt.legend(loc='lower right', ncol=2, columnspacing=1)
 
     # Plot the error for GPE_FSS4:
     ax = plt.subplot(gs[2:4, 9:18])
@@ -122,10 +148,16 @@ with h5py.File('stability_data.h5', 'r') as f:
     for timestep in timesteps:
         dataset = f[template.format(timestep)]
         errors = np.abs(dataset['step err'])
-        plt.semilogy(dataset['time']*1e3, errors, label=fR'$\Delta t = {timestep}\tau_{{\rm d}}$')
+        plt.semilogy(dataset['time']*1e3, errors, label=labels[timestep])
 
     ax.set_ylim(ylim)
-    plt.legend(loc='lower right')
+    ax.set_xlim([0, 200])
+    ax.tick_params(direction="in")
+    plt.xticks([50,100, 150], ['']*3)
+    plt.yticks([1e-12, 1e-9, 1e-6], ['']*3)
+    ax.yaxis.set_label_position("right")
+    plt.ylabel(R'$\textsc{fss4}$')
+    plt.legend(loc='upper right', ncol=2, columnspacing=1)
 
      # Plot the error for GPE_RK4_FD6:
     ax = plt.subplot(gs[4:6, 9:18])
@@ -133,10 +165,16 @@ with h5py.File('stability_data.h5', 'r') as f:
     for timestep in timesteps:
         dataset = f[template.format(timestep)]
         errors = np.abs(dataset['step err'])
-        plt.semilogy(dataset['time']*1e3, errors, label=fR'$\Delta t = {timestep}\tau_{{\rm d}}$')
+        plt.semilogy(dataset['time']*1e3, errors, label=labels[timestep])
 
     ax.set_ylim(ylim)
-    plt.legend(loc='lower right')
+    ax.set_xlim([0, 200])
+    ax.tick_params(direction="in")
+    plt.xticks([50,100, 150])
+    plt.yticks([1e-12, 1e-9, 1e-6], ['']*3)
+    ax.yaxis.set_label_position("right")
+    plt.ylabel(R'$\textsc{rk4fd6}$')
+    plt.legend(loc='upper right', ncol=2, columnspacing=1)
 
     # Plot the suimulation frames:
     psi_gpe = [f['GPE_0'][:], f['GPE_1478'][:], f['GPE_2956'][:]]
@@ -146,54 +184,58 @@ with h5py.File('stability_data.h5', 'r') as f:
     rho_clip = max([psi.max() for psi in rho_gpe])
     rho_tdse = [np.abs(psi**2).clip(0, rho_clip) for psi in psi_tdse]
 
-    ax = plt.subplot(gs[6:7, 0:9])
-    ax.set_xticks([])
-    ax.set_yticks([])
+    frame_ax1 = plt.subplot(gs[7:8, 0:9])
+    frame_ax1.set_xticks([])
+    frame_ax1.set_yticks([])
     plt.imshow(np.concatenate(rho_tdse).transpose(), origin='lower',
                cmap=cm.gray, interpolation='none')
 
-    ax = plt.subplot(gs[6:7, 9:18])
-    ax.set_xticks([])
-    ax.set_yticks([])
+    frame_ax2 = plt.subplot(gs[7:8, 9:18])
+    frame_ax2.set_xticks([])
+    frame_ax2.set_yticks([])
     plt.imshow(np.concatenate(rho_gpe).transpose(),
                origin='lower', cmap=cm.gray, interpolation='none')
 
-    nx = psi_gpe[0].shape[1]
+
     # Colorbar:
-    ax = plt.subplot(gs[6:7, 18:20])
+    nx = psi_gpe[0].shape[1]
+    colorbar_ax = plt.subplot(gs[7:8, 18:20])
     colormap = np.linspace(0, 1, nx)[:, np.newaxis] * np.ones(nx//10)
     plt.imshow(colormap, origin='lower', extent = [0, 0.1, 0, 1.0], cmap=cm.gray)
-    ax.set_xticks([])
-    ax.yaxis.tick_right()
-    ax.yaxis.set_ticks_position('both')
-    ax.yaxis.set_label_position("right")
-    ax.tick_params(direction="in")
+    colorbar_ax.set_xticks([])
+    colorbar_ax.yaxis.tick_right()
+    colorbar_ax.yaxis.set_ticks_position('both')
+    colorbar_ax.yaxis.set_label_position("right")
+    colorbar_ax.tick_params(direction="in")
     yticks = [0.2, 0.4, 0.6, 0.8]
     plt.yticks(yticks)
-    ax.yaxis.set_tick_params(size=1)
+    colorbar_ax.yaxis.set_tick_params(size=1)
     plt.ylabel(R'$\frac g \mu \rho$')
 
     # # Move closer to frame axes:
-    ax.set_anchor('W')
+    colorbar_ax.set_anchor('W')
 
-# timesteps = ['0.25', '0.5', '1.0']
+    # Move all the axes up a little and label the frames with the times they
+    # are at:
+    for ax in [frame_ax1, frame_ax2, colorbar_ax]:
+        
+        pos = ax.get_position()
+        new_pos = [pos.x0, pos.y0 + 0.04,  pos.width, pos.height] 
+        ax.set_position(new_pos)
+        x0 = pos.x0
+        width = pos.width
+        if ax is not colorbar_ax:
+            fig.text(x0 + width/6, 0.02, R'$t=0$', ha='center')
+            fig.text(x0 + width/2, 0.02, R'$t=20\, \mathrm{ms}$', ha='center')
+            fig.text(x0 + 5*width/6, 0.02, R'$t=40\, \mathrm{ms}$', ha='center')
 
 
-# with h5py.File('stability_data.h5', 'r') as f:
-#     for name in f:
-#         dataset = f[name]
+    # Shared axis labels:
+    fig.text(0.5, 0.185, R'simulation time (ms)', ha='center')
+    fig.text(0.00, 0.6, 'per-step error', va='center', rotation='vertical')
 
-#         if 'RK4' in name:
-#             plt.figure(rk4_fig.number)
-#         elif 'FSS2' in  name:
-#             plt.figure(fss2_fig.number)
-#         elif 'FSS4' in  name:
-#             plt.figure(fss4_fig.number)
-#         else:
-#             raise ValueError(name)
-
-#         plt.semilogy(dataset['time']*1e3, np.abs(dataset['step err']), label=name)
-
-#         plt.legend()    
-
-plt.savefig('../stability.pdf')
+    # Work out the DPI of the raster images
+    height_inches = frame_ax1.get_position().height*FIG_HEIGHT
+    # assume nx = ny
+    dpi = nx/height_inches
+plt.savefig('../stability.pdf', dpi=dpi)
