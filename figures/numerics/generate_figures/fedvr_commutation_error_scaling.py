@@ -165,7 +165,7 @@ grad2_8 += np.diag(np.full(Npts-0, D2_8TH_ORDER_0), +0)
 grad2_8 += np.diag(np.full(Npts-1, D2_8TH_ORDER_1), +1)
 grad2_8 += np.diag(np.full(Npts-2, D2_8TH_ORDER_2), +2)
 grad2_8 += np.diag(np.full(Npts-3, D2_8TH_ORDER_3), +3)
-grad2_8 += np.diag(np.full(Npts-4, D2_8TH_ORDER_3), +4)
+grad2_8 += np.diag(np.full(Npts-4, D2_8TH_ORDER_4), +4)
 
 grad2_10 = np.zeros((Npts, Npts))
 grad2_10 += np.diag(np.full(Npts-5, D2_10TH_ORDER_5), -5)
@@ -203,7 +203,7 @@ gs = gridspec.GridSpec(1, 1, left=0.1, bottom=0.1,
 plt.plot(np.array(Ns_fedvr) - 2, np.array(max_evals_fedvr) * dx_av, marker='o', linestyle='-',
              color=colors['blue'], markeredgecolor=colors['blue'], label=R'$\textsc{fedvr}$')
 
-plt.plot(Ns_FD,np.array( max_evals_fd) * dx_av, marker='s', linestyle='-',
+plt.plot(Ns_FD,np.array(max_evals_fd) * dx_av, marker='s', linestyle='-',
              color=colors['orange'], markeredgecolor=colors['orange'],
              label='Finite differences')
 
