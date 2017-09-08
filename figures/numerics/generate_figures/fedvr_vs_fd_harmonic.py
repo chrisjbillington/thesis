@@ -226,7 +226,7 @@ FIG_HEIGHT = 2.75
 
 fig = plt.figure(figsize=(FIG_WIDTH, FIG_HEIGHT))
 
-plt.semilogy(N_arr, errors_fedvr, 'o-', label=R'$\textsc{fedvr}$')
+plt.semilogy(N_arr, errors_fedvr, 'o-', label=R'$\textsc{fedvr}$', marker='s', zorder=10)
 for order in orders:
     plt.semilogy(N_arr, errors_fd[order], 'o-', label=R'$\textsc{fd}_{%s}$ equiv.' % str(order))
 
