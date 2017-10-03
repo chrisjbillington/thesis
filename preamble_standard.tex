@@ -195,6 +195,19 @@
 % Move margin notes upward to prevent them running off the edge of the page:
 \usepackage{marginfix}
 
+% Import hyperlinks from .pax files when including external pdfs
+
+% Hacks to make pax work with lualatex, from
+% https://tex.stackexchange.com/questions/60201/getting-pax-pdfpages-to-work-with-xelatex
+\makeatletter
+\let\pdfescapename=\pdf@escapename
+\let\pdfstrcmp=\pdf@strcmp
+\makeatother
+\usepackage{pax}
+
+% For including external PDF documents as pages in output:
+\usepackage[final]{pdfpages}
+
 % For defining abbreviations (that will be written in full their first use)
 % \usepackage{glossaries}
 % \glsdisablehyper
