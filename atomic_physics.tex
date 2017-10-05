@@ -138,4 +138,18 @@ At a vortex core, the atom density of a \bec\ must go to zero. This can be intui
 
 \section{Optical transitions on the $^{87}$Rb \textsc{d} line}
 
-[how to get the transition dipole moments of optical transions on the D line]
+We atomic physicists do our theory work at an intermediate level of abstraction, where many quantities and systems of interest can be computed and simulated with accurate models using standard quantum mechanics, but at which the models are not fully a-priori. Instead, the Hamiltonians we feed to the machinary of standard quantum mechanics encapsulate some of the details we are not interested in, with the link between the underlying layers of reductionism and the higher layer usually provided by experimentally measured constants rather than calculations from fundamental physics. In this way we can readily compute results about the atoms we are interested in by treating them as simpler systems than they actually are, the most glaring example being ignoring all but one electron.
+
+In this section I'll summarise what the $^{87}$Rb \textsc{d} line looks like from the perspective of a cold atom physicsist, building up a Hamiltonian containing all 32 sublevels of the ground and first excited state of $^{87}$Rb including fine structure, hyperfine structure, interaction with a magnetic field, and optical transitions between states. This Hamiltonian is the starting point for any calculations regarding cooling, trapping, and coherent control of $^{87}$Rb, and the process for other alkali earth metals is much the same.
+
+\subsection{Fine structure}
+
+The rubidium 87 \textsc{d} line is not just one transition between a ground state and an excited state---there are two excited states, and the two resulting lines are called the \textsc{d1} and \textsc{d2} lines. Thus the ground and first excited state of $^{87}$Rb are actually a ground state plus two non-degenerate excited states, once we take into account fine structure. The groundstate is an $s$ state (electronic orbital angular momentum quantum number $\ell=0$), and the two excited states are $p$ states $(\ell=1)$, one with the electron spin anti-aligned with its orbital angular momentum ($j=1/2$) and one with the electron spin aligned with its orbital angular momentum ($j=3/2$). This fine structure is treated entirely empirically for our purposes, and so our base Hamiltonian for the rubidium \textsc{d} line, taking into account only fine structure, is:
+
+\begin{align}
+\hat H_0 = \hat 0_{S_{1/2}} \oplus
+\hbar\omega_{\textsc{D}_1} \hat1_{P_{1/2}} \oplus
+\hbar\omega_{\textsc{D}_2} \hat1_{P_{3/2}}
+\end{align}
+
+[how to get the transition dipole moments of optical transitions on the D line]
