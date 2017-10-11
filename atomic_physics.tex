@@ -158,9 +158,9 @@ where $\hat 0_{S_{1/2}}$, $\hat1_{P_{1/2}}$, and $\hat1_{P_{3/2}}$ are zero and 
 \begin{align}
 & H_0  = 
 \left[\begin{matrix}
-    \left[\begin{matrix}\ddots &&\\&0&\\&&\ddots\\\end{matrix} \right]\\
-    & \left[\begin{matrix}\ddots &&\\&\hbar\omega_{\textsc{D}_1}&\\&&\ddots\\\end{matrix} \right]\\
-    & &\left[\begin{matrix}\ddots &&\\&\hbar\omega_{\textsc{D}_2}&\\&&\ddots\\\end{matrix} \right]
+    \left[\begin{smallmatrix}\ddots &&\\&0&\\&&\ddots\\\end{smallmatrix} \right]\\
+    & \left[\begin{smallmatrix}\ddots &&\\&\hbar\omega_{\textsc{D}_1}&\\&&\ddots\\\end{smallmatrix} \right]\\
+    & &\left[\begin{smallmatrix}\ddots &&\\&\hbar\omega_{\textsc{D}_2}&\\&&\ddots\\\end{smallmatrix} \right]
 \end{matrix} \right],
 \end{align}
 which is a block-diagonal matrix with each block also being a diagonal matrix. We have not yet specified the size of each submatrix---the size of each differs and depends on how many hyperfine and Zeeman sublevels are in that state.
@@ -169,26 +169,123 @@ This base Hamiltonian is worth pointing out since the energy differences between
 
 \subsection{Hyperfine structure}
 
-Within each of the $S_{1/2}$, $P_{1/2}$ and $P_{3/2}$ states, the single outer-shell electron's total angular momentum $\hat {\vec J}$ has an interaction with $^{87}$Rb's nuclear angular momentum $\hat{\vec I}$. This results in multiple discrete energy levels depending on the relative orientation of the two separate angular momenta. The interaction Hamiltonian for this hyperfine structure is [cite steck and the two references steck cites]:
+Within each of the $S_{1/2}$, $P_{1/2}$ and $P_{3/2}$ states, the single outer-shell electron's total angular momentum $\hat {\vec J}$ has an interaction with $^{87}$Rb's nuclear angular momentum $\hat{\vec I}$. This results in multiple discrete energy levels depending on the relative orientation of the two separate angular momenta. The interaction Hamiltonian for this hyperfine structure is [cite steck and the two references steck cites]\footnote{Note that this expression differs from those in the cited references by a factor of $1/\hbar^2$---this is because I define the $\hat{\vec I}$ and $\hat{\vec J}$ angular momentum operators in SI units, rather than in units of $\hbar^2$.}:
 \begin{align}\label{eq:H_hfs}
-\hat H_\up{hfs} = A_\up{hfs} \hat{\vec I} \cdot \hat {\vec J} + B_\up{hfs}\frac
+\hat H_\up{hfs} = \frac{A_\up{hfs}}{\hbar^2} \hat{\vec I} \cdot \hat {\vec J}
++ \frac{B_\up{hfs}}{\hbar^2}\frac
 {3(\hat{\vec I}\cdot\hat{\vec J})^2 + \frac32 \hat{\vec I}\cdot\hat{\vec J} - I(I + 1)J(J + 1)}
 {2I(2I - 1)J(2J - 1)},
 \end{align}
-where $J$ is the total angular momentum quantum number of the electron, equal to either $\frac12$ or $\frac32$ depending on which state in the D line we are considering, $I=\frac32$ is the total angular momentum quantum number of the nucleus, and $A_\up{hfs}$ and $B_\up{hfs}$ are empirically determined coupling constants. Here we see the boundary between the quantities we can calculate with the machinery of quantum mechanics and those that we cannot and need to determine empirically---this expression applies so long as $J$ and $I$ are good quantum numbers,\footnote{$J$ is a good quantum number so long as the hyperfine splitting is small compared to the spacing between the three states of the D line, which it is, and $I$ is a good quantum number so long as the hyperfine splitting is small compared to the energy difference between the groundstate and the first \emph{nuclear} excited state, which it most certainly is.} and the two terms are the dipolar and quadrupolar interactions [cite the review article] between two angular momenta, with the coupling constants determined empirically and encapsulating many details that are difficult to compute a-priori, such as relativistic effects and the exact shape of the electron orbitals given the presence of inner shell electrons. For the spherically-symmetric $S_{1/2}$ groundstate, there is no quadrupolar interaction and so $B_\up{hfs}$ is only nonzero for the two $P$ excited states. The values of $A_\up{hfs}$ and $B\up{hfs}$ for each of the three states of the D line can be found in [steck].
+where $J$ is the total angular momentum quantum number of the electron, equal to either $\frac12$ or $\frac32$ depending on which state in the D line we are considering, $I=\frac32$ is the total angular momentum quantum number of the nucleus, and $A_\up{hfs}$ and $B_\up{hfs}$ are empirically determined coupling constants. Here we see the boundary between the quantities we can calculate with the machinery of quantum mechanics and those that we cannot and need to determine empirically---this expression applies so long as $J$ and $I$ are good quantum numbers,\footnote{$J$ is a good quantum number so long as the hyperfine splitting is small compared to the spacing between the three states of the D line, which it is, and $I$ is a good quantum number so long as the hyperfine splitting is small compared to the energy difference between the groundstate and the first \emph{nuclear} excited state, which it most certainly is.} and the two terms are the dipolar and quadrupolar interactions [cite the review article] between two angular momenta, with the coupling constants determined empirically and encapsulating many details that are difficult to compute a-priori, such as relativistic effects and the exact shape of the electron orbitals given the presence of inner shell electrons. For the spherically-symmetric $S_{1/2}$ groundstate, there is no quadrupolar interaction and so $B_\up{hfs}$ is only nonzero for the two $P$ excited states.\footnote{The quadrupolar term should be explicitly excluded from numerical computations of the hyperfine splitting on the $S_{1/2}$ state, as it contains a division by zero in this case, which may lead to erroneous results even if the term is subsequently multiplied by $B_\up{hfs}=0$.} The values of $A_\up{hfs}$ and $B\up{hfs}$ for each of the three states of the D line can be found in [steck].
 
 For a given state of the D line, we can construct the matrix representation $H_\up{hfs}$ of $\hat H_\up{hfs}$ in the basis in which the $z$ vector components $\hat{I}_z$ and $\hat{J}_z$ of $\hat{\vec I}$ and $\hat{\vec J}$ are diagonal by constructing matrix representations $\vec I_{\mathcal{I} \times \mathcal{J}}$ and $\vec J_{\mathcal{I} \times \mathcal{J}}$ of the operators $\hat{\vec I}$ and $\hat{\vec J}$ in that basis and then applying the expression (\ref{eq:H_hfs}). The subscript ${\mathcal{I} \times \mathcal{J}}$ on each of the matrices indicates that the matrix  is a representation of its respective operator in the product space of the spaces $\mathcal{I}$ and $\mathcal{J}$ of the two individual nuclear and electronic angular momentum degrees of freedom.
 
 To construct matrix representations of angular momentum operators in the product space ${\mathcal{I} \times \mathcal{J}}$, we first need their matrix representations $\vec I_{\mathcal{I}}$ and $\vec J_{\mathcal{J}}$ in their respective subspaces, which we will write as $\vec I$ and $\vec J$ for brevity. We can then expand the two operators into the total space by applying a Kronecker product with an appropriate identity matrix to each:
-\begin{align}
+\begin{align}\label{eq:kronecker_identity_I}
 \vec I_{\mathcal{I} \times \mathcal{J}} &= \vec I \otimes \mathbb{I}_{\mathcal{J}}\\
+\label{eq:kronecker_identity_J}
 \vec J_{\mathcal{I} \times \mathcal{J}} &= \mathbb{I}_{\mathcal{I}} \otimes \vec J
 \end{align}
-where $\mathbb{I}_{\mathcal{I}}$ is the matrix representation of the identity operator on the $\mathcal{I}$ subspace, equal to a $(2I+1)\times(2I+1)$ identity matrix, with $\mathbb{I}_{\mathcal{J}}$ defined similarly. Each of the two matrices is actually a vector of matrices, one for the angular momentum projection in each of the directions $x$, $y$ and $z$. The procedure for constructing such matrices for arbitrary total angular momentum quantum numbers is as follows. I'll show the procedure for constructing $J_x$, $J_y$ and $J_z$ only for an arbitrary $J$, the procedure is identical for computing the vector components of $\vec I$.
+where $\mathbb{I}_{\mathcal{I}}$ is the matrix representation of the identity operator on the $\mathcal{I}$ subspace, equal to a $(2I+1)\times(2I+1)$ identity matrix, with $\mathbb{I}_{\mathcal{J}}$ defined similarly. Each of the two matrices is actually a vector of matrices, one for the angular momentum projection in each of the directions $x$, $y$ and $z$. The procedure for constructing such matrices for arbitrary total angular momentum quantum numbers is as follows.\footnote{This explicit procedure for constructing the matrix representations of these operators is useful for entering into a programming language to produce programs capable of performing atomic physics calculations for arbitrary total angular momentum quantum number $J$, without having to explicitly enter the angular momentum operators for each value of $J$, which can be tedious and prone to human error.} I'll show the procedure for constructing $J_x$, $J_y$ and $J_z$ only for an arbitrary $J$, the procedure is identical for computing the vector components of $\vec I$.
 
-For a given total angular momentum quantum number $J$, the vector components of $\vec J$ in the $z$ basis (the basis in which $J_z$ is diagonal) can be constructed using the raising and lowering operators $J_+$ and $J_-$. Since the action of the raising and lowering operators on an eigenstate of $J_z$ with angular momentum projection quantum number $m_J$ is to produce an adjacent ($m_J \pm 1$) eigenstate multiplied by a known constant [CITE SOME TEXTBOOK], this fact can be used to construct explicit matrix forms of $J^+$ and $J^-$:
+For a given total angular momentum quantum number $J$, the vector components of $\vec J$ in the $z$ basis (the basis in which $J_z$ is diagonal) can be constructed using the raising and lowering operators $\hat J_+$ and $\hat J_-$. Since the action of the raising and lowering operators on an eigenstate of $J_z$ with angular momentum projection quantum number $m_J$ is to produce an adjacent ($m_J \pm 1$) eigenstate multiplied by a known constant [CITE SOME TEXTBOOK], this fact can be used to compute the nonzero matrix elements of $\hat J_+$ and $\hat J_-$ in the $\{\ket{m_J}\}$ basis:
 
 \begin{align}
-J_+ = 
+\matrixel{m_J}{\hat J_+}{m_J + 1} &= \hbar\sqrt{J(J + 1) - m_J(m_J + 1)}, \qquad m_J < J,\\
+\matrixel{m_J}{\hat J_-}{m_J - 1} &= \hbar\sqrt{J(J + 1) - m_J(m_J - 1)}, \qquad m_J > -J,\\
 \end{align}
+and therefore compute explicit matrices for $J_+$ and $J_-$ in the $\{\ket{m_J}\}$ basis:\footnote{We're using the standard convention of ordering the eigenvectors $\{\ket{m_J}\}$ in descending order of $m_J$. This is at odds with the computer programming convention of looping over most indices in ascending order, and so care should be taken when constructing these matrices in a computer program.}
+\begin{align}
+J_+ &=
+\left[\begin{smallmatrix}
+    0 & \hdots \\
+    \matrixel{J - 1}{\hat J_+}{J} & 0 & \hdots\\
+    0 & \matrixel{J - 2}{\hat J_+}{J - 1} & 0 & \hdots\\
+    \hdots & 0 & \matrixel{J - 3}{\hat J_+}{J - 2} & 0 & \hdots\\
+    & & \ddots & \ddots & \ddots\\
+    & & \hdots & 0 & \matrixel{-J}{\hat J_+}{-J + 1} & 0 \\
+\end{smallmatrix} \right],\\
+J_- &=
+\left[\begin{smallmatrix}
+0 &  \matrixel{J}{\hat J_-}{J - 1} & 0 & \hdots\\
+\hdots & 0 & \matrixel{J - 1}{\hat J_-}{J - 2} & 0 & \hdots\\
+& & \ddots & \ddots & \ddots\\
+ & & \hdots & 0 & \matrixel{ -J + 2}{\hat J_-}{-J + 1} & 0\\
+ & & & \hdots & 0 & \matrixel{ -J + 1}{\hat J_-}{-J}\\
+ & & & & \hdots & 0\\
+\end{smallmatrix} \right],
+\end{align}
+both of which have nonzero values along only one non-main diagonal adjacent to the main diagonal, and which form a Hermitian conjugate pair (or indeed, a transpose pair, since all elements are real). The matrix representations of $\hat J_x$ and $\hat J_y$ can then be computed by rearranging the defining expressions [CITE] for $\hat J_+$ and $J_-$;
+\begin{align}
+\hat J_+ = \hat J_x + \ii \hat J_y,\\
+\hat J_- = \hat J_x - \ii \hat J_y,
+\end{align}
+for $\hat J_x$ and $\hat J_y$, and then applying the result to our matrix representations of $\hat J_+$ and $\hat J_-$ to obtain matrix representations $J_x$ and $J_y$ of $\hat J_x$ and $\hat J_y$ in the $\{\ket{m_J}\}$ basis:
+\begin{align}
+J_x &= \frac{J_+ + J_-}{2},\\
+J_y &= \frac{J_+ - J_-}{2\ii}.
+\end{align}
+Finally, since $\{\ket{m_J}\}$ is the eigenbasis of $J_z$ with eigenvalues $\{\hbar m_J\}$, the matrix representation of $J_z$ is simply the diagonal matrix of eigenvalues:
+\begin{align}
+J_z = \left[\begin{smallmatrix}
+\hbar J\\
+& \hbar (J - 1)\\
+& & \ddots\\
+& & & \hbar (- J + 1)\\
+& & & & -\hbar J\\
+\end{smallmatrix} \right].
+\end{align} 
+We can also construct the matrix representation $J^2$ of the total (squared) angular momentum operator $\hat J^2$ as
+\begin{align}
+J^2 = J_x^2 + J_y^2 + J_z^2, 
+\end{align} 
+or equivalently
+\begin{align}
+J^2 = J(J+1)\hbar^2 \mathbb{I}_{\mathcal{J}},
+\end{align}
+since every $m_J$ state is an eigenstate of the $J^2$ operator with eigenvalue $J(J+1)\hbar^2$.
+
+The above prescription can be used to produce matrix representations of angular momentum operators $J_x$, $J_y$, $J_z$ and $J^2$ for any integer or half-integer total angular momentum quantum number $J$. The three components can be considered a vector of matrices, $J$ for the vector angular momentum operator $\hat J$. Below is a Python function that computes these matrices as well as the corresponding eigenvectors:
+
+\python{code_listings/angular_momentum_operators.py}
+
+Using the above prescription to construct a matrix representation of the $\hat J$ operator with $J=\frac12$ for the $S_{1/2}$ and $P_{1/2}$ states, or $J=\frac32$ for the $P_{3/2}$ state, and to construct a matrix representation of the $\hat I$ operator with $I=\frac32$, we are close to being able to explicitly construct a matrix representation of the hyperfine interaction Hamiltonian for any state of the $^{87}$Rb D line. The remaining step is to obtain the matrix representations of the two operators in the $\mathcal{I}\times\mathcal{J}$ product space using \eqref{eq:kronecker_identity_I} and \eqref{eq:kronecker_identity_J}, and then we can apply \eqref{eq:H_hfs} to our matrices to obtain the matrix representation $H_\up{hfs}$ of $\hat H_\up{hfs}$ for a given $J$ corresponding to one of the three states on the D line:
+\begin{align}\label{eq:H_hfs_matrix}
+H_\up{hfs} = \frac{A_\up{hfs}}{\hbar^2}
+\vec I_{\mathcal{I}\times\mathcal{J}} \cdot
+\vec J_{\mathcal{I}\times\mathcal{J}}
++ \frac{B_\up{hfs}}{\hbar^2}\frac
+{3(\vec I_{\mathcal{I}\times\mathcal{J}}\cdot
+\vec J_{\mathcal{I}\times\mathcal{J}})^2
++ \frac32 \vec I_{\mathcal{I}\times\mathcal{J}}\cdot
+\vec J_{\mathcal{I}\times\mathcal{J}}
+ - I(I + 1)J(J + 1)}
+{2I(2I - 1)J(2J - 1)},
+\end{align}
+where the products of vector components within the dot products are computed with ordinary matrix multiplication. Alternatively, one can use the matrices in their individual subspaces rather than their equivalents in the product space, so long as one interprets the dot products as ``Kronecker dot products":
+\begin{align}\label{eq:H_hfs_matrix_kron}
+H_\up{hfs} = \frac{A_\up{hfs}}{\hbar^2}
+\vec I \krondot \vec J
++ \frac{B_\up{hfs}}{\hbar^2}\frac
+{3(\vec I \krondot \vec J)^2
++ \frac32 \vec I \krondot \vec J
+ - I(I + 1)J(J + 1)}
+{2I(2I - 1)J(2J - 1)},
+\end{align}
+where $\krondot$ is the Kronecker dot product:
+\begin{align}
+\vec I \krondot \vec J \equiv I_x \otimes J_x + I_y \otimes J_y + I_z \otimes J_z.
+\end{align}
+
+In the above way one can construct an explicit matrix representation $H_\up{hfs}$ for the hyperfine interaction for a given state of the D line. But what basis is it in? Because the matrix representations $\vec I$ and $\vec J$ of the electron and nuclear angular momentum operators were constructed in the $\{\ket{m_I}\}$ and $\{\ket{m_I}\}$ bases of their respective subspaces $\mathcal{I}$ and $\mathcal{J}$, the matrices we have constructed in the product space $\mathcal{I}\times\mathcal{J}$ are in the basis $\{\ket{m_I}\} \times \{\ket{m_I}\}$---the direct product of the two sets of basis vectors for the separate subspaces, with elements:
+\begin{align}
+\{\ket{m_I}\} \times \{\ket{m_J}\} = \left\{\ket{m_I} \otimes \left.\ket{m_J} \ \right| \ \ket{m_I} \in \{\ket{m_I}\}, \ket{m_J} \in \{\ket{m_J}\}\right\},
+\end{align}
+where $\otimes$ is the direct product of vectors.\footnote{Although the symbol $\otimes$ is used for both the Kronecker product and the direct product (of vectors), the direct product applies to vectors/state vectors, and the Kronecker product to matrices/operators. The direct product also applies to basis sets/spaces, but with the symbol $\times$. I would prefer nomenclature refer to them all with the same name and symbol, especially since the result of a direct product applied to an $N$-element column vector and an $M$-element column vector is identical to that of applying a Kronecker product to an $N\times1$ matrix and a $M\times 1$ matrix, but I'll stick to the standard nomenclature.}
+
+The representation of a state vector in this basis has elements:
+\begin{align}
+\vec \psi = 
+\end{align}
+
 \subsection{Zeeman sublevels}
