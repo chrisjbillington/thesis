@@ -279,13 +279,24 @@ where $\krondot$ is the Kronecker dot product:
 
 In the above way one can construct an explicit matrix representation $H_\up{hfs}$ for the hyperfine interaction for a given state of the D line. But what basis is it in? Because the matrix representations $\vec I$ and $\vec J$ of the electron and nuclear angular momentum operators were constructed in the $\{\ket{m_I}\}$ and $\{\ket{m_I}\}$ bases of their respective subspaces $\mathcal{I}$ and $\mathcal{J}$, the matrices we have constructed in the product space $\mathcal{I}\times\mathcal{J}$ are in the basis $\{\ket{m_I}\} \times \{\ket{m_I}\}$---the direct product of the two sets of basis vectors for the separate subspaces, with elements:
 \begin{align}
-\{\ket{m_I}\} \times \{\ket{m_J}\} = \left\{\ket{m_I} \otimes \left.\ket{m_J} \ \right| \ \ket{m_I} \in \{\ket{m_I}\}, \ket{m_J} \in \{\ket{m_J}\}\right\},
+\{\ket{m_I}\} \times \{\ket{m_J}\} = \left\{\left. \ket{m_I, m_J} \ \right| \ \ket{m_I} \in \{\ket{m_I}\}, \ket{m_J} \in \{\ket{m_J}\}\right\},
 \end{align}
-where $\otimes$ is the direct product of vectors.\footnote{Although the symbol $\otimes$ is used for both the Kronecker product and the direct product (of vectors), the direct product applies to vectors/state vectors, and the Kronecker product to matrices/operators. The direct product also applies to basis sets/spaces, but with the symbol $\times$. I would prefer nomenclature refer to them all with the same name and symbol, especially since the result of a direct product applied to an $N$-element column vector and an $M$-element column vector is identical to that of applying a Kronecker product to an $N\times1$ matrix and a $M\times 1$ matrix, but I'll stick to the standard nomenclature.}
+where $\ket{m_I, m_J} = \ket{m_I} \otimes \ket{m_J}$ and $\otimes$ is the direct product of vectors.\footnote{Although the symbol $\otimes$ is used for both the Kronecker product and the direct product (of vectors), the direct product applies to vectors/state vectors, and the Kronecker product to matrices/operators. The direct product also applies to basis sets/spaces, but with the symbol $\times$. I would prefer nomenclature refer to them all with the same name and symbol, especially since the result of a direct product applied to an $N$-element column vector and an $M$-element column vector is identical to that of applying a Kronecker product to an $N\times1$ matrix and a $M\times 1$ matrix, but I'll stick to the standard nomenclature.}
 
-The representation of a state vector in this basis has elements:
+The vector representation $\vec\psi$ of a state vector $\ket{\psi}$ in this basis is:
 \begin{align}
-\vec \psi = 
+\vec \psi = \left[\begin{matrix}
+\braket{m_I=I, m_J=J}{\psi}\\
+\braket{m_I=I, m_J=J-1}{\psi}\\
+\vdots\\
+\braket{m_I=I, m_J=-J}{\psi}\\
+\braket{m_I=I-1, m_J=J}{\psi}\\
+\braket{m_I=I-1, m_J=J-1}{\psi}\\
+\vdots\\
+\vdots\\
+\braket{m_I=-I, m_J=-J}{\psi}\\
+\end{matrix}\right].
 \end{align}
+The hyperfine Hamiltonian is not diagonal in the $\{\ket{m_I, m_J}\}$ basis.
 
 \subsection{Zeeman sublevels}
