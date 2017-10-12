@@ -1,0 +1,214 @@
+% Maths symbols, equation environments and physics macros:
+\usepackage{amsmath,amssymb}
+\usepackage{physics}
+
+% Graphics:
+\usepackage{graphicx}
+
+% For an mbox command that works in math mode (i.e that contains math):
+\usepackage{mathtools}
+
+% Colours:
+\usepackage{xcolor}
+\definecolor{pastelred}{RGB}{200,80,80}
+\definecolor{pastelgreen}{RGB}{0,150,80}
+\definecolor{battleshipgrey}{rgb}{0.52, 0.52, 0.51}
+
+
+% Fonts:
+\usepackage[
+  % Uppercase Greek letters should be italic by default:
+  math-style=ISO,
+  % Uppercase bold symbols should also be italic unless set otherwise:
+  bold-style=ISO,
+  % Upright \nabla though:
+  nabla=upright,
+  % \mathrm,\mathit,\mathbf and operators should use the maths font, not the text font:
+  mathup=sym,mathit=sym,mathbf=sym
+]{unicode-math}
+
+% Garamond for normal text:
+\setmainfont[
+    Mapping=tex-text,
+    Contextuals=Alternate,
+    Numbers={OldStyle,Proportional},
+    BoldFont={GaramondPremrPro-Bd},
+    ItalicFont={GaramondPremrPro-It},
+    BoldItalicFont={GaramondPremrPro-BdIt}
+    ]{Garamond Premier Pro}
+
+% Monospaced font:
+\setmonofont{Ubuntu Mono}
+
+% Asana for all non-alphanumeric symbols, operators, etc:
+\setmathfont{Asana Math}
+
+% Latin Modern for integrals, sums, \nabla, and other symbold determined to be missing from Minion
+% and Asana:
+\setmathfont[range={\mathop,\nabla,\triangleright}]{Latin Modern Math}
+
+
+% Minion pro for alphanumeric symbols, inlcuding Greek:
+\setmathfont{MinionPro}[
+    range={up}/{latin,Latin,num,Greek,greek},
+    SizeFeatures = {
+        {Size = -8.41, Font = MinionPro-Capt},
+        {Size = 8.41-13.01, Font = MinionPro-Regular},
+        {Size = 13.01-19.91, Font = MinionPro-Subh},
+        {Size = 19.91-, Font = MinionPro-Disp}
+    }]
+\setmathfont{MinionPro-It}[
+    range={it}/{latin,Latin,num,Greek,greek},
+    SizeFeatures = {
+        {Size = -8.41, Font = MinionPro-ItCapt},
+        {Size = 8.41-13.01, Font = MinionPro-It},
+        {Size = 13.01-19.91, Font = MinionPro-ItSubh},
+        {Size = 19.91-, Font = MinionPro-ItDisp}
+    }]
+\setmathfont{MinionPro-Bold}[
+    range={bfup}/{latin,Latin,num,Greek,greek},
+    SizeFeatures = {
+        {Size = -8.41, Font = MinionPro-BoldCapt},
+        {Size = 8.41-13.01, Font = MinionPro-Bold},
+        {Size = 13.01-19.91, Font = MinionPro-BoldSubh},
+        {Size = 19.91-, Font = MinionPro-BoldDisp}
+    }]
+\setmathfont{MinionPro-BoldIt}[
+    range={bfit}/{latin,Latin,num,Greek,greek},
+    SizeFeatures = {
+        {Size = -8.41, Font = MinionPro-BoldItCapt},
+        {Size = 8.41-13.01, Font = MinionPro-BoldIt},
+        {Size = 13.01-19.91, Font = MinionPro-BoldItSubh},
+        {Size = 19.91-, Font = MinionPro-BoldItDisp}
+    }]
+
+% Use math font for blackboard bold:
+\DeclareMathAlphabet{\mathbb}{U}{msb}{m}{n}
+
+% Use swashed Minion Pro for mathcal:
+% \setmathfont[range=cal,Contextuals=Swash]{MinionPro-It}
+
+% Workaround for bug where the above commented out line doesn't work - it works in xelatex and will
+% presumably be fixed for lualatex in the future. In the meantime we define a text font face that
+% uses swashed Minion Pro, and redefine the \mathcal command to use it:
+\newfontface\swash[Contextuals=Swash]{MinionPro-It}
+\renewcommand\mathcal[1]{\mathmbox{\textrm{\swash #1}}}
+
+% redefine \texttt to be coloured:
+\renewcommand\texttt[1]{{\ttfamily\color{pastelgreen}#1}}
+
+% Typesetting tweaks for pedants and perfectionists:
+\usepackage{microtype}
+
+% Better behaved \cite command:
+\usepackage{cite}
+
+% For calculating text sizes
+\usepackage{calc}
+
+% Allow rotating floats - useful for landscape float pages:
+\usepackage{rotating}
+
+% Make commands run at the start of a new page. Useful for changing the margins on a float page
+% without having to manually start a new page and thus have the rest of the current page
+% potentially blank:
+\usepackage{afterpage}
+
+% Drop caps:
+\usepackage{lettrine}
+
+% For making fake blocks of text for testing:
+\usepackage{lipsum}
+
+% For changing page margins, useful used in combination with \afterpage for a float page:
+\usepackage{geometry}
+
+% Source code listings:
+\usepackage{minted}
+  % % A command for including Python source from a file, like: \python{myfile.py}
+  % \newcommand{\python}[1]{\spacing{0.7}\inputminted[linenos, numbersep=5pt, frame=lines, framesep=2mm,fontsize=\scriptsize]{python}{#1}}
+
+  % A command for including Python source from a file, like: \python{myfile.py}
+  \newcommand{\python}[1]{\inputminted[linenos, numbersep=5pt, frame=lines, framesep=2mm,fontsize=\scriptsize]{python}{#1}}
+
+% For verbatim text input
+\usepackage{verbatim}
+
+% For typesetting algorithms:
+\usepackage{algorithm,algpseudocode,float}
+
+% Page-breakable algorithm environment
+\makeatletter
+\newenvironment{breakablealgorithm}
+  {% \begin{breakablealgorithm}
+   \begin{center}
+     \refstepcounter{algorithm}% New algorithm
+     \hrule height.8pt depth0pt \kern2pt% \@fs@pre for \@fs@ruled
+     \renewcommand{\caption}[2][\relax]{% Make a new \caption
+       {\raggedright\textbf{\ALG@name~\thealgorithm} ##2\par}%
+       \ifx\relax##1\relax % #1 is \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##2}%
+       \else % #1 is not \relax
+         \addcontentsline{loa}{algorithm}{\protect\numberline{\thealgorithm}##1}%
+       \fi
+       \kern2pt\hrule\kern2pt
+     }
+  }{% \end{breakablealgorithm}
+     \kern2pt\hrule\relax% \@fs@post for \@fs@ruled
+   \end{center}
+  }
+\makeatother
+
+
+% Hyperlinked references, contents:
+\usepackage[bookmarksopen,
+  pagebackref,
+  colorlinks=true,
+  urlcolor=pastelred,
+  citecolor=pastelred,
+  filecolor=pastelred,
+  linkcolor=pastelred,
+  linktocpage=true]
+  {hyperref}
+
+% Hyperlinked back-references in the bibliography
+\renewcommand*{\backrefalt}[4]{
+  \ifnum#1=1
+    [p~#2]
+  \else
+    [pp~#2]
+  \fi
+}
+
+% Make links to figures link to the top of the figure instead of the caption
+\usepackage[all]{hypcap}
+
+% Remove need for extra pass of latex to make bookmarks:
+\usepackage{bookmark}
+
+% Links to DOIs in bibliography
+\usepackage{doi}
+
+% Provides \RaggedLeft and \RaggedRight commands for ragged text with occasional hyphenation:
+\usepackage{ragged2e}
+
+% Move margin notes upward to prevent them running off the edge of the page:
+\usepackage{marginfix}
+
+% Import hyperlinks from .pax files when including external pdfs
+
+% Hacks to make pax work with lualatex, from
+% https://tex.stackexchange.com/questions/60201/getting-pax-pdfpages-to-work-with-xelatex
+\makeatletter
+\let\pdfescapename=\pdf@escapename
+\let\pdfstrcmp=\pdf@strcmp
+\makeatother
+\usepackage{pax}
+
+% For including external PDF documents as pages in output:
+\usepackage[final]{pdfpages}
+
+% For defining abbreviations (that will be written in full their first use)
+% \usepackage{glossaries}
+% \glsdisablehyper
+% \setacronymstyle{long-sc-short}

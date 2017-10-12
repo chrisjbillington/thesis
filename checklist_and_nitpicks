@@ -1,0 +1,72 @@
+find and replace: groundstate ->  ground state
+Remove superfluous colons before equations
+upright imaginary i
+No spaces around em dashes
+Define bohr radius at some point
+Hidden variables:
+   Include picture from KOALA talk of atoms not following the right trajectories
+
+Sch\"rodinger - ensure umlauts everywhere
+
+Check all references to bases have {} brackets around them: "the basis {|n>}"
+
+Check Dirac deltas all upright
+
+Check timestep deltas all upright
+
+What's a zero energy resonance?
+
+Wavefunctions must be continuous and smooth. First derivatives must be equal
+at an interface. This is one way of reasoning as to why you get reflections
+when the potential changes suddenly.
+
+Ensure footnote markers are after punctuation
+Ensure all integrals have a "\," before the "\dd"
+
+Ensure all units are done with appropriate macro
+Ensure all exponents are done with appropriate macro
+Ensure all cross-references are done with appropriate macros
+Ensure no duplicate bibliography items
+Ensure all small caps are done using a macro?
+Ensure all bras and kets are done with macros
+Ensure all derivatives are done with macros
+Ensure all texttt done with macros
+Ensure delta t's are all before Hamiltonians in exponents
+Ensure citation and credit is given to others for control system chapter, as it is adapted from the paper
+
+Ensure all unitaries are of the form U(t_f, t_i)
+Ensure all ordered products are written with descending indices and no time-ordering meta-operator
+
+Be sure to comment in rk4ilip section on split-step methods being able to use arbitrary *linear*
+operators if you really want them to, as per split-operator section
+Make sure all unitaries have hats
+
+Rewrite unitaries U(t_f, t_i)
+Rewrite ordered products as a descending product so that we can get rid of the time ordering operator.
+
+Put a tilde on top of the discrete spatial basis vectors so it's obvious that they are the discrete versions
+Switch to 1D index for all the discrete basis functions? Add a line saying: "henceforth arbitrary dimension,
+single index, because of that unwrapping?"
+
+Change DFT2 to DFT in unitary subscripts
+
+Define \psi_i and \tilde \psi i for wavefunction and fourier transform of discrete wavefunction, and operators
+bold psi and bold psi tilde for vector representation in specific basis
+
+yeah, start editing this section - print it tomorrow and edit
+
+Seriously switch to single index, it's getting too complicated
+
+Perhaps note that you can't project onto the discrete basis by an integral...can you?
+No, I don't think  you can. Gotta do the projection in Fourier space or just use the value of
+the wavefunction at the points
+
+Get DOIs for all references that have them.
+
+Ensure all acronyms are small caps
+
+Cite the geometric integrator lincoln sent me an email about
+
+Go through bibiolgraphy fixing everything
+
+RK4 not stable for any timestep - really? Maybe only for nonlinear problems. 

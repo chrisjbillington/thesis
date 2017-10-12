@@ -1,0 +1,129 @@
+% Skew accents that go over characters to make them more centered:
+
+% \hat:
+\let\oldhat\hat
+\renewcommand{\hat}[1]{\skew{1.5}\oldhat{\mathmbox{#1}}}
+
+% \tilde:
+\let\oldtilde\tilde
+\renewcommand{\tilde}[1]{\skew{1.5}\oldtilde{\mathmbox{#1}}}
+
+% \dot:
+\let\olddot\dot
+\renewcommand{\dot}[1]{\skew{1.5}\olddot{\mathmbox{#1}}}
+
+% \vec: Bold vector. Italic or not depending on unicode-math options.
+\renewcommand{\vec}[1]{\symbf{#1}}
+
+% Bras, kets, brakets, ketbras, expectation values, and matrix elements. Versions that don't resize
+% start with a lowercase letter, versions that will resize start with uppercase letter:
+
+\let\oldabs\abs
+\renewcommand\abs[1]{\oldabs*{#1}}
+\newcommand\Abs[1]{\oldabs{#1}}
+
+\let\oldbra\bra
+\renewcommand\bra[1]{\oldbra*{#1}}
+\newcommand\Bra[1]{\oldbra{#1}}
+
+\let\oldket\ket
+\renewcommand\ket[1]{\oldket*{#1}}
+\newcommand\Ket[1]{\oldket{#1}}
+
+\let\oldbraket\braket
+\renewcommand\braket[2]{\oldbraket*{#1}{#2}}
+\newcommand\Braket[2]{\oldbraket{#1}{#2}}
+
+\let\oldketbra\ketbra
+\renewcommand\ketbra[2]{\oldketbra*{#1}{#2}}
+\newcommand\Ketbra[2]{\oldketbra{#1}{#2}}
+
+\let\oldev\ev
+\renewcommand\ev[1]{\oldev*{#1}}
+\newcommand\Ev[1]{\oldev{#1}}
+
+\let\oldmatrixel\matrixel
+\renewcommand\matrixel[3]{\oldmatrixel*{#1}{#2}{#3}}
+\newcommand\Matrixel[3]{\oldmatrixel{#1}{#2}{#3}}
+
+% A placeholder for zeros in matrices - a \cdot (but with a smaller command so that things are
+% neater in latex source); first \makebox sets the width, second zero-width \makebox contains a
+% phantom that sets the height:
+\newcommand\mb{\phantom{0}}
+% \newcommand\md{\makebox[0pt]{$\cdot$}\phantom{0}}
+\newcommand\md{\makebox[\widthof{$0$}][c]{$\cdot$}}
+
+% A smallmatrix with even smaller column separation:
+\newenvironment{xsmallmatrix}
+    {\renewcommand\thickspace{\kern1pt}\smallmatrix}
+    {\endsmallmatrix}
+
+% Imaginary and real parts as normal operators instead of script font:
+\DeclareMathOperator{\im}{Im}
+\DeclareMathOperator{\re}{Re}
+
+% Sign function:
+\DeclareMathOperator{\sgn}{sgn}
+
+% Two argument arctan function:
+\DeclareMathOperator{\arctantwo}{arctan2}
+
+% Principle argument of complex number:
+\DeclareMathOperator{\Arg}{Arg}
+\DeclareMathOperator{\fft}{\textsc{fft}}
+
+% % Minimum:
+% \DeclareMathOperator{\min}{min}
+
+% % Maximum:
+% \DeclareMathOperator{\max}{max}
+
+% A figref command to standardise the way figures are referenced:
+\newcommand\figref[1]{Figure \ref{#1}}
+
+% Similarly, a table command:
+\newcommand\tableref[1]{Table\ref{#1}}
+
+% Units
+\newcommand\unit[1]{\,\mathrm{#1}}
+
+% Scientific notation: times-ten-to-the
+\newcommand\E[1]{\times 10^{#1}}
+
+% \mathup in braces:
+\newcommand\up[1]{{\mathup{#1}}}
+
+% Imaginary unit, upright:
+\newcommand\ii{\up{i}}
+
+% Euler's number, upright:
+\newcommand\ee{\up{e}}
+
+% Big O notation. Choose mathscr instead of mathcal because Minion's swashed O doesn't look any different to its regular O.
+\newcommand\Ord[1]{\mathscr{O}(#1)}
+\newcommand\Ordx[1]{\mathscr{O}\left(#1\right)}
+
+% A "kronecker dot product"
+\newcommand\krondot{\overset{\scriptscriptstyle\otimes}\cdot}
+% Abbreviations:
+% \newacronym{rk4}{rk4}{fourth order Runge--Kutta}
+% \newacronym{rk4ip}{rk4ip}{fourth order Runge--Kutta in the interaction picture}
+% \newacronym{rk4ilip}{rk4ilip}{fourth order Runge--Kutta in an instantaneous local interaction picture}
+% \newacronym{sp}{sp}{Schr\"odinger picture}
+% \newacronym{ip}{ip}{interaction picture}
+% \newacronym{de}{de}{differential equation}
+
+\newcommand\runmanager{\texttt{runmanager}}
+\newcommand\labscript{\texttt{labscript}}
+\newcommand\blacs{\texttt{BLACS}}
+\newcommand\lyse{\texttt{lyse}}
+\newcommand\bias{\texttt{BIAS}}
+\newcommand\runviewer{\texttt{runviewer}}
+\newcommand\bec{{\scshape bec}}
+\newcommand\mot{{\scshape mot}}
+\newcommand\http{{\scshape http}}
+\newcommand\hdf{{\scshape hdf5}}
+\newcommand\ac{{\scshape ac}}
+\newcommand\rf{{\scshape rf}}
+\newcommand\api{{\scshape api}}
+\newcommand\dds{{\scshape dds}}

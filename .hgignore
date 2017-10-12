@@ -1,0 +1,13 @@
+syntax: glob
+*.aux
+*.toc
+*.log
+*.out
+_minted*
+*.bbl
+*.blg
+*.brf
+*.fdb_latexmk
+*.fls
+hglog.txt
+*.pyc
