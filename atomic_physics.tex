@@ -148,6 +148,8 @@ The rubidium 87 D line is not just one transition between a ground state and an 
 
 This fine structure is treated entirely empirically for our purposes, and so our base Hamiltonian for the rubidium D line, taking into account only fine structure, is simply a statement of the experimentally measured energy differences between the states:
 
+[TODO: rename $H_\up{fs}$ or $H_\up{D\,fs}$ or something]
+
 \begin{align}
 \hat H_0 = \hat 0_{S_{1/2}} \oplus
 \hbar\omega_{\textsc{D}_1} \hat1_{P_{1/2}} \oplus
@@ -297,6 +299,67 @@ The vector representation $\vec\psi$ of a state vector $\ket{\psi}$ in this basi
 \braket{m_I=-I, m_J=-J}{\psi}\\
 \end{matrix}\right].
 \end{align}
-The hyperfine Hamiltonian is not diagonal in the $\{\ket{m_I, m_J}\}$ basis.
+The hyperfine Hamiltonian is not diagonal in the $\{\ket{m_I, m_J}\}$ basis. But, it is diagonal in the $\{\ket{F, m_F}\}$ basis, defined as the simultaneous eigenbasis of the $\hat F^2$ and $\hat F_z$ operators, which are the total (squared) and $z$ component of the total angular momentum operator $\hat{\vec{F}} = \hat{\vec{I}} + \hat{\vec{J}}$, the matrix forms $F^2$ and $F_z$ of which in the $\ket{m_I, m_J}$ basis can be constructed from the matrix forms of the individual angular momentum operators:
+\begin{align}
+\vec F_{\mathcal{I}\times\mathcal{J}} &= \vec I_{\mathcal{I}\times\mathcal{J}} + \vec J_{\mathcal{I}\times\mathcal{J}}\nonumber\\
+& = \vec I \otimes \mathbb{I}_{\mathcal{J}} + \mathbb{I}_{\mathcal{I}} \otimes \vec J\\
+F_{z\,\mathcal{I}\times\mathcal{J}} &= I_{z\,\mathcal{I}\times\mathcal{J}} + J_{z\,\mathcal{I}\times\mathcal{J}}\nonumber\\
+& = I_z \otimes \mathbb{I}_{\mathcal{J}} + \mathbb{I}_{\mathcal{i}} \otimes J_z\\
+F^2_{\mathcal{I}\times\mathcal{J}} &= \vec F_{\mathcal{I}\times\mathcal{J}}\cdot\vec F_{\mathcal{I}\times\mathcal{J}}
+\end{align}
+
+The $\{\ket{F, m_F}\}$ basis allows the eigenstates of the hyperfine interaction to be labelled with $F$ and $m_F$ quantum numbers. For a states of the $^{87}$Rb D line with electron total angular momentum quantum number $J$, there are $1+J+I - \abs{(J - I)}$ hyperfine levels, with $F$ quantum numbers running from $\abs{J - I}$ to $J + I$. Within each hyperfine level there are $2F + 1$ degenerate states with different $m_F$ quantum numbers ranging from $-F$ to $F$. This results in a total of 32 possible states for the rubidium D line, a schematic of which is shown in \figref{fig:D_line}.
+
+\begin{figure}%[htb]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{figures/atomic_physics/D_line.pdf}
+\caption{TODO: mention degeneracy of states and how F isn't a good quantum number}\label{fig:D_line}
+\end{center}
+\end{figure}
+
 
 \subsection{Zeeman sublevels}
+
+The states differing only in their $m_F$ quantum numbers---called Zeeman sublevels---are degenerate in energy with respect to the hyperfine Hamiltonian, but an external magnetic field lifts this degeneracy. The Zeeman effect [CITE] results in an energy shift proportional to the external magnetic field $\vec B$ and to a system's magnetic moment $\vec \mu$:
+\begin{align}
+V = - \vec\mu\cdot\vec B.
+\end{align} 
+Our atom is a composite particle, made of a nucleus with its own magnetic moment, an electron with its own spin, and a contribution from the orbital motion of the electron about the nucleus. Each magnetic moment is proportional to the angular momentum of the subsystem in question, with the proportionality constants, called Land\'e g-factors written as dimensionless multiples of $-\mu_B/\hbar$, where $\mu_B$ is the Bohr magneton.\footnote{This is in the convention (that we use) where the Lande $g$-factor $g_J$ for the electron is positive, otherwise the $g$-factors represent the proportionality constant as a multiple of $+\mu_B/\hbar$} Since $J$ is a good quantum number so long as energy shifts are smaller than the (large) energy spacing between the three main states of the D line, on the level we work we don't consider the electron spin and orbital angular momenta separately, rather we roll them into one with a single, empirically determined Land\'e g-factor $g_J$ for the magnetic moment of the electron in each of the three states. Similarly we consider the nucleus as a single spin with an experimentally determined $g_I$, resulting in a Zeeman Hamiltonian:
+\begin{align}
+\hat H_\up{Z} & = -\hat{\vec \mu} \cdot \vec B\\
+&= -\left(\hat{\vec \mu}_I + \hat{\vec \mu}_J\right) \cdot \vec B\\
+&=\left(\frac{g_I\mu_B}{\hbar} \hat{\vec I} + \frac{g_J\mu_B}{\hbar} \hat{\vec J}\right) \cdot \vec B.\label{eq:H_Z}
+\end{align}
+Separate $g_S$ and $g_L$ values are known and can be used in two terms instead of the one containing $\hat{\vec J}$ above if $J$ is not a good quantum number, but in the regime we work that is not usually the case (and if it were, the fine and hyperfine structure Hamiltonians above would also be inadequate). If $J$ is a good quantum number then it is more accurate to use the above expression with empirically measured $g_J$ values, since they encapsulate QED effects and corrections due to the multi-electron structure of $^{87}$Rb that are not captured by the simple Zeeman Hamiltonian with separate $\hat{\vec S}$ and $\hat{\vec L}$ terms. 
+
+If the energy shift from the Zeeman effect is small compared to the hyperfine spitting, then $F$ is a good quantum number and a given hyperfine level can be treated as a single magnetic moment subject to the Zeeman Hamiltonian:
+\begin{align}
+\hat H_\up{Z\,lin} = \frac{g_F\mu_B}{\hbar} \hat{\vec F} \cdot \vec B,
+\end{align}
+where [cite steck]
+\begin{align}
+g_F = g_J\frac{F(F+1) - I(I+1) + J(J+1)}{2F(F+1)}
+    + g_I\frac{F(F+1) + I(I+1) - J(J+1)}{2F(F+1)}.
+\end{align}
+The direction in which each Zeeman sublevel shifts in energy for small magnetic fields is depicted in \figref{fig:D_line}. Experimentally, Zeeman shifts that depart from this linear regime are often encountered, and so it is an approximation that cannot always be made.
+
+An explicit matrix representation $H_\up{Z}$ of $\hat H_\up{Z}$ in the $\{\ket{m_I, m_J}\}$ basis for each of the three sates of the D line can be constructed by applying \eqref{eq:H_Z} to the matrix representations of $\hat{\vec I}$ and $\hat{\vec J}$ in that basis: 
+\begin{align}
+H_{\up{Z}\,\mathcal{I}\times\mathcal{J}} & = -\vec\mu_{\mathcal{I}\times\mathcal{J}}\cdot \vec B,
+\end{align}
+where
+\begin{align}
+\vec\mu_{\mathcal{I}\times\mathcal{J}} &=
+-\frac{g_I\mu_B}{\hbar} \vec I_{\mathcal{I}\times\mathcal{J}}
+- \frac{g_J\mu_B}{\hbar} \vec J_{\mathcal{I}\times\mathcal{J}}\\
+&= -\frac{g_I\mu_B}{\hbar} \vec I \otimes \mathbb{I}_{\mathcal{J}}
+- \frac{g_J\mu_B}{\hbar} \mathbb{I}_{\mathcal{I}} \otimes \vec J
+\end{align}
+
+Here is a recap of what we have taken into account with our model of the Rubidium D line:
+\begin{itemize}
+    \item The two lowest quantum numbers $L=0$ and $L=1$ of the electron's orbital angular momentum. This yields the $S$ groundstate and $P$ excited state.
+    \item Fine structure: the two possible orientations of the electron's spin with respect to its orbital angular momentum. This splits the $P$ excited state into two states, $P_{1/2}$ and $P_{3/2}$, and leaves the $S$ groundstate as the single state $S_{1/2}$. The energies of these three states are determined entirely empirically---without any modelling of the fine structure.
+    \item Hyperfine structure: The possible orientations of the electron's total angular momentum with respect to the nuclear angular momentum. This splits each state so far into $1+J+I - \abs{(J - I)}$ hyperfine states. The hyperfine interaction is treated semi-empirically, using an analytic form of the hyperfine interaction but with empirically determined coupling constants within each of the three states of the D line. 
+    \item Zeeman effect: the possible orientation of the total spin $\hat{\vec F}$ onto an external magnetic field. The Zeeman Hamiltonian is modelled analytically, but with empirically determined Land\'e $g$ factors for each of the three states of the D line. 
+\end{itemize}
