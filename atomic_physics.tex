@@ -140,7 +140,7 @@ At a vortex core, the atom density of a \bec\ must go to zero. This can be intui
 
 We atomic physicists do our theory work at an intermediate level of abstraction, at which many quantities and systems of interest can be computed and simulated with accurate models using standard quantum mechanics, but with the models not being fully a-priori. Instead, the Hamiltonians we feed to the machinery of standard quantum mechanics encapsulate some of the details we are not interested in or that are too hard to compute, with the link between the underlying layers of reductionism and the higher layer usually provided by experimentally measured constants rather than calculations from fundamental physics. In this way we can readily compute results about the atoms we are interested in by treating them as simpler systems than they actually are, with some of the the underlying details encapsulated by terms in an effective Hamiltonian for the dynamics that we are interested in.
 
-In this section I'll summarise what the $^{87}$Rb \textsc{d} line looks like from the perspective of a cold atom physicist, building up a Hamiltonian containing all 32 sublevels of the ground and first excited state of $^{87}$Rb including fine structure, hyperfine structure, interaction with a magnetic field, and optical transitions between states. This Hamiltonian is the starting point for any calculations regarding cooling, trapping, and coherent control of $^{87}$Rb, and the process for other alkali earth metals is much the same.
+In this section I'll summarise what the $^{87}$Rb D line looks like from the perspective of a cold atom physicist, building up a Hamiltonian containing all 32 sublevels of the ground and first excited state of $^{87}$Rb including fine structure, hyperfine structure, interaction with a magnetic field, and optical transitions between states. This Hamiltonian is the starting point for any calculations regarding cooling, trapping, and coherent control of $^{87}$Rb, and the process for other alkali earth metals is much the same.
 
 \subsection{Fine structure}
 
@@ -148,21 +148,19 @@ The rubidium 87 D line is not just one transition between a ground state and an 
 
 This fine structure is treated entirely empirically for our purposes, and so our base Hamiltonian for the rubidium D line, taking into account only fine structure, is simply a statement of the experimentally measured energy differences between the states:
 
-[TODO: rename $H_\up{fs}$ or $H_\up{D\,fs}$ or something]
-
 \begin{align}
-\hat H_0 = \hat 0_{S_{1/2}} \oplus
-\hbar\omega_{\textsc{D}_1} \hat1_{P_{1/2}} \oplus
-\hbar\omega_{\textsc{D}_2} \hat1_{P_{3/2}},
+\hat H_\up{fs} = \hat 0_{S_{1/2}} \oplus
+\hbar\omega_{\up{D}_1} \hat1_{P_{1/2}} \oplus
+\hbar\omega_{\up{D}_2} \hat1_{P_{3/2}},
 \end{align}
 
-where $\hat 0_{S_{1/2}}$, $\hat1_{P_{1/2}}$, and $\hat1_{P_{3/2}}$ are zero and identity operators each acting on the subspace of states within the $S_{\frac12}$, $P_{\frac12}$, or $P_{\frac32}$ manifold, and $\oplus$ is the direct sum.\footnote{Not to be confused with the Kronecker sum, with which it shares notation. The direct sum concatenates matrices as blocks, producing a larger, block-diagonal matrix with dimension equal to the \emph{sum} of the dimensions of the matrices being direct-summed, whereas the Kronecker sum is the the regular sum of matrices after each has been multiplied using the Kronecker-product with identity matrices with sizes of the other matrices in the sum, producing matrices with dimension equal to the \emph{product} of those being summed.} The matrix representation $H_0$ of $\hat H_0$ in the basis in which it is diagonal is
+where $\hat 0_{S_{1/2}}$, $\hat1_{P_{1/2}}$, and $\hat1_{P_{3/2}}$ are zero and identity operators each acting on the subspace of states within the $S_{\frac12}$, $P_{\frac12}$, or $P_{\frac32}$ manifold, and $\oplus$ is the direct sum.\footnote{Not to be confused with the Kronecker sum, with which it shares notation. The direct sum concatenates matrices as blocks, producing a larger, block-diagonal matrix with dimension equal to the \emph{sum} of the dimensions of the matrices being direct-summed, whereas the Kronecker sum is the the regular sum of matrices after each has been multiplied using the Kronecker-product with identity matrices with sizes of the other matrices in the sum, producing matrices with dimension equal to the \emph{product} of those being summed.} The matrix representation $H_\up{fs}$ of $\hat H_\up{fs}$ in the basis in which it is diagonal (which we will call the $\{\ket{L, J}\}$ basis, since $L$ and $J$ are good quantum numbers for specifying one of the three states, which we otherwise write as $L_J$ with the spectroscopic notation letter---$S$ or $P$---corresponding to the value of $L$ in place of its numerical value) is
 \begin{align}
-& H_0  = 
+H_\up{fs}  = 
 \left[\begin{matrix}
     \left[\begin{smallmatrix}\ddots &&\\&0&\\&&\ddots\\\end{smallmatrix} \right]\\
-    & \left[\begin{smallmatrix}\ddots &&\\&\hbar\omega_{\textsc{D}_1}&\\&&\ddots\\\end{smallmatrix} \right]\\
-    & &\left[\begin{smallmatrix}\ddots &&\\&\hbar\omega_{\textsc{D}_2}&\\&&\ddots\\\end{smallmatrix} \right]
+    & \left[\begin{smallmatrix}\ddots &&\\&\hbar\omega_{\up{D}_1}&\\&&\ddots\\\end{smallmatrix} \right]\\
+    & &\left[\begin{smallmatrix}\ddots &&\\&\hbar\omega_{\up{D}_2}&\\&&\ddots\\\end{smallmatrix} \right]
 \end{matrix} \right],
 \end{align}
 which is a block-diagonal matrix with each block also being a diagonal matrix. We have not yet specified the size of each submatrix---the size of each differs and depends on how many hyperfine and Zeeman sublevels are in that state.
@@ -345,16 +343,60 @@ The direction in which each Zeeman sublevel shifts in energy for small magnetic 
 
 An explicit matrix representation $H_\up{Z}$ of $\hat H_\up{Z}$ in the $\{\ket{m_I, m_J}\}$ basis for each of the three sates of the D line can be constructed by applying \eqref{eq:H_Z} to the matrix representations of $\hat{\vec I}$ and $\hat{\vec J}$ in that basis: 
 \begin{align}
-H_{\up{Z}\,\mathcal{I}\times\mathcal{J}} & = -\vec\mu_{\mathcal{I}\times\mathcal{J}}\cdot \vec B,
+H_\up{Z} &= -\vec\mu\cdot \vec B,
 \end{align}
 where
 \begin{align}
-\vec\mu_{\mathcal{I}\times\mathcal{J}} &=
+\vec\mu &=
 -\frac{g_I\mu_B}{\hbar} \vec I_{\mathcal{I}\times\mathcal{J}}
 - \frac{g_J\mu_B}{\hbar} \vec J_{\mathcal{I}\times\mathcal{J}}\\
 &= -\frac{g_I\mu_B}{\hbar} \vec I \otimes \mathbb{I}_{\mathcal{J}}
-- \frac{g_J\mu_B}{\hbar} \mathbb{I}_{\mathcal{I}} \otimes \vec J
+- \frac{g_J\mu_B}{\hbar} \mathbb{I}_{\mathcal{I}} \otimes \vec J.
 \end{align}
+
+\subsection{Putting it all together}
+
+So far we have described how to construct a matrix representation of the fine structure Hamiltonian for the three main states of the $^{87}$Rb D line, as well as matrix representations of each state's hyperfine and Zeeman Hamiltonians, these latter two in the same $\{\ket{m_I, m_J}\}$ basis. In the subspace of each of the three main states then, we can sum together the matrix representations of the hyperfine and Zeeman Hamiltonians to form a matrix representation of the Hamiltonian taking both interactions into account:
+\begin{align}
+H_{S_{1/2}} &= H_{\up{hfs}\,S_{1/2}} + H_{\up{Z}\,S_{1/2}},\\
+H_{P_{1/2}} &= H_{\up{hfs}\,P_{1/2}} + H_{\up{Z}\,P_{1/2}},\\
+H_{P_{3/2}} &= H_{\up{hfs}\,P_{3/2}} + H_{\up{Z}\,P_{3/2}},
+\end{align}
+where the subscripts $S_{1/2}$, $P_{1/2}$, and $P_{3/2}$ on the terms on the right hand side indicate that the expressions for the matrix representations of the hyperfine and Zeeman Hamiltonians are to be evaluated using the specific values of $J$, $A_\up{hfs}$, $B_\up{hfs}$, and $g_J$ relevant to that state. The total Hamiltonian for the D line including fine structure, hyperfine structure and the Zeeman interaction is then
+\begin{align}
+\hat H &= \hat H_\up{fs} +
+    \left(\hat H_{S_{1/2}} \oplus \hat H_{P_{1/2}} \oplus \hat H_{P_{3/2}} \right)\\
+\Rightarrow \hat H &= 
+\hat H_{S_{1/2}} \oplus
+\left(\hbar\omega_{D_1} + \hat H_{P_{1/2}}\right) \oplus
+\left(\hbar\omega_{D_2} + \hat H_{P_{3/2}}\right),
+\end{align}
+the matrix representation of which in the $\{\ket{L, J, m_I, m_J}\}$ basis is the block diagonal matrix
+\begin{align}
+H_{\up{D}\,^{87}\up{Rb}}  = 
+\left[\begin{matrix}
+    \left[\begin{smallmatrix}
+        H_{S_{1/2}}\\
+    \end{smallmatrix} \right]\\
+    & \left[\begin{smallmatrix}
+        \hbar\omega_{\up{D}_1}+H_{P_{1/2}}\\
+      \end{smallmatrix} \right]\\
+    & &\left[\begin{smallmatrix}
+        \hbar\omega_{\up{D}_2}+H_{P_{3/2}}\\
+        \end{smallmatrix} \right]\\
+\end{matrix} \right].
+\end{align}
+While $H_{\up{D}\,^{87}\up{Rb}}$ is a block diagonal matrix, each of the three submatrices is not diagonal, since $m_I$ and $m_J$ are not good quantum numbers for the hyperfine interaction (though they are good quantum numbers for the Zeeman interaction and hence $H_{\up{D}\,^{87}\up{Rb}}$ becomes approximately diagonal at high magnetic field). Once one has constructed $H_{\up{D}\,^{87}\up{Rb}}$ or its submatrices, there are two other bases one might consider transforming the submatrices into depending on the circumstances. One is the $\{\ket{F, m_F}\}$ basis, in which the matrix representation of the hyperfine interaction is diagonal. The matrix representation of the Zeeman Hamiltonian is also approximately diagonal in the $\{\ket{F, m_F}\}$ basis, so long as one is in the linear Zeeman regime. Furthermore, the transition dipole moments for optical transitions are most easily calculated in the $\{\ket{L, J, F, m_F}\}$ basis, as we'll see in the next subsection. For these reasons the $\{\ket{F, m_F}\}$ basis is the most commonly used and referred to.
+
+To transform each submatrix from the $\{\ket{m_I, m_J}\}$ basis to the $\{\ket{F, m_F}\}$ basis, we use a unitary matrix whose elements are Clebsch--Gordan coefficients, each defined as the inner product of a $\ket{F, m_F}$ state with a $\ket{m_I, m_J}$ state (written in full as $\ket{I, m_I, J, m_J}$), and calculable as [CITE something]
+\begin{align}
+\braket{I, m_I, J, m_J}{F, mF} = (-1)^{I - J + m_F}\sqrt{2F + 1}
+\left(\begin{smallmatrix}
+I & J & F\\
+m_I & m_J & -m_F\\
+\end{smallmatrix}\right),
+\end{align}
+where the object in parentheses is a Wigner $3$-j symbol.
 
 Here is a recap of what we have taken into account with our model of the Rubidium D line:
 \begin{itemize}
