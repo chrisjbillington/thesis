@@ -37,7 +37,7 @@ where $\Gamma$ is the linewidth of the atomic transition. For the cooling transi
 
 Magneto-optical trapping, first demonstrated in 1987 \cite{raab_trapping_1987} comes from the realisation that a magnetic field can be used to \emph{spatially} vary the detuning from resonance that the atoms in the above mentioned arrangement of lasers see. This is possible due to the Zeeman effect \cite{zeeman_influence_1897}, in which the wavelengths of atomic transitions are shifted in a magnetic field.
 
-If a field profile can be found which causes the transition to come closer to resonance as the atoms move away from a central point, then it forms a trap---atoms  that stray too far from the center will absorb more strongly and be deflected back\footnote{The polarisations of the beams are such that absorption from the inward facing beam occurs, rather than from the one that would accelerate the atom further outward!}.
+If a field profile can be found which causes the transition to come closer to resonance as the atoms move away from a central point, then it forms a trap---atoms  that stray too far from the centre will absorb more strongly and be deflected back\footnote{The polarisations of the beams are such that absorption from the inward facing beam occurs, rather than from the one that would accelerate the atom further outward!}.
 
 The field configuration used in an anti-Helmholtz one, with two coils opposite each other carrying opposing currents. The resulting magnetic field profile has a zero in the middle and increases in magnitude in all directions.
 
@@ -307,7 +307,7 @@ F_{z\,\mathcal{I}\times\mathcal{J}} &= I_{z\,\mathcal{I}\times\mathcal{J}} + J_{
 F^2_{\mathcal{I}\times\mathcal{J}} &= \vec F_{\mathcal{I}\times\mathcal{J}}\cdot\vec F_{\mathcal{I}\times\mathcal{J}}
 \end{align}
 
-The $\{\ket{F, m_F}\}$ basis allows the eigenstates of the hyperfine interaction to be labelled with $F$ and $m_F$ quantum numbers. For a states of the $^{87}$Rb D line with electron total angular momentum quantum number $J$, there are $1+J+I - \abs{(J - I)}$ hyperfine levels, with $F$ quantum numbers running from $\abs{J - I}$ to $J + I$. Within each hyperfine level there are $2F + 1$ degenerate states with different $m_F$ quantum numbers ranging from $-F$ to $F$. This results in a total of 32 possible states for the rubidium D line, a schematic of which is shown in \figref{fig:D_line}.
+The $\{\ket{F, m_F}\}$ basis allows the eigenstates of the hyperfine interaction to be labelled with $F$ and $m_F$ quantum numbers. For a states of the $^{87}$Rb D line with electron total angular momentum quantum number $J$, there are $1+J+I - \abs{(I - J)}$ hyperfine levels, with $F$ quantum numbers running from $\abs{I - J}$ to $I + J$. Within each hyperfine level there are $2F + 1$ degenerate states with different $m_F$ quantum numbers ranging from $-F$ to $F$. This results in a total of 32 possible states for the rubidium D line, a schematic of which is shown in \figref{fig:D_line}.
 
 \begin{figure}%[htb]
 \begin{center}
@@ -357,7 +357,7 @@ where
 
 \subsection{Putting it all together}
 
-So far we have described how to construct a matrix representation of the fine structure Hamiltonian for the three main states of the $^{87}$Rb D line, as well as matrix representations of each state's hyperfine and Zeeman Hamiltonians, these latter two in the same $\{\ket{m_I, m_J}\}$ basis. In the subspace of each of the three main states then, we can sum together the matrix representations of the hyperfine and Zeeman Hamiltonians to form a matrix representation of the Hamiltonian taking both interactions into account:
+So far we have described how to construct a matrix representation of the fine structure Hamiltonian for the three main states of the $^{87}$Rb D line, as well as matrix representations of each state's hyperfine and Zeeman Hamiltonians, these latter two in the same $\{\ket{m_I, m_J}\}$ basis. In the subspaces of each of the three main states then, we can sum together the matrix representations of the hyperfine and Zeeman Hamiltonians to form a matrix representation of the Hamiltonian taking both interactions into account:
 \begin{align}
 H_{S_{1/2}} &= H_{\up{hfs}\,S_{1/2}} + H_{\up{Z}\,S_{1/2}},\\
 H_{P_{1/2}} &= H_{\up{hfs}\,P_{1/2}} + H_{\up{Z}\,P_{1/2}},\\
@@ -374,7 +374,7 @@ where the subscripts $S_{1/2}$, $P_{1/2}$, and $P_{3/2}$ on the terms on the rig
 \end{align}
 the matrix representation of which in the $\{\ket{L, J, m_I, m_J}\}$ basis is the block diagonal matrix
 \begin{align}
-H_{\up{D}\,^{87}\up{Rb}}  = 
+\toverset{\mathcal{I}\times{J}}H_{\up{D}\,^{87}\up{Rb}}  = 
 \left[\begin{matrix}
     \left[\begin{smallmatrix}
         H_{S_{1/2}}\\
@@ -389,20 +389,55 @@ H_{\up{D}\,^{87}\up{Rb}}  =
 \end{align}
 While $H_{\up{D}\,^{87}\up{Rb}}$ is a block diagonal matrix, each of the three submatrices is not diagonal, since $m_I$ and $m_J$ are not good quantum numbers for the hyperfine interaction (though they are good quantum numbers for the Zeeman interaction and hence $H_{\up{D}\,^{87}\up{Rb}}$ becomes approximately diagonal at high magnetic field). Once one has constructed $H_{\up{D}\,^{87}\up{Rb}}$ or its submatrices, there are two other bases one might consider transforming the submatrices into depending on the circumstances. One is the $\{\ket{F, m_F}\}$ basis, in which the matrix representation of the hyperfine interaction is diagonal. The matrix representation of the Zeeman Hamiltonian is also approximately diagonal in the $\{\ket{F, m_F}\}$ basis, so long as one is in the linear Zeeman regime. Furthermore, the transition dipole moments for optical transitions are most easily calculated in the $\{\ket{L, J, F, m_F}\}$ basis, as we'll see in the next subsection. For these reasons the $\{\ket{F, m_F}\}$ basis is the most commonly used and referred to.
 
-To transform each submatrix from the $\{\ket{m_I, m_J}\}$ basis to the $\{\ket{F, m_F}\}$ basis, we use a unitary matrix whose elements are Clebsch--Gordan coefficients, each defined as the inner product of a $\ket{F, m_F}$ state with a $\ket{m_I, m_J}$ state (written in full as $\ket{I, m_I, J, m_J}$), and calculable as [CITE something]
+To transform each submatrix between the $\{\ket{m_I, m_J}\}$ and $\{\ket{F, m_F}\}$ bases, we use a unitary matrix whose elements are Clebsch--Gordan coefficients, each defined as the inner product of a $\ket{F, m_F}$ state with a $\ket{m_I, m_J}$ state (written in full as $\ket{I, m_I, J, m_J}$), and calculable as [CITE something]
 \begin{align}
-\braket{I, m_I, J, m_J}{F, mF} = (-1)^{I - J + m_F}\sqrt{2F + 1}
+\braket{I, m_I, J, m_J}{F, mF} = \begin{cases}
+(-1)^{I - J + m_F}\sqrt{2F + 1}
 \left(\begin{smallmatrix}
 I & J & F\\
 m_I & m_J & -m_F\\
-\end{smallmatrix}\right),
+\end{smallmatrix}\right) & m_I + m_J = m_F\\
+0 & m_I + m_J \neq m_F
+\end{cases}
 \end{align}
-where the object in parentheses is a Wigner $3$-j symbol.
+where the object in parentheses is a Wigner $3$-j symbol. Given that the possible range of the $F$ quantum number is from $\abs{I - J}$ to $I + J$, and the possible range of $m_F$ quantum numbers is from $-F$ to $F$ for each $F$, an explicit construction of the unitary matrix $U_\up{CG}$ of Clebsch--Gordan coefficients, in the convention where the column vectors in the $\{\ket{F, m_F}\}$ basis have $F$ running from its highest value to lowest from top to bottom, and $m_F$ also running from highest to lowest within each value of $F$, (omitting $I$ and $J$ for clarity) is:
+\begin{align}
+U_\up{CG} = \left[\begin{smallmatrix}
+\braket{m_I=I, m_J=J}{F=I+J, mF=F} & \hdots &
+\braket{m_I=I, m_J=J}{F=I+J, m_F=-F} & \hdots &\hdots &
+\braket{m_I=I, m_J=J}{F=\abs{I - J}, m_F=-F}\\
+\vdots\\
+\braket{m_I=-I, m_J=J}{F=I+J, mF=F} & & \ddots & & & \vdots\\
+\vdots\\
+\vdots\\
+\braket{m_I=-I, m_J=-J}{F=I+J, mF=F} & & \hdots & & &
+\braket{m_I=-I, m_J=-J}{F=\abs{I - J}, m_F=-F}\\
+\end{smallmatrix}\right].
+\end{align}
+This the matrix that takes vectors from the $\{\ket{F, m_F}\}$ basis to the $\{\ket{m_I, m_J}\}$ basis, so its Hermitian conjugate $U^\dagger_\up{CG}$ is needed for the inverse transformation. Each submatrix of the total Hamiltonian for the D line can be transformed into its $\{\ket{F, m_F}\}$ basis by using a unitary matrix of Clebsch--Gordan coefficients with the appropriate value of $J$, yielding a total Hamiltonian for the rubidium 87 D line in the $\{L, J, F, m_F\}$ basis [TODO INDICATE BASIS ON MATRIX SOMEHOW]:
+\begin{align}
+\overset{\scriptscriptstyle \Sigma\mathcal{F}}{H}_{\up{D}\,^{87}\up{Rb}} = 
+\left[\begin{matrix}
+    \left[\begin{smallmatrix}
+        U^\dagger_{\up{CG}\,1/2} H_{S_{1/2}} U_{\up{CG}\,1/2}\\
+    \end{smallmatrix} \right]\\
+    & \left[\begin{smallmatrix}
+        \hbar\omega_{\up{D}_1}+U^\dagger_{\up{CG}\,1/2}H_{P_{1/2}}U_{\up{CG}\,1/2}\\
+      \end{smallmatrix} \right]\\
+    & &\left[\begin{smallmatrix}
+        \hbar\omega_{\up{D}_2}+U^\dagger_{\up{CG}\,3/2}H_{P_{3/2}}U_{\up{CG}\,3/2}\\
+        \end{smallmatrix} \right]\\
+\end{matrix} \right],
+\end{align}
+where the additional subscripts on the unitary matrices indicates the value of $J$ used in its construction. Armed with the $\{\ket{F, m_F}\}$ basis, we have little remaining reason to use the $\{\ket{m_I}, {m_J}\}$ basis any more. Even the Zeeman interaction, which can't 
+
+[TODO add i cross j as subscripts to all previous matrices in the mI, mJ basis, f subscripts to F matrices. When first mentioning the ]  
+
 
 Here is a recap of what we have taken into account with our model of the Rubidium D line:
 \begin{itemize}
     \item The two lowest quantum numbers $L=0$ and $L=1$ of the electron's orbital angular momentum. This yields the $S$ groundstate and $P$ excited state.
     \item Fine structure: the two possible orientations of the electron's spin with respect to its orbital angular momentum. This splits the $P$ excited state into two states, $P_{1/2}$ and $P_{3/2}$, and leaves the $S$ groundstate as the single state $S_{1/2}$. The energies of these three states are determined entirely empirically---without any modelling of the fine structure.
-    \item Hyperfine structure: The possible orientations of the electron's total angular momentum with respect to the nuclear angular momentum. This splits each state so far into $1+J+I - \abs{(J - I)}$ hyperfine states. The hyperfine interaction is treated semi-empirically, using an analytic form of the hyperfine interaction but with empirically determined coupling constants within each of the three states of the D line. 
+    \item Hyperfine structure: The possible orientations of the electron's total angular momentum with respect to the nuclear angular momentum. This splits each state so far into $1+J+I - \abs{(I - J)}$ hyperfine states. The hyperfine interaction is treated semi-empirically, using an analytic form of the hyperfine interaction but with empirically determined coupling constants within each of the three states of the D line. 
     \item Zeeman effect: the possible orientation of the total spin $\hat{\vec F}$ onto an external magnetic field. The Zeeman Hamiltonian is modelled analytically, but with empirically determined Land\'e $g$ factors for each of the three states of the D line. 
 \end{itemize}
