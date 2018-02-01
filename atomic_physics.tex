@@ -429,9 +429,9 @@ This the matrix that takes vectors from the $\{\ket{F, m_F}\}$ basis to the $\{\
         \end{smallmatrix} \right]\\
 \end{matrix} \right],
 \end{align}
-where the additional subscripts on the unitary matrices indicates the value of $J$ used in its construction. Armed with the $\{\ket{F, m_F}\}$ basis, we have little remaining reason to use the $\{\ket{m_I}, {m_J}\}$ basis any more. Even the Zeeman interaction, which can't 
+where the additional subscripts on the unitary matrices indicates the value of $J$ used in its construction. Armed with the $\{\ket{F, m_F}\}$ basis, we have little remaining reason to use the $\{\ket{m_I}, {m_J}\}$ basis any more.
 
-[TODO add i cross j as subscripts to all previous matrices in the mI, mJ basis, f subscripts to F matrices. When first mentioning the ]  
+[TODO add i cross j as subscripts to all previous matrices in the mI, mJ basis, f subscripts to F matrices]  
 
 
 Here is a recap of what we have taken into account with our model of the Rubidium D line:
@@ -441,3 +441,37 @@ Here is a recap of what we have taken into account with our model of the Rubidiu
     \item Hyperfine structure: The possible orientations of the electron's total angular momentum with respect to the nuclear angular momentum. This splits each state so far into $1+J+I - \abs{(I - J)}$ hyperfine states. The hyperfine interaction is treated semi-empirically, using an analytic form of the hyperfine interaction but with empirically determined coupling constants within each of the three states of the D line. 
     \item Zeeman effect: the possible orientation of the total spin $\hat{\vec F}$ onto an external magnetic field. The Zeeman Hamiltonian is modelled analytically, but with empirically determined Land\'e $g$ factors for each of the three states of the D line. 
 \end{itemize}
+
+The above considerations allow us to construct a Hamiltonian, as a concrete matrix representation, for all 32 possible states of the rubidium D line in a fixed magnetic field, in a basis in which it is diagonal for the case of zero magnetic field. In a nonzero magnetic field, one can analytically diagonalise the $S_{1/2}$ block of this matrix using the Breit--Rabi formula [CITE], but the same cannot be done for the entire D line, and diagonalisation must be done numerically for the other blocks. At nonzero magnetic field, $F$ ceases to be a good quantum number, but states are nonetheless labelled using a variable $\alpha$, defined as the value of $F$ a state \emph{would} have if the magnetic field were reduced to zero. $m_F$ remains a good quantum number however, and thus at nonzero magnetic field the $\{\ket{\alpha, m_F}\}$ basis, is the one in which the Hamiltonian is diagonal, with the transformation between it and the $\{\ket{F, m_F}\}$ basis needing to be computed using numerical diagonalisation.
+
+\subsubsection{Optical dipole transitions}
+
+Optical transitions due to laser fields appear as off-diagonal matrix elements in the $\{\ket{F, m_F}\}$ basis. A given laser of a certain polarisation may give rise to nonzero transition matrix elements between several different pairs of states, depending on selection rules.
+
+The potential the outer electron of rubidium is subject to in a classical electric field is the electric dipole potential[CITE METCALF]:
+\begin{align}
+\hat H_\up{dipole} = -\hat{\vec d}\cdot\vec E,
+\end{align}
+where $\vec E$ is the classical electric field and $\hat{\vec d}$ is the electric dipole operator:
+\begin{align}
+\hat{\vec d} = -e\vec{\hat r},
+\end{align}
+which gives the electric dipole of the atom in terms of the electron's charge $-e$ and its position operator $\hat{\vec r}$. A single matrix element of $\hat H_\up{dipole}$ for coupling a state $\ket{L_J, F, m_F}$ to a state $\ket{L_J^\prime, F^\prime, m_F^\prime}$ is therefore:
+\begin{align}
+\matrixel{L_J^\prime, F^\prime, m_F^\prime}{\hat H_\up{dipole}}{L_J, F, m_F} = 
+\matrixel{L_J^\prime, F^\prime, m_F^\prime}{e\vec{\hat r}\cdot\vec E}{L_J, F, m_F}.
+\end{align}
+
+The electric field of a plane wave of amplitude $E_0$, polarisation unit vector $\hat{\vec\varepsilon}$ and angular frequency $\omega$ can be written:
+\begin{align}\label{eq:complex_plane_wave}
+\vec E(\vec r, t) = \frac{E_0}2
+\left(\hat{\vec\varepsilon} \ee^{\ii(\vec k \cdot \vec r - \omega t)}
++ \hat{\vec\varepsilon}^* \ee^{-\ii(\vec k \cdot \vec r - \omega t)} \right),
+\end{align}
+where $^*$ is complex conjugation, which in the case of a real valued polarisation unit vector $\hat{\vec\varepsilon}$ does nothing, making the above equal to a cosine wave $E_0\hat{\vec\varepsilon}\cos(\vec k \cdot \vec r - \omega t)$ as expected for a linearly polarised plane wave. However, \eqref{eq:complex_plane_wave} also allows for arbitrary circular or elliptical polarisation, if $\hat{\vec\varepsilon}$ is allowed to have complex components [CITE SOMETHING]. This comes with the caveat, however, that the amplitude $E_0$ is a misnomer in these cases and no longer corresponds to any actual amplitude. For example, a circularly polarised plane wave propagating in the $z$ direction with $\hat{\vec\varepsilon}=\mp(\hat{\vec{x}} \pm i \hat{\vec y})/\sqrt{2}$) and ``amplitude" $E_0$ actually has an electric field vector with constant magnitude $E_0/\sqrt{2}$. The ``amplitude" $E_0$ is actually $\sqrt{2}E_\up{rms}$ and thus only equal to the real amplitude in the case of linear polarisation. Using the intensity of the beam $I=\varepsilon_0 c E_\up{rms}$ instead,\footnote{Not to be confused with the nuclear spin $I$, hopefully distinguishable by context.} which is less ambiguous and more relatable to experimentalists, resolves this potential confusion:\footnote{One possible confusion of many given the diverse notational and conventional differences throughout the literature.}
+\begin{align}\label{eq:complex_plane_wave_intensity}
+\vec E(\vec r, t) = \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}
+\left(\hat{\vec\varepsilon} \ee^{\ii(\vec k \cdot \vec r - \omega t)}
++ \hat{\vec\varepsilon}^* \ee^{-\ii(\vec k \cdot \vec r - \omega t)} \right).
+\end{align}
+If the plane wave's angular frequency $\omega$ is close to the resonant angular frequency $\omega_{\up{D}_1}$ or $\omega_{\up{D}_2}$ of the $\up{D}_1$ or $\up{D}_2$ line, then one of the two exponential terms is oscillating at a frequency much further from resonance (approximately $2\omega$) than the other, and thus does not contribute significantly to coupling between states. Discarding it is known as the \emph{rotating wave approximation}, so called because in an interaction picture where the evolution of the base Hamiltonian $\hat H_{\up{D}\,^{87}\up{Rb}}$ is factored out---the so called \emph{rotating frame}---this fact is more apparent and a formal approximation can be made showing that the off-resonant term averages to zero over time scales much shorter than any other dynamics.
