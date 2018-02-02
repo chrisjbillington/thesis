@@ -450,17 +450,23 @@ Optical transitions due to laser fields appear as off-diagonal matrix elements i
 
 The potential the outer electron of rubidium is subject to in a classical electric field is the electric dipole potential[CITE METCALF]:
 \begin{align}
-\hat H_\up{dipole} = -\hat{\vec d}\cdot\vec E,
+\hat H_\up{d} = -\hat{\vec d}\cdot\vec E,
 \end{align}
 where $\vec E$ is the classical electric field and $\hat{\vec d}$ is the electric dipole operator:
 \begin{align}
 \hat{\vec d} = -e\vec{\hat r},
 \end{align}
-which gives the electric dipole of the atom in terms of the electron's charge $-e$ and its position operator $\hat{\vec r}$. A single matrix element of $\hat H_\up{dipole}$ for coupling a state $\ket{L_J, F, m_F}$ to a state $\ket{L_J^\prime, F^\prime, m_F^\prime}$ is therefore:
-\begin{align}
-\matrixel{L_J^\prime, F^\prime, m_F^\prime}{\hat H_\up{dipole}}{L_J, F, m_F} = 
-\matrixel{L_J^\prime, F^\prime, m_F^\prime}{e\vec{\hat r}\cdot\vec E}{L_J, F, m_F}.
+which gives the electric dipole of the atom in terms of the electron's charge $-e$ and its position operator $\hat{\vec r}$. A single matrix element of $\hat H_\up{d}$ for coupling a state $\ket{L_J, F, m_F}$ to a state $\ket{L^\prime_{J^\prime}, F^\prime, m_F^\prime}$ is therefore:
+\begin{align}\label{eq:electric_dipole_potential}
+\matrixel{L^\prime_{J^\prime}, F^\prime, m_F^\prime}{\hat H_\up{d}}{L_J, F, m_F} = 
+\matrixel{L^\prime_{J^\prime}, F^\prime, m_F^\prime}{e\vec{\hat r}\cdot\vec E}{L_J, F, m_F},
 \end{align}
+which we will abbreviate as
+\begin{align}
+\matrixel{n^\prime}{\hat H_\up{d}}{n} = 
+\matrixel{n^\prime}{e\vec{\hat r}\cdot\vec E}{n},
+\end{align}
+writing the initial state $\ket{L_J, F, m_F}=\ket{n}$ and final state $\ket{L^\prime_{J^\prime}, F^\prime, m_F^\prime}=\ket{n^\prime}$, encapsulating the set of quantum numbers as a single index\footnote{The choice of the symbol $n$ is unrelated to the principal quantum number, which does not vary between the states of the $D$ line.} for the state.
 
 The electric field of a plane wave of amplitude $E_0$, polarisation unit vector $\hat{\vec\varepsilon}$ and angular frequency $\omega$ can be written:
 \begin{align}\label{eq:complex_plane_wave}
@@ -468,10 +474,114 @@ The electric field of a plane wave of amplitude $E_0$, polarisation unit vector 
 \left(\hat{\vec\varepsilon} \ee^{\ii(\vec k \cdot \vec r - \omega t)}
 + \hat{\vec\varepsilon}^* \ee^{-\ii(\vec k \cdot \vec r - \omega t)} \right),
 \end{align}
-where $^*$ is complex conjugation, which in the case of a real valued polarisation unit vector $\hat{\vec\varepsilon}$ does nothing, making the above equal to a cosine wave $E_0\hat{\vec\varepsilon}\cos(\vec k \cdot \vec r - \omega t)$ as expected for a linearly polarised plane wave. However, \eqref{eq:complex_plane_wave} also allows for arbitrary circular or elliptical polarisation, if $\hat{\vec\varepsilon}$ is allowed to have complex components [CITE SOMETHING]. This comes with the caveat, however, that the amplitude $E_0$ is a misnomer in these cases and no longer corresponds to any actual amplitude. For example, a circularly polarised plane wave propagating in the $z$ direction with $\hat{\vec\varepsilon}=\mp(\hat{\vec{x}} \pm i \hat{\vec y})/\sqrt{2}$) and ``amplitude" $E_0$ actually has an electric field vector with constant magnitude $E_0/\sqrt{2}$. The ``amplitude" $E_0$ is actually $\sqrt{2}E_\up{rms}$ and thus only equal to the real amplitude in the case of linear polarisation. Using the intensity of the beam $I=\varepsilon_0 c E_\up{rms}$ instead,\footnote{Not to be confused with the nuclear spin $I$, hopefully distinguishable by context.} which is less ambiguous and more relatable to experimentalists, resolves this potential confusion:\footnote{One possible confusion of many given the diverse notational and conventional differences throughout the literature.}
+where $^*$ is complex conjugation, which in the case of a real valued polarisation unit vector $\hat{\vec\varepsilon}$ does nothing, making the above equal to a cosine wave $E_0\hat{\vec\varepsilon}\cos(\vec k \cdot \vec r - \omega t)$ as expected for a linearly polarised plane wave. However, \eqref{eq:complex_plane_wave} also allows for arbitrary circular or elliptical polarisation, if $\hat{\vec\varepsilon}$ is allowed to have complex components [CITE SOMETHING]. This comes with the caveat, however, that the amplitude $E_0$ is a misnomer in these cases and no longer corresponds to any actual amplitude. For example, a circularly polarised plane wave propagating in the $z$ direction with $\hat{\vec\varepsilon}=\mp(\hat{\vec{x}} \pm i \hat{\vec y})/\sqrt{2}$) and ``amplitude" $E_0$ actually has an electric field vector with constant magnitude $E_0/\sqrt{2}$. The ``amplitude" $E_0$ is actually $\sqrt{2}E_\up{rms}$ and thus only equal to the real amplitude in the case of linear polarisation. Using the intensity of the beam $I=\varepsilon_0 c E_\up{rms}^2$ instead,\footnote{Not to be confused with the nuclear spin $I$, distinguishable by context.} which is less ambiguous and more relatable to experimentalists, resolves this potential confusion:\footnote{One possible confusion of many given the diverse notational and conventional differences throughout the literature.}
 \begin{align}\label{eq:complex_plane_wave_intensity}
 \vec E(\vec r, t) = \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}
 \left(\hat{\vec\varepsilon} \ee^{\ii(\vec k \cdot \vec r - \omega t)}
 + \hat{\vec\varepsilon}^* \ee^{-\ii(\vec k \cdot \vec r - \omega t)} \right).
 \end{align}
+Consider one of the three polarisation unit vectors $\hat{\vec\varepsilon}_q$ for which the photon has a well defined angular momentum projection in the $z$ direction:
+\begin{align}
+\hat{\vec\varepsilon}_{\pm} &= \mp(\hat{\vec{x}} \pm i \hat{\vec y})/\sqrt{2},\\
+\hat{\vec\varepsilon}_{0} &= \hat{\vec z},
+\end{align}
+where $q=\pm1$ is denoted with the subscript $_\pm$, omitting the $1$. 
+
+This is called the spherical basis [CITE], and is the basis in which it is easiest to compute matrix elements, as well as the one in which it is easiest to think about what transitions a given laser will drive. Light with polarisation vector $\hat{\vec\varepsilon}_{\pm}$ is called $\sigma^\pm$ polarised, and excites groundstates to excited states that differ in $m_F$ quantum number by $\pm 1$. A single beam with this polarisation would have to be propagating in the $z$ direction, with left or right hand circular polarisation. Light with polarisation vector $\hat{\vec\varepsilon}_0$ is called $\pi$ polarised, and drives transitions between states of equal $m_F$ quantum numbers. A single beam with this polarisation would have to be propagating with a $\vec k$ vector in the $x,y$ plane and be linearly polarised in the $z$ direction. However, lasers with propagation directions and polarisation vectors different from these three can be decomposed into the spherical basis. For example, light with linear polarisation vector in the $x,y$ plane drives both $\sigma^+$ and $\sigma^-$ transitions.
+
+The spherical basis is defined somewhat differently than how we are used to for ordinary real-valued vectors. The components $A_q$ of a vector $\vec A$ in the spherical basis are defined as the coefficients of \emph{complex conjugates} of the basis vectors:
+\begin{align}\label{eq:basis_components}
+\vec A = \sum_q A_q \hat{\vec\varepsilon}_q^* = \sum_q (-1)^q A_q \hat{\vec\varepsilon}_{-q},
+\end{align}
+with the second equality resulting from the property of the basis vectors that
+\begin{align}\label{eq:spherical_negative_property}
+\hat{\vec\varepsilon}_q^* = (-1)^q\hat{\vec\varepsilon}_{-q},
+\end{align}
+and the dot product in terms of the spherical basis components of two vectors is:
+\begin{align}\label{eq:spherical_dot_product}
+\vec A \cdot \vec B = \sum_q (-1)^q A_q B_{-q}.
+\end{align}
+The definition \eqref{eq:basis_components} has the counter-intuitive consequence that the unit vectors themseelves, written in terms of their components $\hat{\vec\varepsilon}_q = \left((\varepsilon_q)_{-}, (\varepsilon_q)_{0}, (\varepsilon_q)_{+}\right)$ in the spherical basis are:
+\begin{align}
+\hat{\vec\varepsilon}_{-} &= (0, 0, -1),\\
+\hat{\vec\varepsilon}_0 &= (0, 1, 0),\\
+\hat{\vec\varepsilon}_{+} &= (-1, 0, 0),
+\end{align}
+that is, the unit vector $\hat{\vec\varepsilon}_{q}$ has a component of $(-1)^q$ in the $-q$ position, and zeros elsewhere.
+
+Considering a plane wave with polarisation vector equal to one of the spherical basis vectors $\hat{\vec\varepsilon}_q$, we have the electric field:
+\begin{align}\label{eq:complex_plane_wave_q}
+\vec E_q(\vec r, t) = \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}
+\left(\hat{\vec\varepsilon}_q \ee^{\ii(\vec k \cdot \vec r - \omega t)}
++ \hat{\vec\varepsilon}_q^* \ee^{-\ii(\vec k \cdot \vec r - \omega t)} \right),
+\end{align}
+which, removing the complex conjugation using \eqref{eq:spherical_negative_property}, can be written:
+\begin{align}\label{eq:complex_plane_wave_q_noconj}
+\vec E_q(\vec r, t) = \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}
+\left(\hat{\vec\varepsilon}_q \ee^{\ii(\vec k \cdot \vec r - \omega t)}
++ (-1)^q\hat{\vec\varepsilon}_{-q} \ee^{-\ii(\vec k \cdot \vec r - \omega t)} \right).
+\end{align}
+Substituting \eqref{eq:complex_plane_wave_q_noconj} into \eqref{eq:electric_dipole_potential} results in the matrix element of the dipole Hamiltonian for a $q$ polarised plane wave:
+\begin{align}
+\matrixel{n^\prime}{\hat H_{\up{d},q}}{n} &= 
+\frac12\sqrt{\frac{2I}{\varepsilon_0 c}}
+\matrixel{n^\prime}
+  {e\hat{\vec r}\cdot\hat{\vec\varepsilon}_q \ee^{\ii(\vec k \cdot \vec r - \omega t)}}
+  {n}
++\frac{(-1)^q}2\sqrt{\frac{2I}{\varepsilon_0 c}}
+\matrixel{n^\prime}
+  {e\hat{\vec r}\cdot\hat{\vec\varepsilon}_{-q} \ee^{-\ii(\vec k \cdot \vec r - \omega t)}}
+  {n}.
+\end{align}
+The \emph{dipole approximation} is the approximation that the spatial extent of the electron's orbital is much smaller than the wavelength of the light, and thus that the factors of $\ee^{\pm\ii\vec k\cdot\vec r}$ are constant over the integral and can be taken outside it. For optical wavelengths this is a good approximation, yielding our matrix element in the dipole approximation:
+\begin{align}
+\matrixel{n^\prime}{\hat H_{\up{d},q}}{n} &= 
+\frac12\sqrt{\frac{2I}{\varepsilon_0 c}}
+\matrixel{n^\prime}
+  {e\hat{\vec r}\cdot\hat{\vec\varepsilon}_q}
+  {n}\ee^{\ii(\vec k \cdot \vec r - \omega t)}
++\frac{(-1)^q}2\sqrt{\frac{2I}{\varepsilon_0 c}}
+\matrixel{n^\prime}
+  {e\hat{\vec r}\cdot\hat{\vec\varepsilon}_{-q}}
+  {n} \ee^{-\ii(\vec k \cdot \vec r - \omega t)}.
+\end{align}
+The position operator $\hat{\vec r}$ can also be expressed in a spherical basis, with basis vectors $\hat r_{\pm},\hat r_0$. In the spherical basis the dot product has a different form to the ordinary dot product (see [STECK] for details), and instead can be expressed as $\hat {\vec r}\cdot\hat{\vec\varepsilon} = \sum_q(-1)^q \hat r_q \varepsilon_{-q}$. For each of our two dot products, there is only one nonzero term in the dot product (the one for which $\varepsilon_q=1$), leaving us with:
+\begin{align}
+\matrixel{n^\prime}{\hat H_{\up{d},q}}{n} &= 
+\frac12\sqrt{\frac{2I}{\varepsilon_0 c}}
+\matrixel{n^\prime}
+  {e\hat{\vec r}\cdot\hat{\vec\varepsilon}_q}
+  {n}\ee^{\ii(\vec k \cdot \vec r - \omega t)}
++\frac{(-1)^q}2\sqrt{\frac{2I}{\varepsilon_0 c}}
+\matrixel{n^\prime}
+  {e\hat{\vec r}\cdot\hat{\vec\varepsilon}_{-q}}
+  {n} \ee^{-\ii(\vec k \cdot \vec r - \omega t)}.
+\end{align}
+Evaluating the dot products using \eqref{eq:spherical_dot_product}, we get $\hat{\vec r}\cdot \hat{\vec\varepsilon}_q = \sum_p (-1)^p \hat r_p (\varepsilon_q)_{-p} = \hat r_q$ and $\hat{\vec r}\cdot \hat{\vec\varepsilon}_{-q} = \sum_p (-1)^p \hat r_p (\varepsilon_{-q})_{-p} = \hat r_{-q}$, yielding
+\begin{align}
+\matrixel{n^\prime}{\hat H_{\up{d},q}}{n} &= 
+\frac12\sqrt{\frac{2I}{\varepsilon_0 c}}
+\matrixel{n^\prime}
+  {e\hat r_q}
+  {n}\ee^{\ii(\vec k \cdot \vec r - \omega t)}
++\frac{(-1)^q}2\sqrt{\frac{2I}{\varepsilon_0 c}}
+\matrixel{n^\prime}
+  {e\hat r_{-q}}
+  {n} \ee^{-\ii(\vec k \cdot \vec r - \omega t)},
+\end{align}
+where $\hat r_q$ are the components of the position operator $\hat{\vec r}$ in the spherical basis, the position space representations of which are proportional to the $\ell=1$ spherical harmonics and the radial coordinate $r$:
+\begin{align}
+\matrixel{r, \theta, \phi}{\hat r_\pm}{r, \theta, \phi}
+    &= \mp\frac r {\sqrt2}\sin\theta\ee^{\pm\ii\phi},\\
+\matrixel{r, \theta, \phi}{\hat r_0}{r, \theta, \phi} &= r\cos(\theta).
+\end{align}
+
+[continue here]:
+
+- symmetry?
+
+- then how to compute matrix elements
+
+- include signs and conjugate of reduced reduced elements
+
 If the plane wave's angular frequency $\omega$ is close to the resonant angular frequency $\omega_{\up{D}_1}$ or $\omega_{\up{D}_2}$ of the $\up{D}_1$ or $\up{D}_2$ line, then one of the two exponential terms is oscillating at a frequency much further from resonance (approximately $2\omega$) than the other, and thus does not contribute significantly to coupling between states. Discarding it is known as the \emph{rotating wave approximation}, so called because in an interaction picture where the evolution of the base Hamiltonian $\hat H_{\up{D}\,^{87}\up{Rb}}$ is factored out---the so called \emph{rotating frame}---this fact is more apparent and a formal approximation can be made showing that the off-resonant term averages to zero over time scales much shorter than any other dynamics.
