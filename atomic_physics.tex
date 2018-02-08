@@ -343,11 +343,11 @@ g_F = g_J\frac{F(F+1) - I(I+1) + J(J+1)}{2F(F+1)}
 The direction in which each Zeeman sublevel shifts in energy for small magnetic fields is depicted in \figref{fig:D_line}. Experimentally, Zeeman shifts that depart from this linear regime are often encountered, and so it is an approximation that cannot always be made.
 
 An explicit matrix representation $H_\up{Z}$ of $\hat H_\up{Z}$ in the $\{\ket{m_I, m_J}\}$ basis for each of the three sates of the D line can be constructed by applying \eqref{eq:H_Z} to the matrix representations of $\hat{\vec I}$ and $\hat{\vec J}$ in that basis: 
-\begin{align}
+\begin{align}\label{eq:Zeeman_hamiltonian}
 H_\up{Z} &= -\vec\mu\cdot \vec B,
 \end{align}
 where
-\begin{align}
+\begin{align}\label{eq:magnetic_moment_operator}
 \vec\mu &=
 -\frac{g_I\mu_B}{\hbar} \vec I_{\mathcal{I}\times\mathcal{J}}
 - \frac{g_J\mu_B}{\hbar} \vec J_{\mathcal{I}\times\mathcal{J}}\\
@@ -390,7 +390,7 @@ the matrix representation of which in the $\{\ket{L, J, m_I, m_J}\}$ basis is th
 While $H_{\up{D}\,^{87}\up{Rb}}$ is a block diagonal matrix, each of the three submatrices is not diagonal, since $m_I$ and $m_J$ are not good quantum numbers for the hyperfine interaction (though they are good quantum numbers for the Zeeman interaction and hence $H_{\up{D}\,^{87}\up{Rb}}$ becomes approximately diagonal at high magnetic field). Once one has constructed $H_{\up{D}\,^{87}\up{Rb}}$ or its submatrices, there are two other bases one might consider transforming the submatrices into depending on the circumstances. One is the $\{\ket{F, m_F}\}$ basis, in which the matrix representation of the hyperfine interaction is diagonal. The matrix representation of the Zeeman Hamiltonian is also approximately diagonal in the $\{\ket{F, m_F}\}$ basis, so long as one is in the linear Zeeman regime. Furthermore, the transition dipole moments for optical transitions are most easily calculated in the $\{\ket{L, J, F, m_F}\}$ basis, as we'll see in the next subsection. For these reasons the $\{\ket{F, m_F}\}$ basis is the most commonly used and referred to.
 
 To transform each submatrix between the $\{\ket{m_I, m_J}\}$ and $\{\ket{F, m_F}\}$ bases, we use a unitary matrix whose elements are Clebsch--Gordan coefficients, each defined as the inner product of a $\ket{F, m_F}$ state with a $\ket{m_I, m_J}$ state (written in full as $\ket{I, m_I, J, m_J}$), and calculable as [CITE something]
-\begin{align}
+\begin{align}\label{eq:ClebschGordanCoeffs}
 \braket{I, m_I, J, m_J}{F, m_F} &= \begin{cases}
 (-1)^{I - J + m_F}\sqrt{2F + 1}
 \left(\begin{smallmatrix}
@@ -626,6 +626,8 @@ where $\Omega_{n^\prime n}(q, I)$ is the \emph{Rabi frequency} of the $n\rightar
 \end{align}
 with the symmetry that $\Omega_{n^\prime n}(q, I) = \Omega^*_{n n^\prime}(q, I)$. Because of this symmetry, the electric dipole Hamiltonian for a plane wave in the rotating wave approximation is Hermitian, and all its matrix elements can be computed considering only transitions from groundstate to excited state (with the Rabi frequencies for the reverse transitions being simply the complex conjugates of those of the forward transitions).
 
+The rotating wave approximation is an excellent approximation for any kind of transition that is actually somewhat close to resonance. When far off-resonant light is being used to impart optical dipole forces however, as in optical traps, it may not be a good approximation, and the full matrix elements \eqref{eq:diple_matrixel_withminus} of the dipole Hamiltonian may need to considered.
+
 \subsubsection{Dipole matrix elements}
 
 We now move on to how to compute the dipole matrix elements
@@ -664,13 +666,94 @@ F & F^\prime & I
 \end{align}
 where $I$ is the nuclear spin, the object in curly braces is a Wigner $6$-j symbol, and $\matrixel{L^\prime_{J^\prime}}{\left|e\hat{\vec r}\right|}{L_J}$ is a reduced matrix element for the transition from $\ket{L_J}$ to $\ket{L^\prime_{J^\prime}}$ free of dependence on $F$ quantum  numbers.
 
-This final reduced matrix element can be linked to experimentally known numerical values via the lifetime of the $P_{1/2}$ and ${P_{3/2}}$ states [CITE]:
+This final reduced matrix element can be linked to experimentally known numerical values via the linewidths $\Gamma_{\up{D}_1}$ and $\Gamma_{\up{D}_2}$ of $\up{D}_1$ and $\up{D}_2$ lines [CITE steck 7.3.7.4 for equation]:
+\begin{align}\label{eq:reduced_matrixel_linewidth}
+\Gamma = \frac{\omega_0^3}{3\pi\varepsilon_0\hbar c^3}\frac{2J_g + 1}{2J_e + 1}\abs{\matrixel{L^\prime_{J_g}}{\left|e\hat{\vec r}\right|}{L_{J_e}}}^2,
+\end{align}
+where $\Gamma$ and $\omega_0$ are the linewidth and resonant (angular) frequency respectively of the transition, $L^\prime_{J_g}$ is the groundstate ($S_{1/2}$) and $L_{J_e}$ is the excited state (either $P_{1/2}$ or ${P_{3/2}}$) of the transition. Thus the reduced matrix elements for transitions from excited to groundstates can be expressed in terms of known constants. For the reduced matrix elements for transitions from ground to excited states instead, one cannot simply take the complex conjugates of the excited-to-ground reduced matrix elements---the reduced matrix elements are defined instead such that they have the following property [cite steck 7.3.5.1]:
+\begin{align}
+\matrixel{L_J}{\left|e\hat{\vec r}\right|}{L^\prime_{J^\prime}}
+= (-1)^{J - J^\prime}\sqrt{\frac{2J^\prime+1}{2J+1}}
+\matrixel{L^\prime_{J^\prime}}{\left|e\hat{\vec r}\right|}{L_J}^*.
+\end{align}
+Putting these together gives the following reduced matrix elements for the $\up{D}_1$ and $\up{D}_2$ lines in both directions:
+\begin{align}
+\matrixel{S_{1/2}}{\left|e\hat{\vec r}\right|}{P_{1/2}}
+&= \sqrt{\frac{3\pi\varepsilon_0\hbar c^3 \Gamma_{\up{D}_1}}{\omega_{\up{D}_1}^3}}\\
+\matrixel{S_{1/2}}{\left|e\hat{\vec r}\right|}{P_{3/2}}
+&= \sqrt{\frac{6\pi\varepsilon_0\hbar c^3 \Gamma_{\up{D}_2}}{\omega_{\up{D}_2}^3}}\\
+\matrixel{P_{1/2}}{\left|e\hat{\vec r}\right|}{S_{1/2}}
+&= \matrixel{S_{1/2}}{\left|e\hat{\vec r}\right|}{P_{1/2}}^*\\
+\matrixel{P_{3/2}}{\left|e\hat{\vec r}\right|}{S_{1/2}}
+&= -\frac1{\sqrt2}\matrixel{S_{1/2}}{\left|e\hat{\vec r}\right|}{P_{3/2}}^*
+\end{align}
+The first two of these, having only their absolute values related to the linewidths in \eqref{eq:reduced_matrixel_linewidth}, have an undetermined phase factor which we have taken to be equal to $+1$. Since only relative phases are important, if we limit ourselves to only one of the $\up{D}_1$ or $\up{D}_2$ lines at a time, all dipole matrix elements, being proportional to these reduced dipole matrix elements, will have the correct relative phases between each other. However, we are imposing a fixed phase on \emph{both} the reduced dipole matrix elements for the $\up{D}$ line. We can verify that a relative phase factor of $+1$ between the two reduced dipole matrix elements is the correct choice by decomposing [STECK] the reduced matrix elements into yet another Wigner-6j symbol and a reduced dipole matrix element $\matrixel{L^\prime=\frac12}{\left|e\hat{\vec r}\right|}{L=1}$, common to both fine structure lines:
+\begin{align}
+\matrixel{L^\prime_{J^\prime}}{\left|e\hat{\vec r}\right|}{L_J} = 
+(-1)^{J+L+S+1}\sqrt{(2J+1)(2L^\prime+1)}
+\left\{\begin{matrix}
+L^\prime & L & 1\\
+J & J^\prime & S
+\end{matrix}\right\}
+\matrixel{L^\prime}{\left|e\hat{\vec r}\right|}{L},
+\end{align}
+where $S=1/2$ is the electron spin. This expression can be used to verify the ratio:
+\begin{align}
+\frac
+{\matrixel{S_{1/2}}{\left|e\hat{\vec r}\right|}{P_{3/2}}}
+{\matrixel{S_{1/2}}{\left|e\hat{\vec r}\right|}{P_{1/2}}} = \sqrt{2},
+\end{align}
+confirming that the choice of relative phase factor $+1$ between the two $L_J$ reduced dipole matrix elements is the correct one.
+
+\subsubsection{Recap}
+We have proceeded in a top-down manner to lay out all that is needed to compute the transition matrix elements of 
+
+\subsection{Magnetic dipole transitions}
+After all the complexity of optical dipole transitions, magnetic dipole transitions---for either \textsc{rf} transitions between Zeeman sublevels, or microwave transitions between hyperfine states---are relatively simple. The matrix elements in the $\{\ket{F, m_F}\}$ basis for a perturbing magnetic field $\vec B(t)$ are simply those of the Zeeman Hamiltonian \eqref{eq:Zeeman_hamiltonian}:
+\begin{align}
+\matrixel{F^\prime, m_F^\prime}{\hat H_\up{Z}}{F, m_F}
+=
+-\matrixel{F^\prime, m_F^\prime}{\hat{\vec\mu}\cdot {\vec B}}{F, m_F},
+\end{align} 
+which for a magnetic plane wave with linear polarisation $i\in \{x, y, z\}$ and amplitude $B_0$, and in the dipole approximation, is:
+\begin{align}
+\matrixel{F^\prime, m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F, m_F}
+=
+-\matrixel{F^\prime, m_F^\prime}{\hat{\mu}_i}{F, m_F}B_0 \cos(\vec k\cdot \vec r - \omega t).
+\end{align}
+The magnetic dipole matrix elements $\matrixel{F^\prime, m_F^\prime}{\hat{\mu}_i}{F, m_F}$ can be computed using the known matrix form \eqref{eq:magnetic_moment_operator} of the magnetic moment operator $\mu_i$ in the $\{\ket{I, J}\}$ basis, and transforming it into the $\{\ket{F, m_F}\}$ basis using a unitary of Clebsch--Gordan coefficients as in \eqref{eq:ClebschGordanCoeffs}.
+
+As with optical dipole transitions, the cosine can be written as a sum of exponentials, revealing co-rotating and counter-rotating terms:
+\begin{align}
+\matrixel{F^\prime, m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F, m_F}
+=
+-\frac{B_0}2\matrixel{F^\prime, m_F^\prime}{\hat{\mu}_i}{F, m_F}
+\left(\ee^{\ii(\vec k\cdot \vec r - \omega t)}
++ \ee^{-\ii(\vec k\cdot \vec r - \omega t)}\right),
+\end{align}
+allowing for a rotating wave approximation and definition of a Rabi frequency as with optical dipole transitions:
+\begin{align}\label{eq:magnetic_rwa_with_rabifreq}
+\matrixel{F^\prime, m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F, m_F} \overset{\textsc{rwa}}\approx
+\begin{cases}
+\frac\hbar2\Omega_{F^\prime, m_F^\prime, F, m_F}(i, B_0)\,
+\ee^{\ii(\vec k \cdot \vec r - \omega t)},\qquad
+& E_{F^\prime, m_F^\prime} > E_{F, m_F}\\
+\\
+\frac\hbar2\Omega^*_{F, m_F, F^\prime, m_F^\prime}(i)\,
+\ee^{-\ii(\vec k \cdot \vec r - \omega t)},\qquad
+& E_{F^\prime, m_F^\prime} < E_{F, m_F}
+\end{cases},
+\end{align}
+where $\Omega_{F^\prime, m_F^\prime, F, m_F}(i, B_0) = -\hbar B_0 \matrixel{F^\prime, m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F, m_F}$.
+
+The required linear combinations of the above matrix elements can be used to compute matrix elements for \textsc{rf} waves of different phases, or circular polarisations. It is also often practical, when numerically modelling magnetic dipole transitions, particularly between Zeeman sublevels, to simply include the magnetic field vector as a function as time and evaluate the entire matrix $H_\up{Z}$ directly in whichever basis one is working, rather than decomposing it into fixed frequency waves. This is particularly useful for frequency sweeps and other complex magnetic field sequences, which may not be good candidates for the rotating wave approximation, or may not be well represented well as single-frequency waves at all. This is most practical for transitions between Zeeman sublevels, since the energy splittings can be on the order of MHz and therefore well sampled by numerics with nanosecond to microsecond sized timesteps, which are feasible to numerically compute. Microwave transitions, being $6.8 GHz$ in $^{87}$Rb would require sub-nanosecond timesteps to simulate literally, and so is more taxing but still within the range of possibility, as opposed to optical transitions which are in the hundreds of THz and impractical to simulate without rotating wave approximations and the assumption of monochromatic waves as treated in the previous subsection.
+
+\subsection{Summary}
+We are now finally at the end of our assembly of the Hamiltonian for modelling the $^{87}$Rb $\up{D}$ line in the presence of magnetic fields and monochromatic plane waves. Armed with this Hamiltonian and its coupling terms for various lasers, the atomic physicist can predict and simulate much of what is needed for the basics of laser cooling, trapping, and coherent control.
 
 
- [continue here]:
+TODO: mention that the off-resonant term couples the opposite polarisation!
 
-- symmetry?
+TODO: mention that kx is usually ignored and sometimes encapsulated into a Doppler shift!
 
-- then how to compute matrix elements
-
-- include signs and conjugate of reduced reduced elements
+TODO: mention that matrix elements in other bases can be computed by superposing other ones!
