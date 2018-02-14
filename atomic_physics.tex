@@ -1,27 +1,12 @@
 \chapter{Atomic physics: Experimental techniques and theory}\label{chap:atomic_physics}
 
-\begin{itemize}
-\item Descriptions of the relevant physics in atomic physics experiments: Doppler cooling and magneto-optical traps, Sisyphus cooling, dipole forces, Feshbach resonances, scattering theory, Bose–Einstein statistics. Show how the Hamiltonian of a `two level' (32 levels, all things considered for $^{87}$Rb D line) atom with fine structure, hyperfine structure and Zeeman splitting arises from consideration of the different angular momenta. Use this to derive the differential equations for the state populations of an atom in a driving laser field. Gross Pitaevskii equation for single species, dual species and spinor condensate.
+\textsc{Bec}s provide such a tantalising opportunity for studying quantum phenomena not only because of their interesting properties, but also because of the level of control they afford, with parameters able to be tuned and manipulated in order to investigate various regimes. Many of the same techniques which allow experimentalists such control over a \textsc{bec} are also employed in the production of \textsc{bec}.
 
-\item{Doppler cooling}
-\item{Magneto-optical trapping}
-\item{Optical dipole trapping}
-\item{Two-body scattering and Feshbach resonances}
-\item{ -> Include stuff from 3rd year report}
-\item{Spin, fine structure, and hyperfine structure}
-\item{Equations of motion for two level atom with hyperfine structure}
-\item{The Monte-Carlo wavefunction method}
-\item{Mean field theory for Bose–Einstein condensates}
-\item{ -> Superfluid velocity}
-\item{ -> Vortices}
+The main experimental techniques used to create \textsc{bec} are Doppler cooling, magneto-optical and dipole trapping, polarisation gradient (Sisyphus) cooling, and evaporative cooling. These were discovered, perhaps by no coincidence, in roughly the same order as they are called for in a \textsc{bec} experiment, and many were first discovered along the way to the first realisations of Bose--Einstein condensation.
 
-\end{itemize}
-\section{Cooling, trapping, and manipulating atoms}
-\textsc{Bec}s provide such a tantalising opportunity for studying quantum phenomena not only because of their interesting properties, but also because of the level of control they afford. Many of the same techniques which allow experimentalists such control over their creation are also employed in the creation thereof, and many were discovered along the way to Bose--Einstein condensation.
+Section \ref{sec:cooling_and_trapping} is a whirlwind summary of these and a few other experimental techniques. Then in section \ref{sec:mean_field_theory}, I'll present some of the theory describing superfluid flow and vortices and in \textsc{bec}, which is central to the simulations of vortex tracking presented in chapter \ref{chap:velocimetry}. The final section of this chapter, section \ref{sec:the_rubidium_D_line}, will construct the detailed theory for describing the internal state of a $^{87}$Rb atom in magnetic and optical fields, considering only the first $L=0$ to $L=1$ excitation is accessible to rubidium's  sole outer-shell electron. The resulting Hamiltonian describes 32 sublevels, and forms the basis of any detailed calculations of laser cooling and trapping.
 
-The main experimental techniques used to create \bec---and which we are and will be employing in that pursuit---are Doppler cooling, magneto-optical and dipole trapping, polarisation gradient (Sisyphus) cooling, and evaporative cooling.
-
-These were discovered, perhaps by no coincidence, in roughly the same order as they are called for in a \bec\ experiment.
+\section{Cooling, trapping, and manipulating atoms}\label{sec:cooling_and_trapping}
 
 \subsection{Doppler cooling}
 
@@ -39,7 +24,7 @@ Magneto-optical trapping, first demonstrated in 1987 \cite{raab_trapping_1987} c
 
 If a field profile can be found which causes the transition to come closer to resonance as the atoms move away from a central point, then it forms a trap---atoms  that stray too far from the centre will absorb more strongly and be deflected back\footnote{The polarisations of the beams are such that absorption from the inward facing beam occurs, rather than from the one that would accelerate the atom further outward!}.
 
-The field configuration used in an anti-Helmholtz one, with two coils opposite each other carrying opposing currents. The resulting magnetic field profile has a zero in the middle and increases in magnitude in all directions.
+The field configuration used in an anti-Helmholtz one: two coils opposite each other carrying opposing currents. The resulting magnetic field profile has a zero in the middle and increases in magnitude in all directions.
 
 With the Doppler beams off, this magnetic field still provides a trapping potential, due to the magnetic dipole interaction:
 
@@ -47,6 +32,8 @@ With the Doppler beams off, this magnetic field still provides a trapping potent
 V(\vec{r}) = -\vec \mu \cdot \vec B,
 \end{equation}
 where $\vec\mu$ is the atomic magnetic moment, and $\vec B$ the magnetic field. This only traps some atomic spin states, and has losses due to spin-flips \cite{brink_majorana_2006} near the field zero.
+
+The optimal magnetic field gradient for forming a magneto-optical trap (\textsc{mot}) is lower than that required to merely hold atoms against gravity, and thus there is little if any magnetic trapping occurring in a \textsc{mot}---the trapping almost entirely results from the position-dependent rate of photon absorption caused by the Zeeman shift due to the magnetic field. To transfer atoms from a \textsc{mot} to a solely magnetic trap, the magnetic field gradient must be increased substantially.
 
 \subsection{Optical trapping}
 
@@ -58,10 +45,10 @@ Optical dipole trapping on the other hand relies on the \emph{dipole force}, in 
 
 where $\delta$ is the detuning from resonance and the Rabi frequency is:
 \begin{equation}
-\Omega=\frac{eE_0}\hbar\langle1|\vec{x}|2\rangle,
+\Omega=\frac{E_0}\hbar\matrixel{n^\prime}{e\hat{\vec r}}{n},
 \end{equation}
 
-where $E_0$ is the amplitude of the light's electric field and  $\langle1|\vec{x}|2\rangle$ is the dipole moment between the two states in a two-level system.
+where $E_0$ is the amplitude of the light's electric field and  $\matrixel{n^\prime}{e\hat{\vec r}}{n}$ is the transition dipole moment between the two states in a two-level system.
 
 With the potential proportional to $E_0^2$, and thus the light's intensity, the force the atom experiences is proportional to the light's intensity gradient. For this reason, the dipole force is also called the \emph{gradient force}. The name \emph{dipole force} comes from the fact that the force can be equivalently understood to arise from the polarisability of atoms in a light field, giving rise to a force identical to that which traps polarisable materials in optical tweezers \cite{ashkin_acceleration_1970}.
 
@@ -112,7 +99,7 @@ The end result is that at certain magnetic field strengths we find that atoms ar
 We plan to use a Feshbach resonance (Figure \ref{fig:feshKRb}) to enhance the interspecies repulsion between $^{87}$Rb and $^{41}$K, thus trapping tracer particles more strongly in vortex cores.
 
 
-\section{Mean field theory: The Gross--Pitaevskii equation and vortices}
+\section{Mean field theory: The Gross--Pitaevskii equation and vortices}\label{sec:mean_field_theory}
 
 Bose-condensates are described well by \emph{mean field} theory, whereby the many-body wavefunction is approximated by a product of identical single-particle wavefunctions. Indeed, that the majority of the atoms are in the same quantum state is one of the defining features of \bec. The effect of interparticle interactions is included as a nonlinear term in the Schr\"odinger equation for the single particle wavefunctions, known as the Gross-Pitaevskii equation:
 
@@ -136,7 +123,7 @@ The fact that the circulation is quantised means that vorticity cannot exist in 
 
 At a vortex core, the atom density of a \bec\ must go to zero. This can be intuitively understood to arise from centrifugal forces, but is also required in order for the wavefunction to be continuous and single-valued across the core. This drop in density in the vicinity of a vortex core is what our method exploits in order to trap atoms within the cores.
 
-\section{Optical transitions on the $^{87}$Rb D line}
+\section{The $^{87}$Rb D line}\label{sec:the_rubidium_D_line}
 
 We atomic physicists do our theory work at an intermediate level of abstraction, at which many quantities and systems of interest can be computed and simulated with accurate models using standard quantum mechanics, but with models that are not fully a-priori. Instead, the Hamiltonians we feed to the machinery of standard quantum mechanics encapsulate some of the details we are not interested in or that are too hard to compute, with the link between the underlying layers of reductionism and the higher layer usually provided by experimentally measured values rather than calculations from fundamental physics. In this way we can readily compute results about the atoms we are interested in by treating them as simpler systems than they actually are, with some of the the underlying details encapsulated by terms in an effective Hamiltonian for the dynamics that we are interested in.
 
