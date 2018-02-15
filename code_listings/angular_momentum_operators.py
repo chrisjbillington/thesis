@@ -10,8 +10,8 @@ def angular_momentum_operators(J):
     the matrix elements (in descending order of mJ)."""
     n_mJ = int(round(2*J + 1))
     mJlist = np.linspace(J, -J, n_mJ)
-    Jp = np.diag([hbar * np.sqrt(J*(J+1) - mJ*(mJ + 1)) for mJ in mJlist if mJ < J], -1)
-    Jm = np.diag([hbar * np.sqrt(J*(J+1) - mJ*(mJ - 1)) for mJ in mJlist if mJ > -J], 1)
+    Jp = np.diag([hbar * np.sqrt(J*(J+1) - mJ*(mJ + 1)) for mJ in mJlist if mJ < J], 1)
+    Jm = np.diag([hbar * np.sqrt(J*(J+1) - mJ*(mJ - 1)) for mJ in mJlist if mJ > -J], -1)
     Jx = (Jp + Jm) / 2
     Jy = (Jp - Jm) / 2j
     Jz = np.diag([hbar*mJ for mJ in mJlist])
