@@ -567,9 +567,9 @@ An additional benefit of parallelised \textsc{rk4} when compared to split-operat
 
 The constant factors that big-O notation disregards also favour \textsc{rk4} when compared to split-operator methods. For one, addition and multiplication are much cheaper than exponentiation, meaning that the exponentials in split-operator methods may add considerable computational cost if the Hamiltonian itself is simple. Furthermore, parallelised or not, each term in fourth order split-operator adds $20$ matrix-vector products in the space the term acts, whereas \textsc{rk4} requires only one additional matrix-vector product per term. In practice due to these properties, \textsc{rk4} runs considerably faster than split-operator methods, even for simple systems, and the gap widens as complexity increases.
 
-% \subsection{The interaction picture}
+\subsection{The interaction picture}\label{sec:interaction_picture}
 
-% A common situation in atomic physics is to be simulating the internal state of an atom, armed with the knowledge that only a small number of atomic states are able to become occupied.
+[TODO]
 
 %         \begin{itemize}
 %             \item Sometimes called a "rotating frame"
