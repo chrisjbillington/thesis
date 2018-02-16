@@ -1,20 +1,20 @@
 Total
-Words in text: 35529
-Words in headers: 307
-Words outside text (captions, etc.): 5048
-Number of headers: 74
+Words in text: 35802
+Words in headers: 314
+Words outside text (captions, etc.): 5208
+Number of headers: 75
 Number of floats/tables/figures: 31
-Number of math inlines: 1346
-Number of math displayed: 206
+Number of math inlines: 1412
+Number of math displayed: 208
 Files: 9
 Subcounts:
   text+headers+captions (#headers/#floats/#inlines/#displayed)
-  7185+73+1141 (23/3/493/71) File(s) total: atomic_physics.tex
+  7457+77+1301 (23/3/559/73) File(s) total: atomic_physics.tex
   725+17+385 (4/4/7/0) File(s) total: experiment.tex
   50+0+0 (0/0/0/0) File(s) total: front_matter.tex
   1370+19+65 (3/2/39/13) File(s) total: hidden_variables.tex
   1595+3+104 (2/0/12/0) File(s) total: introduction.tex
-  20562+152+2572 (30/15/716/118) File(s) total: numerics.tex
+  20563+155+2572 (31/15/716/118) File(s) total: numerics.tex
   4+6+0 (1/0/0/0) File(s) total: software.tex
   4002+24+781 (8/7/79/4) File(s) total: velocimetry.tex
   36+13+0 (3/0/0/0) File(s) total: wave_mixing.tex

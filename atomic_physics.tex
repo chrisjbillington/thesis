@@ -2,15 +2,26 @@
 
 \textsc{Bec}s provide such a tantalising opportunity for studying quantum phenomena not only because of their interesting properties, but also because of the level of control they afford, with parameters able to be tuned and manipulated in order to investigate various regimes. Many of the same techniques which allow experimentalists such control over a \textsc{bec} are also employed in the production of \textsc{bec}.
 
-The main experimental techniques used to create \textsc{bec} are Doppler cooling, magneto-optical and dipole trapping, polarisation gradient (Sisyphus) cooling, and evaporative cooling. These were discovered, perhaps by no coincidence, in roughly the same order as they are called for in a \textsc{bec} experiment, and many were first discovered along the way to the first realisations of Bose--Einstein condensation.
+The main experimental techniques used to create \textsc{bec} are Doppler cooling, magneto-optical, magnetic, and dipole trapping, polarisation gradient (Sisyphus) cooling, and evaporative cooling. These were discovered, perhaps by no coincidence, in roughly the same order as they are called for in a \textsc{bec} experiment, and many were first discovered along the way to the first realisations of Bose--Einstein condensation.
 
 Section \ref{sec:cooling_and_trapping} is a whirlwind summary of these and a few other experimental techniques. Then in section \ref{sec:mean_field_theory}, I'll present some of the theory describing superfluid flow and vortices and in \textsc{bec}, which is central to the simulations of vortex tracking presented in chapter \ref{chap:velocimetry}. The final section of this chapter, section \ref{sec:the_rubidium_D_line}, will construct the detailed theory for describing the internal state of a $^{87}$Rb atom in magnetic and optical fields, considering only the first $L=0$ to $L=1$ excitation is accessible to rubidium's  sole outer-shell electron. The resulting Hamiltonian describes 32 sublevels, and forms the basis of any detailed calculations of laser cooling and trapping.
 
 \section{Cooling, trapping, and manipulating atoms}\label{sec:cooling_and_trapping}
 
-\subsection{Doppler cooling}
+\subsection{Doppler cooling}\label{sec:doppler_cooling}
 
-Doppler cooling, demonstrated in 1978 \cite{wineland_radiation-pressure_1978} is a consequence of the simple observation that atoms see the wavelength of incident light Doppler shifted depending on their velocity. This can be used to selectively transfer momentum to only fast-moving atoms, by tuning an incident laser slightly redder than would be required for a resonant absorption. If six lasers in counterpropagating pairs orthogonal to each other surround a cloud of atoms, the atoms can be cooled close to the \emph{Doppler limit} \cite[p 58]{metcalf_laser_1999}
+Doppler cooling, demonstrated in 1978 \cite{wineland_radiation-pressure_1978} is a consequence of the simple observation that atoms see the wavelength of incident light Doppler shifted depending on their velocity. For example, the electric field of a linearly polarised optical plane wave is:
+\begin{align}
+\vec E \propto \cos(\vec k \cdot \vec r - \omega t),
+\end{align}
+which for an atom moving with constant velocity $\vec v$ can be written:
+\begin{align}
+\vec E &\propto \cos(\vec k \cdot \vec v t - \omega t)\\
+&= \cos(- \omega_\up{eff} t),
+\end{align}
+where $\omega_\up{eff} = \omega - \vec k \cdot \vec v$ is the effective angular frequency of the laser as seen by the atom.
+
+This can be used to selectively transfer momentum to only fast-moving atoms, by tuning an incident laser slightly redder than would be required for a resonant absorption. If six lasers in counterpropagating pairs orthogonal to each other surround a cloud of atoms, the atoms can be cooled close to the \emph{Doppler limit} \cite[p 58]{metcalf_laser_1999}
 
 \begin{equation}
 k_\up{B} T_\up{D} = \frac{\hbar\Gamma}2
@@ -122,19 +133,19 @@ The fact that the circulation is quantised means that vorticity cannot exist in 
 
 At a vortex core, the atom density of a \bec\ must go to zero. This can be intuitively understood to arise from centrifugal forces, but is also required in order for the wavefunction to be continuous and single-valued across the core. This drop in density in the vicinity of a vortex core is exploited by the method simulated in chapter \ref{chap:velocimetry} to trap atoms within the cores.
 
-\section{The $^{87}$Rb D line}\label{sec:the_rubidium_D_line}
+\section{The $^{87}$Rb $\up{D}$ line}\label{sec:the_rubidium_D_line}
 
 We atomic physicists do our theory work at an intermediate level of abstraction, at which many quantities and systems of interest can be computed and simulated with accurate models using standard quantum mechanics, but with models that are not fully a-priori. Instead, the Hamiltonians we feed to the machinery of quantum mechanics encapsulate some of the details we are not interested in or that are too hard to compute, with the link between the underlying layers of reductionism and the higher layer usually provided by experimentally measured values rather than calculations from fundamental physics. In this way we can readily compute results about the atoms we are interested in by treating them as simpler systems than they actually are, with some of the the underlying details encapsulated by terms in an effective Hamiltonian for the dynamics that we are interested in.
 
-In this section I'll summarise what the $^{87}$Rb D line looks like from the perspective of a cold atom physicist, building up a Hamiltonian containing all 32 sublevels of the ground and first excited state of $^{87}$Rb including fine structure, hyperfine structure, interaction with a magnetic field, and optical transitions between states. This Hamiltonian is the starting point for any calculations regarding cooling, trapping, and coherent control of $^{87}$Rb, and for other alkali earth metals is much the same.
+In this section I'll summarise what the $^{87}$Rb $\up{D}$ line looks like from the perspective of a cold atom physicist, building up a Hamiltonian containing all 32 sublevels of the ground and first excited state of $^{87}$Rb including fine structure, hyperfine structure, interaction with a magnetic field, and optical transitions between states. This Hamiltonian is the starting point for any calculations regarding cooling, trapping, and coherent control of $^{87}$Rb, and for other alkali earth metals is much the same.
 
 Much of the details of this section are drawn from references \cite{steck_rubidium_2015, steck_quantum_2017, metcalf_laser_1999, king_angular_2008, farrell_consistency_1995}, but the reader should be aware that there are considerable conventional and notational differences between different literature sources. What is presented here is summarised and framed in a way that I think is useful to an experimentalist looking to use the theory to make concrete calculations about real systems.
 
 \subsection{Fine structure}
 
-The rubidium 87 D line refers to the first excitation available to the sole outer electron of $^{87}$Rb. Both the ground and excited state of this transition have the same principal quantum number, but different orbital angular momentum quantum numbers. Upon closer inspection, it is not just one transition between a ground state and an excited state---there are two excited states, and the two resulting transitions are called, in order of their transition frequencies, the $\up{D}_1$ and  $\up{D}_2$ lines. Thus the ground and first excited state of $^{87}$Rb are actually a ground state plus two non-degenerate excited states, once we take into account fine structure. The groundstate is an $S$ state (electronic orbital angular momentum quantum number $L=0$), called the $S_{1/2}$ state, and the two excited states are $P$ states $(L=1)$, one with the electron spin anti-aligned with its orbital angular momentum (resulting in total angular momentum quantum number $J=1/2$) and one with the electron spin aligned with its orbital angular momentum ($J=3/2$), called the $P_{1/2}$ and $P_{3/2}$ states respectively. In all of these states, $^{87}$Rb's single outer-shell electron occupies an orbital with principle quantum number $n=5$, which for brevity we leave out of the notation. The transition between $S_{1/2}$ and $P_{1/2}$ is called the $\up{D}_1$ line, with experimentally measured (angular) transition frequency $\omega_{\up{D}_1}$, and the transition between $S_{1/2}$ and $P_{3/2}$ is the $\up{D}_2$ line with angular transition frequency $\omega_{\up{D}_2}$. These transition frequencies correspond to optical wavelengths of $\lambda_{\up{D}_1} \approx 795\unit{nm}$ and $\lambda_{\up{D}_2} \approx 780\unit{nm}$\cite{steck_rubidium_2015}.
+The rubidium 87 $\up{D}$ line refers to the first excitation available to the sole outer electron of $^{87}$Rb. Both the ground and excited state of this transition have the same principal quantum number, but different orbital angular momentum quantum numbers. Upon closer inspection, it is not just one transition between a ground state and an excited state---there are two excited states, and the two resulting transitions are called, in order of their transition frequencies, the $\up{D}_1$ and  $\up{D}_2$ lines. Thus the ground and first excited state of $^{87}$Rb are actually a ground state plus two non-degenerate excited states, once we take into account fine structure. The groundstate is an $S$ state (electronic orbital angular momentum quantum number $L=0$), called the $S_{1/2}$ state, and the two excited states are $P$ states $(L=1)$, one with the electron spin anti-aligned with its orbital angular momentum (resulting in total angular momentum quantum number $J=1/2$) and one with the electron spin aligned with its orbital angular momentum ($J=3/2$), called the $P_{1/2}$ and $P_{3/2}$ states respectively. In all of these states, $^{87}$Rb's single outer-shell electron occupies an orbital with principle quantum number $n=5$, which for brevity we leave out of the notation. The transition between $S_{1/2}$ and $P_{1/2}$ is called the $\up{D}_1$ line, with experimentally measured (angular) transition frequency $\omega_{\up{D}_1}$, and the transition between $S_{1/2}$ and $P_{3/2}$ is the $\up{D}_2$ line with angular transition frequency $\omega_{\up{D}_2}$. These transition frequencies correspond to optical wavelengths of $\lambda_{\up{D}_1} \approx 795\unit{nm}$ and $\lambda_{\up{D}_2} \approx 780\unit{nm}$\cite{steck_rubidium_2015}.
 
-This fine structure is treated entirely empirically for our purposes, and so our base Hamiltonian for the rubidium D line, taking into account only fine structure, is simply a statement of the experimentally measured energy differences between the states:
+This fine structure is treated entirely empirically for our purposes, and so our base Hamiltonian for the rubidium $\up{D}$ line, taking into account only fine structure, is simply a statement of the experimentally measured energy differences between the states:
 
 \begin{align}
 \hat H_\up{fs} = 
@@ -165,9 +176,9 @@ Within each of the $S_{1/2}$, $P_{1/2}$ and $P_{3/2}$ states, the single outer-s
 {3(\hat{\vec I}\cdot\hat{\vec J})^2 + \frac32 \hat{\vec I}\cdot\hat{\vec J} - I(I + 1)J(J + 1)}
 {2I(2I - 1)J(2J - 1)},
 \end{align}
-where $J$ is the total angular momentum quantum number of the electron, equal to either $\frac12$ or $\frac32$ depending on which state in the D line we are considering, $I=\frac32$ is the total angular momentum quantum number of the nucleus, and $A_\up{hfs}$ and $B_\up{hfs}$ are empirically determined coupling constants. Here we see the boundary between the quantities we can calculate with the machinery of quantum mechanics and those that we determine empirically---this expression applies so long as $J$ and $I$ are good quantum numbers,\footnote{$J$ is a good quantum number so long as the hyperfine splitting is small compared to the spacing between the three states of the D line, which it is, and $I$ is a good quantum number so long as the hyperfine splitting is small compared to the energy difference between the groundstate and the first \emph{nuclear} excited state, which it most certainly is.} and the two terms are the dipolar and quadrupolar interactions \cite{arimondo_experimental_1977} between two angular momenta, with the coupling constants determined empirically and encapsulating details that are difficult to compute a-priori, such as relativistic effects and the exact shape of the electron orbitals given the presence of inner shell electrons. For the spherically-symmetric $S_{1/2}$ groundstate, there is no quadrupolar interaction and so $B_\up{hfs}$ is only nonzero for the two $P$ excited states.\footnote{The quadrupolar term should be explicitly excluded from numerical computations of the hyperfine splitting on the $S_{1/2}$ state, as it contains a division by zero in this case, which may lead to erroneous results even if the term is subsequently multiplied by $B_\up{hfs}=0$.} The values of $A_\up{hfs}$ and $B_\up{hfs}$ for each of the three states of the D line can be found in \cite{steck_rubidium_2015}.
+where $J$ is the total angular momentum quantum number of the electron, equal to either $\frac12$ or $\frac32$ depending on which state in the $\up{D}$ line we are considering, $I=\frac32$ is the total angular momentum quantum number of the nucleus, and $A_\up{hfs}$ and $B_\up{hfs}$ are empirically determined coupling constants. Here we see the boundary between the quantities we can calculate with the machinery of quantum mechanics and those that we determine empirically---this expression applies so long as $J$ and $I$ are good quantum numbers,\footnote{$J$ is a good quantum number so long as the hyperfine splitting is small compared to the spacing between the three states of the $\up{D}$ line, which it is, and $I$ is a good quantum number so long as the hyperfine splitting is small compared to the energy difference between the groundstate and the first \emph{nuclear} excited state, which it most certainly is.} and the two terms are the dipolar and quadrupolar interactions \cite{arimondo_experimental_1977} between two angular momenta, with the coupling constants determined empirically and encapsulating details that are difficult to compute a-priori, such as relativistic effects and the exact shape of the electron orbitals given the presence of inner shell electrons. For the spherically-symmetric $S_{1/2}$ groundstate, there is no quadrupolar interaction and so $B_\up{hfs}$ is only nonzero for the two $P$ excited states.\footnote{The quadrupolar term should be explicitly excluded from numerical computations of the hyperfine splitting on the $S_{1/2}$ state, as it contains a division by zero in this case, which may lead to erroneous results even if the term is subsequently multiplied by $B_\up{hfs}=0$.} The values of $A_\up{hfs}$ and $B_\up{hfs}$ for each of the three $L_J$ states of the $\up{D}$ line can be found in \cite{steck_rubidium_2015}.
 
-For a given state of the D line, we can construct the matrix representation $\oversetIJ H_\up{hfs}$ of $\hat H_\up{hfs}$ in the $\mathcal{I}\times\mathcal{J}$ basis---which we define as the basis in which both the $z$ vector components $\hat{I}_z$ and $\hat{J}_z$ of $\hat{\vec I}$ and $\hat{\vec J}$ are diagonal---by constructing matrix representations $\oversetIJ{\vec I}$ and $\oversetIJ{\vec J}$ of the operators $\hat{\vec I}$ and $\hat{\vec J}$ in that basis and then applying the expression (\ref{eq:H_hfs}). The overset ${\mathcal{I} \times \mathcal{J}}$ on each of the matrices indicates that the matrix is a representation of its respective operator in the ${\mathcal{I} \times \mathcal{J}}$ basis, so named because its basis vectors can be obtained via a Cartesian product\footnote{The different types of products available for matrices, vectors, operators, spaces, and their sets of basis vectors are rife with subfield-specific conventions and overloaded notation, leading to much ambiguity. Although `Cartesian product' connotes well what I mean here, it is still ambiguous. What I mean is that the ${\mathcal{I} \times \mathcal{J}}$ basis is the set of basis vectors $\{\left.\vec u \otimes \vec v\ \right|\ \vec u \in \mathcal{I}, \vec v\in\mathcal{J}\}$. The notation $\vec u \otimes \vec v$, which is also ambiguous, denotes the Kronecker product of two column vectors, producing a column vector with number of elements equal to the product of the number of elements in each of the two vectors---not the `outer' or `tensor' product, which would produce a matrix.} of the two sets of basis vectors from the $\mathcal{I}$ and $\mathcal{J}$ bases for the two individual nuclear and electronic angular momentum degrees of freedom, in which $\hat{I}_z$ and $\hat{J}_z$ are respectively diagonal.
+For a given state of the $\up{D}$ line, we can construct the matrix representation $\oversetIJ H_\up{hfs}$ of $\hat H_\up{hfs}$ in the $\mathcal{I}\times\mathcal{J}$ basis---which we define as the basis in which both the $z$ vector components $\hat{I}_z$ and $\hat{J}_z$ of $\hat{\vec I}$ and $\hat{\vec J}$ are diagonal---by constructing matrix representations $\oversetIJ{\vec I}$ and $\oversetIJ{\vec J}$ of the operators $\hat{\vec I}$ and $\hat{\vec J}$ in that basis and then applying the expression (\ref{eq:H_hfs}). The overset ${\mathcal{I} \times \mathcal{J}}$ on each of the matrices indicates that the matrix is a representation of its respective operator in the ${\mathcal{I} \times \mathcal{J}}$ basis, so named because its basis vectors can be obtained via a Cartesian product\footnote{The different types of products available for matrices, vectors, operators, spaces, and their sets of basis vectors are rife with subfield-specific conventions and overloaded notation, leading to much ambiguity. Although `Cartesian product' connotes well what I mean here, it is still ambiguous. What I mean is that the ${\mathcal{I} \times \mathcal{J}}$ basis is the set of basis vectors $\{\left.\vec u \otimes \vec v\ \right|\ \vec u \in \mathcal{I}, \vec v\in\mathcal{J}\}$. The notation $\vec u \otimes \vec v$, which is also ambiguous, denotes the Kronecker product of two column vectors, producing a column vector with number of elements equal to the product of the number of elements in each of the two vectors---not the `outer' or `tensor' product, which would produce a matrix.} of the two sets of basis vectors from the $\mathcal{I}$ and $\mathcal{J}$ bases for the two individual nuclear and electronic angular momentum degrees of freedom, in which $\hat{I}_z$ and $\hat{J}_z$ are respectively diagonal.
 
 To construct matrix representations of angular momentum operators in the product space basis ${\mathcal{I} \times \mathcal{J}}$, we first need their matrix representations $\oversetI{\vec I}$ and $\oversetJ{\vec J}$ in the bases of their respective subspaces, which we will write as $\vec I$ and $\vec J$ for brevity. We can then expand the two operators into the product space by applying a Kronecker product with an appropriate identity matrix to each:
 \begin{align}\label{eq:kronecker_identity_I}
@@ -242,7 +253,7 @@ The above prescription can be used to produce matrix representations of angular 
 
 \python{code_listings/angular_momentum_operators.py}
 
-Using the above prescription to construct a matrix representation of the $\hat J$ operator with $J=\frac12$ for the $S_{1/2}$ and $P_{1/2}$ states, or $J=\frac32$ for the $P_{3/2}$ state, and to construct a matrix representation of the $\hat I$ operator with $I=\frac32$, we can explicitly construct a matrix representation of the hyperfine interaction Hamiltonian for any state of the $^{87}$Rb D line. Remaining is to obtain the matrix representations of the two operators in the $\mathcal{I}\times\mathcal{J}$ product space basis using \eqref{eq:kronecker_identity_I} and \eqref{eq:kronecker_identity_J}, and then we can apply \eqref{eq:H_hfs} to our matrices to obtain the matrix representation $\oversetIJ H_\up{hfs}$ of $\hat H_\up{hfs}$ for a given $J$ corresponding to one of the three states on the D line:
+Using the above prescription to construct a matrix representation of the $\hat J$ operator with $J=\frac12$ for the $S_{1/2}$ and $P_{1/2}$ states, or $J=\frac32$ for the $P_{3/2}$ state, and to construct a matrix representation of the $\hat I$ operator with $I=\frac32$, we can explicitly construct a matrix representation of the hyperfine interaction Hamiltonian for any state of the $^{87}$Rb $\up{D}$ line. Remaining is to obtain the matrix representations of the two operators in the $\mathcal{I}\times\mathcal{J}$ product space basis using \eqref{eq:kronecker_identity_I} and \eqref{eq:kronecker_identity_J}, and then we can apply \eqref{eq:H_hfs} to our matrices to obtain the matrix representation $\oversetIJ H_\up{hfs}$ of $\hat H_\up{hfs}$ for a given $J$ corresponding to one of the three states on the $\up{D}$ line:
 \begin{align}\label{eq:H_hfs_matrix}
 \oversetIJ H_\up{hfs} = \frac{A_\up{hfs}}{\hbar^2}
 \oversetIJ{\vec I} \cdot
@@ -270,9 +281,13 @@ where $\krondot$ is the Kronecker dot product:
 \vec I \krondot \vec J \equiv I_x \otimes J_x + I_y \otimes J_y + I_z \otimes J_z.
 \end{align}
 
-In the above way one can construct an explicit matrix representation of $\hat H_\up{hfs}$ in the $\mathcal{I} \times \mathcal{J}$ basis for the hyperfine interaction for a given $L_J$ state of the D line. But what basis is it in? Because the matrix representations $\vec I$ and $\vec J$ of the electron and nuclear angular momentum operators were constructed in the $\{\ket{m_I}\}$ and $\{\ket{m_I}\}$ bases of their respective subspaces, the matrices we have constructed in the product space with basis vectors $\mathcal{I}\times\mathcal{J}$ have the basis kets $\{\ket{m_I}\} \times \{\ket{m_I}\}$---the Cartesian product of the two sets of basis vectors for the separate subspaces, with elements:
+In the above way one can construct an explicit matrix representation of $\hat H_\up{hfs}$ in the $\mathcal{I} \times \mathcal{J}$ basis for the hyperfine interaction for a given $L_J$ state of the $\up{D}$ line.
+
+\subsubsection{Column vectors in the $\mathcal{I}\times\mathcal{J}$ basis}
+
+Because the matrix representations $\vec I$ and $\vec J$ of the electron and nuclear angular momentum operators were constructed in the $\{\ket{m_I}\}$ and $\{\ket{m_I}\}$ bases of their respective subspaces, the matrices we have constructed are in the basis $\mathcal{I}\times\mathcal{J}$ with basis vectors:
 \begin{align}
-\{\ket{m_I}\} \times \{\ket{m_J}\} = \left\{\left. \ket{m_I\ m_J} \ \right| \ \ket{m_I} \in \{\ket{m_I}\}, \ket{m_J} \in \{\ket{m_J}\}\right\},
+\mathcal{I}\times\mathcal{J} = \left\{\left. \ket{m_I\ m_J} \ \right| \ \ket{m_I} \in \{\ket{m_I}\}, \ket{m_J} \in \{\ket{m_J}\}\right\},
 \end{align}
 where $\ket{m_I\ m_J} = \ket{m_I} \otimes \ket{m_J}$. The vector representation $\vec\psi$ of a state vector $\ket{\psi}$ in this basis is:
 \begin{align}
@@ -288,24 +303,7 @@ where $\ket{m_I\ m_J} = \ket{m_I} \otimes \ket{m_J}$. The vector representation 
 \braket{m_I=-I\ m_J=-J}{\psi}\\
 \end{smallmatrix}\right].
 \end{align}
-The hyperfine Hamiltonian is not diagonal in the $\{\ket{m_I\ m_J}\}$ basis. But, it is diagonal in the $\{\ket{F\ m_F}\}$ basis, defined as the simultaneous eigenbasis of the $\hat F^2$ and $\hat F_z$ operators, which are the total (squared) and $z$ component of the total angular momentum operator $\hat{\vec{F}} = \hat{\vec{I}} + \hat{\vec{J}}$, the matrix forms $F^2$ and $F_z$ of which in the $\ket{m_I\ m_J}$ basis can be constructed from the matrix forms of the individual angular momentum operators:
-\begin{align}
-\vec F_{\mathcal{I}\times\mathcal{J}} &= \vec I_{\mathcal{I}\times\mathcal{J}} + \vec J_{\mathcal{I}\times\mathcal{J}}\nonumber\\
-& = \vec I \otimes \mathbb{I}_{\mathcal{J}} + \mathbb{I}_{\mathcal{I}} \otimes \vec J\\
-F_{z\,\mathcal{I}\times\mathcal{J}} &= I_{z\,\mathcal{I}\times\mathcal{J}} + J_{z\,\mathcal{I}\times\mathcal{J}}\nonumber\\
-& = I_z \otimes \mathbb{I}_{\mathcal{J}} + \mathbb{I}_{\mathcal{i}} \otimes J_z\\
-F^2_{\mathcal{I}\times\mathcal{J}} &= \vec F_{\mathcal{I}\times\mathcal{J}}\cdot\vec F_{\mathcal{I}\times\mathcal{J}}
-\end{align}
-
-The $\{\ket{F, m_F}\}$ basis allows the eigenstates of the hyperfine interaction to be labelled with $F$ and $m_F$ quantum numbers. For a states of the $^{87}$Rb D line with electron total angular momentum quantum number $J$, there are $1+J+I - \abs{(I - J)}$ hyperfine levels, with $F$ quantum numbers running from $\abs{I - J}$ to $I + J$. Within each hyperfine level there are $2F + 1$ degenerate states with different $m_F$ quantum numbers ranging from $-F$ to $F$. This results in a total of 32 possible states for the rubidium D line, a schematic of which is shown in \figref{fig:D_line}.
-
-\begin{figure}%[htb]
-\begin{center}
-\includegraphics[width=0.5\textwidth]{figures/atomic_physics/D_line.pdf}
-\caption{The 32 states of the rubidium 87 D line, ordered vertically by energy (not to scale) in a small magnetic field. At zero magnetic field, Zeeman sublevels sharing a common $F$ quantum number and within the same hyperfine level are degenerate. At small magnetic fields this degeneracy is lifted, with state energies shifting in the directions depicted. However, $F$ is no longer a good quantum number at nonzero magnetic field, as most of the non-degenerate sublevels are actually equal to linear combinations of two states of different $F$ quantum numbers. Nevertheless at low magnetic fields the states are labelled using $F$ anyway, since one $F$ state dominates the linear combination, and at higher magnetic fields the states are labelled using an index $\alpha$, equal to the value of $F$ of the state that would dominate the superposition if the field were smoothly reduced to zero. $m_F$ remains a good quantum number at nonzero magnetic field however, and so at all fields a state can be specified by the numbers $L$, $J$, $\alpha$ (equal to $F$ at small field) and $m_F$.} \label{fig:D_line}
-\end{center}
-\end{figure}
-
+The hyperfine Hamiltonian is not diagonal in the $\{\ket{m_I\ m_J}\}$ basis. The basis in which it is diagonal---the $\{\ket{F\ m_F}\}$ basis---will be discussed in section \ref{sec:the_F_mF_basis}.
 
 \subsection{Zeeman sublevels}
 
@@ -313,7 +311,7 @@ The states differing only in their $m_F$ quantum numbers---called Zeeman subleve
 \begin{align}
 V = - \vec\mu\cdot\vec B.
 \end{align} f
-Our atom is a composite particle, made of a nucleus with its own intrinsic magnetic moment, an electron with its own intrinsic one as well, and a contribution from the orbital motion of the electron about the nucleus. Each magnetic moment is proportional to the angular momentum of the subsystem in question, with the proportionality constants, called Land\'e g-factors written as dimensionless multiples of $-\mu_B/\hbar$, where $\mu_B$ is the Bohr magneton.\footnote{We are using the sign convention that defines the Lande $g$-factor $g_J$ for the electron as positive.} Since $J$ is a good quantum number so long as energy shifts are smaller than the (large) energy spacing between the three $L_J$ states of the D line, on the level we work we don't consider the electron spin and orbital angular momenta separately, rather we encapsulate them with a single, empirically determined Land\'e g-factor $g_J$ \cite{steck_rubidium_2015} for the magnetic moment of the electron in each of the three states. Similarly we consider the nucleus as a single spin with an experimentally determined $g_I$ \cite{steck_rubidium_2015}, resulting in a Zeeman Hamiltonian:
+Our atom is a composite particle, made of a nucleus with its own intrinsic magnetic moment, an electron with its own intrinsic one as well, and a contribution from the orbital motion of the electron about the nucleus. Each magnetic moment is proportional to the angular momentum of the subsystem in question, with the proportionality constants, called Land\'e g-factors written as dimensionless multiples of $-\mu_B/\hbar$, where $\mu_B$ is the Bohr magneton.\footnote{We are using the sign convention that defines the Lande $g$-factor $g_J$ for the electron as positive.} Since $J$ is a good quantum number so long as energy shifts are smaller than the (large) energy spacing between the three $L_J$ states of the $\up{D}$ line, on the level we work we don't consider the electron spin and orbital angular momenta separately, rather we encapsulate them with a single, empirically determined Land\'e g-factor $g_J$ \cite{steck_rubidium_2015} for the magnetic moment of the electron in each of the three $L_J$ states. Similarly we consider the nucleus as a single spin with an experimentally determined $g_I$ \cite{steck_rubidium_2015}, resulting in a Zeeman Hamiltonian:
 \begin{align}
 \hat H_\up{Z} & = -\hat{\vec \mu} \cdot \vec B\\
 &= -\left(\hat{\vec \mu}_I + \hat{\vec \mu}_J\right) \cdot \vec B\\
@@ -332,7 +330,7 @@ g_F = g_J\frac{F(F+1) - I(I+1) + J(J+1)}{2F(F+1)}
 \end{align}
 The direction in which each Zeeman sublevel shifts in energy for small magnetic fields is depicted in \figref{fig:D_line}. Experimentally, Zeeman shifts that depart from this linear regime are not infrequently encountered, and so it is an approximation that cannot always be made.
 
-An explicit matrix representation $\oversetIJ{H}_\up{Z}$ of $\hat H_\up{Z}$ in the $\{\ket{m_I\ m_J}\}$ basis for each of the three sates of the D line can be constructed by applying \eqref{eq:H_Z} to the matrix representations of $\hat{\vec I}$ and $\hat{\vec J}$ in that basis: 
+An explicit matrix representation $\oversetIJ{H}_\up{Z}$ of $\hat H_\up{Z}$ in the $\{\ket{m_I\ m_J}\}$ basis for each of the three $L_J$ states of the $\up{D}$ line can be constructed by applying \eqref{eq:H_Z} to the matrix representations of $\hat{\vec I}$ and $\hat{\vec J}$ in that basis: 
 \begin{align}\label{eq:Zeeman_hamiltonian}
 \oversetIJ{H}_\up{Z} &= -\oversetIJ{\vec\mu}\cdot \vec B,
 \end{align}
@@ -345,9 +343,9 @@ where
 - \frac{g_J\mu_B}{\hbar} \oversetI{\mathbb{I}} \otimes \vec J.
 \end{align}
 
-\subsection{Putting it all together: the $\{\ket{F\ m_F}\}$ basis}
+\subsection{Putting it all together: the $\{\ket{F\ m_F}\}$ basis}\label{sec:the_F_mF_basis}
 
-So far we have described how to construct a matrix representation of the fine structure Hamiltonian for the three $L_J$ states of the $^{87}$Rb D line, as well as matrix representations of each state's hyperfine and Zeeman Hamiltonians, these latter two in the same $\{\ket{m_I\ m_J}\}$ basis. In the subspaces of each of the three $L_J$ states then, we can sum together the hyperfine and Zeeman Hamiltonians to form (a matrix representation of) a Hamiltonian that takes interactions into account:
+So far we have described how to construct a matrix representation of the fine structure Hamiltonian for the three $L_J$ states of the $^{87}$Rb $\up{D}$ line, as well as matrix representations of each state's hyperfine and Zeeman Hamiltonians, these latter two in the same $\{\ket{m_I\ m_J}\}$ basis. In the subspaces of each of the three $L_J$ states then, we can sum together the hyperfine and Zeeman Hamiltonians to form (a matrix representation of) a Hamiltonian that takes interactions into account:
 \begin{align}
 \oversetIJ H_{P_{3/2}} &=
   \oversetIJ H_{\up{hfs}\,P_{3/2}} + \oversetIJ H_{\up{Z}\,P_{3/2}},\\
@@ -356,7 +354,7 @@ So far we have described how to construct a matrix representation of the fine st
 \oversetIJ H_{S_{1/2}} &=
   \oversetIJ H_{\up{hfs}\,S_{1/2}} + \oversetIJ H_{\up{Z}\,S_{1/2}},
 \end{align}
-where the subscripts $P_{3/2}$, $P_{1/2}$, and $S_{1/2}$ on the terms on the right hand side indicate that the expressions for the matrix elements of the hyperfine and Zeeman Hamiltonians are to be evaluated using the specific values of $J$, $A_\up{hfs}$, $B_\up{hfs}$, and $g_J$ relevant to that state. The total Hamiltonian for the D line including fine structure, hyperfine structure and the Zeeman interaction is then
+where the subscripts $P_{3/2}$, $P_{1/2}$, and $S_{1/2}$ on the terms on the right hand side indicate that the expressions for the matrix elements of the hyperfine and Zeeman Hamiltonians are to be evaluated using the specific values of $J$, $A_\up{hfs}$, $B_\up{hfs}$, and $g_J$ relevant to that state. The total Hamiltonian for the $\up{D}$ line including fine structure, hyperfine structure and the Zeeman interaction is then
 \begin{align}
 \hat H &= \hat H_\up{fs} +
     \left(\hat H_{P_{3/2}} \oplus \hat H_{P_{1/2}} \oplus \hat H_{S_{1/2}} \right)\\
@@ -381,69 +379,116 @@ the matrix representation of which in the $\{\ket{L\ J\ m_I\ m_J}\}$ basis is th
 \end{align}
 where addition of scalars with matrices implies the addition of a scalar multiple of the appropriately sized identity matrix.
 
-While $\oversetIJ H_{\up{D}\,^{87}\up{Rb}}$ is a block diagonal matrix, each of the three submatrices is not diagonal, since $m_I$ and $m_J$ are not good quantum numbers for the hyperfine interaction (though they are good quantum numbers for the Zeeman interaction and hence $\oversetIJ  H_{\up{D}\,^{87}\up{Rb}}$ becomes approximately diagonal at high magnetic field). Once one has constructed $\oversetIJ  H_{\up{D}\,^{87}\up{Rb}}$ or its submatrices, there are two other bases one might consider transforming the submatrices into depending on the circumstances. One is the $\Sigma\mathcal{F} = \{\ket{F\ m_F}\}$ basis\footnote{The notation $\Sigma\mathcal{F}$ acknowledges that operators in this basis can be formed as direct sums of operators on subspaces, each of which has a well defined $F$ quantum number. So if $\mathcal{I}\times\mathcal{J}$ is a basis for a product space, then $\Sigma \mathcal{F}$ is a basis for a \emph{sum space} of sorts. The product and sum bases span the same space, so the difference is only in the identification of their component subspaces.}, in which the matrix representation of the hyperfine interaction is diagonal. The matrix representation of the Zeeman Hamiltonian is also approximately diagonal in the $\{\ket{F\ m_F}\}$ basis, so long as one is in the linear Zeeman regime. Furthermore, the transition dipole moments for optical transitions are most easily calculated in the $\{\ket{L\ J\ F\ m_F}\}$ basis, as we'll see in the next subsection. For these reasons the $\{\ket{F\ m_F}\}$ basis is the most commonly used and referred to.
+While $\oversetIJ H_{\up{D}\,^{87}\up{Rb}}$ is a block diagonal matrix, each of the three submatrices is not diagonal, since $m_I$ and $m_J$ are not good quantum numbers for the hyperfine interaction (though they are good quantum numbers for the Zeeman interaction and hence $\oversetIJ  H_{\up{D}\,^{87}\up{Rb}}$ becomes approximately diagonal at high magnetic field). Once one has constructed $\oversetIJ  H_{\up{D}\,^{87}\up{Rb}}$ or its submatrices, there are two other bases one might consider transforming the submatrices into depending on the circumstances. One is the $\Sigma\mathcal{F} = \{\ket{F\ m_F}\}$ basis\footnote{The name $\Sigma\mathcal{F}$ refers to the fact that this is the basis that lends itself to the interpretation of the total space being the direct sum of subspaces, each of which has a well defined $F$ quantum number. So if $\mathcal{I}\times\mathcal{J}$ is a basis for a product space with $(2I+1)\times(2J+1)$ dimensions, then $\Sigma \mathcal{F}$ is a basis for a \emph{sum space} with $\sum_i (2F_i + 1)$ dimensions, where $F_i$ ranges from $\abs{I-J}$ to $I+J$ in integer steps. The product and sum bases have the same dimensionality and span the same space, so the difference is only in the identification and composition of their component subspaces.}, in which the matrix representation of the hyperfine interaction is diagonal. The matrix representation of the Zeeman Hamiltonian is also approximately diagonal in the $\{\ket{F\ m_F}\}$ basis, so long as one is in the linear Zeeman regime. Furthermore, the transition dipole moments for optical transitions are most easily calculated in the $\{\ket{L_J\ F\ m_F}\}$ basis, as we'll see in the next subsection. For these reasons the $\{\ket{F\ m_F}\}$ basis is the most commonly used and referred to.
 
-To transform each submatrix between the $\{\ket{m_I, m_J}\}$ and $\{\ket{F, m_F}\}$ bases, we use a unitary matrix whose elements are Clebsch--Gordan coefficients, each defined as the inner product of a $\ket{F, m_F}$ state with a $\ket{m_I, m_J}$ state (written in full as $\ket{I, m_I, J, m_J}$), and calculable as [CITE something]
+The $\{\ket{F\ m_F}\}$ basis is defined as the simultaneous eigenbasis of the $\hat F^2$ and $\hat F_z$ operators, which are the total (squared) and $z$ component of the total angular momentum operator $\hat{\vec{F}} = \hat{\vec{I}} + \hat{\vec{J}}$, the matrix forms $F^2$ and $F_z$ of which in the $\ket{m_I\ m_J}$ basis can be constructed from the matrix forms of the individual angular momentum operators:
+\begin{align}
+\vec F_{\mathcal{I}\times\mathcal{J}} &= \vec I_{\mathcal{I}\times\mathcal{J}} + \vec J_{\mathcal{I}\times\mathcal{J}}\nonumber\\
+& = \vec I \otimes \mathbb{I}_{\mathcal{J}} + \mathbb{I}_{\mathcal{I}} \otimes \vec J\\
+F_{z\,\mathcal{I}\times\mathcal{J}} &= I_{z\,\mathcal{I}\times\mathcal{J}} + J_{z\,\mathcal{I}\times\mathcal{J}}\nonumber\\
+& = I_z \otimes \mathbb{I}_{\mathcal{J}} + \mathbb{I}_{\mathcal{i}} \otimes J_z\\
+F^2_{\mathcal{I}\times\mathcal{J}} &= \vec F_{\mathcal{I}\times\mathcal{J}}\cdot\vec F_{\mathcal{I}\times\mathcal{J}}
+\end{align}
+
+The $\{\ket{F, m_F}\}$ basis allows the eigenstates of the hyperfine interaction to be labelled with $F$ and $m_F$ quantum numbers. For a state of the $^{87}$Rb $\up{D}$ line with electron total angular momentum quantum number $J$, there are $1+J+I - \abs{(I - J)}$ hyperfine levels, with $F$ quantum numbers running from $\abs{I - J}$ to $I + J$. Within each hyperfine level there are $2F + 1$ degenerate states with different $m_F$ quantum numbers ranging from $-F$ to $F$. This results in a total of 32 possible states for the rubidium $\up{D}$ line, a schematic of which is shown in \figref{fig:D_line}.
+
+\begin{figure}%[htb]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{figures/atomic_physics/D_line.pdf}
+\caption{The 32 states of the rubidium 87 $\up{D}$ line, ordered vertically by energy (not to scale) in a small magnetic field. At zero magnetic field, Zeeman sublevels sharing a common $F$ quantum number and within the same hyperfine level are degenerate. At small magnetic fields this degeneracy is lifted, with state energies shifting in the directions depicted. However, $F$ is no longer a good quantum number at nonzero magnetic field, as most of the non-degenerate sublevels are actually equal to linear combinations of two states of different $F$ quantum numbers. Nevertheless at low magnetic fields the states are labelled using $F$ anyway, since one $F$ state dominates the linear combination, and at higher magnetic fields the states are labelled using an index $\alpha$, equal to the value of $F$ of the state that would dominate the superposition if the field were smoothly reduced to zero. $m_F$ remains a good quantum number at nonzero magnetic field however, and so at all fields a state can be specified by the numbers $L$, $J$, $\alpha$ (equal to $F$ at small field) and $m_F$.} \label{fig:D_line}
+\end{center}
+\end{figure}
+
+To transform each submatrix between the $\{\ket{m_I\ m_J}\}$ and $\{\ket{F\ m_F}\}$ bases, we use a unitary matrix whose elements are Clebsch--Gordan coefficients, each defined as the inner product of a $\ket{F\ m_F}$ state with a $\ket{m_I\ m_J}$ state (written in full as $\ket{I\ m_I\ J\ m_J}$), and calculable as \cite{steck_rubidium_2015}
 \begin{align}\label{eq:ClebschGordanCoeffs}
-\braket{I, m_I, J, m_J}{F, m_F} &= \begin{cases}
+\braket{I\ m_I\ J\ m_J}{F\ m_F} &=
 (-1)^{I - J + m_F}\sqrt{2F + 1}
-\left(\begin{smallmatrix}
+\left(\begin{matrix}
 I & J & F\\
 m_I & m_J & -m_F\\
-\end{smallmatrix}\right) & m_I + m_J = m_F\\
-0 & m_I + m_J \neq m_F
-\end{cases}\nonumber\\
-&= \braket{F, m_F}{I, m_I, J, m_J},
+\end{matrix}\right)
 \end{align}
-where the object in parentheses is a Wigner $3$-j symbol. Given that the possible range of the $F$ quantum number is from $\abs{I - J}$ to $I + J$, and the possible range of $m_F$ quantum numbers is from $-F$ to $F$ for each $F$, an explicit construction of the unitary matrix $U_\up{CG}$ of Clebsch--Gordan coefficients, in the convention where the column vectors in the $\{\ket{F, m_F}\}$ basis have $F$ running from its highest value to lowest from top to bottom, and $m_F$ also running from highest to lowest within each value of $F$, (omitting $I$ and $J$ for clarity) is:
+where the object in parentheses is a Wigner $3$-j symbol. The Clebsch--Gordan coefficients are real: $\braket{F\ m_F}{I\ m_I\ J\ m_J} = \braket{I\ m_I\ J\ m_J}{F\ m_F}$, and is zero unless $m_I + m_J = m_F$.
+Given that the possible range of the $F$ quantum number is from $\abs{I - J}$ to $I + J$, and the possible range of $m_F$ quantum numbers is from $-F$ to $F$ for each $F$ (both in integer steps), an explicit construction of the unitary matrix $U_\up{CG}$ of Clebsch--Gordan coefficients, in the convention where the column vectors in the $\{\ket{F\ m_F}\}$ basis have $F$ running from its highest value to lowest from top to bottom, and $m_F$ also running from highest to lowest within each value of $F$, (omitting $I$ and $J$ for brevity) is:
 \begin{align}
 U_\up{CG} = \left[\begin{smallmatrix}
-\braket{m_I=I, m_J=J}{F=I+J, mF=F} & \hdots &
-\braket{m_I=I, m_J=J}{F=I+J, m_F=-F} & \hdots &\hdots &
-\braket{m_I=I, m_J=J}{F=\abs{I - J}, m_F=-F}\\
+\braket{m_I=I\ m_J=J}{F=I+J\ mF=F} & \hdots &
+\braket{m_I=I\ m_J=J}{F=I+J\ m_F=-F} & \hdots &\hdots &
+\braket{m_I=I\ m_J=J}{F=\abs{I - J}\ m_F=-F}\\
 \vdots\\
-\braket{m_I=-I, m_J=J}{F=I+J, mF=F} & & \ddots & & & \vdots\\
+\braket{m_I=-I\ m_J=J}{F=I+J\ mF=F} & & \ddots & & & \vdots\\
 \vdots\\
 \vdots\\
-\braket{m_I=-I, m_J=-J}{F=I+J, mF=F} & & \hdots & & &
-\braket{m_I=-I, m_J=-J}{F=\abs{I - J}, m_F=-F}\\
+\braket{m_I=-I\ m_J=-J}{F=I+J\ mF=F} & & \hdots & & &
+\braket{m_I=-I\ m_J=-J}{F=\abs{I - J}\ m_F=-F}\\
 \end{smallmatrix}\right].
 \end{align}
-This the matrix that takes vectors from the $\{\ket{F, m_F}\}$ basis to the $\{\ket{m_I, m_J}\}$ basis, so its Hermitian conjugate $U^\dagger_\up{CG}$ is needed for the inverse transformation. Each submatrix of the total Hamiltonian for the D line can be transformed into its $\{\ket{F, m_F}\}$ basis by using a unitary matrix of Clebsch--Gordan coefficients with the appropriate value of $J$, yielding a total Hamiltonian for the rubidium 87 D line in the $\{L, J, F, m_F\}$ basis [TODO INDICATE BASIS ON MATRIX SOMEHOW]:
+This the matrix that takes vectors from the $\{\ket{F\ m_F}\}$ basis to the $\{\ket{m_I\ m_J}\}$ basis, so its Hermitian conjugate $U^\dagger_\up{CG}$ is needed for the inverse transformation (which is equal to the transpose since the matrix elements are real). Within the convention we're using to order the matrix elements, the vector representation $\vec\psi$ of a state vector $\ket{\psi}$ in the $\{\ket{F\ m_F}\}$ basis of one of the $L_J$ states is:
 \begin{align}
-\oversetF{H}_{\up{D}\,^{87}\up{Rb}} = 
-\left[\begin{matrix}
+\vec \psi = \left[\begin{smallmatrix}
+\braket{F=I+J\ m_F=F}{\psi}\\
+\braket{F=I+J\ m_F=F-1}{\psi}\\
+\vdots\\
+\braket{F=I+J\ m_F=-F}{\psi}\\
+\braket{F=I+J-1\ m_F=F}{\psi}\\
+\braket{F=I+J-1\ m_F=F-1}{\psi}\\
+\vdots\\
+\vdots\\
+\braket{m_F=\abs{I-J}\ m_F=-F}{\psi}\\
+\end{smallmatrix}\right].
+\end{align}
+
+Each submatrix of the total Hamiltonian for the $\up{D}$ line can be transformed into its $\{\ket{F\ m_F}\}$ basis by using a unitary matrix of Clebsch--Gordan coefficients with the appropriate value of $J$, yielding a total Hamiltonian for the rubidium 87 $\up{D}$ line in the $\{\ket{L_J\ F\ m_F}\}$ basis:
+\begin{align}
+\oversetF{H}_{\up{D}\,^{87}\up{Rb}}
+&= \left[\begin{matrix}
     \left[\begin{smallmatrix}
-        U^\dagger_{\up{CG}\,1/2} H_{S_{1/2}} U_{\up{CG}\,1/2}\\
-    \end{smallmatrix} \right]\\
+        \hbar\omega_{\up{D}_2}+U^\dagger_{\up{CG}\,3/2}
+        \oversetIJ H_{P_{3/2}}U_{\up{CG}\,3/2}\\
+        \end{smallmatrix} \right]\\
     & \left[\begin{smallmatrix}
-        \hbar\omega_{\up{D}_1}+U^\dagger_{\up{CG}\,1/2}H_{P_{1/2}}U_{\up{CG}\,1/2}\\
+        \hbar\omega_{\up{D}_1}+U^\dagger_{\up{CG}\,1/2}
+        \oversetIJ H_{P_{1/2}}U_{\up{CG}\,1/2}\\
       \end{smallmatrix} \right]\\
     & &\left[\begin{smallmatrix}
-        \hbar\omega_{\up{D}_2}+U^\dagger_{\up{CG}\,3/2}H_{P_{3/2}}U_{\up{CG}\,3/2}\\
+        U^\dagger_{\up{CG}\,1/2} 
+        \oversetIJ H_{S_{1/2}} U_{\up{CG}\,1/2}\\
+    \end{smallmatrix} \right]\\
+\end{matrix} \right]\\
+&= \left[\begin{matrix}
+    \left[\begin{smallmatrix}
+        \hbar\omega_{\up{D}_2} +
+        \oversetF H_{P_{3/2}}\\
         \end{smallmatrix} \right]\\
-\end{matrix} \right],
+    & \left[\begin{smallmatrix}
+        \hbar\omega_{\up{D}_1} +
+        \oversetF H_{P_{1/2}}\\
+      \end{smallmatrix} \right]\\
+    & &\left[\begin{smallmatrix}
+        \oversetF H_{S_{1/2}}\\
+    \end{smallmatrix} \right]\\
+\end{matrix} \right]
 \end{align}
-where the additional subscripts on the unitary matrices indicates the value of $J$ used in its construction. Armed with the $\{\ket{F, m_F}\}$ basis, we have little remaining reason to use the $\{\ket{m_I}, {m_J}\}$ basis any more.
+where the additional subscripts on the unitary matrices indicates the value of $J$ used in its construction. Armed with the $\{\ket{F, m_F}\}$ basis, we have little remaining reason to use the $\{\ket{m_I\ m_J}\}$ basis any more.
 
-[TODO add i cross j as subscripts to all previous matrices in the mI, mJ basis, f subscripts to F matrices]  
-
-
-Here is a recap of what we have taken into account with our model of the Rubidium D line:
+Here is a recap of what we have taken into account with our model of the Rubidium $\up{D}$ line:
 \begin{itemize}
     \item The two lowest quantum numbers $L=0$ and $L=1$ of the electron's orbital angular momentum. This yields the $S$ groundstate and $P$ excited state.
     \item Fine structure: the two possible orientations of the electron's spin with respect to its orbital angular momentum. This splits the $P$ excited state into two states, $P_{1/2}$ and $P_{3/2}$, and leaves the $S$ groundstate as the single state $S_{1/2}$. The energies of these three states are determined entirely empirically---without any modelling of the fine structure.
-    \item Hyperfine structure: The possible orientations of the electron's total angular momentum with respect to the nuclear angular momentum. This splits each state so far into $1+J+I - \abs{(I - J)}$ hyperfine states. The hyperfine interaction is treated semi-empirically, using an analytic form of the hyperfine interaction but with empirically determined coupling constants within each of the three states of the D line. 
-    \item Zeeman effect: the possible orientation of the total spin $\hat{\vec F}$ onto an external magnetic field. The Zeeman Hamiltonian is modelled analytically, but with empirically determined Land\'e $g$ factors for each of the three states of the D line. 
+    \item Hyperfine structure: The possible orientations of the electron's total angular momentum with respect to the nuclear angular momentum. This splits each state so far into $1+J+I - \abs{(I - J)}$ hyperfine states. The hyperfine interaction is treated semi-empirically, using an analytic form of the hyperfine interaction but with empirically determined coupling constants within each of the three $L_J$ states of the $\up{D}$ line. 
+    \item Zeeman effect: the possible orientation of the angular momenta $\hat{\vec I}$ and $\hat{\vec J}$---or at low field their sum $\hat{\vec F}$---onto an external magnetic field. The Zeeman Hamiltonian is modelled analytically, but with empirically determined Land\'e $g$ factors for each of the three $L_J$ states of the $\up{D}$ line. 
 \end{itemize}
 
-The above considerations allow us to construct a Hamiltonian, as a concrete matrix representation, for all 32 possible states of the rubidium D line in a fixed magnetic field, in a basis in which it is diagonal for the case of zero magnetic field. In a nonzero magnetic field, one can analytically diagonalise the $S_{1/2}$ block of this matrix using the Breit--Rabi formula [CITE], but the same cannot be done for the entire D line, and diagonalisation must be done numerically for the other blocks. At nonzero magnetic field, $F$ ceases to be a good quantum number, but states are nonetheless labelled using a variable $\alpha$, defined as the value of $F$ a state \emph{would} have if the magnetic field were reduced to zero. $m_F$ remains a good quantum number however, and thus at nonzero magnetic field the $\{\ket{\alpha, m_F}\}$ basis, is the one in which the Hamiltonian is diagonal, with the transformation between it and the $\{\ket{F, m_F}\}$ basis needing to be computed using numerical diagonalisation.
+The above considerations allow us to construct a Hamiltonian, as a concrete matrix representation, for all 32 possible states of the rubidium $\up{D}$ line in a fixed magnetic field, in a basis in which it is diagonal for the case of zero magnetic field. In a nonzero magnetic field, one can analytically diagonalise the $S_{1/2}$ and $P_{1/2}$blocks of this matrix using the Breit--Rabi formula
+\citeleft\citen{steck_quantum_2017}, p.~347; \citen{breit_measurement_1931}\citeright, but the same cannot be done for the entire $\up{D}$ line, and diagonalisation must be performed numerically for the $P_{3/2}$ block. At nonzero magnetic field, $F$ ceases to be a good quantum number, but states are nonetheless labelled using a variable $\alpha$, defined as the value of $F$ a state \emph{would} have if the magnetic field were reduced to zero. $m_F$ remains a good quantum number however, and thus at nonzero magnetic field the $\{\ket{\alpha\ m_F}\}$ basis, is the one in which the Hamiltonian is diagonal, with the transformation between it and the $\{\ket{F\ m_F}\}$ basis requiring numerical diagonalisation.
+
+If the magnetic field is static, then this Hamiltonian $\hat{H}_{\up{D}\,^{87}\up{Rb}}$ is a time independent Hamiltonian, to which additional time-dependent Hamiltonians can be added to take into account optical or $\textsc{rf}$ transitions, detailed below. In a dynamic magnetic field, only $\hat H_\up{hfs}$ is time-independent, in which case the Zeeman Hamiltonian will also be part of the time-dependent part of the Hamiltonian. This has implications for the use of an interaction picture (described in section \ref{sec:interaction_picture}), in which the time independent part of a Hamiltonian can be analytically removed from the equations of motion, which can make further computations more tractable both analytically and numerically.
 
 \subsection{Optical dipole transitions}\label{sec:optical_dipole_transitions}
 
-Optical transitions due to laser fields appear as off-diagonal matrix elements in the $\{\ket{F, m_F}\}$ basis. A given laser of a certain polarisation may give rise to nonzero transition matrix elements between several different pairs of states, depending on selection rules.
+Optical transitions due to laser fields appear as off-diagonal matrix elements in the $\{\ket{F\ m_F}\}$ basis\footnote{The matrix elements can be obtained in the $\{\ket{\alpha\ m_F}\}$ basis at nonzero magnetic field via the numerically computed transformation mentioned in the previous subsection}. A given laser of a certain polarisation may give rise to nonzero transition matrix elements between several different pairs of states, depending on selection rules.
 
-The potential the outer electron of rubidium is subject to in a classical electric field is the electric dipole potential[CITE METCALF]:
+The potential the outer electron of rubidium is subject to in a classical electric field is the electric dipole potential \cite{metcalf_laser_1999, steck_quantum_2017}:
 \begin{align}
 \hat H_\up{d} = -\hat{\vec d}\cdot\vec E,
 \end{align}
@@ -451,17 +496,17 @@ where $\vec E$ is the classical electric field and $\hat{\vec d}$ is the electri
 \begin{align}
 \hat{\vec d} = -e\vec{\hat r},
 \end{align}
-which gives the electric dipole of the atom in terms of the electron's charge $-e$ and its position operator $\hat{\vec r}$. A single matrix element of $\hat H_\up{d}$ for coupling a state $\ket{L_J, F, m_F}$ to a state $\ket{L^\prime_{J^\prime}, F^\prime, m_F^\prime}$ is therefore:
+which gives the electric dipole of the atom in terms of the electron's charge $-e$ and its position operator (with respect to the nucleus) $\hat{\vec r}$. A single matrix element of $\hat H_\up{d}$ for coupling an initial state $\ket{L_J\ F\ m_F}$ to a final state $\ket{L^\prime_{J^\prime}\ F^\prime\ m_F^\prime}$ is therefore:
 \begin{align}\label{eq:electric_dipole_potential}
-\matrixel{L^\prime_{J^\prime}, F^\prime, m_F^\prime}{\hat H_\up{d}}{L_J, F, m_F} = 
-\matrixel{L^\prime_{J^\prime}, F^\prime, m_F^\prime}{e\vec{\hat r}\cdot\vec E}{L_J, F, m_F},
+\matrixel{L^\prime_{J^\prime}\ F^\prime\ m_F^\prime}{\hat H_\up{d}}{L_J\ F\ m_F} = 
+\matrixel{L^\prime_{J^\prime}\ F^\prime\ m_F^\prime}{e\vec{\hat r}\cdot\vec E}{L_J\ F\ m_F},
 \end{align}
 which we will abbreviate as
 \begin{align}
 \matrixel{n^\prime}{\hat H_\up{d}}{n} = 
 \matrixel{n^\prime}{e\vec{\hat r}\cdot\vec E}{n},
 \end{align}
-writing the initial state $\ket{L_J, F, m_F}=\ket{n}$ and final state $\ket{L^\prime_{J^\prime}, F^\prime, m_F^\prime}=\ket{n^\prime}$, encapsulating the set of quantum numbers as a single index\footnote{The choice of the symbol $n$ is unrelated to the principal quantum number, which does not vary between the states of the $D$ line.} for the state.
+writing the initial state $\ket{L_J\ F\ m_F}=\ket{n}$ and final state $\ket{L^\prime_{J^\prime}\ F^\prime\ m_F^\prime}=\ket{n^\prime}$, encapsulating the set of quantum numbers as a single index\footnote{The choice of the symbol $n$ is unrelated to the principal quantum number, which does not vary between the states of the $D$ line.} for the state.
 
 \subsubsection{Plane waves}
 
@@ -471,7 +516,7 @@ The electric field of a plane wave of amplitude $E_0$, polarisation unit vector 
 \left(\hat{\vec\varepsilon} \ee^{\ii(\vec k \cdot \vec r - \omega t)}
 + \hat{\vec\varepsilon}^* \ee^{-\ii(\vec k \cdot \vec r - \omega t)} \right),
 \end{align}
-where $^*$ is complex conjugation, which in the case of a real valued polarisation unit vector $\hat{\vec\varepsilon}$ does nothing, making the above equal to a cosine wave $E_0\hat{\vec\varepsilon}\cos(\vec k \cdot \vec r - \omega t)$ as expected for a linearly polarised plane wave. However, \eqref{eq:complex_plane_wave} also allows for arbitrary circular or elliptical polarisation, if $\hat{\vec\varepsilon}$ is allowed to have complex components [CITE SOMETHING]. This comes with the caveat, however, that the amplitude $E_0$ is a misnomer in these cases and no longer corresponds to any actual amplitude. For example, a circularly polarised plane wave propagating in the $z$ direction with $\hat{\vec\varepsilon}=\mp(\hat{\vec{x}} \pm i \hat{\vec y})/\sqrt{2}$) and ``amplitude" $E_0$ actually has an electric field vector with constant magnitude $E_0/\sqrt{2}$. The ``amplitude" $E_0$ is actually $\sqrt{2}E_\up{rms}$ and thus only equal to the real amplitude in the case of linear polarisation. Using the intensity of the beam $I=\varepsilon_0 c E_\up{rms}^2$ instead,\footnote{Not to be confused with the nuclear spin $I$, distinguishable by context.} which is less ambiguous and more relatable to experimentalists, resolves this potential confusion:\footnote{One possible confusion of many given the diverse notational and conventional differences throughout the literature.}
+where $^*$ is complex conjugation, which in the case of a real valued polarisation unit vector $\hat{\vec\varepsilon}$ does nothing, making the above equal to a cosine wave $E_0\hat{\vec\varepsilon}\cos(\vec k \cdot \vec r - \omega t)$ as expected for a linearly polarised plane wave. However, \eqref{eq:complex_plane_wave} also allows for arbitrary circular or elliptical polarisation, if $\hat{\vec\varepsilon}$ is allowed to have complex components. This comes with the caveat, however, that the amplitude $E_0$ is a misnomer in these cases and no longer corresponds to any actual amplitude. For example, a circularly polarised plane wave propagating in the $z$ direction constructed using complex polarisation vector $\hat{\vec\varepsilon}=\mp(\hat{\vec{x}} \pm i \hat{\vec y})/\sqrt{2}$) and ``amplitude" $E_0$ actually has an electric field vector with constant magnitude $E_0/\sqrt{2}$. The ``amplitude" $E_0$ in \eqref{eq:complex_plane_wave} is actually equal to $\sqrt{2}E_\up{rms}$ and thus only equal to the peak electric field strength in the case of linear polarisation. Using the intensity of the beam\footnote{Not to be confused with the nuclear spin $I$, distinguishable by context.} $I=\varepsilon_0 c E_\up{rms}^2$ instead, which is less ambiguous and more relatable to experimentalists \cite{king_angular_2008}, resolves this potential confusion:\footnote{One possible confusion of many given the diverse notational and conventional differences throughout the literature.}
 \begin{align}\label{eq:complex_plane_wave_intensity}
 \vec E(\vec r, t) = \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}
 \left(\hat{\vec\varepsilon} \ee^{\ii(\vec k \cdot \vec r - \omega t)}
@@ -485,9 +530,7 @@ Consider one of the three polarisation unit vectors $\hat{\vec\varepsilon}_q$ fo
 \hat{\vec\varepsilon}_{\pm} &= \mp(\hat{\vec{x}} \pm i \hat{\vec y})/\sqrt{2},\\
 \hat{\vec\varepsilon}_{0} &= \hat{\vec z},
 \end{align}
-where $q=\pm1$ is denoted with the subscript $_\pm$, omitting the $1$. 
-
-This is called the spherical basis [CITE], and is the basis in which it is easiest to compute matrix elements, as well as the one in which it is easiest to think about what transitions a given laser will drive. Light with polarisation vector $\hat{\vec\varepsilon}_{\pm}$ is called $\sigma^\pm$ polarised, and excites groundstates to excited states that differ in $m_F$ quantum number by $\pm 1$. A single beam with this polarisation would have to be propagating in the $z$ direction, with left or right hand circular polarisation. Light with polarisation vector $\hat{\vec\varepsilon}_0$ is called $\pi$ polarised, and drives transitions between states of equal $m_F$ quantum numbers. A single beam with this polarisation would have to be propagating with a $\vec k$ vector in the $x,y$ plane and be linearly polarised in the $z$ direction. However, lasers with propagation directions and polarisation vectors different from these three can be decomposed into the spherical basis. For example, light with linear polarisation vector in the $x,y$ plane drives both $\sigma^+$ and $\sigma^-$ transitions.
+where $q=\pm1$ is denoted with the subscript $_\pm$. These are the basis vectors of the spherical tensor basis \cite{steck_quantum_2017}, which is the basis in which it is easiest to compute matrix elements, as well as the one in which it is easiest to think about which transitions a given laser will drive. Light with polarisation vector $\hat{\vec\varepsilon}_{\pm}$ is called $\sigma^\pm$ polarised, and excites groundstates to excited states that differ in $m_F$ quantum number by $\pm 1$. A single beam with this polarisation would have to be propagating in the $z$ direction, with left or right hand circular polarisation. Light with polarisation vector $\hat{\vec\varepsilon}_0$ is called $\pi$ polarised, and drives transitions between states of equal $m_F$ quantum numbers. A single beam with this polarisation would have to be propagating with a $\vec k$ vector in the $x,y$ plane and be linearly polarised in the $z$ direction. However, lasers with propagation directions and polarisation vectors different from these three configurations can be decomposed into the spherical basis. For example, light with linear polarisation vector in the $x,y$ plane drives both $\sigma^+$ and $\sigma^-$ transitions.
 
 The spherical basis is defined somewhat differently than how we are used to for ordinary real-valued vectors. The components $A_q$ of a vector $\vec A$ in the spherical basis are defined as the coefficients of \emph{complex conjugates} of the basis vectors:
 \begin{align}\label{eq:basis_components}
@@ -522,10 +565,10 @@ which, removing the complex conjugation using \eqref{eq:spherical_negative_prope
 + (-1)^q\hat{\vec\varepsilon}_{-q} \ee^{-\ii(\vec k \cdot \vec r - \omega t)} \right).
 \end{align}
 
-\subsubsection{Dipole approximation}
+\subsubsection{The dipole approximation}
 
 Substituting \eqref{eq:complex_plane_wave_q_noconj} into \eqref{eq:electric_dipole_potential} results in the matrix element of the dipole Hamiltonian for a $q$ polarised plane wave:
-\begin{align}
+\begin{align}\label{eq:dipole_H_with_plane_wave}
 \matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n} &= 
 \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}\left(
 \matrixel{n^\prime}
@@ -536,19 +579,7 @@ Substituting \eqref{eq:complex_plane_wave_q_noconj} into \eqref{eq:electric_dipo
   {e\hat{\vec r}\cdot\hat{\vec\varepsilon}_{-q} \ee^{-\ii(\vec k \cdot \vec r - \omega t)}}
   {n}\right).
 \end{align}
-The \emph{dipole approximation} is the approximation that the spatial extent of the electron's orbital is much smaller than the wavelength of the light, and thus that the factors of $\ee^{\pm\ii\vec k\cdot\vec r}$ are constant over the integral and can be taken outside it. For optical wavelengths this is a good approximation, yielding our matrix element in the dipole approximation:
-\begin{align}
-\matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n} &= 
-\frac12\sqrt{\frac{2I}{\varepsilon_0 c}}\left(
-\matrixel{n^\prime}
-  {e\hat{\vec r}\cdot\hat{\vec\varepsilon}_q}
-  {n}\ee^{\ii(\vec k \cdot \vec r - \omega t)}
-+(-1)^q
-\matrixel{n^\prime}
-  {e\hat{\vec r}\cdot\hat{\vec\varepsilon}_{-q}}
-  {n} \ee^{-\ii(\vec k \cdot \vec r - \omega t)}\right).
-\end{align}
-The position operator $\hat{\vec r}$ can also be expressed in a spherical basis, with basis vectors $\hat r_{\pm},\hat r_0$. In the spherical basis the dot product has a different form to the ordinary dot product (see [STECK] for details), and instead can be expressed as $\hat {\vec r}\cdot\hat{\vec\varepsilon} = \sum_q(-1)^q \hat r_q \varepsilon_{-q}$. For each of our two dot products, there is only one nonzero term in the dot product (the one for which $\varepsilon_q=1$), leaving us with
+The \emph{dipole approximation} is the approximation that the spatial extent of the electron's orbital is much smaller than the wavelength of the light, and thus that the factors of $\ee^{\pm\ii\vec k\cdot\vec r}$ are approximately constant over the integral and can be taken outside it, with $\vec r$ taken to be the expectation value of the atom's position\footnote{The resulting classical position $\vec r$ of the atom should not be confused with the electron's position operator $\hat{\vec r}$ with respect to the nucleus. Strictly speaking, \eqref{eq:dipole_H_with_plane_wave} should have $\vec r$ in the exponents replaced with a quantum operator with a different name to signify that it is the absolute position of the electron rather than the position relative to the nucleus, but I suspect this would cause more confusion than it would resolve.}. For optical wavelengths this is a good approximation, yielding our matrix element in the dipole approximation:
 \begin{align}
 \matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n} &= 
 \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}\left(
@@ -567,7 +598,7 @@ Evaluating the dot products using \eqref{eq:spherical_dot_product}, we get $\hat
 \matrixel{r, \theta, \phi}{\hat r_0}{r, \theta, \phi} &= r\cos(\theta).
 \end{align}
 
-We now have our final expression for the matrix element $\matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n}$ in the dipole approximation in terms of matrix elements of $e\hat r_q$:
+We now have our final expression for the matrix element $\matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n}$ of the dipole Hamiltonian for laser intensity $I$, angular frequency and wavenumber $\omega$ and $\vec k$ respectively, and complex polarisation vector $\hat{\vec\varepsilon}_q$, in the dipole approximation in terms of matrix elements of $e\hat r_q$, the calculation of which is detailed below:
 \begin{align}\label{eq:diple_matrixel_withminus}
 \matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n} &= 
 \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}\left(
@@ -577,11 +608,13 @@ We now have our final expression for the matrix element $\matrixel{n^\prime}{\ha
 +(-1)^q
 \matrixel{n^\prime}
   {e\hat r_{-q}}
-  {n} \ee^{-\ii(\vec k \cdot \vec r - \omega t)}\right),
+  {n} \ee^{-\ii(\vec k \cdot \vec r - \omega t)}\right).
 \end{align}
 
+A further approximation often used is to approximate the atom as stationary, replacing the $\vec k\cdot\vec r$ from the exponents with a constant (usually zero if the exact phase of the optical field is not of interest). Alternately, if the atom is moving at an approximately constant velocity, the $\vec k \cdot\vec r$ term can be absorbed into $\omega$ resulting in an effective Doppler-shifted angular frequency as in section \ref{sec:doppler_cooling}. We will leave the $\vec k\cdot\vec r$ terms where they are, but note that they are often absent in most literature sources for the preceding reasons.
+
 \subsubsection{The rotating wave approximation}
-If the plane wave's angular frequency $\omega$ is close to the resonant angular frequency $\omega_{\up{D}_1}$ or $\omega_{\up{D}_2}$ of the $\up{D}_1$ or $\up{D}_2$ line, then one of the two exponential terms is oscillating at a frequency much further from resonance (approximately $2\omega$) than the other, and thus does not contribute significantly to coupling between states. Discarding it is known as the \emph{rotating wave approximation} (\textsc{rwa}), so called because in an interaction picture where the evolution of the base Hamiltonian $\hat H_{\up{D}\,^{87}\up{Rb}}$ is factored out---the so called \emph{rotating frame}---this fact is more readily apparent and a formal approximation can be made showing that the off-resonant term averages to zero over time scales much shorter than any other dynamics. Which term is discarded depends on whether the transition being considered is from a groundstate to excited state, or vice-versa. Our matrix element $\matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n}$ in the \textsc{rwa} becomes:
+If the plane wave's angular frequency $\omega$ is close to the resonant angular frequency $\omega_{\up{D}_1}$ or $\omega_{\up{D}_2}$ of the $\up{D}_1$ or $\up{D}_2$ line, then one of the two exponential terms is oscillating at a frequency much further from resonance (approximately $2\omega$) than the other, and thus does not contribute significantly to coupling between states. Discarding it is known as the \emph{rotating wave approximation} (\textsc{rwa}), so called because in an interaction picture (section \ref{sec:interaction_picture}) where the evolution of the base Hamiltonian $\hat H_{\up{D}\,^{87}\up{Rb}}$ is factored out---the so called \emph{rotating frame}---this fact is more readily apparent and a formal approximation can be made showing that the off-resonant term averages to zero over time scales much shorter than any other dynamics. Which term is discarded depends on whether the transition being considered is from a groundstate to excited state, or vice-versa. Our matrix element $\matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n}$ in the \textsc{rwa} becomes:
 \begin{align}\label{eq:rwa_no_rabifreq}
 \matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n} \overset{\textsc{rwa}}\approx
 \begin{cases}
@@ -597,7 +630,7 @@ If the plane wave's angular frequency $\omega$ is close to the resonant angular 
 \end{cases}.
 \end{align}
 
-The spherical basis components $\hat r_q$ of the position operator $\hat{\vec r}$ are not Hermitian operators, instead obeying the following relation [CITE STECK]:
+The spherical basis components $\hat r_q$ of the position operator $\hat{\vec r}$ are not Hermitian operators, instead obeying the following relation \cite{steck_quantum_2017}:
 \begin{align}
 \hat r_q^\dagger &= (-1)^q \hat r_{-q},\\
 \Rightarrow \matrixel{n} {e\hat r_q}{n^\prime}^* &= (-1)^q\matrixel{n^\prime} {e\hat r_{-q}}{n},
@@ -620,37 +653,36 @@ where $\Omega_{n^\prime n}(q, I)$ is the \emph{Rabi frequency} of the $n\rightar
 \end{align}
 with the symmetry that $\Omega_{n^\prime n}(q, I) = \Omega^*_{n n^\prime}(q, I)$. Because of this symmetry, the electric dipole Hamiltonian for a plane wave in the rotating wave approximation is Hermitian, and all its matrix elements can be computed considering only transitions from groundstate to excited state (with the Rabi frequencies for the reverse transitions being simply the complex conjugates of those of the forward transitions).
 
-The rotating wave approximation is an excellent approximation for any kind of transition that is actually somewhat close to resonance. When far off-resonant light is being used to impart optical dipole forces however, as in optical traps, it may not be a good approximation, and the full matrix elements \eqref{eq:diple_matrixel_withminus} of the dipole Hamiltonian may need to considered.
+The rotating wave approximation is accurate when $\omega - \omega_0 \gg \abs{\omega + \omega_0}$, which is the case for transitions being driven close to resonance. When far off-resonant light is being used however---for example to impart optical dipole forces as in optical traps---it may not be a good approximation, and the full matrix elements \eqref{eq:diple_matrixel_withminus} of the dipole Hamiltonian may need to considered.
 
 \subsubsection{Dipole matrix elements}
 
 We now move on to how to compute the dipole matrix elements
 \begin{align}
-\matrixel{n^\prime}{e\hat r_q}{n} \equiv \matrixel{L^\prime_{J^\prime}, F^\prime, m_F^\prime}{e\hat r_q}{L_J, F, m_F}.
+\matrixel{n^\prime}{e\hat r_q}{n} \equiv \matrixel{L^\prime_{J^\prime}\ F^\prime\ m_F^\prime}{e\hat r_q}{L_J\ F\ m_F}.
 \end{align}
-Once one has these matrix elements, one can use them to compute Rabi frequencies for matrix elements \eqref{eq:rwa_with_rabifreq} in the rotating wave approximation, or to calculate the full matrix elements \eqref{eq:diple_matrixel_withminus} of the dipole Hamiltonian.
+Using these matrix elements, one can compute Rabi frequencies for matrix elements of the dipole Hamiltonian \eqref{eq:rwa_with_rabifreq} in the rotating wave approximation, or to calculate the full matrix elements \eqref{eq:diple_matrixel_withminus} of the dipole Hamiltonian.
 
 In the spherical basis we've been working in, most of the integrals required to compute these matrix elements can be treated analytically, and there are a series of reductions that can be made to ultimately reduce the matrix elements down to a product of an analytically computable coefficient depending only an angular momentum quantum numbers, and an experimentally measurable `reduced' dipole matrix element.
 
-Following [STECK RB NUMBERS], the dependence on the photon angular momentum projection quantum number $q$ and atomic angular momentum projection quantum numbers $m_F$ and $m_F^\prime$ can be encapsulated in a Clebsch--Gordan coefficient using the Wigner--Eckart theorem, allowing us to write:
+Following \cite{steck_rubidium_2015}, the dependence on the photon angular momentum projection quantum number $q$ and atomic angular momentum projection quantum numbers $m_F$ and $m_F^\prime$ can be encapsulated in a Clebsch--Gordan coefficient using the Wigner--Eckart theorem, allowing us to write:
 \begin{align}
-& \matrixel{L^\prime_{J^\prime}, F^\prime, m_F^\prime}{e\hat r_q}{L_J, F, m_F} = 
-\braket{F^\prime, m_F^\prime}{F, 1, m_F, q}
-\matrixel{L^\prime_{J^\prime}, F^\prime}{\left|e\hat{\vec r}\right|}{L_J, F}\\
-&=\begin{cases}
+& \matrixel{L^\prime_{J^\prime}\ F^\prime\ m_F^\prime}{e\hat r_q}{L_J\ F\ m_F} = 
+\braket{F^\prime\ m_F^\prime}{F\ 1\ m_F\ q}
+\matrixel{L^\prime_{J^\prime}\ F^\prime}{\left|e\hat{\vec r}\right|}{L_J\ F}\\
+&=
 (-1)^{F - 1 + m_F^\prime}\sqrt{2F^\prime + 1}
-\left(\begin{smallmatrix}
+\left(\begin{matrix}
 F & 1 & F^\prime\\
 m_F & q & -m_F^\prime\\
-\end{smallmatrix}\right)
-\matrixel{L^\prime_{J^\prime}, F^\prime}{\left|e\hat{\vec r}\right|}{L_J, F},
- & m_F + q = m_F^\prime\\
-0, & m_F + q \neq m_F^\prime
-\end{cases},
+\end{matrix}\right)
+\matrixel{L^\prime_{J^\prime}\ F^\prime}{\left|e\hat{\vec r}\right|}{L_J\ F},
 \end{align}
-where the object in parentheses is a Wigner $3$-j symbol, and $\matrixel{L^\prime_{J^\prime}, F^\prime}{\left|e\hat{\vec r}\right|}{L_J, F}$ is the `reduced' matrix element for the transition from $\ket{L_J, F}$ to $\ket{L^\prime_{J^\prime}, F^\prime}$ free of dependence on angular momentum projection quantum numbers. The final reduction is to express this reduced matrix element as yet another analytic coefficient multiplied by a reduced matrix element that doesn't depend on the $F$ quantum numbers:
+where the object in parentheses is a Wigner $3$-j symbol, and $\matrixel{L^\prime_{J^\prime}\ F^\prime}{\left|e\hat{\vec r}\right|}{L_J\ F}$ is the `reduced' matrix element for the transition from $\ket{L_J\ F}$ to $\ket{L^\prime_{J^\prime}\ F^\prime}$ free of dependence on angular momentum projection quantum numbers. Due to fact that the Clebsch--Gordan coefficient is zero unless $m_F + q = m_F$, these matrix elements are zero unless the final and initial states are being coupled by a laser of the correct polarisation to conserve angular momentum projection in the $z$ direction, one of the selection rules of optical transitions.\footnote{Observe equation \eqref{eq:diple_matrixel_withminus} however, and note that for the case of $\sigma^\pm$ light, both $q=\pm 1$ dipole matrix elements are present, and thus $\sigma^\pm$ light couples a groundstate to \emph{both} $m_F^\prime = m_F \pm 1$ excited states, with one being far off resonance and discarded by the rotating wave approximation for the case of near-resonant light.}
+
+The final reduction is to express this reduced matrix element as yet another analytic coefficient multiplied by a reduced matrix element that doesn't depend on the $F$ quantum numbers:
 \begin{align}
-\matrixel{L^\prime_{J^\prime}, F^\prime}{\left|e\hat{\vec r}\right|}{L_J, F} =
+\matrixel{L^\prime_{J^\prime}\ F^\prime}{\left|e\hat{\vec r}\right|}{L_J\ F} =
 (-1)^{F + J^\prime + 1 + I}\sqrt{(2F+1)(2J^\prime+1)}
 \left\{\begin{matrix}
 J^\prime & J & 1\\
@@ -658,13 +690,13 @@ F & F^\prime & I
 \end{matrix}\right\}
 \matrixel{L^\prime_{J^\prime}}{\left|e\hat{\vec r}\right|}{L_J},
 \end{align}
-where $I$ is the nuclear spin, the object in curly braces is a Wigner $6$-j symbol, and $\matrixel{L^\prime_{J^\prime}}{\left|e\hat{\vec r}\right|}{L_J}$ is a reduced matrix element for the transition from $\ket{L_J}$ to $\ket{L^\prime_{J^\prime}}$ free of dependence on $F$ quantum  numbers.
+where $I$ is the nuclear spin quantum number, the object in curly braces is a Wigner $6$-j symbol, and $\matrixel{L^\prime_{J^\prime}}{\left|e\hat{\vec r}\right|}{L_J}$ is a reduced matrix element for the transition from $\ket{L_J}$ to $\ket{L^\prime_{J^\prime}}$ free of dependence on $F$ quantum  numbers.
 
-This final reduced matrix element can be linked to experimentally known numerical values via the linewidths $\Gamma_{\up{D}_1}$ and $\Gamma_{\up{D}_2}$ of $\up{D}_1$ and $\up{D}_2$ lines [CITE steck 7.3.7.4 for equation]:
+This final reduced matrix element can be linked to experimentally known numerical values via the linewidths $\Gamma_{\up{D}_1}$ and $\Gamma_{\up{D}_2}$ of $\up{D}_1$ and $\up{D}_2$ lines \cite[eq.~7.3.7.4]{steck_quantum_2017}:
 \begin{align}\label{eq:reduced_matrixel_linewidth}
 \Gamma = \frac{\omega_0^3}{3\pi\varepsilon_0\hbar c^3}\frac{2J_g + 1}{2J_e + 1}\abs{\matrixel{L^\prime_{J_g}}{\left|e\hat{\vec r}\right|}{L_{J_e}}}^2,
 \end{align}
-where $\Gamma$ and $\omega_0$ are the linewidth and resonant (angular) frequency respectively of the transition, $L^\prime_{J_g}$ is the groundstate ($S_{1/2}$) and $L_{J_e}$ is the excited state (either $P_{1/2}$ or ${P_{3/2}}$) of the transition. Thus the reduced matrix elements for transitions from excited to groundstates can be expressed in terms of known constants. For the reduced matrix elements for transitions from ground to excited states instead, one cannot simply take the complex conjugates of the excited-to-ground reduced matrix elements---the reduced matrix elements are defined instead such that they have the following property [cite steck 7.3.5.1]:
+where $\Gamma$ and $\omega_0$ are the linewidth and resonant (angular) frequency respectively of the transition, $L^\prime_{J_g}$ is the groundstate ($S_{1/2}$) and $L_{J_e}$ is the excited state (either $P_{1/2}$ or ${P_{3/2}}$) of the transition. Thus the reduced matrix elements for transitions from excited to groundstates can be expressed in terms of known constants. For the reduced matrix elements for transitions from ground to excited states instead, one cannot simply take the complex conjugates of the excited-to-ground reduced matrix elements---the reduced matrix elements are defined instead such that they have the following property \cite[eq.~7.3.5.1]{steck_quantum_2017}:
 \begin{align}
 \matrixel{L_J}{\left|e\hat{\vec r}\right|}{L^\prime_{J^\prime}}
 = (-1)^{J - J^\prime}\sqrt{\frac{2J^\prime+1}{2J+1}}
@@ -681,7 +713,7 @@ Putting these together gives the following reduced matrix elements for the $\up{
 \matrixel{P_{3/2}}{\left|e\hat{\vec r}\right|}{S_{1/2}}
 &= -\frac1{\sqrt2}\matrixel{S_{1/2}}{\left|e\hat{\vec r}\right|}{P_{3/2}}^*
 \end{align}
-The first two of these, having only their absolute values related to the linewidths in \eqref{eq:reduced_matrixel_linewidth}, have an undetermined phase factor which we have taken to be equal to $+1$. Since only relative phases are important, if we limit ourselves to only one of the $\up{D}_1$ or $\up{D}_2$ lines at a time, all dipole matrix elements, being proportional to these reduced dipole matrix elements, will have the correct relative phases between each other. However, we are imposing a fixed phase on \emph{both} the reduced dipole matrix elements for the $\up{D}$ line. We can verify that a relative phase factor of $+1$ between the two reduced dipole matrix elements is the correct choice by decomposing [STECK] the reduced matrix elements into yet another Wigner-6j symbol and a reduced dipole matrix element $\matrixel{L^\prime=\frac12}{\left|e\hat{\vec r}\right|}{L=1}$, common to both fine structure lines:
+The first two of these, having only their absolute values related to the linewidths and frequencies via \eqref{eq:reduced_matrixel_linewidth}, have an undetermined phase factor which we have taken to be equal to $+1$. Since only relative phases are important, if we limit ourselves to only one of the $\up{D}_1$ or $\up{D}_2$ lines at a time, all dipole matrix elements, being proportional to these reduced dipole matrix elements, will have the correct relative phases. However, we are imposing a fixed phase on \emph{both} the reduced dipole matrix elements for the $\up{D}$ line. We can verify that a relative phase factor of $+1$ between the two reduced dipole matrix elements is the correct choice by decomposing \cite{steck_rubidium_2015} the reduced matrix elements into yet another Wigner-6j symbol and a reduced dipole matrix element $\matrixel{L^\prime=\frac12}{\left|e\hat{\vec r}\right|}{L=1}$, common to both fine structure lines:
 \begin{align}
 \matrixel{L^\prime_{J^\prime}}{\left|e\hat{\vec r}\right|}{L_J} = 
 (-1)^{J+L+S+1}\sqrt{(2J+1)(2L^\prime+1)}
@@ -699,48 +731,47 @@ where $S=1/2$ is the electron spin. This expression can be used to verify the ra
 \end{align}
 confirming that the choice of relative phase factor $+1$ between the two $L_J$ reduced dipole matrix elements is the correct one.
 
-\subsubsection{Recap}
-We have proceeded in a top-down manner to lay out all that is needed to compute the transition matrix elements of 
+We have now arrived at the ground floor of reductionism for most experimental atomic physicists when it comes to optical transitions, with the values of the transition dipole matrix elements resting on the foundation of empirically measured reduced dipole matrix elements, and calculable by traversing this section in reverse.
 
 \subsection{Magnetic dipole transitions}
-After all the complexity of optical dipole transitions, magnetic dipole transitions---for either \textsc{rf} transitions between Zeeman sublevels, or microwave transitions between hyperfine states---are relatively simple. The matrix elements in the $\{\ket{F, m_F}\}$ basis for a perturbing magnetic field $\vec B(t)$ are simply those of the Zeeman Hamiltonian \eqref{eq:Zeeman_hamiltonian}:
+After all the complexity of optical dipole transitions, magnetic dipole transitions---for either \textsc{rf} transitions between Zeeman sublevels, or microwave transitions between hyperfine states---are relatively simple. The matrix elements in the $\{\ket{F\ m_F}\}$ basis for a perturbing magnetic field $\vec B(t)$ are simply those of the Zeeman Hamiltonian \eqref{eq:Zeeman_hamiltonian}:
 \begin{align}
-\matrixel{F^\prime, m_F^\prime}{\hat H_\up{Z}}{F, m_F}
+\matrixel{F^\prime\ m_F^\prime}{\hat H_\up{Z}}{F\ m_F}
 =
--\matrixel{F^\prime, m_F^\prime}{\hat{\vec\mu}\cdot {\vec B}}{F, m_F},
+-\matrixel{F^\prime\ m_F^\prime}{\hat{\vec\mu}\cdot {\vec B}}{F\ m_F},
 \end{align} 
 which for a magnetic plane wave with linear polarisation $i\in \{x, y, z\}$ and amplitude $B_0$, and in the dipole approximation, is:
 \begin{align}
-\matrixel{F^\prime, m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F, m_F}
+\matrixel{F^\prime\ m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F\ m_F}
 =
--\matrixel{F^\prime, m_F^\prime}{\hat{\mu}_i}{F, m_F}B_0 \cos(\vec k\cdot \vec r - \omega t).
+-\matrixel{F^\prime\ m_F^\prime}{\hat{\mu}_i}{F\ m_F}B_0 \cos(\vec k\cdot \vec r - \omega t).
 \end{align}
-The magnetic dipole matrix elements $\matrixel{F^\prime, m_F^\prime}{\hat{\mu}_i}{F, m_F}$ can be computed using the known matrix form \eqref{eq:magnetic_moment_operator} of the magnetic moment operator $\mu_i$ in the $\{\ket{I, J}\}$ basis, and transforming it into the $\{\ket{F, m_F}\}$ basis using a unitary of Clebsch--Gordan coefficients as in \eqref{eq:ClebschGordanCoeffs}.
+The magnetic dipole matrix elements $\matrixel{F^\prime\ m_F^\prime}{\hat{\mu}_i}{F\ m_F}$ can be computed using the known matrix form \eqref{eq:magnetic_moment_operator} of the magnetic moment operator $\mu_i$ in the $\{\ket{m_I\ m_J}\}$ basis, and transforming it into the $\{\ket{F\ m_F}\}$ basis using a unitary of Clebsch--Gordan coefficients as in \eqref{eq:ClebschGordanCoeffs}.
 
 As with optical dipole transitions, the cosine can be written as a sum of exponentials, revealing co-rotating and counter-rotating terms:
 \begin{align}
-\matrixel{F^\prime, m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F, m_F}
+\matrixel{F^\prime\ m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F\ m_F}
 =
--\frac{B_0}2\matrixel{F^\prime, m_F^\prime}{\hat{\mu}_i}{F, m_F}
+-\frac{B_0}2\matrixel{F^\prime\ m_F^\prime}{\hat{\mu}_i}{F\ m_F}
 \left(\ee^{\ii(\vec k\cdot \vec r - \omega t)}
 + \ee^{-\ii(\vec k\cdot \vec r - \omega t)}\right),
 \end{align}
 allowing for a rotating wave approximation and definition of a Rabi frequency as with optical dipole transitions:
 \begin{align}\label{eq:magnetic_rwa_with_rabifreq}
-\matrixel{F^\prime, m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F, m_F} \overset{\textsc{rwa}}\approx
+\matrixel{F^\prime\ m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F\ m_F} \overset{\textsc{rwa}}\approx
 \begin{cases}
-\frac\hbar2\Omega_{F^\prime, m_F^\prime, F, m_F}(i, B_0)\,
+\frac\hbar2\Omega_{F^\prime\ m_F^\prime\ F\ m_F}(i, B_0)\,
 \ee^{\ii(\vec k \cdot \vec r - \omega t)},\qquad
-& E_{F^\prime, m_F^\prime} > E_{F, m_F}\\
+& E_{F^\prime\ m_F^\prime} > E_{F\ m_F}\\
 \\
-\frac\hbar2\Omega^*_{F, m_F, F^\prime, m_F^\prime}(i)\,
+\frac\hbar2\Omega^*_{F\ m_F\ F^\prime\ m_F^\prime}(i)\,
 \ee^{-\ii(\vec k \cdot \vec r - \omega t)},\qquad
-& E_{F^\prime, m_F^\prime} < E_{F, m_F}
+& E_{F^\prime\ m_F^\prime} < E_{F\ m_F}
 \end{cases},
 \end{align}
-where $\Omega_{F^\prime, m_F^\prime, F, m_F}(i, B_0) = -\hbar B_0 \matrixel{F^\prime, m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F, m_F}$.
+where $\Omega_{F^\prime\ m_F^\prime\ F\ m_F}(i, B_0) = -\hbar B_0 \matrixel{F^\prime\ m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F\ m_F}$.
 
-The required linear combinations of the above matrix elements can be used to compute matrix elements for \textsc{rf} waves of different phases, or circular polarisations. It is also often practical, when numerically modelling magnetic dipole transitions, particularly between Zeeman sublevels, to simply include the magnetic field vector as a function as time and evaluate the entire matrix $H_\up{Z}$ directly in whichever basis one is working, rather than decomposing it into fixed frequency waves. This is particularly useful for frequency sweeps and other complex magnetic field sequences, which may not be good candidates for the rotating wave approximation, or may not be well represented well as single-frequency waves at all. This is most practical for transitions between Zeeman sublevels, since the energy splittings can be on the order of MHz and therefore well sampled by numerics with nanosecond to microsecond sized timesteps, which are feasible to numerically compute. Microwave transitions, being $6.8 GHz$ in $^{87}$Rb would require sub-nanosecond timesteps to simulate literally, and so is more taxing but still within the range of possibility, as opposed to optical transitions which are in the hundreds of THz and impractical to simulate without rotating wave approximations and the assumption of monochromatic waves as treated in the previous subsection.
+The required linear combinations of the above matrix elements can be used to compute matrix elements for \textsc{rf} waves of different phases, or circular polarisations. It is also often practical, when numerically modelling magnetic dipole transitions, particularly between Zeeman sublevels, to simply include the magnetic field vector as a function as time and evaluate the entire matrix $H_\up{Z}$ directly in whichever basis one is working, rather than decomposing it into fixed frequency waves. This is particularly useful for frequency sweeps and other complex magnetic field sequences, which may not be good candidates for the rotating wave approximation, or may not be well represented well as single-frequency waves at all. This is most practical for transitions between Zeeman sublevels, since the energy splittings can be on the order of MHz and therefore well sampled by numerics with nanosecond to microsecond sized timesteps, which are feasible to numerically compute. Microwave transitions, being $6.8 \unit{GHz}$ in $^{87}$Rb would require sub-nanosecond timesteps to simulate in this direct way, and so is more taxing but still within the range of possibility, as opposed to optical transitions which are in the hundreds of THz and impractical to simulate without rotating wave approximations and the assumption of monochromatic waves as treated in the previous subsection.
 
 \subsection{Summary}
 We are now finally at the end of our assembly of the Hamiltonian for modelling the $^{87}$Rb $\up{D}$ line in the presence of magnetic fields and monochromatic plane waves. Armed with this Hamiltonian and its coupling terms for various lasers, the atomic physicist can predict and simulate much of what is needed for the basics of laser cooling, trapping, and coherent control.
