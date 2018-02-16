@@ -1,6 +1,6 @@
 \chapter{Atomic physics: Experimental techniques and theory}\label{chap:atomic_physics}
 
-\textsc{Bec}s provide such a tantalising opportunity for studying quantum phenomena not only because of their interesting properties, but also because of the level of control they afford, with parameters able to be tuned and manipulated in order to investigate various regimes. Many of the same techniques which allow experimentalists such control over a \textsc{bec} are also employed in the production of \textsc{bec}.
+\lettrine[lines=3]{B}{ose--Einstein condensates} provide such a tantalising opportunity for studying quantum phenomena not only because of their interesting properties, but also because of the level of control they afford, with parameters able to be tuned and manipulated in order to investigate various regimes. Many of the same techniques which allow experimentalists such control over a \textsc{bec} are also employed in the production of \textsc{bec}.
 
 The main experimental techniques used to create \textsc{bec} are Doppler cooling, magneto-optical, magnetic, and dipole trapping, polarisation gradient (Sisyphus) cooling, and evaporative cooling. These were discovered, perhaps by no coincidence, in roughly the same order as they are called for in a \textsc{bec} experiment, and many were first discovered along the way to the first realisations of Bose--Einstein condensation.
 
@@ -774,11 +774,4 @@ where $\Omega_{F^\prime\ m_F^\prime\ F\ m_F}(i, B_0) = -\hbar B_0 \matrixel{F^\p
 The required linear combinations of the above matrix elements can be used to compute matrix elements for \textsc{rf} waves of different phases, or circular polarisations. It is also often practical, when numerically modelling magnetic dipole transitions, particularly between Zeeman sublevels, to simply include the magnetic field vector as a function as time and evaluate the entire matrix $H_\up{Z}$ directly in whichever basis one is working, rather than decomposing it into fixed frequency waves. This is particularly useful for frequency sweeps and other complex magnetic field sequences, which may not be good candidates for the rotating wave approximation, or may not be well represented well as single-frequency waves at all. This is most practical for transitions between Zeeman sublevels, since the energy splittings can be on the order of MHz and therefore well sampled by numerics with nanosecond to microsecond sized timesteps, which are feasible to numerically compute. Microwave transitions, being $6.8 \unit{GHz}$ in $^{87}$Rb would require sub-nanosecond timesteps to simulate in this direct way, and so is more taxing but still within the range of possibility, as opposed to optical transitions which are in the hundreds of THz and impractical to simulate without rotating wave approximations and the assumption of monochromatic waves as treated in the previous subsection.
 
 \subsection{Summary}
-We are now finally at the end of our assembly of the Hamiltonian for modelling the $^{87}$Rb $\up{D}$ line in the presence of magnetic fields and monochromatic plane waves. Armed with this Hamiltonian and its coupling terms for various lasers, the atomic physicist can predict and simulate much of what is needed for the basics of laser cooling, trapping, and coherent control.
-
-
-TODO: mention that the off-resonant term couples the opposite polarisation!
-
-TODO: mention that kx is usually ignored and sometimes encapsulated into a Doppler shift!
-
-TODO: mention that matrix elements in other bases can be computed by superposing other ones!
+We are now finally at the end of our assembly of the Hamiltonian for the $^{87}$Rb $\up{D}$ line in the presence of magnetic fields and monochromatic plane waves. Armed with this Hamiltonian and the ability to compute its coupling terms for various lasers, the atomic physicist can predict and simulate much of what is needed for the basics of laser cooling, trapping, and coherent control.
