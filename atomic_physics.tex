@@ -219,7 +219,7 @@ J_- &=
     & & \hdots & 0 & \matrixel{-J}{\hat J_-}{-J + 1} & 0 \\
 \end{smallmatrix} \right],
 \end{align}
-both of which have nonzero values along only one non-main diagonal adjacent to the main diagonal, and which form a Hermitian conjugate pair (or indeed, a transpose pair, since all elements are real). The matrix representations of $\hat J_x$ and $\hat J_y$ can then be computed by rearranging the defining expressions [CITE] for $\hat J_+$ and $J_-$;
+both of which have nonzero values along only one non-main diagonal adjacent to the main diagonal, and which form a Hermitian conjugate pair (or indeed, a transpose pair, since all elements are real). The matrix representations of $\hat J_x$ and $\hat J_y$ can then be computed by rearranging the defining expressions for $\hat J_+$ and $J_-$;
 \begin{align}
 \hat J_+ = \hat J_x + \ii \hat J_y,\\
 \hat J_- = \hat J_x - \ii \hat J_y,
@@ -310,7 +310,7 @@ The hyperfine Hamiltonian is not diagonal in the $\{\ket{m_I\ m_J}\}$ basis. The
 The states differing only in their $m_F$ quantum numbers---called Zeeman sublevels---are degenerate in energy with respect to the hyperfine Hamiltonian, but an external magnetic field lifts this degeneracy. The Zeeman effect \cite{zeeman_influence_1897, steck_rubidium_2015} results in an energy shift proportional to the external magnetic field $\vec B$ and to a system's magnetic moment $\vec \mu$:
 \begin{align}
 V = - \vec\mu\cdot\vec B.
-\end{align} f
+\end{align}
 Our atom is a composite particle, made of a nucleus with its own intrinsic magnetic moment, an electron with its own intrinsic one as well, and a contribution from the orbital motion of the electron about the nucleus. Each magnetic moment is proportional to the angular momentum of the subsystem in question, with the proportionality constants, called Land\'e g-factors written as dimensionless multiples of $-\mu_B/\hbar$, where $\mu_B$ is the Bohr magneton.\footnote{We are using the sign convention that defines the Lande $g$-factor $g_J$ for the electron as positive.} Since $J$ is a good quantum number so long as energy shifts are smaller than the (large) energy spacing between the three $L_J$ states of the $\up{D}$ line, on the level we work we don't consider the electron spin and orbital angular momenta separately, rather we encapsulate them with a single, empirically determined Land\'e g-factor $g_J$ \cite{steck_rubidium_2015} for the magnetic moment of the electron in each of the three $L_J$ states. Similarly we consider the nucleus as a single spin with an experimentally determined $g_I$ \cite{steck_rubidium_2015}, resulting in a Zeeman Hamiltonian:
 \begin{align}
 \hat H_\up{Z} & = -\hat{\vec \mu} \cdot \vec B\\
@@ -383,14 +383,14 @@ While $\oversetIJ H_{\up{D}\,^{87}\up{Rb}}$ is a block diagonal matrix, each of 
 
 The $\{\ket{F\ m_F}\}$ basis is defined as the simultaneous eigenbasis of the $\hat F^2$ and $\hat F_z$ operators, which are the total (squared) and $z$ component of the total angular momentum operator $\hat{\vec{F}} = \hat{\vec{I}} + \hat{\vec{J}}$, the matrix forms $F^2$ and $F_z$ of which in the $\ket{m_I\ m_J}$ basis can be constructed from the matrix forms of the individual angular momentum operators:
 \begin{align}
-\vec F_{\mathcal{I}\times\mathcal{J}} &= \vec I_{\mathcal{I}\times\mathcal{J}} + \vec J_{\mathcal{I}\times\mathcal{J}}\nonumber\\
-& = \vec I \otimes \mathbb{I}_{\mathcal{J}} + \mathbb{I}_{\mathcal{I}} \otimes \vec J\\
-F_{z\,\mathcal{I}\times\mathcal{J}} &= I_{z\,\mathcal{I}\times\mathcal{J}} + J_{z\,\mathcal{I}\times\mathcal{J}}\nonumber\\
-& = I_z \otimes \mathbb{I}_{\mathcal{J}} + \mathbb{I}_{\mathcal{i}} \otimes J_z\\
-F^2_{\mathcal{I}\times\mathcal{J}} &= \vec F_{\mathcal{I}\times\mathcal{J}}\cdot\vec F_{\mathcal{I}\times\mathcal{J}}
+\oversetIJ{\vec F} &= \oversetIJ{\vec I} + \oversetIJ{\vec J}\nonumber\\
+& = \vec I \otimes \oversetJ{\mathbb{I}} + \oversetI{\mathbb{I}} \otimes \vec J\\
+\oversetIJ{F_z} &= \oversetIJ {I_z} + \oversetIJ {J_z}\nonumber\\
+& = I_z \otimes \oversetJ{\mathbb{I}} + \oversetI{\mathbb{I}} \otimes J_z\\
+\oversetIJ {F^2} &= \oversetIJ{\vec F}\cdot\oversetIJ{\vec F}
 \end{align}
 
-The $\{\ket{F, m_F}\}$ basis allows the eigenstates of the hyperfine interaction to be labelled with $F$ and $m_F$ quantum numbers. For a state of the $^{87}$Rb $\up{D}$ line with electron total angular momentum quantum number $J$, there are $1+J+I - \abs{(I - J)}$ hyperfine levels, with $F$ quantum numbers running from $\abs{I - J}$ to $I + J$. Within each hyperfine level there are $2F + 1$ degenerate states with different $m_F$ quantum numbers ranging from $-F$ to $F$. This results in a total of 32 possible states for the rubidium $\up{D}$ line, a schematic of which is shown in \figref{fig:D_line}.
+The $\{\ket{F m_F}\}$ basis allows the eigenstates of the hyperfine interaction to be labelled with $F$ and $m_F$ quantum numbers. For a state of the $^{87}$Rb $\up{D}$ line with electron total angular momentum quantum number $J$, there are $1+J+I - \abs{(I - J)}$ hyperfine levels, with $F$ quantum numbers running from $\abs{I - J}$ to $I + J$. Within each hyperfine level there are $2F + 1$ degenerate states with different $m_F$ quantum numbers ranging from $-F$ to $F$. This results in a total of 32 possible states for the rubidium $\up{D}$ line, a schematic of which is shown in \figref{fig:D_line}.
 
 \begin{figure}%[htb]
 \begin{center}
@@ -408,7 +408,7 @@ I & J & F\\
 m_I & m_J & -m_F\\
 \end{matrix}\right)
 \end{align}
-where the object in parentheses is a Wigner $3$-j symbol. The Clebsch--Gordan coefficients are real: $\braket{F\ m_F}{I\ m_I\ J\ m_J} = \braket{I\ m_I\ J\ m_J}{F\ m_F}$, and is zero unless $m_I + m_J = m_F$.
+where the object in parentheses is a Wigner $3$-j symbol. The Clebsch--Gordan coefficients are real: $\braket{F\ m_F}{I\ m_I\ J\ m_J} = \braket{I\ m_I\ J\ m_J}{F\ m_F}$, and are zero unless $m_I + m_J = m_F$.
 Given that the possible range of the $F$ quantum number is from $\abs{I - J}$ to $I + J$, and the possible range of $m_F$ quantum numbers is from $-F$ to $F$ for each $F$ (both in integer steps), an explicit construction of the unitary matrix $U_\up{CG}$ of Clebsch--Gordan coefficients, in the convention where the column vectors in the $\{\ket{F\ m_F}\}$ basis have $F$ running from its highest value to lowest from top to bottom, and $m_F$ also running from highest to lowest within each value of $F$, (omitting $I$ and $J$ for brevity) is:
 \begin{align}
 U_\up{CG} = \left[\begin{smallmatrix}
