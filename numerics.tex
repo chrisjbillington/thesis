@@ -84,9 +84,56 @@ for a specific $\vec \psi(t_0)$, then one needs only matrix-vector multiplicatio
 \end{align}
 from right-to-left, reducing the computational cost to $\Ord{n^2}$ compared to evaluating it left-to-right.
 
-Whilst matrix exponentiation is a way to efficiently evolve systems with time-independent Hamiltonians, if you only exponentiate a matrix once, you don't much care about the time complexity of doing so. It is mostly of interest because the real power of these exponentiation methods is as a building block for methods of approximate solutions to the Schr\"odinger equation in the case of time \emph{dependent} Hamiltonians, as we will see in the next section.
+Whilst matrix exponentiation is a way to efficiently evolve systems with time-independent Hamiltonians, if you only exponentiate a matrix once, you don't much care about the time complexity of doing so. It is mostly of interest because the real power of these exponentiation methods is as a building block for methods of approximate solutions to the Schr\"odinger equation in the case of time \emph{dependent} Hamiltonians, as we will see in Section \ref{sec:time_ordered_products}.
 
-\subsection{Time-ordered exponentials and time-ordered products}
+\subsection{The interaction picture}\label{sec:interaction_picture}
+
+Although time-dependent Hamiltonians are much harder to deal with than time independent ones, often a Hamiltonian can be decomposed into the sum a time-independent and a time-dependent part:
+\begin{align}
+\hat H(t) = \hat H_0 + \hat H_1(t),
+\end{align}
+in this case, the Schr\"odinnger equation can be transformed into a form that is often more computationally tractable and analytically useful, by treating part of the evolution due to the time-independent part analytically. This transformation is called an \emph{interaction picture} \cite[p.~317]{sakurai}, or sometimes, particularly in atomic physics, a \emph{rotating frame}, due to the fact that for a spin-$\frac12$ system in a constant magnetic field, the action of $H_0$ entails literal rotation of the spin vector in three dimensional space. 
+
+To analytically remove the action of $\hat H_0$, we define the state vector $\ket{\psi(t)}$ as the action of $\hat H_0$ on an \emph{interaction picture state vector} $\ket{\psi_\up{I}(t)}$:
+\begin{align}
+\ket{\psi(t)} = \ee^{-\frac\ii\hbar\hat H t}\ket{\psi_\up{I}(t)}
+\end{align}
+and substitute into the Schr\"odinger equation, in order to obtain the equation of motion for the interaction picture state vector $\ket{\psi_\up{I}(t)}$:
+\begin{align}
+\ii\hbar\dv t \ee^{-\frac\ii\hbar\hat H_0 t}\ket{\psi_\up{I}(t)} &= 
+\left[\hat H_0 + \hat H_1(t)\right]\ee^{-\frac\ii\hbar\hat H_0 t}\ket{\psi_\up{I}(t)}\\
+\Rightarrow \ii\hbar\dv t\ket{\psi_\up{I}(t)} &=
+\ee^{\frac\ii\hbar\hat H_0 t}\hat H_1(t)\ee^{-\frac\ii\hbar\hat H_0 t}\ket{\psi_\up{I}(t)},
+\end{align}
+which is usually written:
+\begin{align}
+\Rightarrow \ii\hbar\dv t\ket{\psi_\up{I}(t)} &= \hat H_I(t)\ket{\psi_\up{I}(t)},
+\end{align}
+where $\hat H_I(t)=\ee^{\frac\ii\hbar\hat H_0 t}\hat H_1(t)\ee^{-\frac\ii\hbar\hat H_0 t}$ is an \emph{interaction picture Hamiltonian}. Thus the interaction picture defines a time-dependent unitary transformation, with the operator for transforming from the Schr\"odinger to interaction picture being:
+\begin{align}
+\hat U_I(t) = \ee^{\frac\ii\hbar\hat H_0 t},\\
+\end{align}
+and state vectors and operators transforming as:
+\begin{align}
+\ket{\psi_\up{I}(t)} &= \hat U_\up{I}\ket{\psi(t)}\\
+\hat A_\up{I}(t) &= \hat U_\up{I} \hat A \hat U^\dagger_\up{I},
+\end{align} 
+which creates time dependence for operators that did not have time dependence in the Schr\"odinger picture.
+
+Usually, calculations are performed in a basis in which $\hat H_0$ is diagonal, allowing the unitary transformation to be applied using only scalar exponentials rather than matrix exponentials:
+\begin{align}
+\hat U(t) &= \sum_n \ee^{\frac\ii\hbar E_n t}\ketbra{n}{n}\\
+\Rightarrow \braket{n}{\psi_I(t)} &= \ee^{\frac\ii\hbar E_n t}\braket{n}{\psi(t)}\label{eq:interaction_picture_psi_transform_diagonal}
+\end{align}
+where $\{\ket{n}\}$ and $\{E_n\}$ are the eigenkets and eigenvalues of $\hat H_0$.
+
+Use of an interaction picture can remove short timescales from the evolution of a state vector, with the original Schro\"odinger picture state vectors recoverable via analytic transformations, though this is often not neccesary since one often only cares about the magnitude of a component $\braket{n}{\psi}$ of $\ket\psi$, which is preserved by the transformation \eqref{eq:interaction_picture_psi_transform_diagonal} and not its phase.
+
+In atomic physics calculations an interaction picture can be used to remove the large energy scales (and hence small timescale) separating the three fine structure states of the $D_2$ line (Section \ref{sec:fine_structure}), or it can be used to remove the entire hyperfine interaction Hamiltonian, and even both the hyperfine and Zeeman Hamiltonians (Sections \ref{sec:hyperfine_structure} and \ref{sec:zeeman_sublevels}) if a time-independent magnetic field is being used. This removes the necessity of small numerical timesteps needed by some numerical methods to resolve very fast phase oscillations due to these time-independent Hamiltonians, as well as aiding human interpretation of the results which would otherwise have more interesting or relevant phase changes drowned out by fast phase oscillations from $\hat H_0$.
+
+In Section \ref{sec:rk4ilip} I present a method that exploits the use of an \emph{instantaneous} interaction picture, that is, an interaction picture whose time independent Hamiltonian is based on a time \emph{dependent} Hamiltonian evaluated at a specific moment in time. In this way, the use of an interaction picture can be extended to aid calculations for a certain class of time dependent Hamiltonians as well.
+
+\subsection{Time-ordered exponentials and time-ordered products}\label{sec:time_ordered_products}
 
 As hinted to earlier, the solution \eqref{eq:formal_solution} is not the whole picture. It can only be taken at face value if the Hamiltonian at each moment in time commutes with itself at all other times (we will see shortly why this is). If it does---that is, if $[\hat H(t_1^\prime), \hat H(t_2^\prime)] = 0$ for all $t^\prime_1, t^\prime_2 \in [t_0, t]$, then \eqref{eq:formal_solution} is the solution to the Schr\"odinger equation, and once represented in a specific basis can be written
 \begin{align}
@@ -567,23 +614,6 @@ An additional benefit of parallelised \textsc{rk4} when compared to split-operat
 
 The constant factors that big-O notation disregards also favour \textsc{rk4} when compared to split-operator methods. For one, addition and multiplication are much cheaper than exponentiation, meaning that the exponentials in split-operator methods may add considerable computational cost if the Hamiltonian itself is simple. Furthermore, parallelised or not, each term in fourth order split-operator adds $20$ matrix-vector products in the space the term acts, whereas \textsc{rk4} requires only one additional matrix-vector product per term. In practice due to these properties, \textsc{rk4} runs considerably faster than split-operator methods, even for simple systems, and the gap widens as complexity increases.
 
-\subsection{The interaction picture}\label{sec:interaction_picture}
-
-[TODO]
-
-%         \begin{itemize}
-%             \item Sometimes called a "rotating frame"
-%             \item Is equivalent to basis change where new basis functions differ by a time-dependent phase factor
-%             \item Is defined by a time-independent Hamiltonian
-%             \item This has the effect of moving some time dependence into the operators (demonstrate, by writing some operators with the unitary in front of them. As you can see it is simply a change of basis - but a time-dependent one.)
-%             \item No need to remain in the same interaction picture - can be redefined arbitrarily often throughout a simulation and state vectors transformed into new basis.
-%         \end{itemize}
-% \begin{itemize}
-
-% \item {absorbing boundary conditions, reflective boundary conditions, periodic boundary conditions}
-
-% \end{itemize}
-
 \section{Continuous degrees of freedom}\label{sec:continuous_dof}
 The single-particle, non-relativistic, scalar Schr\"odinger wave equation, as distinct from the general Schr\"odinger equation \eqref{eq:schrodinger_equation}, is:
 \begin{align}\label{eq:schrodinger_wave_equation}
@@ -637,7 +667,7 @@ would all be zero for $i\neq j$, disallowing any flow of amplitude from one poin
 
 Neither have we implicitly chosen a set of two-dimensional boxcar functions centred on each gridpoint with width $\upDelta x$ and $\upDelta y$ in each direction respectively. These cover all space in between gridpoints, but are are not twice differentiable everywhere, and hence the kinetic energy operator's matrix elements cannot be evaluated\footnote{Delta functions aren't twice differentiable either, so this itself isn't a fatal flaw--but even if one defines the boxcar functions as the limit of twice differentiable functions becoming increasingly square with some parameter, the limit for the kinetic energy matrix elements between adjacent boxcars goes to infinity.}. No, neither of these bases makes sense. To interpret our spatial grid as a basis, we need a set of functions $\phi_{ij}(r)$ (where $i$ and $j$ are the indices of the gridpoints in the $x$ and $y$ directions respectively) that are orthonormal, are nonzero only at one gridpoint and are zero at all others, and are twice differentiable everywhere in our spatial region. Infinite choices are available, differing in which subspace of the original Hilbert space they cover. A sensible heuristic for choosing one is that we want to be able to represent the state vectors whose wavefunctions do not change much between adjacent gridpoints, and we are happy for the necessary incompleteness of our basis to exclude wavefunctions with any sort of structure in between gridpoints.
 
-\subsubsection{The discrete Fourier transform to the rescue}
+\subsubsection{The discrete Fourier transform to the rescue}\label{sec:dft}
 
 It turns out that discretising space in this way can indeed be equivalent to choosing a sensible basis. This is made clearer by first discretising in Fourier space instead, and seeing how this can imply a discretisation in real space.
 
@@ -1113,7 +1143,7 @@ Below are two methods that are typically used instead to find groundstates in th
 
 \subsection{Imaginary time evolution}\label{sec:ITEM}
 
-Imaginary time evolution [CITE] is a robust, if somewhat inefficient method of finding groundstates of quantum systems, and can be generalised to finding excited states as well (Section \ref{sec:excited_states_gram_schmidt}, below). The basis idea is to evolve the following differential equation:
+Imaginary time evolution \cite{lehtovaara_solution_2007} is a robust, if somewhat inefficient method of finding groundstates of quantum systems, and can be generalised to finding excited states as well (Section \ref{sec:excited_states_gram_schmidt}, below). The basis idea is to evolve the following differential equation:
 \begin{align}\label{eq:ITEM}
 \hbar\dv{\vec\psi}{t} = - H \vec \psi
 \end{align}
@@ -1144,30 +1174,22 @@ Since imaginary time evolution comprises the evolution of a state vector in time
 
 \subsection{Successive over-relaxation}\label{sec:SOR}
 
-Successive over-relaxation (\textsc{sor}) [CITE] is a much faster method of finding groundstates than imaginary time evolution, but slightly less flexible. Strictly speaking, \textsc{sor} can solve linear systems of the form:
+Successive over-relaxation (\textsc{sor}) \cite{young_iterative_1950} is a much faster method of finding groundstates than imaginary time evolution, but slightly less flexible. Strictly speaking (that is, before any ad-hoc modifications), \textsc{sor} is a method for solving linear systems of the form:
 \begin{align}\label{eq:linear_system_SOR}
 A \vec \psi = \vec b,
 \end{align} 
 for some unknown vector (or discretised function) $\vec \psi$ given a vector (or discretised function) $\vec b$ for the right hand side and a  matrix (or discretised linear operator) $A$ for the left hand side. The method is of most benefit when $A$ is diagonally dominant, lending \textsc{sor} to use with finite difference methods. As with imaginary time evolution, \textsc{sor} requires an initial guess for $\vec\psi$ that is repeatedly updated to produce an increasingly accurate approximate solution to the given linear system.
 
-Successive over-relaxation proceeds by updating each element $\psi_i$ of $\vec\psi$ one at a time to be more consistent with the linear system and all other estimated elements of $\vec\psi$. To update each element of $\vec\psi$, we first write a single element of the vector equation \eqref{eq:linear_system_SOR} as
+Successive over-relaxation proceeds by updating each element $\psi_i$ of $\vec\psi$ one at a time to be more consistent with the linear system and all other estimated elements of $\vec\psi$, by solving the $i^\up{th}$ linear equation of \eqref{eq:linear_system_SOR} for $\psi_i$ in terms of $A$, $b_i$, and the other elements of $\vec\psi$:
 \begin{align}
-\sum_j A_{ij}\psi_j = b_i
+\psi_i = \frac{b_i - \sum_{j\neq i} A_{ij}\psi_j}{A_{ii}}.
 \end{align}
-and separate out the $i^\up{th}$ term of the matrix multiplication sum:
-\begin{align}
-A_{ii}\psi_i + \sum_{j\neq i} A_{ij}\psi_j = b_i,
-\end{align}
-and solve for $\psi_i$:
-\begin{align}
-\psi_i = \frac{b_i - \sum_{j\neq i} A_{ij}\psi_j}{A_{ii}},
-\end{align}
-which is the value a single element $\psi_i$ should be updated to in order to become consistent with all other elements $\psi_{j\neq i}$ and the linear system. If one updates every element of $\vec\psi$ in this manner, based on values of $\vec\psi$ at the previous iteration, the method that results is called the Jacobi method [CITE]:
+If one updates every element $\psi_i$ of $\vec\psi$ in this manner, based on the other elements $\psi_{j\neq i}$ of the estimate for $\vec\psi$ at the previous iteration, the method that results is called the Jacobi method, with update rule:
 \begin{align}
 \psi^{(k+1)}_{i\,\up{Jacobi}} = \frac{b_i - \sum_{j\neq i} A_{ij}\psi^{(k)}_j}{A_{ii}},
 \end{align}
 where $\vec\psi^{(k)}$ is the $k^\up{th}$ iterative estimate of $\vec\psi$.
-If one allows use of already updated elements of $\vec\psi$ when updating subsequent elements of $\vec\psi$, one obtains the more efficient Gauss--Seidel method [CITE]:
+If one allows use of already updated elements of $\vec\psi$ when updating subsequent elements of $\vec\psi$, one obtains the more efficient Gauss--Seidel method:
 \begin{align}\label{eq:GaussSeidel}
 \psi^{(k+1)}_{i\,\up{GS}} = \frac{b_i - \sum_{j\neq i} A_{ij}\psi^{(\up{latest})}_j}{A_{ii}},
 \end{align}
@@ -1181,7 +1203,7 @@ The final feature of successive over-relaxation is that elements of $\vec\psi$ a
 \begin{align}\label{eq:SOR}
 \psi^{(k+1)}_{i\,\textsc{sor}} = \psi^{(k)}_i + \alpha\left(\frac{b_i - \sum_{j\neq i} A_{ij}\psi^{(\up{latest})}_j}{A_{ii}} - \psi^{(k)}_i\right).
 \end{align}
-where $\alpha < 2$ is the convergence criterion [CITE] in the case of an infinite system.\footnote{With the deviation from strict \textsc{sor} by using non-constant $A$ and $\vec b$ mentioned below, and parallel updates as mentioned above, as well as the fact that systems are not infinite, $\alpha$ in the range of $1.6$ to $1.8$ is realistic to ensure stability in Gross--Pitaevskii equation simulations.}
+where $\alpha < 2$ is the convergence criterion in the case of an infinite system.\footnote{With the deviation from strict \textsc{sor} by using non-constant $A$ and $\vec b$ mentioned below, and parallel updates as mentioned above, as well as the fact that systems are not infinite, $\alpha$ in the range of $1.6$ to $1.8$ is realistic to ensure stability in Gross--Pitaevskii equation simulations.}
 
 So what are $A$ and $\vec b$ for quantum mechanics problems? One deviation from pure \textsc{sor} used in cold atom physics is to allow both $A$ and $\vec b$ to have dependence on $\vec\psi$, which in practice does not prevent the method from finding solutions. For the groundstate of the Gross--Pitaevskii equation, we can write:
 \begin{align}\label{eq:GPE_SOR}
@@ -1195,12 +1217,12 @@ where $\mu$ is the chemical potential of the condensate in its groundstate and $
 \psi^{(k+1)}_{i\,\textsc{sor}} = \psi^{(k)}_i + \alpha\left(\frac{\mu\psi^{(k)}_i - \sum_{j\neq i} H_{ij}(\vec\psi^{(k)})\psi^{(\up{latest})}_j}{A_{ii}} - \psi^{(k)}_i\right).
 \end{align}
 
-$A^{(k+1)}$ and $\vec b^{(k+1)}$ can then be computed based on $\vec\psi^{(k+1)}$ and the process repeated to provide increasingly accurate approximate solutions.\footnote{One can imagine updating $A$ and $\vec b$ within a single iteration of \textsc{sor}, since the method updates each element of $\vec\psi$ one at a time. I have not done this---I compute $A$ and $\vec b$ once per update of the entire vector $\vec\psi$, which for that iteration at least, is pure successive over-relaxation, with the non-constant $A$ and $\vec b$ only appearing over multiple iterations of \textsc{sor}. Updating $A$ and $\vec b$ to take into account changes in the elements of $\vec\psi$ \emph{within} a single iteration of \textsc{sor} represents a further departure from pure successive over-relaxation that I have not tested.}
+$A^{(k+1)}$ and $\vec b^{(k+1)}$ can then be computed based on $\vec\psi^{(k+1)}$ and the process repeated to provide increasingly accurate approximate solutions.
 
-A difference between successive over-relaxation and imaginary time evolution is that \textsc{sor} finds the state with chemical potential $\mu$ (alternately, with energy $E$ for a linear quantum system), as opposed to the groundstate. In this way successive over-relaxation doesn't tell you what the groundstate energy is, it requires that as input. Typically to find a Gross--Pitaevskii groundstate I will analytically estimate the chemical potential for a given number of atoms or peak density, or whatever my requirement is, using the Thomas--Fermi approximation, and then find the state with that chemical potential using \textsc{sor}. This results in minor differences compared to the peak density or atom number originally targeted, but the requirement is not usually strict enough for this to be of consequence. An alternative is to dynamically update the targeted $\mu$ as \textsc{sor} proceeds, based on computing the expectation value of $H$ using the current best estimate of $\vec\psi$. This in practice will find a stationary state or eigenstate, but not necessarily the groundstate unless the initial guess was close enough; and represents a further deviation from pure successive over-relaxation.
+A difference between successive over-relaxation and imaginary time evolution is that \textsc{sor} finds the state with chemical potential $\mu$ (alternately, with energy $E$ for a linear quantum system), as opposed to the groundstate. In this way successive over-relaxation doesn't tell you what the groundstate energy is, it requires that as input. Typically to find a Gross--Pitaevskii groundstate I will analytically estimate the chemical potential for a given number of atoms or peak density, or whatever my requirement is, using the Thomas--Fermi approximation, and then find the state with that chemical potential using \textsc{sor}. This results in minor differences compared to the peak density or atom number originally targeted, but the requirement is not usually strict enough for this to be of consequence. An alternative is to normalise $\psi$ to the desired atom number at each step to impose fixed atom number, and to dynamically update the targeted $\mu$ as \textsc{sor} proceeds, based on computing the expectation value of $H$ using the current best estimate of $\vec\psi$. This process can also be used to find eigenstates of linear Hamiltonians if their energies are not known, but not necessarily the groundstate unless the initial guess was a good one; and represents a further ad-hoc deviation from pure successive over-relaxation that may require more attention and guidance from the programmer in order to obtain good results.
 
 \subsection{Generalisation to excited states via Gram–Schmidt orthonormalisation}\label{sec:excited_states_gram_schmidt}
-Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another approach (for the linear Schr\"odinger equation) is to find the groundstate using one of the above techniques, and then repeat the process, subtracting off the wavefunction's projection onto the already found ground state at every step. This yields the lowest energy state that is orthogonal to the first---i.e. the first excited state. Repeating the process, but subtracting at each step the projection onto \emph{both} eigenstates found so far, then yields the second excited state and so forth. This is simply the Gram--Schmidt process for finding orthonormal vectors, with the additional step of relaxing each vector to the lowest possible energy for each one---this ensures the eigenstates of the Hamiltonian are produced, rather than a different orthonormal basis. Extra conditions can be imposed on the wavefunction at each relaxation step in order to obtain particular solutions in the case of degenerate eigenstates. For example, a phase winding can be imposed in order to obtain a particular harmonic oscillator state, otherwise this process produces an arbitrary superposition of basis states that have equal energy.
+Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another approach\footnote{Realised independently by me, but not original \cite{ahn_variational_1986}.} (for the linear Schr\"odinger equation) is to find the groundstate using one of the above techniques, and then repeat the process, subtracting off the wavefunction's projection onto the already found ground state at every step. This yields the lowest energy state that is orthogonal to the first---i.e. the first excited state. Repeating the process, but subtracting at each step the projection onto \emph{both} eigenstates found so far, then yields the second excited state and so forth. This is simply the Gram--Schmidt process for finding orthonormal vectors, with the additional step of relaxing each vector to the lowest possible energy given the orthogonality requirement---this ensures the eigenstates of the Hamiltonian are produced, rather than a different orthonormal basis. Extra conditions can be imposed on the wavefunction at each relaxation step in order to obtain particular solutions in the case of degenerate eigenstates. For example, a phase winding can be imposed in order to obtain a particular harmonic oscillator state, otherwise this process produces an arbitrary superposition of basis states that have equal energy.
 
 \section{Fourth order Runge--Kutta in an instantaneous local interaction picture}\label{sec:rk4ilip}
 
@@ -1208,15 +1230,15 @@ Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another a
 
 Consider the differential equation for the components of a state vector $\ket{\psi(t)}$ in a particular basis with basis vectors $\ket{n}$. This might simply be the Schr\"odinger equation, or perhaps some sort of nonlinear or other approximate, effective or phenomenological equation not corresponding to pure Hamiltonian evolution. Though they may have additional terms, such equations are generally of the form:
 \begin{align}\label{eq:schrodinger_eq}
-\dv t \braket{n}{\psi(t)} = -\frac i \hbar \sum_m \matrixel{n}{\hat H(t)}{m} \braket{m}{\psi(t)},
+\dv t \braket{n}{\psi(t)} = -\frac \ii \hbar \sum_m \matrixel{n}{\hat H(t)}{m} \braket{m}{\psi(t)},
 \end{align}
 where $\matrixel{n}{\hat H(t)}{m}$ are the matrix elements in that basis of the Hamiltonian $\hat H(t)$, which in general can be time dependent, or even a function of $\ket{\psi(t)}$, depending on the exact type of equation in use. If $\hat H(t)$ is almost diagonal in the $\ket{n}$ basis, then the solution to \eqref{eq:schrodinger_eq} is dominated by simple dynamical phase evolution, that is:
 \begin{align}
-\ket{\psi(t)} \approx \sum_m e^{-\frac i \hbar E_m t}\ket{m},
+\ket{\psi(t)} \approx \sum_m \ee^{-\frac \ii \hbar E_m t}\ket{m},
 \end{align}
 where $E_m$ is the energy eigenvalue corresponding to the eigenstate $\ket{m}$.
 
-A transformation into an interaction picture (\textsc{ip}) \cite[p.~318]{sakurai} is commonly used to treat this part of the evolution analytically, before solving the remaining dynamics with further analytics or numerics. For numerical methods, integration in the interaction picture allows one to use larger integration timesteps, as one does not need to resolve the fast oscillations around the complex plane due to this dynamical phase.
+A transformation into an interaction picture (\textsc{ip}) \cite[p.~317]{sakurai} is commonly used to treat this part of the evolution analytically, before solving the remaining dynamics with further analytics or numerics. For numerical methods, integration in the interaction picture allows one to use larger integration timesteps, as one does not need to resolve the fast oscillations around the complex plane due to this dynamical phase.
 
 Choosing an interaction picture typically involves diagonalising the time-independent part of a Hamiltonian, and then proceeding in the basis in which that time-independent part is diagonal. However, often one has a good reason to perform computations in a different basis, in which the time independent part of the Hamiltonian is only approximately diagonal,\footnote{For example, a spatial basis which allows for partitioning the integration region over multiple nodes on a cluster or cores on a \textsc{gpu}.} and transforming between bases may be computationally expensive (involving large matrix-vector multiplications). Furthermore, the Hamiltonian may change sufficiently during the time interval being simulated that the original time-independent Hamiltonian no longer dominates the dynamics at later times. In both these cases it would still be useful to factor out the time-local oscillatory dynamics in whichever basis is being used, in order to avoid taking unreasonably small timesteps.
 
@@ -1230,17 +1252,17 @@ and use the diagonal part at a specific time $t=t^\prime$ to define a time-indep
 \end{align}
 which is diagonal in the $\ket{n}$ basis. We can then use then use $\hat H_0^{t^\prime}$ to define an interaction picture state vector:
 \begin{align}\label{eq:IP_definition}
-\ket{\psi_\up{I}^{t^\prime}(t)} = e^{\frac i \hbar (t - t^\prime) \hat H_0^{t^\prime}}\ket{\psi(t)},
+\ket{\psi_\up{I}^{t^\prime}(t)} = \ee^{\frac \ii \hbar (t - t^\prime) \hat H_0^{t^\prime}}\ket{\psi(t)},
 \end{align}
 which obeys the differential equation:
 \begin{align}\label{eq:IPDE}
 \dv t \ket{\psi_\up{I}^{t^\prime}(t)}
-    = e^{\frac i \hbar (t - t^\prime) \hat H_0^{t^\prime}}\dv t \ket{\psi(t)}
-      + \frac i\hbar \hat H_0^{t^\prime}\ket{\psi_\up{I}^{t^\prime}(t)},
+    = \ee^{\frac \ii \hbar (t - t^\prime) \hat H_0^{t^\prime}}\dv t \ket{\psi(t)}
+      + \frac \ii\hbar \hat H_0^{t^\prime}\ket{\psi_\up{I}^{t^\prime}(t)},
 \end{align}
 where:
 \begin{align}\label{eq:backtransform}
-\ket{\psi(t)} = e^{-\frac i \hbar (t - t^\prime) \hat H_0^{t^\prime}}\ket{\psi_\up{I}^{t^\prime}(t)}
+\ket{\psi(t)} = \ee^{-\frac \ii \hbar (t - t^\prime) \hat H_0^{t^\prime}}\ket{\psi_\up{I}^{t^\prime}(t)}
 \end{align}
 is the original Schrödinger picture (\textsc{sp}) state vector.
 
@@ -1249,16 +1271,16 @@ This transformation is exact, no approximations or assumptions have been made. I
 Equation \eqref{eq:IP_definition} defines an \emph{instantaneous} interaction picture, in that it depends on the dynamics at a specific time $t=t^\prime$, and can be recomputed repeatedly throughout a computation in order to factor out the fast dynamical phase evolution even as the oscillation rates change over time. It is \emph{local} in that $H_0^{t^\prime}$ is diagonal in the $\ket{n}$ basis, which means that transformations between Schrödinger picture and interaction picture state vectors involves ordinary, elementwise exponentiation of vectors, rather than matrix products. Thus \eqref{eq:IP_definition}, \eqref{eq:IPDE} and \eqref{eq:backtransform} can be written componentwise as:
 
 \begin{align}\label{eq:IP_definition_components}
-\braket{n}{\psi_\up{I}^{t^\prime}(t)} = e^{ i (t - t^\prime)\omega_n^{t^\prime}}\braket{n}{\psi(t)},
+\braket{n}{\psi_\up{I}^{t^\prime}(t)} = \ee^{\ii (t - t^\prime)\omega_n^{t^\prime}}\braket{n}{\psi(t)},
 \end{align}
 \begin{align}\label{eq:IPDE_components}
 \dv t \braket{n}{\psi_\up{I}^{t^\prime}(t)}
-    = e^{i (t - t^\prime)\omega_n^{t^\prime}}\dv t \braket{n}{\psi(t)}
-      + i\omega_n^{t^\prime}\braket{n}{\psi_\up{I}^{t^\prime}(t)},
+    = \ee^{\ii (t - t^\prime)\omega_n^{t^\prime}}\dv t \braket{n}{\psi(t)}
+      + \ii\omega_n^{t^\prime}\braket{n}{\psi_\up{I}^{t^\prime}(t)},
 \end{align}
 and:
 \begin{align}\label{eq:backtransform_components}
-\braket{n}{\psi(t)} = e^{-i(t - t^\prime)\omega_n^{t^\prime}}\braket{n}{\psi_\up{I}^{t^\prime}(t)},
+\braket{n}{\psi(t)} = \ee^{-\ii(t - t^\prime)\omega_n^{t^\prime}}\braket{n}{\psi_\up{I}^{t^\prime}(t)},
 \end{align}
 where we have defined:
 \begin{align}\label{eq:omega}
@@ -1275,7 +1297,7 @@ Below is the resulting algorithm for performing one integration timestep. It tak
 
 For example, for the case of the Gross--Pitaevskii equation \cite{pethick2002bose} in the spatial basis $\psi(\vec r, t) = \braket{\vec r}{\psi(t)}$, these would be:
 \begin{align}\label{eq:RK4_ILIP_GPE}
-F(t, \psi(\vec r, t)) &= -\frac i \hbar\Bigg[\underbrace{-\frac{\hbar^2}{2m}\nabla^2}_{\hat H_\up{nondiag}} + \underbrace{V(\vec r, t) + g|\psi(\vec r, t)|^2}_{\hat H_\up{diag}}\Bigg]\psi(\vec r, t),
+F(t, \psi(\vec r, t)) &= -\frac \ii \hbar\Bigg[\underbrace{-\frac{\hbar^2}{2m}\nabla^2}_{\hat H_\up{nondiag}} + \underbrace{V(\vec r, t) + g|\psi(\vec r, t)|^2}_{\hat H_\up{diag}}\Bigg]\psi(\vec r, t),
 \end{align}
 and
 \begin{align}
@@ -1295,36 +1317,36 @@ Note that each symbol in bold in the algorithm below denotes an array containing
         \Comment{First evaluation of Schrödinger picture DE}
         \State $\mathbf{\omega} \gets G(t_0, \mathbf{\psi}_0)$
         \Comment{Oscillation frequencies: $\hbar\omega_n = \matrixel{n}{\hat H_\up{diag}(t_0)}{n}$}
-        \State $\mathbf{k}_1 \gets \mathbf{f}_1 + i\mathbf{\omega}\mathbf{\psi}_0$
+        \State $\mathbf{k}_1 \gets \mathbf{f}_1 + \ii\mathbf{\omega}\mathbf{\psi}_0$
         \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=0$}
         \State $\mathbf{\phi}_1 \gets \mathbf{\psi}_0 + \mathbf{k}_1 \frac{\upDelta t}{2}$
         \Comment{First RK4 estimate of IP state vector, at $t=t_0 + \frac{\upDelta t}{2}$}
-        \State $\mathbf{\psi}_1 \gets e^{-i\mathbf{\omega}\frac{\upDelta t}{2}}\mathbf{\phi}_1$
+        \State $\mathbf{\psi}_1 \gets \ee^{-\ii\mathbf{\omega}\frac{\upDelta t}{2}}\mathbf{\phi}_1$
         \Comment{Convert first estimate back to SP with \eqref{eq:backtransform_components}}
         \State $\mathbf{f}_2 \gets F(t_0 + \frac{\upDelta t}{2}, \mathbf{\psi}_1)$
         \Comment{Second evaluation of Schrödinger picture DE}
-        \State $\mathbf{k}_2 \gets e^{i\mathbf{\omega}\frac{\upDelta t}{2}}\mathbf{f}_2 + i\mathbf{\omega}\mathbf{\phi}_1$
+        \State $\mathbf{k}_2 \gets \ee^{\ii\mathbf{\omega}\frac{\upDelta t}{2}}\mathbf{f}_2 + \ii\mathbf{\omega}\mathbf{\phi}_1$
         \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=\frac{\upDelta t}{2}$}
         \State $\mathbf{\phi}_2 \gets \mathbf{\psi}_0 + \mathbf{k}_2 \frac{\upDelta t}{2}$
         \Comment{Second RK4 estimate of IP state vector, at $t=t_0 + \frac{\upDelta t}{2}$}
-        \State $\mathbf{\psi}_2 \gets e^{-i\mathbf{\omega}\frac{\upDelta t}{2}}\mathbf{\phi}_2$
+        \State $\mathbf{\psi}_2 \gets \ee^{-\ii\mathbf{\omega}\frac{\upDelta t}{2}}\mathbf{\phi}_2$
         \Comment{Convert second estimate back to SP with \eqref{eq:backtransform_components}}
         \State $\mathbf{f}_3 \gets F(t_0 + \frac{\upDelta t}{2}, \mathbf{\psi}_2)$
         \Comment{Third evaluation of Schrödinger picture DE}
-        \State $\mathbf{k}_3 \gets e^{i\mathbf{\omega}\frac{\upDelta t}{2}}\mathbf{f}_3 + i\mathbf{\omega}\mathbf{\phi}_2$
+        \State $\mathbf{k}_3 \gets \ee^{\ii\mathbf{\omega}\frac{\upDelta t}{2}}\mathbf{f}_3 + \ii\mathbf{\omega}\mathbf{\phi}_2$
         \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=\frac{\upDelta t}{2}$}
         \State $\mathbf{\phi}_3 \gets \mathbf{\psi}_0 + \mathbf{k}_3 \upDelta t$
         \Comment{Third RK4 estimate of IP state vector, at $t=t_0 + \upDelta t$}
-        \State $\mathbf{\psi}_3 \gets e^{-i\mathbf{\omega}\upDelta t}\mathbf{\phi}_3$
+        \State $\mathbf{\psi}_3 \gets \ee^{-\ii\mathbf{\omega}\upDelta t}\mathbf{\phi}_3$
         \Comment{Convert third estimate back to SP with \eqref{eq:backtransform_components}}
         \State $\mathbf{f}_4 \gets F(t_0 + \upDelta t, \mathbf{\psi}_3)$
         \Comment{Fourth evaluation of Schrödinger picture DE}
-        \State $\mathbf{k}_4 \gets e^{i\mathbf{\omega}\upDelta t}\mathbf{f}_4 + i\mathbf{\omega}\mathbf{\phi}_3$
+        \State $\mathbf{k}_4 \gets \ee^{\ii\mathbf{\omega}\upDelta t}\mathbf{f}_4 + \ii\mathbf{\omega}\mathbf{\phi}_3$
         \Comment{Evaluate \eqref{eq:IPDE_components} with $t-t^\prime=\upDelta t$}
         \State $\mathbf{\phi}_4 \gets
                 \mathbf{\psi}_0 + \frac{\upDelta t}{6}\left(\mathbf{k}_1 + 2\mathbf{k}_2 + 2\mathbf{k}_3 + \mathbf{k}_4\right)$
         \Comment{Fourth RK4 estimate, at $t=t_0 + \upDelta t$}
-        \State $\mathbf{\psi}_4 \gets e^{-i\mathbf{\omega}\upDelta t}\mathbf{\phi}_4$
+        \State $\mathbf{\psi}_4 \gets \ee^{-\ii\mathbf{\omega}\upDelta t}\mathbf{\phi}_4$
         \Comment{Convert fourth estimate back to SP with \eqref{eq:backtransform_components}}
         \State \Return $\mathbf{\psi}_4$
         \Comment{Return the computed SP state vector at $t=t_0 + \upDelta t$}
@@ -1336,7 +1358,7 @@ Note that each symbol in bold in the algorithm below denotes an array containing
 
 When \textsc{rk4ilip} is used for imaginary time evolution (\textsc{ite}) \cite{chiofalo2000}, the oscillation frequencies $\mathbf{\omega}$ may have a large imaginary part. If the initial guess is different enough from the ground state, then the exponentials in \eqref{eq:IP_definition_components}, \eqref{eq:IPDE_components} and \eqref{eq:backtransform_components} may result in numerical overflow. To prevent this, one can define a clipped copy of $\mathbf{\omega}$,
 \begin{align}
-\mathbf{\omega}_\up{clipped} = \re(\mathbf{\omega}) + i\begin{cases}
+\mathbf{\omega}_\up{clipped} = \re(\mathbf{\omega}) + \ii\begin{cases}
 -\frac{\log X}{\upDelta t}\qquad \im(\mathbf{\omega})\upDelta t < -\log X\\
 \im(\mathbf{\omega})\qquad       -\log X \leq \im(\mathbf{\omega})\upDelta t \leq \log X\\
 \frac{\log X}{\upDelta t}\qquad  \im(\mathbf{\omega})\upDelta t > \log X
@@ -1356,7 +1378,7 @@ However that's not quite all: large spatial variation in potentials often comes 
 
 This leaves \textsc{rk4ilip} with an advantage only in the case of large spatial variations in the potential that do not lead to equally large kinetic energies. Hence the examples I show in the next section are ones in which the condensate is trapped in a steep potential well---the trap walls are high and hence involve large potentials compared to the interior, but do not lead to large kinetic energies because the condensate is trapped close to its ground state.
 
-The Fourier split-step (\textsc{fss}) method \cite{Muslu2005} (see section [TODO]) also models dynamical phases due to the potential analytically to low order. As such it is also quite capable of modeling large potentials. However, it requires that all operators be diagonal in either the spatial basis or the Fourier basis  \cite{Muslu2005}. Therefore \textsc{bec}s in rotating frames, due to the Hamiltonian containing an angular momentum operator, are not amenable to simulation with \textsc{fss}\footnote{Split-step with more than these two bases is however possible in other schemes such as the finite element discrete variable representation \cite{schneider_parallel_2006}---each operator can be diagonalised and exponentiated locally in each element and applied as a (relatively small) matrix multiplication rather than using \textsc{fft}s.}.
+The Fourier split-step (\textsc{fss}) method \cite{Muslu2005} (see Section \ref{sec:dft}) also models dynamical phases due to the potential analytically to low order. As such it is also quite capable of modeling large potentials. However, it requires that all operators be diagonal in either the spatial basis or the Fourier basis  \cite{Muslu2005}. Therefore \textsc{bec}s in rotating frames, due to the Hamiltonian containing an angular momentum operator, are not amenable to simulation with \textsc{fss}\footnote{Split-step with more than these two bases is however possible in other schemes such as the finite element discrete variable representation \cite{schneider_parallel_2006}---each operator can be diagonalised and exponentiated locally in each element and applied as a (relatively small) matrix multiplication rather than using \textsc{fft}s.}.
 
 This use of \textsc{fft}s in both the \textsc{fss} and \textsc{rk4ip} methods necessarily imposes periodic boundary conditions on a simulation, which may not be desirable. By contrast, if different boundary conditions are desired, finite differences instead of \textsc{fft}s can be used to evaluate spatial derivatives in the \textsc{rk4} and \textsc{rk4ilip} methods, so long as a sufficiently high-order finite difference scheme is used so as not to unacceptably impact accuracy.
 
@@ -1417,7 +1439,7 @@ The results of $120$ simulation runs are shown in \figref{fig:rk4ilip_results}. 
 
 Four different potentials were used, all of the form $V(r) = \mu \left(r/R\right)^\alpha$ with $\alpha = 4, 8, 12, 16$. For the rotating frame simulations, the rotation frequency was $\Omega = 2\pi \times 148\unit{Hz}$. This is $89\%$ of the effective harmonic trap frequency, defined as the frequency of a harmonic trap that would have the same Thomas--Fermi radius given the same chemical potential.
 
-All ground states were determined using successive over-relaxation (See section [TODO]) with sixth-order finite differences for spatial derivatives. For the nonrotating simulations, convergence was reached with $\upDelta\mu/\mu < 1\E{-13}$, with:
+All ground states were determined using successive over-relaxation (See section \ref{sec:SOR}) with sixth-order finite differences for spatial derivatives. For the nonrotating simulations, convergence was reached with $\upDelta\mu/\mu < 1\E{-13}$, with:
 \begin{equation}
 \upDelta\mu = \sqrt{\frac{\matrixel{\psi} {(\hat H - \mu)^2}{\psi}}{\braket {\psi}{\psi}}},
 \end{equation}
@@ -1425,7 +1447,7 @@ where $\hat H$ is the nonlinear Hamiltonian and $\braket{\vec r}{\psi}$ is the c
 
 After each ground state was found, it was multiplied by a spatially varying phase factor corresponding to the phase pattern of a number of randomly positioned vortices:
 \begin{align}
-\psi_\up{vortices}(x, y) = \psi_\up{ground state}(x, y)\prod_{n=1}^N e^{\pm_n i\arctantwo(y - y_n, x - x_n)}
+\psi_\up{vortices}(x, y) = \psi_\up{ground state}(x, y)\prod_{n=1}^N \ee^{\pm_n \ii\arctantwo(y - y_n, x - x_n)}
 \end{align}
 where $\arctantwo$ is the two-argument $\arctan$ function,\footnote{Defined as the principle value of the argument of the complex number $x + iy$: \mbox{$\arctantwo(y, x) = \Arg(x + iy)$.}} $N=30$, $\pm_n$ is a randomly chosen sign, and $(x_n, y_n)$ are vortex positions randomly drawn from a Gaussian distribution centred on $(0,0)$ with standard deviation equal to the Thomas--Fermi radius $R$. The same seed was used for the pseudorandom number generator in each simulation run, and so the vortex positions were identical in each simulation run.
 
@@ -1433,7 +1455,7 @@ After vortex phase imprinting, the wavefunctions were evolved in imaginary time 
 
 The smoothed, vortex imprinted states were then evolved in time for $40\unit{ms}$. For each simulation, five different timesteps were used: $\upDelta t = \tau_\up d, \tau_\up d / 2, \tau_\up d / 4, \tau_\up d / 8, \tau_\up d / 16$, where \mbox{$\tau_\up d = m \upDelta x^2 / \pi\hbar \approx 2.68\unit{\mu s}$} is the dispersion timescale associated with the grid spacing $\upDelta x$, defined as the time taken to move one gridpoint at the group velocity of the Nyquist mode.
 
-For the nonrotating frame simulations, spatial derivatives for the \textsc{rk4} and \textsc{rk4ilip} methods were determined using the Fourier method [see section TODO]. This was to ensure a fair comparison with the other two methods, which necessarily use Fourier transforms to perform computations pertaining due to the kinetic term.
+For the nonrotating frame simulations, spatial derivatives for the \textsc{rk4} and \textsc{rk4ilip} methods were determined using the Fourier method (Section \ref{sec:dft}). This was to ensure a fair comparison with the other two methods, which necessarily use Fourier transforms to perform computations pertaining due to the kinetic term.
 
 For the rotating frame simulations, sixth-order finite differences with zero boundary conditions were used instead for the kinetic terms of the \textsc{rk4} and \textsc{rk4ilip} methods, which were the only two methods used for those simulations (due to the other methods being incompatible with the angular momentum operator required for a rotating frame). This choice was fairly arbitrary, but did allow the condensate to be closer to the boundary than is otherwise possible with the periodic boundary conditions imposed by use of the Fourier method for spatial derivatives. This is because the rotating frame Hamiltonian is not periodic in space, and so its discontinuity at the boundary can be a problem if the wavefunction is not sufficiently small there.
 
