@@ -141,7 +141,7 @@ In this section I'll summarise what the $^{87}$Rb $\up{D}$ line looks like from 
 
 Much of the details of this section are drawn from references \cite{steck_rubidium_2015, steck_quantum_2017, metcalf_laser_1999, king_angular_2008, farrell_consistency_1995}, but the reader should be aware that there are considerable conventional and notational differences between different literature sources. What is presented here is summarised and framed in a way that I think is useful to an experimentalist looking to use the theory to make concrete calculations about real systems.
 
-\subsection{Fine structure}
+\subsection{Fine structure}\label{sec:fine_structure}
 
 The rubidium 87 $\up{D}$ line refers to the first excitation available to the sole outer electron of $^{87}$Rb. Both the ground and excited state of this transition have the same principal quantum number, but different orbital angular momentum quantum numbers. Upon closer inspection, it is not just one transition between a ground state and an excited state---there are two excited states, and the two resulting transitions are called, in order of their transition frequencies, the $\up{D}_1$ and  $\up{D}_2$ lines. Thus the ground and first excited state of $^{87}$Rb are actually a ground state plus two non-degenerate excited states, once we take into account fine structure. The groundstate is an $S$ state (electronic orbital angular momentum quantum number $L=0$), called the $S_{1/2}$ state, and the two excited states are $P$ states $(L=1)$, one with the electron spin anti-aligned with its orbital angular momentum (resulting in total angular momentum quantum number $J=1/2$) and one with the electron spin aligned with its orbital angular momentum ($J=3/2$), called the $P_{1/2}$ and $P_{3/2}$ states respectively. In all of these states, $^{87}$Rb's single outer-shell electron occupies an orbital with principle quantum number $n=5$, which for brevity we leave out of the notation. The transition between $S_{1/2}$ and $P_{1/2}$ is called the $\up{D}_1$ line, with experimentally measured (angular) transition frequency $\omega_{\up{D}_1}$, and the transition between $S_{1/2}$ and $P_{3/2}$ is the $\up{D}_2$ line with angular transition frequency $\omega_{\up{D}_2}$. These transition frequencies correspond to optical wavelengths of $\lambda_{\up{D}_1} \approx 795\unit{nm}$ and $\lambda_{\up{D}_2} \approx 780\unit{nm}$\cite{steck_rubidium_2015}.
 
@@ -165,9 +165,9 @@ H_\up{fs}  =
 \end{align}
 which is a block-diagonal matrix with each block also being a diagonal matrix. We have not yet specified the size of each submatrix---the size of each differs and depends on how many hyperfine and Zeeman sublevels are in that state.
 
-This base Hamiltonian is worth singling out since the energy differences between its three states are orders of magnitude larger than any of the energy differences between hyperfine and Zeeman sublevels within them. When doing any sort of calculations or simulations then, this time-independent Hamiltonian can often be removed from the equations using an interaction picture, as done in section \ref{sec:laser_cooling_simulations} in simulating laser cooling. 
+This base Hamiltonian is worth singling out since the energy differences between its three states are orders of magnitude larger than any of the energy differences between hyperfine and Zeeman sublevels within them. When doing any sort of calculations or simulations then, this time-independent Hamiltonian can often be removed from the equations using an interaction picture (see Section \ref{sec:interaction_picture}), as done in Section \ref{sec:laser_cooling_simulations} in simulating laser cooling. 
 
-\subsection{Hyperfine structure}
+\subsection{Hyperfine structure}\label{sec:hyperfine_structure}
 
 Within each of the $S_{1/2}$, $P_{1/2}$ and $P_{3/2}$ states, the single outer-shell electron's total angular momentum $\hat {\vec J}$ has an interaction with $^{87}$Rb's nuclear angular momentum $\hat{\vec I}$. This results in multiple discrete energy levels depending on the relative orientation of the two separate angular momenta. The interaction Hamiltonian for this hyperfine structure is\footnote{Note that this expression differs from those in the cited references by a factor of $1/\hbar^2$---this is because I define the $\hat{\vec I}$ and $\hat{\vec J}$ angular momentum operators in SI units, rather than in units of $\hbar^2$.} \cite{steck_rubidium_2015, arimondo_experimental_1977}:
 \begin{align}\label{eq:H_hfs}
@@ -305,7 +305,7 @@ where $\ket{m_I\ m_J} = \ket{m_I} \otimes \ket{m_J}$. The vector representation 
 \end{align}
 The hyperfine Hamiltonian is not diagonal in the $\{\ket{m_I\ m_J}\}$ basis. The basis in which it is diagonal---the $\{\ket{F\ m_F}\}$ basis---will be discussed in section \ref{sec:the_F_mF_basis}.
 
-\subsection{Zeeman sublevels}
+\subsection{Zeeman sublevels}\label{sec:zeeman_sublevels}
 
 The states differing only in their $m_F$ quantum numbers---called Zeeman sublevels---are degenerate in energy with respect to the hyperfine Hamiltonian, but an external magnetic field lifts this degeneracy. The Zeeman effect \cite{zeeman_influence_1897, steck_rubidium_2015} results in an energy shift proportional to the external magnetic field $\vec B$ and to a system's magnetic moment $\vec \mu$:
 \begin{align}
