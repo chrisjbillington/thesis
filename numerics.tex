@@ -88,25 +88,22 @@ Whilst matrix exponentiation is a way to efficiently evolve systems with time-in
 
 \subsection{The interaction picture}\label{sec:interaction_picture}
 
-Although time-dependent Hamiltonians are much harder to deal with than time independent ones, often a Hamiltonian can be decomposed into the sum a time-independent and a time-dependent part:
+Although time-dependent Hamiltonians are much harder to deal with than time-independent ones, often a Hamiltonian can be decomposed into the sum a time-independent and a time-dependent part:
 \begin{align}
 \hat H(t) = \hat H_0 + \hat H_1(t),
 \end{align}
-in this case, the Schr\"odinnger equation can be transformed into a form that is often more computationally tractable and analytically useful, by treating part of the evolution due to the time-independent part analytically. This transformation is called an \emph{interaction picture} \cite[p.~317]{sakurai}, or sometimes, particularly in atomic physics, a \emph{rotating frame}, due to the fact that for a spin-$\frac12$ system in a constant magnetic field, the action of $H_0$ entails literal rotation of the spin vector in three dimensional space. 
+in this case, the Schr\"odinnger equation can be transformed into a form that is often more computationally tractable and analytically useful, by treating part of the evolution due to the time-independent part analytically. This transformation is called an \emph{interaction picture} \cite[p.~317]{sakurai}, or sometimes, particularly in atomic physics, a \emph{rotating frame}, due to the fact that for a spin-$\frac12$ system in a constant magnetic field, time evolution due to $\hat H_0$ entails literal rotation of the spin vector in three dimensional space. 
 
-To analytically remove the action of $\hat H_0$, we define the state vector $\ket{\psi(t)}$ as the action of $\hat H_0$ on an \emph{interaction picture state vector} $\ket{\psi_\up{I}(t)}$:
+To analytically remove the effect of time evolution due to $\hat H_0$, we write an ansatz for the state vector $\ket{\psi(t)}$ as an \emph{interaction picture state vector} $\ket{\psi_\up{I}(t)}$ that has undergone time evolution due to $\hat H_0$ for time $t$:
 \begin{align}
-\ket{\psi(t)} = \ee^{-\frac\ii\hbar\hat H t}\ket{\psi_\up{I}(t)}
+\ket{\psi(t)} = \ee^{-\frac\ii\hbar\hat H_0 t}\ket{\psi_\up{I}(t)}
 \end{align}
-and substitute into the Schr\"odinger equation, in order to obtain the equation of motion for the interaction picture state vector $\ket{\psi_\up{I}(t)}$:
+Substituting this into the Schr\"odinger equation yields an equation of motion for the interaction picture state vector $\ket{\psi_\up{I}(t)}$:
 \begin{align}
 \ii\hbar\dv t \ee^{-\frac\ii\hbar\hat H_0 t}\ket{\psi_\up{I}(t)} &= 
 \left[\hat H_0 + \hat H_1(t)\right]\ee^{-\frac\ii\hbar\hat H_0 t}\ket{\psi_\up{I}(t)}\\
 \Rightarrow \ii\hbar\dv t\ket{\psi_\up{I}(t)} &=
-\ee^{\frac\ii\hbar\hat H_0 t}\hat H_1(t)\ee^{-\frac\ii\hbar\hat H_0 t}\ket{\psi_\up{I}(t)},
-\end{align}
-which is usually written:
-\begin{align}
+\ee^{\frac\ii\hbar\hat H_0 t}\hat H_1(t)\ee^{-\frac\ii\hbar\hat H_0 t}\ket{\psi_\up{I}(t)}\\
 \Rightarrow \ii\hbar\dv t\ket{\psi_\up{I}(t)} &= \hat H_I(t)\ket{\psi_\up{I}(t)},
 \end{align}
 where $\hat H_I(t)=\ee^{\frac\ii\hbar\hat H_0 t}\hat H_1(t)\ee^{-\frac\ii\hbar\hat H_0 t}$ is an \emph{interaction picture Hamiltonian}. Thus the interaction picture defines a time-dependent unitary transformation, with the operator for transforming from the Schr\"odinger to interaction picture being:
@@ -127,7 +124,7 @@ Usually, calculations are performed in a basis in which $\hat H_0$ is diagonal, 
 \end{align}
 where $\{\ket{n}\}$ and $\{E_n\}$ are the eigenkets and eigenvalues of $\hat H_0$.
 
-Use of an interaction picture can remove short timescales from the evolution of a state vector, with the original Schro\"odinger picture state vectors recoverable via analytic transformations, though this is often not neccesary since one often only cares about the magnitude of a component $\braket{n}{\psi}$ of $\ket\psi$, which is preserved by the transformation \eqref{eq:interaction_picture_psi_transform_diagonal} and not its phase.
+Use of an interaction picture can remove short timescales from the evolution of a state vector, with the original Schro\"odinger picture state vectors recoverable via analytic transformations, though this is often not neccesary since one often only cares about the magnitude of a component $\braket{n}{\psi}$ of $\ket\psi$---which is preserved by the transformation \eqref{eq:interaction_picture_psi_transform_diagonal}---and not its phase.
 
 In atomic physics calculations an interaction picture can be used to remove the large energy scales (and hence small timescale) separating the three fine structure states of the $D_2$ line (Section \ref{sec:fine_structure}), or it can be used to remove the entire hyperfine interaction Hamiltonian, and even both the hyperfine and Zeeman Hamiltonians (Sections \ref{sec:hyperfine_structure} and \ref{sec:zeeman_sublevels}) if a time-independent magnetic field is being used. This removes the necessity of small numerical timesteps needed by some numerical methods to resolve very fast phase oscillations due to these time-independent Hamiltonians, as well as aiding human interpretation of the results which would otherwise have more interesting or relevant phase changes drowned out by fast phase oscillations from $\hat H_0$.
 
@@ -1219,10 +1216,25 @@ where $\mu$ is the chemical potential of the condensate in its groundstate and $
 
 $A^{(k+1)}$ and $\vec b^{(k+1)}$ can then be computed based on $\vec\psi^{(k+1)}$ and the process repeated to provide increasingly accurate approximate solutions.
 
-A difference between successive over-relaxation and imaginary time evolution is that \textsc{sor} finds the state with chemical potential $\mu$ (alternately, with energy $E$ for a linear quantum system), as opposed to the groundstate. In this way successive over-relaxation doesn't tell you what the groundstate energy is, it requires that as input. Typically to find a Gross--Pitaevskii groundstate I will analytically estimate the chemical potential for a given number of atoms or peak density, or whatever my requirement is, using the Thomas--Fermi approximation, and then find the state with that chemical potential using \textsc{sor}. This results in minor differences compared to the peak density or atom number originally targeted, but the requirement is not usually strict enough for this to be of consequence. An alternative is to normalise $\psi$ to the desired atom number at each step to impose fixed atom number, and to dynamically update the targeted $\mu$ as \textsc{sor} proceeds, based on computing the expectation value of $H$ using the current best estimate of $\vec\psi$. This process can also be used to find eigenstates of linear Hamiltonians if their energies are not known, but not necessarily the groundstate unless the initial guess was a good one; and represents a further ad-hoc deviation from pure successive over-relaxation that may require more attention and guidance from the programmer in order to obtain good results.
+A difference between successive over-relaxation and imaginary time evolution is that \textsc{sor} finds the state with chemical potential $\mu$ (replaceable by the energy $E$ for a linear quantum system), as opposed to the groundstate. In this way successive over-relaxation doesn't tell you what the groundstate energy is, it requires that as input. Typically to find a Gross--Pitaevskii groundstate I will analytically estimate the chemical potential for a given number of atoms or peak density, or whatever my requirement is, using the Thomas--Fermi approximation, and then find the state with that chemical potential using \textsc{sor}. This results in minor differences compared to the peak density or atom number originally targeted, but the requirement is not usually strict enough for this to be of consequence. For the Gross--Pitaevskii equation, the ability of the atom number to vary means a condensate wavefunction with the given chemical potential can always be found.
+
+However, sometimes one desires the groundstate of the Gross--Pitaevskii pseudo-Hamiltonian given a certain atom number, or one may be solving the time-independent linear Schr\"odinger equation and not know the eigenstate energies. In the former case one can to normalise $\vec\psi$ to the desired atom number at each step to impose fixed atom number, but then \textsc{sor} will not converge to a stationary state/eigenstate unless one has by chance guessed the correct chemical potential. \textsc{sor} will also not converge for the linear Schr\"odinger equation\footnote{Because normalisation for the linear Schr\"odinger equation is arbitrary, one ought to either normalise $\vec\psi$ at every step, or impose a boundary condition at a single point where $\vec\psi$ is nozero (simply not updating that point in each \textsc{sor step}), and normalise once at the end in order to prevent $\vec\psi$ growing or shrinking without limit.} unless the energy given corresponds to an actual eigenstate.
+
+A strategy that works is to dynamically update the targeted $\mu$ (or $E$) as \textsc{sor} proceeds, by computing the expectation value of $H$ using the current best estimate of $\vec\psi$ after each \textsc{sor} step:
+\begin{align}
+\psi^{(k+1)}_{i\,\textsc{sor}} = \psi^{(k)}_i + \alpha\left(\frac{\mu^{(k)}\psi^{(k)}_i - \sum_{j\neq i} H_{ij}(\vec\psi^{(k)})\psi^{(\up{latest})}_j}{A_{ii}} - \psi^{(k)}_i\right),
+\end{align}
+where
+\begin{align}
+\mu^{(k)} = \frac{\vec\psi^{*(k)}\cdot H(\vec\psi^{(k)})\vec\psi^{(k)}}
+{\vec\psi^{*(k)}\cdot\vec\psi^{(k)}}
+\end{align}
+This process of dynamically updating the targeted chemical potential or energy can find stationary states and eigenstates, but not necessarily the groundstate. Different initial guesses for $\vec\psi$ may result in convergence to different stationary states/eigenstates, and some attention and guidance from the programmer is required in order to craft initial guesses that result in convergence to the desired states.
 
 \subsection{Generalisation to excited states via Gram–Schmidt orthonormalisation}\label{sec:excited_states_gram_schmidt}
-Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another approach\footnote{Realised independently by me, but not original \cite{ahn_variational_1986}.} (for the linear Schr\"odinger equation) is to find the groundstate using one of the above techniques, and then repeat the process, subtracting off the wavefunction's projection onto the already found ground state at every step. This yields the lowest energy state that is orthogonal to the first---i.e. the first excited state. Repeating the process, but subtracting at each step the projection onto \emph{both} eigenstates found so far, then yields the second excited state and so forth. This is simply the Gram--Schmidt process for finding orthonormal vectors, with the additional step of relaxing each vector to the lowest possible energy given the orthogonality requirement---this ensures the eigenstates of the Hamiltonian are produced, rather than a different orthonormal basis. Extra conditions can be imposed on the wavefunction at each relaxation step in order to obtain particular solutions in the case of degenerate eigenstates. For example, a phase winding can be imposed in order to obtain a particular harmonic oscillator state, otherwise this process produces an arbitrary superposition of basis states that have equal energy.
+Directly diagonalising a Hamiltonian can be costly in a spatial basis. Another approach\footnote{Realised independently by me, but not original \cite{ahn_variational_1986}.} (for the linear Schr\"odinger equation) is to find the groundstate using one of the above techniques, and then repeat the process with a fresh initial guess, subtracting off the wavefunction's projection onto the already found ground state at every step. This yields the lowest energy state that is orthogonal to the first---i.e. the first excited state. Repeating the process, but subtracting at each step the projection onto \emph{both} eigenstates found so far, then yields the second excited state and so forth. This is simply the Gram--Schmidt process for finding orthonormal vectors, with the additional step of relaxing each vector to the lowest possible energy given the orthogonality requirement---this ensures the eigenstates of the Hamiltonian are produced, rather than a different orthonormal basis. Extra conditions can be imposed on the wavefunction at each relaxation step in order to obtain particular solutions in the case of degenerate eigenstates. For example, a phase winding can be imposed in order to obtain a particular harmonic oscillator state, otherwise this process produces an arbitrary superposition of basis states that have equal energy.
+
+For the case of successive over-relaxation used with the linear Schr\"odinger equation, as mentioned in Section \ref{sec:SOR}, one often cannot predict which eigenstate results when the targeted energy is not already known---the groundstate is not necessarily the one produced by \textsc{sor}. Nonetheless, relaxation to \emph{some} eigenstate or other, subject to the state vector being orthonormal to all eigenstates found so far, will produce an additional orthonormal eigenstate each time, just not necessarily in order from lowest to highest energy.
 
 \section{Fourth order Runge--Kutta in an instantaneous local interaction picture}\label{sec:rk4ilip}
 
