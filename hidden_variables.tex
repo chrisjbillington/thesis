@@ -1,6 +1,18 @@
 
 \chapter{Hidden variables for semiclassical models with state-dependent forces}
 
+Hidden variable theories [CITE, CITE] are interpretations of quantum mechanics which posit that there are definite states underlying quantum wavefunctions, such that quantum indeterminacy is an illusion---an emergent phenomenon rather than a fundamental fact. The Bell inequality [CITE] proves that any such theory must be \emph{nonlocal} in order to explain all the predictions of quantum mechanics, and perhaps in light of this, most physicists surveyed [CITE] do not believe that hidden variables underlie physical reality.
+
+However, by framing quantum systems in classical terms, hidden variable theories can provide an excellent computational tool for \emph{approximate} models of quantum systems, when it is reasonable to approximate some degrees of freedom as classical, yet other degrees of freedom need to be modelled quantum mechanically. Just as hidden variable theories have framed the quantum world in terms that are agreeable to the classical view of the world in the minds of some interpreters of quantum mechanics, so can they bridge the gap between a \emph{simulated} quantum world and a \emph{simulated} classical world coexisting in the same computer simulation.
+
+In this chapter I describe what I call the `hidden variables semiclassical' method: a method of combining quantum simulations with classical simulations, with hidden variables bridging the gap between the classical and quantum degrees of freedom. I describe existing semiclassical methods and posit that they are already using hidden variables, but with a poor choice of hidden variable theory. Knowing this, we can choose a better hidden variable theory to make these models agree more closely with the underlying model they are approximating, and ultimately, with experiment.
+
+\section{The problem: Stern--Gerlach separation and evaporative cooling}
+
+In the Stern--Gerlach experiment [CITE], particles with quantum spin and a magnetic moment are fired as a beam through a region of space with a magnetic field gradient. The well known result is that two clusters of positions (if the particles are spin $\frac12$) are observed once the beam emerges, rather than a continuous smear of positions, indicating that angular momentum---like many quantities in quantum mechanics---is quantised.
+
+One can go further and intentionally spin-polarise the particles before they are passed through the magnetic field gradient, say putting them in an eigenstate of the $\hat F_x$ operator. Then,
+
 TODO:
 \begin{itemize}
 \item Define/describe what a hidden variable theory is, drawing heavily on Aaronson's~\cite{Aaronson2005} explanations. Give examples, argue why the Schrodinger theory is appealing.
@@ -69,7 +81,7 @@ If at large enough times, a decoherence rate is independent of time, that decohe
 
 Unlike quantum optics models, our decoherence factor does not describe Markovian decoherence on any timescale. In the limit of large $t$, its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian [CITE] at that timescale. Nonetheless, if we wish to write a time-local differential equation for the internal state of the atom, Markovian decoherence is the only kind we can include [CITE].
 
-To that end, we will now construct a ``time ignorant" version of $r_{ij}(t)$ that answers the question ``What is the expected decoherence factor at all future times, if you don't know how long it has been since the two wavepackets began separating?" In this way we can compute an \emph{average} decoherence rate $\Gamma_{ij}$ described by our decoherence factor, even though $r_{ij}(t)$ does not have a constant decoherence rate at large times. This essentually amounts to finding the best fitting exponential to $r_{ij}(t)$. Whilst this approximation is crude, it is nonetheless an improvement over the Ehrenfest model, which has no decoherence at all (i.e. it has a decoherence rate that is also constant like ours---but equal to zero).
+To that end, we will now construct a ``time ignorant" version of $r_{ij}(t)$ that answers the question ``What is the expected decoherence factor at all future times, if you don't know how long it has been since the two wavepackets began separating?" In this way we can compute an \emph{average} decoherence rate $\Gamma_{ij}$ described by our decoherence factor, even though $r_{ij}(t)$ does not have a constant decoherence rate at large times. This essentially amounts to finding the best fitting exponential to $r_{ij}(t)$. Whilst this approximation is crude, it is nonetheless an improvement over the Ehrenfest model, which has no decoherence at all (i.e. it has a decoherence rate that is also constant like ours---but equal to zero).
 
 \begin{figure}[t]
     \centerfloat
@@ -149,8 +161,8 @@ Equations \eqref{eq:gamma_pos_final} and \eqref{eq:gamma_vel_final} are our fina
     \label{fig:decoherence_rate_example}
 \end{figure}
 
-We now have an approximate analytic expression that not computationally inexpensive to evaluate for each atom in an ensemble at every timestep of a differential equation.
-An example showing the accuracy of \eqref{eq:gamma_total}, compared to the exact expression \eqref{eq:gamma_integral} for for $\Gamma_{ij}$ over a range of wavepacket sizes is shown in \figref{fig:decoherence_rate_example}.
+We now have an approximate analytic expression that is computationally inexpensive to evaluate for each atom in an ensemble at every timestep of a differential equation.
+An example showing the accuracy of \eqref{eq:gamma_total}, compared to the exact expression \eqref{eq:gamma_integral} for $\Gamma_{ij}$ over a range of wavepacket sizes is shown in \figref{fig:decoherence_rate_example}.
 
 \section{Choice of wavepacket size}
 
