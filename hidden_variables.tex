@@ -68,7 +68,7 @@ where $\hat H$ is the Hamiltonian describing the evolution of the atom's interna
 \dv{t}\vec r &= \vec v\label{eq:ehrenfest_semiclassical_last}.
 \end{align}
 
-The Ehrenfest semiclassical method is the same as the simple semiclassical method \eqref{eq:simple_semiclassical_first} to \eqref{eq:simple_semiclassical_last}, except that it has an answer to the question ``What should we use for $V(\vec r)$ when the atom is in a superposition of states that feel different potentials?", which is ``use the expectation value". 
+The Ehrenfest semiclassical method is the same as the simple semiclassical method~\eqref{eq:simple_semiclassical_first} to~\eqref{eq:simple_semiclassical_last}, except that it has an answer to the question ``What should we use for $V(\vec r)$ when the atom is in a superposition of states that feel different potentials?'', which is ``use the expectation value''. 
 
 This is all well and good if the expectation value of position is a good approximation to the situation being modelled. But in the Stern--Gerlach experiment and Majorana losses in magnetic traps, the expectation value of position is a poor match to reality. In the Stern--Gerlach experiment beginning with spin-polarised atoms, this would result in a single blob in the middle of the screen, rather than two. And in an atom approaching the field zero in a magnetic trap, it would result in the atom broadening its orbit somewhat, rather than splitting into multiple possible trajectories (Figure \ref{fig:evap_problem}). Semiclassical simulations of evaporative cooling performed by Christopher Watkins [CITE] displayed an unphysical heating of the atom cloud that I believe is due to the Ehrenfest method's inability to model Stern--Gerlach separation. In a real magnetic trap during evaporative cooling to Bose--Einstein condensation, the mean free path is large enough that the part of the wavepackets that are no longer trapped will usually leave the trap without colliding with any other atoms. This means that the energy the untrapped and anti-trapped components have gained relative to the trapped component moving away from the field zero is not usually shared with other atoms upon collision---the extra energy leaves with the atoms. However, if a close approach to the magnetic field zero merely means a broadening of the atoms orbit, then the extra energy does not leave as fast, if at all, and can be shared with other atoms via collisions, turning what would have been an atom loss effect into an overall gradual heating of the cloud. 
 
@@ -78,6 +78,71 @@ This is all well and good if the expectation value of position is a good approxi
     \caption{todo}
     \label{fig:evap_problem}
 \end{figure}
+
+So how can we modify a semiclassical method to choose only one trajectory? Firstly, since each trajectory corresponds to one of the internal states (though some might be degenerate), our model must choose an internal state and use the classical trajectory corresponding to that internal state only. Secondly, since all atoms begin in identical states and yet some take one trajectory and some another, this choice must be probabilistic. Finally, the probabilities must be consistent with those from quantum mechanics, i.e. the Born rule: the probability of an atom taking each trajectory must be proportional to the squared amplitude of the internal state of the atom, projected onto the eigenstate corresponding to that trajectory.
+
+There exists a category of theories dealing with precisely this question of how to choose a specific state of a quantum system in a stochastic way, such that the probability of having chosen a state is equal to that given by quantum mechanics. Such theories are called ``hidden variable'' theories, and the number specifying which state has been chosen is the ``hidden variable''.
+
+\section{Hidden variable theories}
+
+In his paper \emph{Quantum computing and dynamical quantum mdels}, Aaronson defines a ``dynamical quantum model''[CITE]:
+
+\begin{quote}
+A \emph{dynamical quantum model} assigns an eigenstate to a specified observable even when no measurement is made, and gives a stochastic evolution rule for that eigenstate. Such a model yields a distribution of classical histories of a quantum state
+\end{quote}
+In a later paper, \emph{Quantum computing and hidden variables}, superseding the first, Aaronson renames dynamical quantum models \emph{hidden-variable theories} and instead defines:
+\begin{quote}
+For us, a hidden-variable theory is simply a way to convert a unitary matrix that maps one quantum state to another, into a stochastic matrix that maps the initial probability distribution to the final one in some fixed basis
+\end{quote}
+This is what a hidden-variable theory is for the purposes of this chapter as well. Though the second paper supersedes the first, the definition it gives is more tangible for us---we wish to \emph{assign an eigenstate} to our atoms (choose one of the internal states in order to decide which trajectory to follow), and have a \emph{stochastic evolution rule} for which eigenstate is chosen at any one time (allow the atom to begin taking a different trajectory if it makes transitions between states).
+
+But the second definition is more specific. The stochastic evolution rule is in the form of a stochastic matrix, with elements equal to transition probabilities for some time interval. And the rule should be in some way based on the unitary evolution that the quantum system evolves according to in the same interval of time, such that the initial and final probabilities of the stochastic matrix and unitary evolution agree. That is, if a quantum state $\ket\chi$ evolves in a certain basis $\{\ket{n}\}$according to a unitary $\hat U(t^\prime, t)$:
+\begin{align}
+\left[\begin{matrix}
+\chi_1(t^\prime)\\\chi_2(t^\prime)\\\chi_3(t^\prime)\\\vdots
+\end{matrix}\right]
+= \left[\begin{matrix}
+U_{11}(t^\prime, t) & U_{12}(t^\prime, t) & U_{13}(t^\prime, t)&\hdots\\
+U_{21}(t^\prime, t) & U_{22}(t^\prime, t) & U_{23}(t^\prime, t)&\hdots\\
+U_{31}(t^\prime, t) & U_{32}(t^\prime, t) & U_{33}(t^\prime, t)&\hdots\\
+\vdots & \vdots & \vdots & \ddots
+\end{matrix}\right]
+\left[\begin{matrix}
+\chi_1(t)\\\chi_2(t)\\\chi_3(t)\\\vdots
+\end{matrix}\right],
+\end{align}
+where $\chi_n = \braket{n}{\chi}$ and $U_{nm}(t^\prime, t) = \matrixel{n}{\hat U(t^\prime, t)}{m}$, then a hidden variable theory is a matrix-valued function $S(U(t^\prime, t), \vec\chi(t)))$, where $\vec\chi(t)$ and $U(t^\prime, t)$ are the vector and matrix representations of the state vector $\ket\chi(t)$ and unitary $\hat U(t^\prime, t)$in the $\{\ket{n}\}$ basis, that satisfies:
+\begin{align}
+\left[\begin{matrix}
+\abs{\chi_1(t^\prime)}^2\\\abs{\chi_2(t^\prime)}^2\\\abs{\chi_3(t^\prime)}^2\\\vdots
+\end{matrix}\right]
+= \left[\begin{matrix}
+S_{11}(t^\prime, t) & S_{12}(t^\prime, t) & S_{13}(t^\prime, t)&\hdots\\
+S_{21}(t^\prime, t) & S_{22}(t^\prime, t) & S_{23}(t^\prime, t)&\hdots\\
+S_{31}(t^\prime, t) & S_{32}(t^\prime, t) & S_{33}(t^\prime, t)&\hdots\\
+\vdots & \vdots & \vdots & \ddots
+\end{matrix}\right]
+\left[\begin{matrix}
+\abs{\chi_1(t)}^2\\\abs{\chi_2(t)}^2\\\abs{\chi_2(t)}^2\\\vdots
+\end{matrix}\right],
+\end{align}
+In essence, if quantum unitary evolution takes amplitudes to amplitudes, a hidden variable theory takes probabilities to probabilities. Thus the elements of $S$ are conditional probabilities---or transition probabilities---for a hidden variable $\eta$, giving the chance that the state $\ket\eta \in \{\ket{n}\}$ assigned by the hidden variable will change from one to another in the given time interval:
+[double check indices]
+\begin{align}
+P(\eta^\prime, t^\prime | \eta, t) = S(U(t^\prime, t), \vec\chi(t))_{\eta^\prime\eta}.
+\end{align}
+
+There are many ways to define functions $S$ that satisfy this condition. The simplest is to ignore the unitary completely and set $S_{mn} = \abs{\chi_\eta^\prime(t^\prime)}^2$ for all $n$, which yields:
+\begin{align}
+P(\eta^\prime, t^\prime | \eta, t) = \abs{\chi_m(t^\prime)}^2,
+\end{align}
+that is that the hidden variable $\eta$ is equally likely to transition to a given state regardless of its previous state, and regardless of the unitary, and that that transition probability is just the squared amplitude of that final state. This theory represents a hidden variable that will just jump between states randomly, with no regard for whether there were actually amplitude flows between the states. Nonetheless, it matches the definition of a hidden variable theory.
+
+Aaronson outlines [CITE] some additional axioms that hidden variables ought to satisfy, if we are to take them seriously, including reasonable statements about symmetries, and insensitivity to small perturbations. He goes on to prove that the properties cannot all be satisfied simultaneously, but some theories satisfy more of them than others.
+
+One theory that is particularly appealing is called the Schr\"odinger theory, which is defined as follows:
+
+ 
 
 TODO:
 \begin{itemize}
@@ -223,8 +288,7 @@ Equations \eqref{eq:gamma_pos_final} and \eqref{eq:gamma_vel_final} are our fina
 \begin{figure}[t]
     \centerfloat
     \includegraphics{figures/hidden_variables/decoherence_rate_example.pdf}
-    \caption{Caption.}
-    \label{fig:decoherence_rate_example}
+    \caption{Caption.}\label{fig:decoherence_rate_example}
 \end{figure}
 
 We now have an approximate analytic expression that is computationally inexpensive to evaluate for each atom in an ensemble at every timestep of a differential equation.
