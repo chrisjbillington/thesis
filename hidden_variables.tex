@@ -126,23 +126,53 @@ S_{31}(t^\prime, t) & S_{32}(t^\prime, t) & S_{33}(t^\prime, t)&\hdots\\
 \abs{\chi_1(t)}^2\\\abs{\chi_2(t)}^2\\\abs{\chi_2(t)}^2\\\vdots
 \end{matrix}\right],
 \end{align}
-In essence, if quantum unitary evolution takes amplitudes to amplitudes, a hidden variable theory takes probabilities to probabilities. Thus the elements of $S$ are conditional probabilities---or transition probabilities---for a hidden variable $\eta$, giving the chance that the state $\ket\eta \in \{\ket{n}\}$ assigned by the hidden variable will change from one to another in the given time interval:
+In essence, if quantum unitary evolution takes amplitudes to amplitudes, a hidden variable theory takes probabilities to probabilities. Thus the elements of $S$ are conditional probabilities---or transition probabilities---for a hidden variable $\eta(t)$, giving the chance that the state $\ket\eta \in \{\ket{n}\}$ assigned by the hidden variable will change from one to another in the given time interval:
 [double check indices]
-\begin{align}
-P(\eta^\prime, t^\prime | \eta, t) = S(U(t^\prime, t), \vec\chi(t))_{\eta^\prime\eta}.
+\begin{align}\label{eq:conditional_probability}
+\Pr(\eta(t^\prime){=}i|\eta(t){=}j) = S(U(t^\prime, t), \vec\chi(t))_{ij}.
 \end{align}
 
-There are many ways to define functions $S$ that satisfy this condition. The simplest is to ignore the unitary completely and set $S_{mn} = \abs{\chi_\eta^\prime(t^\prime)}^2$ for all $n$, which yields:
+There are many ways to define functions $S$ that satisfy this condition. The simplest is to ignore the unitary completely and set $S_{ij} = \abs{\chi_i(t^\prime)}^2$ for all $n$, which yields:
 \begin{align}
-P(\eta^\prime, t^\prime | \eta, t) = \abs{\chi_m(t^\prime)}^2,
+\Pr(\eta(t^\prime){=}i|\eta(t){=}j) = \abs{\chi_{i}(t^\prime)}^2,
 \end{align}
-that is that the hidden variable $\eta$ is equally likely to transition to a given state regardless of its previous state, and regardless of the unitary, and that that transition probability is just the squared amplitude of that final state. This theory represents a hidden variable that will just jump between states randomly, with no regard for whether there were actually amplitude flows between the states. Nonetheless, it matches the definition of a hidden variable theory.
+that is that the hidden variable $\eta$ is equally likely to transition to a given value regardless of its previous value, and regardless of the unitary, and that that the conditional transition probability from all input states is just the squared amplitude of the final state. This theory represents a hidden variable that will just jump between states randomly based on their amplitude, with no regard for whether there were actually amplitude flows between the states between which it is transitioning. Nonetheless, it matches the definition of a hidden variable theory---$S$ is a stochastic matrix, and the hidden variable on average will spend an amount of time in each state consistent with the Born rule.
 
 Aaronson outlines [CITE] some additional axioms that hidden variables ought to satisfy, if we are to take them seriously, including reasonable statements about symmetries, and insensitivity to small perturbations. He goes on to prove that the properties cannot all be satisfied simultaneously, but some theories satisfy more of them than others.
 
-One theory that is particularly appealing is called the Schr\"odinger theory, which is defined as follows:
+It is convenient to introduce the matrix $P$ of absolute transition probabilities. Summing \eqref{eq:conditional_probability} over all possible initial values of the hidden variable yields the absolute probability of it having a particular final value after the given time interval:
+\begin{align}
+\Pr(\eta(t^\prime){=}i) 
+= \sum_j \Pr(\eta(t^\prime){=}i|\eta(t){=}j) \Pr(\eta(t){=}j),
+\end{align}
+which, recognising that the final and initial probabilities must be the final and initial squared amplitudes of the state vector, can be rewritten:
+\begin{align}
+\abs{\chi_i(t^\prime)}^2
+= \sum_j S(U(t^\prime, t), \vec\chi(t))_{ij} \abs{\chi_j(t)}^2.
+\end{align}
+We now define the matrix of absolute transition probabilities $P$:
+\begin{align}
+P_{ij} = S(U(t^\prime, t), \vec\chi(t))_{ij} \abs{\chi_j(t)}^2,
+\end{align}
+such that:
+\begin{align}
+\abs{\chi_i(t^\prime)}^2
+= \sum_j P_{ij}.
+\end{align}
+So we have that $P$ has row sums equal to the final squared amplitudes.
+And, because $P_{ij} = S_{ij}\abs{\chi_j(t)}^2$ and $S$ is a stochastic matrix with column sums equal to one,\footnote{In order to more clearly compare to quantum evolution, we are using \emph{left stochastic} matrices, which multiply column vectors of probabilities from the left, contrary to the most common convention for stochastic matrices which is to multiply row matrices from the right. Thus $S$ has unit column sums, whereas the corresponding right stochastic matrix (its transpose) would have unit row sums.} we have that $P$ must have row sums equal to the initial squared amplitudes.
 
- 
+Now that we have introduced $P$ and shown what its row and column sums must be, we come to a particularly simple hidden variable theory called the Schr\"odinger theory, discussed in Aaronson's hidden-variables paper [CITE]. [mention that Aaronson proves something about not the abs squared]
+
+
+[CITE], which is defined as follows:
+\begin{align}
+S_{ij}(U(t^\prime, t), \vec\chi(t)) = a_i b_j \abs{U_{ij}(t^\prime, t)},
+\end{align}
+where the row-scalings $\{a_i\}$ and column scalings ${b_j}$ satisfy:
+\begin{align}
+sdasd
+\end{align}
 
 TODO:
 \begin{itemize}
