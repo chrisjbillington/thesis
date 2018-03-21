@@ -151,8 +151,8 @@ which, recognising that the final and initial probabilities must be the final an
 = \sum_j S(U(t^\prime, t), \vec\chi(t))_{ij} \abs{\chi_j(t)}^2.
 \end{align}
 We now define the matrix of absolute transition probabilities $P$:
-\begin{align}
-P_{ij} = S(U(t^\prime, t), \vec\chi(t))_{ij} \abs{\chi_j(t)}^2,
+\begin{align}\label{eq:P_matrix_def}
+P_{ij} = S_{ij}(U(t^\prime, t), \vec\chi(t)) \abs{\chi_j(t)}^2,
 \end{align}
 such that:
 \begin{align}
@@ -162,18 +162,47 @@ such that:
 So we have that $P$ has row sums equal to the final squared amplitudes.
 And, because $P_{ij} = S_{ij}\abs{\chi_j(t)}^2$ and $S$ is a stochastic matrix with column sums equal to one,\footnote{In order to more clearly compare to quantum evolution, we are using \emph{left stochastic} matrices, which multiply column vectors of probabilities from the left, contrary to the most common convention for stochastic matrices which is to multiply row matrices from the right. Thus $S$ has unit column sums, whereas the corresponding right stochastic matrix (its transpose) would have unit row sums.} we have that $P$ must have row sums equal to the initial squared amplitudes.
 
-Now that we have introduced $P$ and shown what its row and column sums must be, we come to a particularly simple hidden variable theory called the Schr\"odinger theory, discussed in Aaronson's hidden-variables paper [CITE]. [mention that Aaronson proves something about not the abs squared]
-
-
-[CITE], which is defined as follows:
+Now that we have introduced $P$ and shown what its row and column sums must be, we come to a particularly simply defined hidden variable theory called the Schr\"odinger theory, discussed in Aaronson's hidden-variables paper [CITE]. The idea is to form $P$ by staring with the matrix of absolule values of $U$, and simply scaling its rows and columns to have the correct values:\footnote{One might expect that the absolute value squared might be a better choice, since this matches Fermi's golden rule. Aaronson argues in his paper, when discussing his own hidden-variable theory \emph{Flow theory} why absolute values of elements of the unitary have nice properties, and we show later that the row and column scalings reproduce Fermi's golden rule in any case, as they must for the hidden varaible theory to agree with quantum probabilities.}
 \begin{align}
-S_{ij}(U(t^\prime, t), \vec\chi(t)) = a_i b_j \abs{U_{ij}(t^\prime, t)},
+P = \left[\begin{matrix}
+a_1b_1\abs{U_{11}(t^\prime, t)} & a_1b_2\abs{U_{12}(t^\prime, t)} & a_1b_3\abs{U_{13}(t^\prime, t)}&\hdots\\
+a_2b_1\abs{U_{21}(t^\prime, t)} & a_2b_2\abs{U_{22}(t^\prime, t)} & a_2b_3\abs{U_{23}(t^\prime, t)}&\hdots\\
+a_3b_1\abs{U_{31}(t^\prime, t)} & a_3b_2\abs{U_{32}(t^\prime, t)} & a_3b_3\abs{U_{33}(t^\prime, t)}&\hdots\\
+\vdots & \vdots & \vdots & \ddots
+\end{matrix}\right],
 \end{align}
-where the row-scalings $\{a_i\}$ and column scalings ${b_j}$ satisfy:
+that is,
 \begin{align}
-sdasd
+P_{ij} = a_i b_j \abs{U_{ij}(t^\prime, t)},
+\end{align}
+where the row scalings $\{a_i\}$ and column scalings $\{b_j\}$ satisfy:
+\begin{align}
+\sum_j a_i b_j \abs{U_{ij}(t^\prime, t)} = \abs{\chi_i(t^\prime)}^2,\label{eq:a_scalings}\\
+\sum_i a_i b_j \abs{U_{ij}(t^\prime, t)} = \abs{\chi_j(t)}^2\label{eq:b_scalings},
+\end{align}
+which can be solved numerically, and then the Schrodinger theory stochastic matrix then able to be extracted by inverting \eqref{eq:P_matrix_def}:
+\begin{align}
+S_{ij}(U(t^\prime, t), \vec\chi(t))
+= a_i b_j \frac{\abs{U_{ij}(t^\prime, t)}}{\abs{\chi_j(t)}^2}.
 \end{align}
 
+\subsection{Numerically evaluating Schr\"odinger theory}
+
+There are many ways to solve numerically for the row and column scalings, but there is one unique solution for the resulting scaled matrix.\footnote{The values of $\{a_i\}$ and $\{b_j\}$ are only determined up to an overall multiplication of each $\{a_i\}$ by a constant and division of each $\{b_j\}$ by the same constant, since only products $a_i b_j$ appear in the resulting scaled matrix} The simplest method is to simply alternate between scaling the rows to get the right row sums, then scaling the columns to get the right column sums, and repeating, that is, alternating between solving equation~\eqref{eq:a_scalings} for all $a_i$, and solving~\eqref{eq:b_scalings} for all $b_i$, until the result converges. This is called the Sinkhorn-Knopp method of r-c (row-column) scaling [CITE], but is computationally intensive, with slow convergence [CITE LINEAL]. An alternative is the method by Lineal et al [CITE], which converges much faster. Both are iterative methods, and so in practice one can save the resulting row and column scalings at each integration step of a simulation and use them as the initial guesses for the same computation at the next integration step,\footnote{With the caveat that since (as mentioned in the previous footnote) the row and column scalings are only determined up to an overall multiplication/division, occasional multiplication of all $\{a_i\}$ and division of all $\{b_i\}$ by a constant may be neccesary to prevent the values numerically overflowing or underflowing in the middle of a simulation.} providing considerable speedup.
+
+For the case of a $2\times2$ system, the row and column scalings can be found analytically, with the result
+\begin{align}
+a_1 &= 1\\
+a_2 &: a_2^2 + 
+\left(\frac1{AB} - \frac AB \abs{\chi_1(t)}^2 - \frac BA \abs{\chi_2(t)}^2\right)a_2
++ \frac{\abs{\chi_2(t^\prime)}^2}{\abs{\chi_1(t^\prime)}^2} = 0\\
+b_1 &= \frac{\abs{\chi_1(t^\prime)}^2}{A + B a_2}\\
+b_2 &= \frac{\abs{\chi_2(t^\prime)}^2}{B + A a_2},
+\end{align}
+where $a_2$ is the positive solution to the given quadratic, $A = \abs{U_{11}} = \abs{U_{22}}$ and $B = \abs{U_{12}} = \abs{U_{21}}$. This result only holds in the case of Schr\"odinger theory for a state vector with two components subject to unitary evolution---not for row-column scaling in general---since it makes use of symmetries of unitary matrices and the fact that the initial and final probabilities given by the squared amplitudes of the state vector components must sum to unity.
+
+A final note on numerics: the above expressions for Schr\"odinger theory and its analytic expression for a $2\times2$ system involve dividing by elements of the unitary, and state populations, both of which may be zero. Whilst the relevant limits may exist, we cannot easily compute them numerically, and so I have taken to simply replacing small values of $\abs{U_{ij}}$, $\abs{\chi_i(t^\prime)}^2$ and $\abs{\chi_j(t)}^2$ with a small constant  $\varepsilon=1\times 10^{-10}$, ensuring that the convergence criterion I pass to Lineal's method is larger 
+ 
 TODO:
 \begin{itemize}
 \item Define/describe what a hidden variable theory is, drawing heavily on Aaronson's~\cite{Aaronson2005} explanations. Give examples, argue why the Schr\"odinger theory is appealing.
