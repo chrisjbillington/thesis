@@ -220,7 +220,7 @@ that is, I simply inspected the populations each step and declared any positive 
 
 In this subsection I derive Tully's fewest-switches algorithm [CITE], with the distinction that the Hamiltonian may have arbitrary time-dependence. As such, the non-adiabatic transitions that can occur can be due to either the spatial variation of the Hamiltonian, or its time variation. It is important to be able to distinguish which of the two non-adiabatic effects is responsible for a given transition of the hidden variable, as energy conservation only applies in the case of a nonadiabatic transition due to spatial variation of the Hamiltonian, in which case the particle is paying/recieving the energy cost of a transition using its kinetic energy. However for a transition due to temporal variation of the Hamiltonian, energy can be added and removed from the particle by the driving field without conserving its total energy. Thus, when a time dependent potential is used in a hidden-variable semiclassical simulation, velocity corrections ought to only be performed following a hidden-variable transition if that transition was due to spatial variation in the Hamiltonian, and not temporal variation. 
 
-We begin with the time dependent Schr\"odinger equation for the internal state $\ket{\chi(t)}$ of an atom, assuming it is well localised at position $\vec r$:
+We begin with the time dependent Schr\"odinger equation for the internal state $\ket{\chi(t)}$ of an atom at position $\vec r$:
 \begin{align}
 \ii\hbar\dv{t}\ket{\chi(t)} = \hat H(\vec r, t)\ket{\chi(t)}\label{eq:Tully_schro}
 \end{align}
@@ -228,12 +228,11 @@ Now we take the unitary $\hat U_H(\vec r, t)$ that transforms state vectors into
 \begin{align}
 \hat H(\vec r, t) = \hat U_H^\dagger(\vec r, t) \hat V(\vec r, t) \hat U_H(\vec r, t),
 \end{align}
-where $\hat V(\vec r, t)$ is a diagonal operator with diagonals equalling the adiabatic potentials that each eigenstate of $\hat H$ is subject to in the adiabatic approximation.
-We can therefore define the state vector in the eigenbasis of $H$ as:\footnote{This is very similar to an interaction picture state vector [SEE SECREF], but as I have previously used the definition of an interaction picture as the transformation that diagonalises a \emph{time-independent} Hamiltonian, this potentially time-dependent Hamiltonian does not satisfy the definition.}
-
-\begin{align}
+where $\hat V(\vec r, t)$ is a diagonal operator with diagonals equal to the adiabatic potentials that each eigenstate of $\hat H$ is subject to in the adiabatic approximation.
+We can therefore define the state vector in the eigenbasis of $\hat H$ as\footnote{This is very similar to an interaction picture state vector [SEE SECREF], but as I have previously used the definition of an interaction picture as the transformation that diagonalises a \emph{time-independent} Hamiltonian, this potentially time-dependent Hamiltonian does not satisfy the definition.}
+\begin{align}\label{eq:chi_Hbasis}
 \ket{\chi_H(t)} &= \hat U_H(\vec r, t)\ket{\chi(t)}\\
-\Rightarrow \ket{\chi(t)} &= \hat U^\dagger_H(\vec r, t)\ket{\chi_H(t)},\label{eq:chi_Hbasis}
+\Rightarrow \ket{\chi(t)} &= \hat U^\dagger_H(\vec r, t)\ket{\chi_H(t)}.
 \end{align}
 Substituting~\eqref{eq:chi_Hbasis} into~\eqref{eq:Tully_schro} and premultiplying by $\hat U(\vec r, t)$ yields
 \begin{align}
@@ -251,30 +250,30 @@ This equation has the same form as the Schr\"odinger equation, with the contents
 
 Here we differ from Tully by proceeding without assuming that $\hat U$ has no explicit time dependence. The total time derivative of $\hat U^\dagger$ includes both its direct time dependence and the effect of motion through space; the latter obtainable via the chain rule:
 \begin{align}
-\dv{t}U^\dagger_H(\vec r, t)
- = \pdv{t} U^\dagger_H(\vec r, t) + \vec v\cdot \nabla U^\dagger_H(\vec r, t),
+\dv{t}\hat U^\dagger_H(\vec r, t)
+ = \pdv{t} \hat U^\dagger_H(\vec r, t) + \vec v\cdot \nabla \hat U^\dagger_H(\vec r, t),
 \end{align}
 where $\vec v = \dv{\vec r}{t}$. Thus~\eqref{eq:Tully_adiabatic_schro} becomes:
-\begin{align}\label{eq:Tully_adiabatic_schro}
+\begin{align}\label{eq:Tully_adiabatic_schro_simplified}
 \ii\hbar\dv{t}\ket{\chi_H(t)} = \left[
   \hat V(\vec r, t)
   - \ii\hbar\hat U_H(\vec r, t)\pdv{t} \hat U^\dagger_H(\vec r, t)
-   - \ii\hbar\vec v\cdot \hat U_H(\vec r, t)\nabla U^\dagger_H(\vec r, t)
+   - \ii\hbar\vec v\cdot \hat U_H(\vec r, t)\nabla \hat U^\dagger_H(\vec r, t)
  \right]\ket{\chi_H(t)}.
 \end{align}
-The final term in brackets is identical to the non-adiabatic coupling term in the equation of motion as usually written in the surface-hopping literature [CITE SOME THINGS] being a matrix with elements:
+The final term in brackets is identical to the non-adiabatic coupling term in the equation of motion as usually written in the surface-hopping literature [CITE SOME THINGS] being a matrix with elements (in the eigenbasis):
 \begin{align}
-\left(- \ii\hbar\vec v\cdot \hat U(\vec r, t)\nabla U^\dagger_H(\vec r, t)\right)_{ij}
+\left(- \ii\hbar\vec v\cdot U_H(\vec r, t)\nabla U^\dagger_H(\vec r, t)\right)_{ij}
 = - \ii\hbar\vec v\cdot\matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j (\vec r, t)},
 \end{align}
-where $\chi_i(\vec r, t)$ is the $i^\up{th}$ eigenvector of $\hat H(r, t)$ and $\matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j (\vec r, t)}$ is the \emph{non-adiabatic coupling vector} between the $i^\up{th}$ and $j^\up{th}$ states referred to in the literature. The second to last term in brackets in \eqref{eq:Tully_adiabatic_schro}
+where $U_H(\vec r, t)$ is the matrix representation of $U$ in any fixed basis (i.e, not the eigenbasis), $\ket{\chi_i(\vec r, t)}$ is the $i^\up{th}$ eigenvector of $\hat H(r, t)$, and $\matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j (\vec r, t)}$ is the \emph{non-adiabatic coupling vector} between the $i^\up{th}$ and $j^\up{th}$ states referred to in the literature. The second to last term in brackets in \eqref{eq:Tully_adiabatic_schro_simplified}
 is the additional contribution due to the time-dependence of the Hamiltonian (more specifically: the time-dependence of its eigenbasis).
 
 We now proceed identically to Tully, computing the rate of change of a an eigenstates population $\abs{c_i(t)}^2$ as:
 \begin{align}
 \dv{t}\abs{c_i(t)}^2 = c_i(t) \dv{t}c_i^*(t) + c_i^*(t) \dv{t}c_i(t),
 \end{align}
-where via~\eqref{eq:Tully_adiabatic_schro} we have:
+where via~\eqref{eq:Tully_adiabatic_schro_simplified} we have:
 \begin{align}
 \dv{t}c_i(t) &= -\frac\ii\hbar\sum_j \left(H_\up{eff}(\vec r, t)\right)_{ij} c_j(t)\\
 \Rightarrow \dv{t}c_i(t) &= -\frac\ii\hbar \sum_j\left[V_{ij}(\vec r, t)
@@ -298,7 +297,7 @@ Since $V(\vec r, t)$ is diagonal\footnote{This is not always assumed in the surf
  c_j(t)\right).
 \end{align}
 The change in $\abs{c_i(t)}^2$ in a small interval $\dd t$ is then:
-\begin{align}
+\begin{align}\label{eq:Tully_change_in_prob}
 \abs{c_i(t + \dd t)}^2 - \abs{c_i(t)}^2 = 2\dd t
 \sum_j\re\left(c_i^*(t)
   \matrixel{\chi_i(\vec r, t)}{(\partial_t + \vec v\cdot\nabla)}{\chi_j(\vec r, t)}
@@ -315,24 +314,41 @@ P^\up{time}_{ij} &= \max\left\{0,
 \matrixel{\chi_i(\vec r, t)}{\partial_t}{\chi_j(\vec r, t)}
  c_j(t)\right)\right\}
 \end{align}
-for transitions of the hidden variable from the $j^\up{th}$ to the $i^\up{th}$ eigenstate of $\hat H(\vec r, t)$ during the time interval $\dd t$ due to non-adiabatic spatial and temporal variations in $\hat H(\vec r, t)$ respectively.
+for transitions of the hidden variable from the $j^\up{th}$ to the $i^\up{th}$ eigenstate of $\hat H(\vec r, t)$ during the time interval $\dd t$ due to non-adiabatic spatial and temporal variations in $\hat H(\vec r, t)$ respectively. 
 
+These matrices have zeros along their diagonals, since the above derivation takes into account only probability changes, and does not count probability remaining in the same state as a transition.\footnote{One can see that the $i=j$ term in \eqref{eq:Tully_change_in_prob} is zero since $\ket{\chi_i}$ is a unit vector, which means any of its time of spatial derivatives must be orthogonal to  $\ket{\chi_i}$ itself resulting in a zero inner product} To be able to construct properly stochastic matrices, we can take into account the probability mass that remains in the same state simply by imposing conservation of overall probability, defining a diagonal matrix $P^\up{stay}$ for the unconditional probabilities of remaining in a state:
+\begin{align}
+P^\up{stay}_{ii} = \abs{c_i(t)}^2
+- \sum_{j\neq i} \left(P^\up{space}_{ij} + P^\up{time}_{ij}\right).
+\end{align}
+The sum of all three of these matrices now satisfy the row sum and column sum requirements in order to be the unconditional transition probabilities for a hidden variable theory in the eigenbasis of $\hat H$:
+\begin{align}
+P &= P^\up{space} + P^\up{time} + P^\up{stay},\\
+\Rightarrow \sum_j P_{ij} &= \abs{c_i(t)}^2,\\
+\sum_i P_{ij} &= \abs{c_j(t + \dd t)}^2.
+\end{align}
 The corresponding conditional probabilities of a transition to the $i^\up{th}$ state occurring---given that the hidden variable was already in the $j^\up{th}$ state---can be obtained via ~\eqref{eq:P_matrix_def} as:
 \begin{align}
 S^\up{space}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{space}_{ij},\\
-S^\up{time}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{space}_{ij}.
+S^\up{time}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{time}_{ij}\\
+S^\up{stay}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{stay}_{ij},
 \end{align}
-Note that individually, these two matrices are not (left) stochastic matrices, since their columns do not individually sum to unity. Their sum is a (left) stochastic matrix however.
+and the sum of these three matrices of conditional probabilities is the overall (left) stochastic matrix for the fewest-switches hidden variable theory:
+\begin{align}
+S = S^\up{space} + S^\up{time} + S^\up{stay}.
+\end{align}
+In practice we don't need to use this stochastic matrix, though it is instructive to know that the sum of the other conditional probability matrices is indeed a stochastic matrix, such that Tully's fewest-switches is indeed a hidden variable theory.
+Instead we use the individual matrices in order to distinguish between the different types of transitions that can occur, so that we may make the energy conservation part of the surface hopping algorithm conditional on what type of transition took place.
 
-During a simulation, to choose whether a transition occurs due to spatial or temporal variations in the Hamiltonian, one should not make independent random choices based on the two above matrices. Rather one should assemble the probabilities of possible events---transitions from the current state to all others via both spatial and temporal non-adiabatic transitions---into a single list of probabilities, and then take the cumulative sum, resulting in a list of numbers between zero and one. A randomly generated number between zero and one can then be used to determine which event occurs, with the correct probability (\figref{fig:random_choice})
+During a simulation, to choose whether a transition occurs due to spatial or temporal variations in the Hamiltonian, one should not make independent random choices based on the three above matrices of conditional probabilities. Rather one should assemble the probabilities of possible events---transitions from the current state to all others via both spatial and temporal non-adiabatic transitions---into a single list of probabilities, and then take the cumulative sum, resulting in a list of numbers between zero and one. A randomly generated number between zero and one can then be used to determine which event occurs, with the correct probability (\figref{fig:random_choice})
 
 \begin{figure}[t]
     \centerfloat
     \includegraphics{figures/hidden_variables/random_choice.pdf}
-    \caption{Probabilistically choosing a transition. Here the hidden variable is in the $j^\up{th}$ state and we are choosing whether it will transition to state $1$ or $2$ (one of which is the state it is already in), and whether it will transition due to a spatial or temporal non-adiabatic transition. All the probabilities for what may happen in a timestep sum to one, so an array of the cumulative probabilities can be constructed, and a random number drawn from the range $[0,1]$. The index of the largest element of the array of cumulative sums that the random number is smaller than corresponds to the the event to occur. In the above diagrammatic example, the result of the random draw is that the hidden variable is to transition to state $1$ via a temporal non-adiabatic transition.}\label{fig:random_choice}
+    \caption{Probabilistically choosing a transition. Top: Probability flows between states in a time interval according to the three matrices of unconditional probabilities $P^\up{stay}$, $P^\up{space}$, and $P^\up{time}$ in such a way that one total unit of probability is routed from states at the initial time to states at the final time consistent with the populations resulting from quantum mechanical evolution in that timestep. Centre: The hidden variable transitions according to the corresponding conditional probabilities which are elements of the matrices $S^\up{stay}$, $S^\up{space}$, and $S^\up{time}$. Here the hidden variable is in state $1$ and we are choosing whether it will remain in that state or if it will transition to state $2$ or $3$, and if the latter, whether it transitions via a spatial or temporal non-adiabatic transition. Bottom: All the probabilities for what may happen to the hidden variable in a timestep sum to one, so an array of the cumulative probabilities can be constructed, and a random number drawn from the range $[0,1]$. The index of the smallest element of the array of cumulative sums that the random number is smaller than corresponds to the the event to occur. In the above diagrammatic example, the result of the random draw is that the hidden variable is to transition to state $2$ via a spatial non-adiabatic transition.}\label{fig:random_choice}
 \end{figure}
 
-\subsection{Framing fewest-switches as a hidden-variable theory}
+\subsubsection{Framing fewest-switches as a hidden-variable theory}
 
 Tully's fewest-switches algorithm allows one to compute transition probabilities for a hidden variable given the Hamiltonian, the state amplitudes, and a small interval of time. Does this satisfy Aaronson's definition of a hidden variable theory? Not quite, since it requires the Hamiltonian rather than the unitary that describes state vector evolution over a particular time interval, however it is simple to reconcile the two sets of requirements. Given that the interval of time is small, the unitary describing evolution in the local basis can be linked to the effective Hamiltonian in~\eqref{eq:Tully_adiabatic_eff} via
 \begin{align}
@@ -350,7 +366,14 @@ H_\up{eff}(\vec r, t)\,\dd t &= \ii\hbar\Log U(t+\dd t, t)\\
 \end{align}
 where $\Log$ is the principal value of the complex matrix logarithm.
 
-Since only the matrix $H_\up{eff}(\vec r, t)\,\dd t$ is required to compute transition probabilities according to~\eqref{eq:fewest_switches_Heff}, and not its component terms,\footnote{Though we do need its component terms if we wish to distinguish between spatially vs temporally induced transitions as in [SECREF].} specifying the initial state vector and unitary for an interval of time evolution (both in the local basis) is a sufficient input to be able to compute transition probabilities using Tully's fewest-switches algorithm. The resulting matrix of probabilities then corresponds to the matrix we (and Aaronson) have been calling $P$ in the context of hidden-variable theories. The corresponding stochastic matrix $S$ can easily be obtained by scaling the columns of $P$ by the state populations as in~\eqref{eq:P_matrix_def}. Tully's fewest-switches algorithm thus satisfies Aaronson's definition of a hidden-variable theory. What is somewhat remarkable is the low computational complexity of computing probabilities via fewest-switches. There is no matrix scaling, no matrix permanents, or any other large computational expense. It is not clear how many of Aaronson's axioms are satisfied by fewest-switches, but since it does depend on the actual coupling strengths between states via the non-adiabatic Hamiltonian, one would expect it to satisfy a few of them.
+Since only the matrix $H_\up{eff}(\vec r, t)\,\dd t$ is required to compute transition probabilities according to~\eqref{eq:fewest_switches_Heff}, and not its component terms,\footnote{Though we do need its component terms if we wish to distinguish between spatially vs.\ temporally induced transitions as in [SECREF].} specifying the initial state vector and unitary for an interval of time evolution (both in the local basis) is a sufficient input to be able to compute transition probabilities using Tully's fewest-switches algorithm. Writing the the resulting matrix of probabilities in terms of $U$ gives:
+\begin{align}
+P_{ij} = \begin{cases}
+\max\left\{0, 2\re\left(c_i^*(t)U_{ij}(t + \dd t, t)c_j(t)\right)\right\} & i \neq j\\
+\abs{c_i(t)}^2 - \sum_{j\neq i} P_{ij} & i = j
+\end{cases}
+\end{align}
+The corresponding stochastic matrix $S$ can then be obtained by scaling the columns of $P$ by the state populations as in~\eqref{eq:P_matrix_def}. Tully's fewest-switches algorithm thus satisfies Aaronson's definition of a hidden-variable theory provided that the time interval is small. What is somewhat remarkable is the low computational complexity of computing probabilities via fewest-switches. There is no matrix scaling, no matrix permanents, or any other large computational expense. It is not clear how many of Aaronson's axioms are satisfied by fewest-switches, but since it does depend on the actual coupling strengths between states via the non-adiabatic Hamiltonian, one would expect it to satisfy a few of them. Furthermore, the form of fewest-switches when framed in terms of the unitary for the given time interval is remarkably similar to that of Schr\"odinger theory. In Schr\"odinger theory one takes the absolute value of elements of $U$ and then applies row and column scalings. In fewest-switches one applies row and column scalings (explicitly given as $c_i(t)^*$ and $c_j(t)$, plus an additional factor of $2$), then takes the real part of the result and clips it to zero from below.
 
 \subsection{Distinguishing between spatial and temporal transitions in arbitrary hidden-variable theories}
 
@@ -358,9 +381,11 @@ Since only the matrix $H_\up{eff}(\vec r, t)\,\dd t$ is required to compute tran
 
 In the above section [OR SECREF IF I MOVE THIS], we saw how to extract separate stochastic matrices from Tully's fewest-switches algorithm in order to distinguish between non-adiabatic transitions due to motion through space with a spatially varying Hamiltonian as compared to those due to the Hamiltonian's explicit time dependence. This fell naturally out of the derivation simply by not discarding the possible time-dependence of the Hamiltonian and otherwise proceeding similarly to Tully. For an arbitrary hidden variable theory however it is not so simple. In the case of Schr\"odinger theory for example, we have something of a black box which we feed unitaries and state vectors, and it gives us back stochastic matrices. It is not obvious how one might dig into the details of the matrix scaling to extract two separate conditional probabilities instead of one.
 
-One method is to compute a unitary as usual for the total evolution of the state vector (excluding decoherence) during a timestep, and compute $S^\up{total}$ from that according to one's hidden variable theory. Then, repeat this step, but with a unitary computed by holding the Hamiltonian's explicit time dependence constant over the timestep (allowing $\vec r$ to still vary as normal), to obtain the conditional transition probabilities $S^\up{space}$ for non-adiabatic transitions due to spatial variations alone.
+One method might be to compute a unitary as usual for the total evolution of the state vector (excluding decoherence) during a timestep, and compute $S^\up{total}$ from that according to one's hidden variable theory. Then, repeat this step, but with a unitary computed by holding the Hamiltonian's explicit time dependence constant over the timestep (allowing $\vec r$ to still vary as normal), to obtain the conditional transition probabilities $S^\up{space}$ for non-adiabatic transitions due to spatial variations alone.
 
-[NOT SURE THIS MAKES SENSE, THINK ABOUT IT MORE]
+
+[I think this won't work due to the possibility of negative probabilities. 
+Probably abandon this and just use Tully's instead. Leave in the paragraph about it not being trivial though! It certainly isn't. Maybe mention that this approach doesn't always work - or maybe you could clip the probabilities to zero. But that would be privelaging one type of transition over another.]
 
 TODO:
 \begin{itemize}
