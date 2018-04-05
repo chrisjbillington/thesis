@@ -186,6 +186,12 @@ S_{ij}(U(t^\prime, t), \vec\chi(t))
 = a_i b_j \frac{\abs{U_{ij}(t^\prime, t)}}{\abs{\chi_j(t)}^2}.
 \end{align}
 
+\section{Overview of method}
+
+Summarise the method in high level terms, flag that details are to come, with a specific algorithm presented after the details.
+
+\section{Implementation details}
+
 \subsection{Numerically evaluating Schr\"odinger theory}
 
 There are many ways to solve numerically for the row and column scalings, but there is one unique solution for the resulting scaled matrix.\footnote{The values of $\{a_i\}$ and $\{b_j\}$ are only determined up to an overall multiplication of each $\{a_i\}$ by a constant and division of each $\{b_j\}$ by the same constant, since only products $a_i b_j$ appear in the resulting scaled matrix} The simplest method is to simply alternate between scaling the rows to get the right row sums, then scaling the columns to get the right column sums, and repeating, that is, alternating between solving equation~\eqref{eq:a_scalings} for all $a_i$, and solving~\eqref{eq:b_scalings} for all $b_i$, until the result converges. This is called the Sinkhorn-Knopp method of r-c (row-column) scaling [CITE], but is computationally intensive, with slow convergence [CITE LINIAL]. An alternative is the method by Linial et al [CITE], which converges much faster. Both are iterative methods, and so in practice one can save the resulting row and column scalings at each integration step of a simulation and use them as the initial guesses for the same computation at the next integration step,\footnote{With the caveat that since (as mentioned in the previous footnote) the row and column scalings are only determined up to an overall multiplication/division, occasional multiplication of all $\{a_i\}$ and division of all $\{b_i\}$ by a constant may be neccesary to prevent the values numerically overflowing or underflowing in the middle of a simulation.} providing considerable speedup.
@@ -303,20 +309,24 @@ The change in $\abs{c_i(t)}^2$ in a small interval $\dd t$ is then:
   \matrixel{\chi_i(\vec r, t)}{(\partial_t + \vec v\cdot\nabla)}{\chi_j(\vec r, t)}
  c_j(t)\right).
 \end{align}
-This is the change in the probability of the particle being in the $i^\up{th}$ state during that time interval. Tully identifies each term in the sum as a probability flow between a pair of states, and if non-negative, equates each term with the (unconditional) probability of a transition from the $j^\up{th}$ state to the $i^\up{th}$ state. We do the same, except that we identify two transition probabilities, one due to the spatial variation in the eigenbasis, and one due to the temporal variation. This gives us transition probability matrix elements:
+This is the change in the probability of the particle being in the $i^\up{th}$ state during that time interval. Tully identifies each term in the sum as a probability flow between a pair of states, and if non-negative, equates each term with the (unconditional) probability of a transition from the $j^\up{th}$ state to the $i^\up{th}$ state. We do the same, except that we identify two transition probabilities for each originating state, one due to the spatial variation in the eigenbasis, and one due to the temporal variation. To ensure we don't violate the criterion that on a two-state basis only the minimum number of hops consistent with the total probability flow occur, we clip each probability from above to the probability of any transition occurring at all. This gives us transition probability matrix elements
 \begin{align}
-P^\up{space}_{ij} &= \max\left\{0, 
- 2\dd t\re\left(c_i^*(t)
-\matrixel{\chi_i(\vec r, t)}{\vec v\cdot\nabla}{\chi_j(\vec r, t)}
- c_j(t)\right)\right\},\\
-P^\up{time}_{ij} &= \max\left\{0, 
- 2\dd t\re\left(c_i^*(t)
-\matrixel{\chi_i(\vec r, t)}{\partial_t}{\chi_j(\vec r, t)}
- c_j(t)\right)\right\}
+P^\up{space}_{ij} &= \min\left\{q^\up{total}_{ij}, q^\up{space}_{ij}\right\},\\
+P^\up{time}_{ij} &= \min\left\{q^\up{total}_{ij}, q^\up{time}_{ij}\right\},
 \end{align}
-for transitions of the hidden variable from the $j^\up{th}$ to the $i^\up{th}$ eigenstate of $\hat H(\vec r, t)$ during the time interval $\dd t$ due to non-adiabatic spatial and temporal variations in $\hat H(\vec r, t)$ respectively. 
+where
+\begin{align}
+q^\up{space}_{ij} &= 2\dd t\re\left(c_i^*(t)
+\matrixel{\chi_i(\vec r, t)}{\vec v\cdot\nabla}{\chi_j(\vec r, t)}
+ c_j(t)\right),\\
+q^\up{time}_{ij} &= 2\dd t\re\left(c_i^*(t)
+\matrixel{\chi_i(\vec r, t)}{\partial_t}{\chi_j(\vec r, t)},
+ c_j(t)\right),\\
+q^\up{total}_{ij} &= \max\left\{0, (q^\up{space}_{ij} + q^\up{time}_{ij})\right\},
+\end{align}
+for transitions of the hidden variable from the $j^\up{th}$ to the $i^\up{th}$ eigenstate of $\hat H(\vec r, t)$ during the time interval $\dd t$ due to non-adiabatic spatial and temporal variations in $\hat H(\vec r, t)$ respectively. This clipping of the individual probabilities is important as 
 
-These matrices have zeros along their diagonals, since the above derivation takes into account only probability changes, and does not count probability remaining in the same state as a transition.\footnote{One can see that the $i=j$ term in \eqref{eq:Tully_change_in_prob} is zero since $\ket{\chi_i}$ is a unit vector, which means any of its time of spatial derivatives must be orthogonal to  $\ket{\chi_i}$ itself resulting in a zero inner product} To be able to construct properly stochastic matrices, we can take into account the probability mass that remains in the same state simply by imposing conservation of overall probability, defining a diagonal matrix $P^\up{stay}$ for the unconditional probabilities of remaining in a state:
+These matrices have zeros along their diagonals, since the above derivation takes into account only probability changes, and does not count probability remaining in the same state as a transition.\footnote{One can see that the $i=j$ term in~\eqref{eq:Tully_change_in_prob} is zero since $\ket{\chi_i}$ is a unit vector, implying its temporal and spatial derivatives must be orthogonal to $\ket{\chi_i}$ itself resulting in a zero inner product.} To be able to construct properly stochastic matrices, we can take into account the probability mass that remains in the same state simply by imposing conservation of overall probability, defining a diagonal matrix $P^\up{stay}$ for the unconditional probabilities of remaining in a state:
 \begin{align}
 P^\up{stay}_{ii} = \abs{c_i(t)}^2
 - \sum_{j\neq i} \left(P^\up{space}_{ij} + P^\up{time}_{ij}\right).
@@ -385,27 +395,85 @@ One method might be to compute a unitary as usual for the total evolution of the
 
 
 [I think this won't work due to the possibility of negative probabilities. 
-Probably abandon this and just use Tully's instead. Leave in the paragraph about it not being trivial though! It certainly isn't. Maybe mention that this approach doesn't always work - or maybe you could clip the probabilities to zero. But that would be privelaging one type of transition over another.]
+Probably abandon this and just use Tully's instead. Leave in the paragraph about it not being trivial though! It certainly isn't. Maybe mention that this approach doesn't always work - or maybe you could clip the probabilities to zero. But that would be privileging one type of transition over another.]
+
+\subsection{Velocity correction and classically disallowed transitions}
+
+When a transition of the hidden variable occurs due to a spatial non-adiabatic transition, the kinetic energy of the atom must be adjusted to conserve overall energy. The force on an atom during a transition from the $j^\up{th}$ state to the $i^\up{th}$ state due to the spatial non-adiabatic coupling term in the effective Hamiltonian is in the direction of the non-adiabatic coupling vector
+\begin{align}
+\vec d_{ij} &= \matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j(\vec r, t)}\\
+&= \left(U_H(\vec r, t)\nabla U_H^\dagger(\vec r, t)\right)_{ij}
+\end{align}
+where $U_H(\vec r, t)$ is the matrix representation, in any fixed basis, of the unitary that takes state vectors into the basis in which $\hat H(\vec r, t)$ is diagonal. To conserve energy, the squared component of an atoms velocity in this direction must change by an amount:
+\begin{align}
+\upDelta v_{ij}^2 = \frac2m\left(V_{jj}(\vec r, t) - V_{ii}(\vec r, t)\right),
+\end{align}
+where $V_{ii}(\vec r, t)$ is the adiabatic potential comprising the $i^\up{th}$ spatially and/or temporally varying eigenvalue of $\hat H(\vec r, t)$. However, it is possible that a change of this size can leave an atom with a negative kinetic energy. Whilst this is quantum-mechanically permissible, it is forbidden classically, and so we simply disallow such transitions, defining a modified matrix of unconditional transition probabilities $\tilde P^\up{space}$ that sets the probability of the disallowed transitions to zero:
+\begin{align}
+\tilde P^\up{space}_{ij} =
+\begin{cases}
+P^\up{space}_{ij} & \upDelta v_{ij}^2 + \abs{\vec v\cdot\hat{\vec d_{ij}}}^2 \geq 0 \\
+0 & \upDelta v_{ij}^2 + \abs{\vec v\cdot\hat{\vec d}_{ij}}^2 < 0
+\end{cases}
+\end{align}
+where $\hat{\vec d}_{ij}$ is the unit vector in the direction of $\vec d_{ij}$.
+The diagonal matrix for the probabilities of remaining in each state must be adjusted similarly to absorb the probability discarded this way:
+\begin{align}
+\tilde P^\up{stay}_{ii} = 
+\abs{c_i(t)}^2 - \sum_{j\neq i}\left(\tilde P^\up{space}_{ij} + P^\up{time}_{ij}\right)
+\end{align}
+The corresponding matrices of conditional probabilities for the hidden variable transitioning, given that it is already in the $j^\up{th}$ state, are
+\begin{align}
+\tilde S^\up{space}_{ij} &= \frac1{\abs{c_j(t)}^2} \tilde P^\up{space}_{ij},\\
+\tilde S^\up{stay}_{ij} &= \frac1{\abs{c_j(t)}^2} \tilde P^\up{stay}_{ij},
+\end{align}
+Of course, when making probabilistic transitions of the hidden variable, only one
+column of any of the above matrices is used at a time, so the full matrices $\tilde P^\up{space}$, $\tilde P^\up{time}$, $\tilde S^\up{space}$, and $\tilde S^\up{time}$ do not need to be computed at each timestep.
+
+In the case that a transition of the hidden variable does occur to the $i^\up{th}$ from the $j^\up{th}$ state due to a spatial non-adiabatic coupling, the velocity kick to be applied to the classical velocity vector in order to conserve momentum is:
+\begin{align}
+\upDelta \vec v_{ij} = \left[\sgn(\vec v\cdot \hat{\vec d}_{ij})
+\sqrt{(\vec v\cdot \hat{\vec d}_{ij})^2 + \frac2m\left(V_{ii}(\vec r, t) - V_{jj}(\vec r, t)\right)} - (\vec v\cdot \hat{\vec d}_{ij}).
+\right]\hat{\vec d}_{ij}
+\end{align}   
+
+\section{Decoherence}
+
+\subsection{Approximate Markovian decoherence}
+
+Roughest way to compute decoherence is to just use an average decoherence rate.
+\subsection{Single continuously spawned mean auxiliary trajectories}
+
+My fancy cool model which is awesome and rad.
+
+\begin{align}
+\vec r_{i\neq\eta}(t + \dd t) &= \frac{\sum_j \tilde P_{ij}\vec r_j(t)}
+{\abs{c_i(t+\dd t)}^2},\\
+\vec v_{i\neq\eta}(t + \dd t) &= \frac{\sum_j 
+\left((P^\up{time}_{ij} + \tilde P^\up{stay}_{ij})\vec v_j(t)
++ \tilde P^\up{space}_{ij}(\vec v_i + \upDelta \vec v_{ij})\right)}
+{\abs{c_i(t+\dd t)}^2}.
+\end{align}
+\section{Algorithm}
+
+Specifics of the algorithm, now that everything is defined.
+\begin{itemize}
+    \item Schr\"odinger HVSC: with either Markovian decoherence, or auxilliary trajectories. No time dependence allowed
+
+    \item Fewest hops HVSC/surface hopping: either with Markovian decoherence or
+    auxilliary trajectories. Time dependence allowed!
+
+\end{itemize}
+\section{results}
+Pretty results go here
+
+\section{Discussion and conclusion}
+
+Although the method wasn't original, in rediscovering it I have identified that hidden variable theories and hopping algorithms are in fact the same thing. I am relieved that I can use a hidden variable theory that is numerically faster to compute then Schrodinger theory and wonder what the implications are for Aaronson's ideas, given the reasoning outlined in the intro that hidden variable theories ought to be hard to compute. In addition, my decoherence method totally kicks butt and the time dependence thing is nifty.
+
+Discuss how it would make sense for the systems to behave in the presence of collisions w.r.t collapse of state vectors.
 
 TODO:
-\begin{itemize}
-\item Define/describe what a hidden variable theory is, drawing heavily on Aaronson's~\cite{Aaronson2005} explanations. Give examples, argue why the Schr\"odinger theory is appealing.
-
-\item Motivate with Stern-Gerlach experiment, and derive the method, show what sorts of problems it
-solves and where it disagrees with other models, provide simulation results. Limitations: no time dependent potentials, no 3D.
-
-\item Possibly include speculation about these:
-
-\item Maybe include a test to see whether it actually does work in 3D as-is, since we haven't actually checked, we just haven't been able to show on paper that current behavior is correct in 3D (also haven't shown it's incorrect).
-
-\item Time dependent potentials could potentially be handled by approximating unitary as product of part due to spatial variation in H, and part due to time variation in H. compute transition probs for both such that a transition can be attributed to one or the other - only do velocity jumps to conserve potential if due to spatial motion, as time dependent potential can exchange energy with particle.
-
-\item Matrix scaling for Schrodinger theory, discuss methods: Sinkhorn-Knopp, Linial, and my one. Compare time complexity of algorithms so as to define the computational complexity of the hidden variables semiclassical method. Method is of course parallelisable on GPU or similar so is fast on parallel machines even if matrix scaling is slow.
-
-\item Discuss how it would make sense for the systems to behave in the presence of collisions w.r.t collapse of state vectors.
-
-\item Be sure to include picture from KOALA talk of atoms going in multiple directions
-\end{itemize}
 
 \section{Approximate Markovian decoherence rate for separating wavepackets}
 
@@ -539,4 +607,4 @@ An example showing the accuracy of \eqref{eq:gamma_total}, compared to the exact
 
 \section{Choice of wavepacket size}
 
-How big is a wavepacket?
+How big is a wavepacket? Be sure to say it's the thermal wavelength except not too big because the single mode approximation won't be valid otherwise. 
