@@ -7,12 +7,11 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="81.999062mm"
-   height="18.779745mm"
-   viewBox="0 0 81.999062 18.779745"
+   width="3.5in"
+   height="4.5in"
+   viewBox="0 0 88.900006 114.3"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
@@ -4947,6 +4946,48 @@
            style="stroke:none" />
       </symbol>
     </g>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Sendvo"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Sendvo">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.3,0,0,-0.3,0.69,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="font-size:12px;fill:#83a5c8;fill-rule:evenodd;stroke:#83a5c8;stroke-width:0.625;stroke-linejoin:round"
+         id="path6380" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="Arrow2Sendo"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow2Sendo">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.3,0,0,-0.3,0.69,0)"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         style="font-size:12px;fill:#90c883;fill-rule:evenodd;stroke:#90c883;stroke-width:0.625;stroke-linejoin:round"
+         id="path5710" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Mend2"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Mend2"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path20461"
+         style="font-size:12px;fill:#c88484;fill-rule:evenodd;stroke:#c88484;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6)" />
+    </marker>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -4955,13 +4996,13 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="166.37563"
-     inkscape:cy="20.853702"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="263.04684"
+     inkscape:cy="208.4376"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
-     showgrid="true"
-     units="mm"
+     showgrid="false"
+     units="in"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
@@ -4970,7 +5011,23 @@
      inkscape:window-height="1021"
      inkscape:window-x="41"
      inkscape:window-y="27"
-     inkscape:window-maximized="1">
+     inkscape:window-maximized="1"
+     inkscape:snap-bbox="false"
+     inkscape:object-paths="true"
+     inkscape:snap-smooth-nodes="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:bbox-nodes="true"
+     inkscape:bbox-paths="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-midpoints="true"
+     inkscape:snap-object-midpoints="false"
+     inkscape:snap-center="false"
+     inkscape:snap-text-baseline="true"
+     inkscape:snap-global="true"
+     inkscape:snap-nodes="false"
+     inkscape:snap-others="false"
+     showguides="true">
     <inkscape:grid
        type="xygrid"
        id="grid821"
@@ -4993,7 +5050,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-19.041775,-189.66735)">
+     transform="translate(-19.041775,-94.14709)">
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -5008,424 +5065,1196 @@
     <rect
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.35277778;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3033"
-       width="13.229166"
+       width="11.278151"
        height="7.9375"
-       x="19.84375"
-       y="189.84373" />
-    <g
-       id="g3031"
-       transform="translate(0.36447305,0.14001813)">
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-91.31938,10.461583)"
-         id="g7369"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7367"
-           y="521.09967"
-           x="322.90887"
-           xlink:href="#glyph2-8" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-91.31938,10.461583)"
-         id="g7373"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7371"
-           y="516.26801"
-           x="327.36044"
-           xlink:href="#glyph4-4" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-91.31938,10.461583)"
-         id="g7377"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7375"
-           y="516.26801"
-           x="329.89874"
-           xlink:href="#glyph4-5" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-91.31938,10.461583)"
-         id="g7381"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7379"
-           y="516.26801"
-           x="333.59329"
-           xlink:href="#glyph4-6" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-91.31938,10.461583)"
-         id="g7387"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7383"
-           y="516.26801"
-           x="336.64471"
-           xlink:href="#glyph4-7" />
-        <use
-           height="100%"
-           width="100%"
-           id="use7385"
-           y="516.26801"
-           x="339.60034"
-           xlink:href="#glyph4-8" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-91.31938,10.461583)"
-         id="g7391"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7389"
-           y="523.82971"
-           x="327.29459"
-           xlink:href="#glyph4-11" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-91.31938,10.461583)"
-         id="g7395"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7393"
-           y="523.82971"
-           x="330.62671"
-           xlink:href="#glyph3-2" />
-      </g>
-    </g>
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.35277775;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3033-3"
-       width="29.104166"
-       height="7.9375"
-       x="33.072914"
-       y="189.84373" />
-    <g
-       id="g3014"
-       transform="translate(10.078523,0.31420251)">
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-86.547431,10.272595)"
-         id="g7399"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7397"
-           y="521.09967"
-           x="343.09433"
-           xlink:href="#glyph2-8" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-86.547431,10.272595)"
-         id="g7403"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7401"
-           y="517.69794"
-           x="347.54684"
-           xlink:href="#glyph4-2" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-86.547431,10.272595)"
-         id="g7409"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7405"
-           y="517.69794"
-           x="349.7157"
-           xlink:href="#glyph4-9" />
-        <use
-           height="100%"
-           width="100%"
-           id="use7407"
-           y="517.69794"
-           x="351.59717"
-           xlink:href="#glyph4-10" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-86.547431,10.272595)"
-         id="g7413"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7411"
-           y="517.69794"
-           x="357.28952"
-           xlink:href="#glyph4-8" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-86.547431,10.272595)"
-         id="g7417"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7415"
-           y="523.7337"
-           x="347.48099"
-           xlink:href="#glyph4-11" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-86.547431,10.272595)"
-         id="g7421"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7419"
-           y="523.7337"
-           x="350.81311"
-           xlink:href="#glyph3-2" />
-      </g>
-    </g>
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.35277775;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3033-3-6"
-       width="22.489578"
-       height="7.9375"
-       x="62.177082"
-       y="189.84373" />
-    <g
-       id="g2999"
-       transform="translate(18.137874,0.09277113)">
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-75.491627,10.50883)"
-         id="g7425"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7423"
-           y="521.09967"
-           x="360.78308"
-           xlink:href="#glyph2-8" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-75.491627,10.50883)"
-         id="g7429"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7427"
-           y="516.26801"
-           x="365.23465"
-           xlink:href="#glyph4-4" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-75.491627,10.50883)"
-         id="g7433"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7431"
-           y="516.26801"
-           x="367.77979"
-           xlink:href="#glyph4-5" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-75.491627,10.50883)"
-         id="g7437"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7435"
-           y="516.26801"
-           x="371.4675"
-           xlink:href="#glyph4-6" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-75.491627,10.50883)"
-         id="g7443"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7439"
-           y="516.26801"
-           x="374.52576"
-           xlink:href="#glyph4-7" />
-        <use
-           height="100%"
-           width="100%"
-           id="use7441"
-           y="516.26801"
-           x="377.48138"
-           xlink:href="#glyph4-8" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-75.491627,10.50883)"
-         id="g7447"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7445"
-           y="523.82971"
-           x="365.16974"
-           xlink:href="#glyph4-1" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-75.491627,10.50883)"
-         id="g7451"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7449"
-           y="523.82971"
-           x="368.50092"
-           xlink:href="#glyph3-2" />
-      </g>
-    </g>
+       x="22.489595"
+       y="188.52081" />
     <rect
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.35277775;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3033-3-6-7"
-       width="15.874995"
+       width="46.02879"
        height="7.9375"
-       x="84.666664"
-       y="189.84373" />
-    <g
-       id="g2982"
-       transform="translate(22.703038,-0.63073701)">
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-67.554127,11.217535)"
-         id="g7455"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7453"
-           y="521.09967"
-           x="380.96948"
-           xlink:href="#glyph2-8" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-67.554127,11.217535)"
-         id="g7459"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7457"
-           y="517.69794"
-           x="385.42105"
-           xlink:href="#glyph4-2" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-67.554127,11.217535)"
-         id="g7465"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7461"
-           y="517.69794"
-           x="387.59674"
-           xlink:href="#glyph4-9" />
-        <use
-           height="100%"
-           width="100%"
-           id="use7463"
-           y="517.69794"
-           x="389.47821"
-           xlink:href="#glyph4-10" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-67.554127,11.217535)"
-         id="g7469"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7467"
-           y="517.69794"
-           x="395.16373"
-           xlink:href="#glyph4-8" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-67.554127,11.217535)"
-         id="g7473"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7471"
-           y="523.7337"
-           x="385.35522"
-           xlink:href="#glyph4-1" />
-      </g>
-      <g
-         transform="matrix(0.35277779,0,0,0.35277779,-67.554127,11.217535)"
-         id="g7477"
-         style="fill:#000000;fill-opacity:1">
-        <use
-           height="100%"
-           width="100%"
-           id="use7475"
-           y="523.7337"
-           x="388.68732"
-           xlink:href="#glyph3-2" />
-      </g>
-    </g>
+       x="57.158722"
+       y="188.52081" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="18.885141"
-       y="201.769"
+       x="21.530987"
+       y="200.44608"
        id="text3082"><tspan
          sodipodi:role="line"
          id="tspan3080"
-         x="18.885141"
-         y="201.769"
+         x="21.530987"
+         y="200.44608"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332">0</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="99.394073"
-       y="201.95799"
+       x="102.03992"
+       y="200.63507"
        id="text3082-5"><tspan
          sodipodi:role="line"
          id="tspan3080-3"
-         x="99.394073"
-         y="201.95799"
+         x="102.03992"
+         y="200.63507"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332">1</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:0.26499999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
-       d="m 44.979167,204.39582 v -5.29167"
+       d="m 47.625012,203.0729 v -5.29167"
        id="path3102"
        inkscape:connector-curvature="0" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="36.083057"
-       y="208.38359"
+       x="38.728901"
+       y="207.06067"
        id="text3082-56"><tspan
          sodipodi:role="line"
          id="tspan3080-2"
-         x="36.083057"
-         y="208.38359"
+         x="38.728901"
+         y="207.06067"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332">ε = 0.2987</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:Minion;-inkscape-font-specification:Minion;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="38.364582"
+       y="147.51041"
+       id="text1885"><tspan
+         sodipodi:role="line"
+         id="tspan1883"
+         x="38.364582"
+         y="151.25592"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Minion;-inkscape-font-specification:Minion;stroke-width:0.26458332"></tspan></text>
+    <path
+       style="fill:none;stroke:#c88484;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.604537,107.05562 c 8.442462,-2.98705 16.190327,-6.83479 32.5592,2e-5"
+       id="path2152"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#c88484;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.472037,123.53366 32.5592,1e-5"
+       id="path2154"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#c88484;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.60454,140.27627 c 8.952615,5.62534 19.171407,7.50279 32.559197,1e-5"
+       id="path2156"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#83a5c8;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.604537,107.05562 c 9.48264,5.3914 19.361946,10.63697 32.4267,16.47805"
+       id="path2158"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#90c883;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.604537,107.05562 c 13.447841,11.20992 23.313779,22.41005 32.559201,33.22067"
+       id="path2160"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#83a5c8;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.604537,123.66595 c 11.612967,-3.8481 22.044229,-10.32222 32.5592,-16.61031"
+       id="path2162"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#90c883;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.472037,123.53366 32.691701,16.74263"
+       id="path2164"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#90c883;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.60454,140.27627 c 10.18461,-6.98818 20.739396,-13.13584 32.426697,-16.7426"
+       id="path2166"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#83a5c8;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 42.60454,140.27627 C 57.815473,127.11458 65.647353,117.48869 75.163737,107.05564"
+       id="path2168"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#83a5c8;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.604534,140.27627 c 12.030579,-2.4175 22.52894,-5.61278 32.426699,-16.7426"
+       id="path2166-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#90c883;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 42.734196,140.14398 C 53.357017,121.59571 64.379818,116.03253 75.293392,106.92335"
+       id="path2168-2"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#83a5c8;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.472037,123.53366 c 8.329648,10.72511 19.644024,16.40158 32.691701,16.74263"
+       id="path2164-2"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#90c883;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.604536,123.66595 c 9.687902,-11.93785 22.445336,-16.01179 32.5592,-16.61031"
+       id="path2162-8"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#83a5c8;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.474881,106.92333 c 8.739558,14.77701 20.335928,24.54784 32.559202,33.22067"
+       id="path2160-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#90c883;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.702686,107.1055 c 14.685193,1.34759 25.00214,6.47478 32.4267,16.47805"
+       id="path2158-7"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <g
+       id="g8605">
+      <text
+         id="text1889-36"
+         y="104.06799"
+         x="56.705093"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="104.06799"
+           x="56.705093"
+           id="tspan1887-1"
+           sodipodi:role="line">P<tspan
+   id="tspan7474"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">stay</tspan><tspan
+   id="tspan7482"
+   style="font-size:1.59541535px;baseline-shift:sub;stroke-width:0.26458332" /></tspan></text>
+      <text
+         id="text7490"
+         y="104.38828"
+         x="57.828091"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="104.38828"
+           x="57.828091"
+           id="tspan7488"
+           sodipodi:role="line">11</tspan></text>
+    </g>
+    <g
+       id="g8041"
+       transform="translate(-0.19651832,-34.48822)">
+      <text
+         id="text1889-36-2"
+         y="143.77882"
+         x="49.837048"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="143.77882"
+           x="49.837048"
+           id="tspan1887-1-9"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">space</tspan></tspan></text>
+      <text
+         id="text7490-9"
+         y="144.09911"
+         x="50.960045"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="144.09911"
+           x="50.960045"
+           id="tspan7488-4"
+           sodipodi:role="line">21</tspan></text>
+    </g>
+    <g
+       id="g8022"
+       transform="translate(13.243849,-28.492836)">
+      <text
+         id="text1889-36-2-7"
+         y="149.4697"
+         x="51.881817"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="149.4697"
+           x="51.881817"
+           id="tspan1887-1-9-8"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3-4"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">time</tspan></tspan></text>
+      <text
+         id="text7490-9-0"
+         y="149.78998"
+         x="53.004814"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="149.78998"
+           x="53.004814"
+           id="tspan7488-4-3"
+           sodipodi:role="line">21</tspan></text>
+    </g>
+    <g
+       id="g8034"
+       transform="translate(21.863093,-14.374419)">
+      <text
+         id="text1889-36-2-6"
+         y="148.95807"
+         x="46.592979"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="148.95807"
+           x="46.592979"
+           id="tspan1887-1-9-1"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3-0"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">space</tspan></tspan></text>
+      <g
+         id="g8026">
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           x="47.715977"
+           y="149.27835"
+           id="text7490-9-6"><tspan
+             sodipodi:role="line"
+             id="tspan7488-4-32"
+             x="47.715977"
+             y="149.27835"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332">31</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g8055"
+       transform="translate(0.12946228,-37.38372)">
+      <text
+         id="text1889-36-2-7-0"
+         y="151.76057"
+         x="44.390907"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="151.76057"
+           x="44.390907"
+           id="tspan1887-1-9-8-6"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3-4-1"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">time</tspan></tspan></text>
+      <text
+         id="text7490-9-0-5"
+         y="152.08086"
+         x="45.513905"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="152.08086"
+           x="45.513905"
+           id="tspan7488-4-3-5"
+           sodipodi:role="line">31</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="55.887318"
+       y="124.24168"
+       id="text1889-36-6"><tspan
+         sodipodi:role="line"
+         id="tspan1887-1-93"
+         x="55.887318"
+         y="124.24168"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332">P<tspan
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332"
+   id="tspan7474-7">stay</tspan><tspan
+   style="font-size:1.59541535px;baseline-shift:sub;stroke-width:0.26458332"
+   id="tspan7482-4" /></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="57.010315"
+       y="124.56197"
+       id="text7490-5"><tspan
+         sodipodi:role="line"
+         id="tspan7488-2"
+         x="57.010315"
+         y="124.56197"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332">22</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="56.297382"
+       y="146.05183"
+       id="text1889-36-5"><tspan
+         sodipodi:role="line"
+         id="tspan1887-1-4"
+         x="56.297382"
+         y="146.05183"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332">P<tspan
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332"
+   id="tspan7474-74">stay</tspan><tspan
+   style="font-size:1.59541535px;baseline-shift:sub;stroke-width:0.26458332"
+   id="tspan7482-43" /></tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="57.42038"
+       y="146.37212"
+       id="text7490-0"><tspan
+         sodipodi:role="line"
+         id="tspan7488-7"
+         x="57.42038"
+         y="146.37212"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332">33</tspan></text>
+    <g
+       id="g8048"
+       transform="translate(1.0061945,-34.955942)">
+      <text
+         id="text1889-36-2-8"
+         y="144.30301"
+         x="61.61602"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="144.30301"
+           x="61.61602"
+           id="tspan1887-1-9-6"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3-8"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">space</tspan></tspan></text>
+      <text
+         id="text7490-9-8"
+         y="144.62329"
+         x="62.739017"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="144.62329"
+           x="62.739017"
+           id="tspan7488-4-4"
+           sodipodi:role="line">12</tspan></text>
+    </g>
+    <g
+       id="g8062"
+       transform="translate(-0.67373713,-34.974122)">
+      <text
+         id="text1889-36-2-8-3"
+         y="161.99306"
+         x="47.077751"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="161.99306"
+           x="47.077751"
+           id="tspan1887-1-9-6-1"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3-8-4"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">space</tspan></tspan></text>
+      <text
+         id="text7490-9-8-9"
+         y="162.31334"
+         x="48.200748"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="162.31334"
+           x="48.200748"
+           id="tspan7488-4-4-2"
+           sodipodi:role="line">32</tspan></text>
+    </g>
+    <g
+       id="g8015"
+       transform="translate(22.588209,-24.398796)">
+      <text
+         id="text1889-36-2-7-06"
+         y="164.31239"
+         x="41.272675"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="164.31239"
+           x="41.272675"
+           id="tspan1887-1-9-8-8"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3-4-9"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">time</tspan></tspan></text>
+      <text
+         id="text7490-9-0-2"
+         y="164.63268"
+         x="42.395672"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="164.63268"
+           x="42.395672"
+           id="tspan7488-4-3-6"
+           sodipodi:role="line">32</tspan></text>
+    </g>
+    <g
+       id="g8090"
+       transform="translate(0.27120335,-35.824568)">
+      <text
+         id="text1889-36-2-7-6"
+         y="158.54688"
+         x="44.64817"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="158.54688"
+           x="44.64817"
+           id="tspan1887-1-9-8-4"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3-4-95"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">time</tspan></tspan></text>
+      <text
+         id="text7490-9-0-0"
+         y="158.86716"
+         x="45.771168"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="158.86716"
+           x="45.771168"
+           id="tspan7488-4-3-4"
+           sodipodi:role="line">12</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="34.574203"
+       y="100.84425"
+       id="text1889"><tspan
+         sodipodi:role="line"
+         id="tspan1887"
+         x="34.574203"
+         y="100.84425"
+         style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332">t</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+       x="81.48764"
+       y="101.10249"
+       id="text1889-3"><tspan
+         sodipodi:role="line"
+         id="tspan1887-6"
+         x="81.48764"
+         y="101.10249"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"><tspan
+   style="font-style:italic"
+   id="tspan1909">t</tspan> + d<tspan
+   style="font-style:italic"
+   id="tspan1911">t</tspan></tspan></text>
+    <g
+       id="g2079"
+       transform="translate(1.5941197,-35.824563)">
+      <rect
+         ry="3.3072853"
+         y="139.57291"
+         x="26.45833"
+         height="6.6145706"
+         width="14.552088"
+         id="rect2025"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26499999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text1889-7"
+         y="144.07135"
+         x="28.339083"
+         style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="144.07135"
+           x="28.339083"
+           id="tspan1887-5"
+           sodipodi:role="line">|c<tspan
+   id="tspan1933"
+   style="font-size:64.99999762%;baseline-shift:sub;font-style:normal">1</tspan>(t)|<tspan
+   id="tspan1931"
+   style="font-size:64.99999762%;baseline-shift:super">2</tspan></tspan></text>
+    </g>
+    <g
+       id="g2086"
+       transform="translate(1.5941159,-28.474643)">
+      <rect
+         ry="3.3072853"
+         y="148.83331"
+         x="26.458334"
+         height="6.6145706"
+         width="14.552089"
+         id="rect2025-2"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26499999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text1889-7-3"
+         y="153.33176"
+         x="28.339088"
+         style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="153.33176"
+           x="28.339088"
+           id="tspan1887-5-5"
+           sodipodi:role="line">|c<tspan
+   id="tspan1971"
+   style="font-size:64.99999762%;baseline-shift:sub;font-style:normal">2</tspan>(t)|<tspan
+   id="tspan1931-2"
+   style="font-size:2.75166631px;baseline-shift:super;stroke-width:0.26458332">2</tspan></tspan></text>
+    </g>
+    <g
+       id="g2108"
+       transform="translate(-1.0517136,-21.124743)">
+      <rect
+         ry="3.3072853"
+         y="158.09373"
+         x="29.104164"
+         height="6.6145706"
+         width="14.552089"
+         id="rect2025-0"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26499999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text1889-7-9"
+         y="162.59218"
+         x="30.984919"
+         style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="162.59218"
+           x="30.984919"
+           id="tspan1887-5-1"
+           sodipodi:role="line">|c<tspan
+   id="tspan1973"
+   style="font-size:64.99999762%;baseline-shift:sub;font-style:normal">3</tspan>(t)|<tspan
+   id="tspan1931-7"
+   style="font-size:2.75166631px;baseline-shift:super;stroke-width:0.26458332">2</tspan></tspan></text>
+    </g>
+    <g
+       id="g2150"
+       transform="translate(14.309568,-33.547174)">
+      <rect
+         ry="3.3072853"
+         y="137.29552"
+         x="60.854168"
+         height="6.6145706"
+         width="22.48958"
+         id="rect2025-0-2-7"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26499999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text1889-7-0"
+         y="141.79396"
+         x="62.780392"
+         style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="141.79396"
+           x="62.780392"
+           id="tspan1887-5-9"
+           sodipodi:role="line">|c<tspan
+   id="tspan1933-3"
+   style="font-size:2.75166631px;baseline-shift:sub;stroke-width:0.26458332;font-style:normal">1</tspan>(t + dt)|<tspan
+   id="tspan1931-6"
+   style="font-size:2.75166631px;baseline-shift:super;stroke-width:0.26458332">2</tspan></tspan></text>
+    </g>
+    <g
+       id="g2143"
+       transform="translate(14.909429,-28.474673)">
+      <rect
+         ry="3.3072853"
+         y="148.83334"
+         x="60.254307"
+         height="6.6145706"
+         width="22.48958"
+         id="rect2025-0-2-3"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26499999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text1889-7-3-0"
+         y="153.33179"
+         x="62.180531"
+         style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="153.33179"
+           x="62.180531"
+           id="tspan1887-5-5-6"
+           sodipodi:role="line">|c<tspan
+   id="tspan1971-2"
+   style="font-size:2.75166631px;baseline-shift:sub;stroke-width:0.26458332;font-style:normal">2</tspan>(t + dt)|<tspan
+   id="tspan1931-2-6"
+   style="font-size:2.75166631px;baseline-shift:super;stroke-width:0.26458332">2</tspan></tspan></text>
+    </g>
+    <g
+       id="g2136"
+       transform="translate(11.663737,-22.44768)">
+      <rect
+         ry="3.3072853"
+         y="159.41667"
+         x="63.5"
+         height="6.6145706"
+         width="22.489578"
+         id="rect2025-0-2"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26499999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text1889-7-9-1"
+         y="163.91512"
+         x="65.426224"
+         style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="163.91512"
+           x="65.426224"
+           id="tspan1887-5-1-8"
+           sodipodi:role="line">|c<tspan
+   id="tspan1973-7"
+   style="font-size:2.75166631px;baseline-shift:sub;stroke-width:0.26458332;font-style:normal">3</tspan>(t + dt)|<tspan
+   id="tspan1931-7-9"
+   style="font-size:2.75166631px;baseline-shift:super;stroke-width:0.26458332">2</tspan></tspan></text>
+    </g>
+    <g
+       id="g8069"
+       transform="translate(1.0271557,-34.879628)">
+      <text
+         id="text1889-36-2-8-2"
+         y="168.99727"
+         x="43.703743"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="168.99727"
+           x="43.703743"
+           id="tspan1887-1-9-6-2"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3-8-6"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">space</tspan></tspan></text>
+      <text
+         id="text7490-9-8-1"
+         y="169.31757"
+         x="44.82674"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="169.31757"
+           x="44.82674"
+           id="tspan7488-4-4-0"
+           sodipodi:role="line">13</tspan></text>
+    </g>
+    <g
+       id="g8083"
+       transform="translate(17.466746,-45.364125)">
+      <text
+         id="text1889-36-2-8-3-6"
+         y="172.25731"
+         x="47.672497"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="172.25731"
+           x="47.672497"
+           id="tspan1887-1-9-6-1-1"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3-8-4-5"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">space</tspan></tspan></text>
+      <text
+         id="text7490-9-8-9-9"
+         y="172.57759"
+         x="48.795494"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="172.57759"
+           x="48.795494"
+           id="tspan7488-4-4-2-4"
+           sodipodi:role="line">23</tspan></text>
+    </g>
+    <g
+       id="g7995"
+       transform="translate(0.27120335,-35.824568)">
+      <text
+         id="text1889-36-2-7-06-9"
+         y="174.82098"
+         x="50.248734"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="174.82098"
+           x="50.248734"
+           id="tspan1887-1-9-8-8-0"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3-4-9-9"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">time</tspan></tspan></text>
+      <text
+         id="text7490-9-0-2-1"
+         y="175.14127"
+         x="51.371731"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="175.14127"
+           x="51.371731"
+           id="tspan7488-4-3-6-7"
+           sodipodi:role="line">23</tspan></text>
+    </g>
+    <g
+       id="g8076"
+       transform="translate(19.359001,-54.865119)">
+      <text
+         id="text1889-36-2-7-6-7"
+         y="169.23776"
+         x="48.859978"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="169.23776"
+           x="48.859978"
+           id="tspan1887-1-9-8-4-1"
+           sodipodi:role="line">P<tspan
+   id="tspan7474-3-4-95-1"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">time</tspan></tspan></text>
+      <text
+         id="text7490-9-0-0-5"
+         y="169.55804"
+         x="49.982975"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="169.55804"
+           x="49.982975"
+           id="tspan7488-4-3-4-9"
+           sodipodi:role="line">13</tspan></text>
+    </g>
+    <g
+       id="g8570"
+       transform="translate(0.18372999,-1.5757711)">
+      <rect
+         ry="3.3072853"
+         y="166.35852"
+         x="27.868721"
+         height="6.6145706"
+         width="14.552089"
+         id="rect2025-0-9"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26499999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text1889-7-9-3"
+         y="170.65651"
+         x="28.88085"
+         style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="170.65651"
+           x="28.88085"
+           id="tspan1887-5-1-9"
+           sodipodi:role="line">η(t) = <tspan
+   style="font-style:normal"
+   id="tspan8813">1</tspan></tspan></text>
+    </g>
+    <g
+       id="g8565"
+       transform="translate(-2.1504301)">
+      <rect
+         ry="3.3072853"
+         y="153.0717"
+         x="80.080208"
+         height="6.6145706"
+         width="23.906525"
+         id="rect2025-0-9-8-9-1"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26499999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text1889-7-9-3-5-6-1"
+         y="157.34207"
+         x="81.867279"
+         style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="157.34207"
+           x="81.867279"
+           id="tspan1887-5-1-9-0-3-5"
+           sodipodi:role="line">η(t + <tspan
+   id="tspan8736"
+   style="font-style:normal">d</tspan>t) = <tspan
+   style="font-style:normal"
+   id="tspan8807">1</tspan></tspan></text>
+      <rect
+         ry="3.3072853"
+         y="164.78275"
+         x="80.0802"
+         height="6.6145706"
+         width="23.906525"
+         id="rect2025-0-9-8-9-1-5"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26499999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text1889-7-9-3-5-6-1-3"
+         y="169.05312"
+         x="81.867271"
+         style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="169.05312"
+           x="81.867271"
+           id="tspan1887-5-1-9-0-3-5-8"
+           sodipodi:role="line">η(t + <tspan
+   id="tspan8736-8"
+   style="font-style:normal;stroke-width:0.26458332">d</tspan>t) = <tspan
+   style="font-style:normal"
+   id="tspan8805">2</tspan></tspan></text>
+      <rect
+         ry="3.3072853"
+         y="176.4938"
+         x="80.0802"
+         height="6.6145706"
+         width="23.906525"
+         id="rect2025-0-9-8-9-1-3"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.26499999;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         id="text1889-7-9-3-5-6-1-1"
+         y="180.76418"
+         x="81.867271"
+         style="font-style:normal;font-weight:normal;font-size:4.23333311px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="180.76418"
+           x="81.867271"
+           id="tspan1887-5-1-9-0-3-5-89"
+           sodipodi:role="line">η(t + <tspan
+   id="tspan8736-6"
+   style="font-style:normal;stroke-width:0.26458332">d</tspan>t) = <tspan
+   style="font-style:normal"
+   id="tspan8803">3</tspan></tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#c88484;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 42.604541,168.09003 C 51.372824,161.45214 60.9192,156.39896 77.929768,156.37898"
+       id="path2156-9"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#83a5c8;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;opacity:0.99999999"
+       d="m 42.60454,168.09003 c 12.175883,1.2673 23.987719,1.41123 35.325227,0"
+       id="path8591"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#90c883;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.604541,168.09003 c 12.596966,-2.23085 24.490489,-2.55235 35.325226,0"
+       id="path8593"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#90c883;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 42.604541,168.09003 c 12.231984,3.44678 23.984018,7.37351 35.325226,11.71106"
+       id="path8595"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#83a5c8;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;opacity:0.99999999"
+       d="m 42.60454,168.09003 c 7.30215,7.26638 20.660245,10.21519 35.325227,11.71106"
+       id="path8597"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <g
+       transform="translate(2.3219107,53.056659)"
+       id="g8605-8">
+      <text
+         id="text1889-36-4"
+         y="106.33978"
+         x="56.371006"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="106.33978"
+           x="56.371006"
+           id="tspan1887-1-8"
+           sodipodi:role="line">S<tspan
+   id="tspan7474-1"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">stay</tspan></tspan></text>
+      <text
+         id="text7490-3"
+         y="106.66007"
+         x="57.494003"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="106.66007"
+           x="57.494003"
+           id="tspan7488-0"
+           sodipodi:role="line">11</tspan></text>
+      <g
+         id="g8069-4"
+         transform="translate(13.22277,-55.120639)">
+        <text
+           id="text1889-36-2-8-2-4"
+           y="168.99727"
+           x="43.703743"
+           style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+             y="168.99727"
+             x="43.703743"
+             id="tspan1887-1-9-6-2-4"
+             sodipodi:role="line">S<tspan
+   id="tspan7474-3-8-6-4"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">space</tspan></tspan></text>
+        <text
+           id="text7490-9-8-1-7"
+           y="169.31757"
+           x="44.82674"
+           style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+             y="169.31757"
+             x="44.82674"
+             id="tspan7488-4-4-0-6"
+             sodipodi:role="line">21</tspan></text>
+      </g>
+      <g
+         id="g7995-3"
+         transform="translate(11.002159,-58.073577)">
+        <text
+           id="text1889-36-2-7-06-9-1"
+           y="174.82098"
+           x="50.248734"
+           style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+             y="174.82098"
+             x="50.248734"
+             id="tspan1887-1-9-8-8-0-7"
+             sodipodi:role="line">S<tspan
+   id="tspan7474-3-4-9-9-5"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">time</tspan></tspan></text>
+        <text
+           id="text7490-9-0-2-1-9"
+           y="175.14127"
+           x="51.371731"
+           style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+             y="175.14127"
+             x="51.371731"
+             id="tspan7488-4-3-6-7-6"
+             sodipodi:role="line">21</tspan></text>
+      </g>
+      <g
+         id="g8069-4-2"
+         transform="translate(8.1047089,-49.210073)">
+        <text
+           id="text1889-36-2-8-2-4-1"
+           y="168.99727"
+           x="43.703743"
+           style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+             y="168.99727"
+             x="43.703743"
+             id="tspan1887-1-9-6-2-4-7"
+             sodipodi:role="line">S<tspan
+   id="tspan7474-3-8-6-4-8"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">space</tspan></tspan></text>
+        <text
+           id="text7490-9-8-1-7-5"
+           y="169.31757"
+           x="44.82674"
+           style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+             y="169.31757"
+             x="44.82674"
+             id="tspan7488-4-4-0-6-7"
+             sodipodi:role="line">31</tspan></text>
+      </g>
+      <g
+         id="g7995-3-4"
+         transform="translate(6.2384489,-50.225884)">
+        <text
+           id="text1889-36-2-7-06-9-1-1"
+           y="174.82098"
+           x="50.248734"
+           style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+             y="174.82098"
+             x="50.248734"
+             id="tspan1887-1-9-8-8-0-7-8"
+             sodipodi:role="line">S<tspan
+   id="tspan7474-3-4-9-9-5-5"
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.26458332">time</tspan></tspan></text>
+        <text
+           id="text7490-9-0-2-1-9-9"
+           y="175.14127"
+           x="51.371731"
+           style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+             y="175.14127"
+             x="51.371731"
+             id="tspan7488-4-3-6-7-6-7"
+             sodipodi:role="line">31</tspan></text>
+      </g>
+    </g>
+    <g
+       id="g8961"
+       transform="translate(66.5896,20.875595)">
+      <text
+         id="text1889-36-4-3"
+         y="172.88641"
+         x="10.922917"
+         style="font-style:normal;font-weight:normal;font-size:3.42995501px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="172.88641"
+           x="10.922917"
+           id="tspan1887-1-8-3"
+           sodipodi:role="line">S<tspan
+   id="tspan7474-1-3"
+   style="font-style:normal;font-weight:normal;font-size:2.22947049px;baseline-shift:super;stroke-width:0.26458332">stay</tspan></tspan></text>
+      <text
+         id="text7490-3-8"
+         y="173.334"
+         x="12.49222"
+         style="font-style:normal;font-weight:normal;font-size:2.29522443px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.26458332"
+           y="173.334"
+           x="12.49222"
+           id="tspan7488-0-6"
+           sodipodi:role="line">11</tspan></text>
+    </g>
+    <g
+       transform="matrix(1.3974233,0,0,1.3974233,-36.258874,-42.380128)"
+       id="g8069-4-2-9"
+       style="stroke-width:0.71560276">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.18933655"
+         x="43.703743"
+         y="168.99727"
+         id="text1889-36-2-8-2-4-1-2"><tspan
+           sodipodi:role="line"
+           id="tspan1887-1-9-6-2-4-7-5"
+           x="43.703743"
+           y="168.99727"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.18933655">S<tspan
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.18933655"
+   id="tspan7474-3-8-6-4-8-4">space</tspan></tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.18933655"
+         x="44.82674"
+         y="169.31757"
+         id="text7490-9-8-1-7-5-0"><tspan
+           sodipodi:role="line"
+           id="tspan7488-4-4-0-6-7-5"
+           x="44.82674"
+           y="169.31757"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.18933655">31</tspan></text>
+    </g>
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.35277778;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3033-4"
+       width="7.9663301"
+       height="7.9375"
+       x="49.19239"
+       y="188.52081" />
+    <g
+       transform="matrix(1.3974233,0,0,1.3974233,-19.953149,-50.52903)"
+       id="g7995-3-6"
+       style="stroke-width:0.71560276">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.18933655"
+         x="50.248734"
+         y="174.82098"
+         id="text1889-36-2-7-06-9-1-4"><tspan
+           sodipodi:role="line"
+           id="tspan1887-1-9-8-8-0-7-3"
+           x="50.248734"
+           y="174.82098"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.18933655">S<tspan
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.18933655"
+   id="tspan7474-3-4-9-9-5-0">time</tspan></tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.18933655"
+         x="51.371731"
+         y="175.14127"
+         id="text7490-9-0-2-1-9-3"><tspan
+           sodipodi:role="line"
+           id="tspan7488-4-3-6-7-6-0"
+           x="51.371731"
+           y="175.14127"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.18933655">21</tspan></text>
+    </g>
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.35277778;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3033-4-7"
+       width="7.2981567"
+       height="7.9375"
+       x="41.894234"
+       y="188.52081" />
+    <g
+       transform="matrix(1.3974233,0,0,1.3974233,-18.844233,-42.360979)"
+       id="g8069-4-0"
+       style="stroke-width:0.71560276">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.18933655"
+         x="43.703743"
+         y="168.99727"
+         id="text1889-36-2-8-2-4-4"><tspan
+           sodipodi:role="line"
+           id="tspan1887-1-9-6-2-4-8"
+           x="43.703743"
+           y="168.99727"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.18933655">S<tspan
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.18933655"
+   id="tspan7474-3-8-6-4-88">space</tspan></tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.18933655"
+         x="44.82674"
+         y="169.31757"
+         id="text7490-9-8-1-7-9"><tspan
+           sodipodi:role="line"
+           id="tspan7488-4-4-0-6-77"
+           x="44.82674"
+           y="169.31757"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.18933655">21</tspan></text>
+    </g>
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.35277778;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3033-4-75"
+       width="8.1264868"
+       height="7.9375"
+       x="33.767746"
+       y="188.52081" />
+    <g
+       transform="matrix(1.3974233,0,0,1.3974233,-35.297715,-50.509393)"
+       id="g7995-3-4-9"
+       style="stroke-width:0.71560276">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:2.45448542px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.18933655"
+         x="50.248734"
+         y="174.82098"
+         id="text1889-36-2-7-06-9-1-1-4"><tspan
+           sodipodi:role="line"
+           id="tspan1887-1-9-8-8-0-7-8-6"
+           x="50.248734"
+           y="174.82098"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.18933655">S<tspan
+   style="font-style:normal;font-weight:normal;font-size:1.59541535px;baseline-shift:super;stroke-width:0.18933655"
+   id="tspan7474-3-4-9-9-5-5-9">time</tspan></tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:1.64246905px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.18933655"
+         x="51.371731"
+         y="175.14127"
+         id="text7490-9-0-2-1-9-9-2"><tspan
+           sodipodi:role="line"
+           id="tspan7488-4-3-6-7-6-7-2"
+           x="51.371731"
+           y="175.14127"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Minion Pro';-inkscape-font-specification:'Minion Pro';stroke-width:0.18933655">31</tspan></text>
+    </g>
   </g>
 </svg>
