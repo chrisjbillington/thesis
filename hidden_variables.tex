@@ -355,7 +355,7 @@ During a simulation, to choose whether a transition occurs due to spatial or tem
 \begin{figure}[t]
     \centerfloat
     \includegraphics{figures/hidden_variables/random_choice.pdf}
-    \caption{Probabilistically choosing a transition. Top: Probability flows between states in a time interval according to the three matrices of unconditional probabilities $P^\up{stay}$, $P^\up{space}$, and $P^\up{time}$ in such a way that one total unit of probability is routed from states at the initial time to states at the final time consistent with the populations resulting from quantum mechanical evolution in that timestep. Centre: The hidden variable transitions according to the corresponding conditional probabilities which are elements of the matrices $S^\up{stay}$, $S^\up{space}$, and $S^\up{time}$. Here the hidden variable is in state $1$ and we are choosing whether it will remain in that state or if it will transition to state $2$ or $3$, and if the latter, whether it transitions via a spatial or temporal non-adiabatic transition. Bottom: All the probabilities for what may happen to the hidden variable in a timestep sum to one, so an array of the cumulative probabilities can be constructed, and a random number drawn from the range $[0,1]$. The index of the smallest element of the array of cumulative sums that the random number is smaller than corresponds to the the event to occur. In the above diagrammatic example, the result of the random draw is that the hidden variable is to transition to state $2$ via a spatial non-adiabatic transition.}\label{fig:random_choice}
+    \caption{Probabilistically choosing a transition. Top: Probability flows between states in a time interval according to the three matrices of unconditional probabilities $P^\up{stay}$, $P^\up{space}$, and $P^\up{time}$ in such a way that one total unit of probability is routed from states at the initial time to states at the final time consistent with the populations resulting from quantum mechanical evolution in that timestep. Centre: The hidden variable transitions according to the corresponding conditional probabilities which are elements of the matrices $S^\up{stay}$, $S^\up{space}$, and $S^\up{time}$. Here the hidden variable is in state $1$ and we are choosing whether it will remain in that state or if it will transition to state $2$ or $3$, and if the latter, whether it transitions via a spatial or temporal non-adiabatic transition. Bottom: All the probabilities for what may happen to the hidden variable in a timestep sum to one, so an array of the cumulative probabilities can be constructed, and a random number drawn from the range $[0,1]$. The index of the smallest element of the array of cumulative sums that the random number is smaller than corresponds to the event to occur. In the above diagrammatic example, the result of the random draw is that the hidden variable is to transition to state $2$ via a spatial non-adiabatic transition.}\label{fig:random_choice}
 \end{figure}
 
 \subsubsection{Framing fewest-switches as a hidden-variable theory}
@@ -376,7 +376,7 @@ H_\up{eff}(\vec r, t)\,\dd t &= \ii\hbar\Log U(t+\dd t, t)\\
 \end{align}
 where $\Log$ is the principal value of the complex matrix logarithm.
 
-Since only the matrix $H_\up{eff}(\vec r, t)\,\dd t$ is required to compute transition probabilities according to~\eqref{eq:fewest_switches_Heff}, and not its component terms,\footnote{Though we do need its component terms if we wish to distinguish between spatially vs.\ temporally induced transitions as in [SECREF].} specifying the initial state vector and unitary for an interval of time evolution (both in the local basis) is a sufficient input to be able to compute transition probabilities using Tully's fewest-switches algorithm. Writing the the resulting matrix of probabilities in terms of $U$ gives:
+Since only the matrix $H_\up{eff}(\vec r, t)\,\dd t$ is required to compute transition probabilities according to~\eqref{eq:fewest_switches_Heff}, and not its component terms,\footnote{Though we do need its component terms if we wish to distinguish between spatially vs.\ temporally induced transitions as in [SECREF].} specifying the initial state vector and unitary for an interval of time evolution (both in the local basis) is a sufficient input to be able to compute transition probabilities using Tully's fewest-switches algorithm. Writing the resulting matrix of probabilities in terms of $U$ gives:
 \begin{align}
 P_{ij} = \begin{cases}
 \max\left\{0, 2\re\left(c_i^*(t)U_{ij}(t + \dd t, t)c_j(t)\right)\right\} & i \neq j\\
@@ -439,10 +439,75 @@ In the case that a transition of the hidden variable does occur to the $i^\up{th
 
 \section{Decoherence}
 
+Was not in Tully's original paper. Prior to discovering the surface hopping literature I came up with simple Markovian decoherence as a mean decoherence of thermal wavelength sized Gaussians [see section]. It is below in [SECREF]. After discovering the surface hopping literature and their fondness for spawning additional trajectories to work out decoherence more accurately, I came up with what I believe is an improvement [see subsection].
+
+In Subsection~\ref{sec:backaction} I show the general mechanism by which the divergence of trajectories decoheres internal states of an atom, and specifically how this appears as an apparent decrease in the amplitudes of each other state when one imposes the adiabatic trajectory corresponding to one specific internal state.
+
+\subsection{Back action of position measurement on internal state}\label{sec:backaction}
+
+Consider an atom in a state $\ket{\Psi(t)}$, which is an arbitrary superposition of internal basis states $\ket{\chi_i}$ and motional basis states $\ket{\vec r}$: 
+\begin{align}
+\ket{\Psi(t)} = \int \sum_i \psi_i(\vec r, t) \ket{\chi_i}\otimes\ket{\vec r} \dd\vec r,
+\end{align}
+where normalisation requires that
+\begin{align}
+\int \sum_i \abs{\psi_i(\vec r, t)}^2 \dd\vec r = 1.
+\end{align}
+Recognising that $\psi_i(\vec r, t)$ is the $i^\up{th}$ component of a multi-component wavefunction that has one component for each internal state, we define (up to an arbitrary phase factor) a normalised wavefunction $\phi_i(\vec r, t)$ and corresponding motional state vector $\ket{\phi_i(t)}$ and its coefficient $c_i(t)$ for each component:
+\begin{align}\label{eq:product_state_vector}
+c_i(t)\phi_i(\vec r, t) &\equiv \psi_i(\vec r, t) \\
+\ket{\phi_i(t)} &\equiv \int \phi_i(\vec r, t)\ket{\vec r}\dd \vec r
+\end{align}
+such that $\int\abs{\phi_i(\vec r, t)}^2\dd \vec r = 1$, allowing us to write our arbitrary state vector as a sum over the internal basis only:
+\begin{align}
+\ket{\Psi(t)} = \sum_i c_i(t) \ket{\chi_i}\otimes\ket{\phi_i(t)},
+\end{align}
+where the spatial state vectors $\{\ket{\phi_i(t)}\}$ are not necessarily orthogonal. To see that spatial separation of the different components leads to decoherence of the internal states, consider the pure density operator corresponding to $\ket{\Psi(t)}$:
+\begin{align}
+\hat\rho(t) = \ketbra{\Psi(t)}{\Psi(t)} = \sum_{ij}
+c_i(t) c_j^*(t)\ketbra{\chi_i(t)}{\chi_j(t)}\otimes\ketbra{\phi_i(t)}{\phi_j(t)},
+\end{align}
+which we can write in the $\{\ket{\chi_i}\otimes\ket{\vec r}\} \equiv \{\ket{\chi_i\ \vec r}\} $ basis, resulting in matrix elements
+\begin{align}
+\rho_{ij}(t, \vec r, \vec r^\prime) &= \matrixel{\chi_i\ \vec r}{\rho(t)}{\chi_j\ \vec r^\prime},\\
+&= \psi_i(\vec r, t)\psi_j^*(\vec r^\prime, t),\\
+&= c_i(t) c^*_j(t) \phi_i(\vec r, t) \phi_j^*(\vec r^\prime, t).
+\end{align}
+A partial trace [CITE THE DECOHERENCE BOOK] over the motional degree of freedom results in a reduced density operator describing the measurement statistics of the internal degree of freedom only, assuming ignorance of the position degree of freedom:
+\begin{align}
+\hat\rho^\up{red}(t) &= \int\matrixel{\vec r}{\hat \rho(t) \hat {\vec r}}{\vec r}\dd \vec r\\
+\Rightarrow \rho^\up{red}_{ij}(t) &= \int\rho_{ij}(t, \vec r, \vec r^\prime)\delta(\vec r - \vec r^\prime)\dd \vec r\\
+&= c_i(t) c_j^*(t)\int\phi_i(\vec r, t)\phi_j^*(\vec r, t)\dd \vec r\\
+&= c_i(t) c_j^*(t)\braket{\phi_j(t)}{\phi_i(t)}.
+\end{align}
+So we see that the off diagonals of the density matrix, representing the coherences of the internal states, are reduced by a factor $\braket{\phi_j(t)}{\phi_i(t)}$, which will be unity only for pairs of motional state vectors that are identical. We therefore see that separation in space of the wavefunctions corresponding to different internal states leads to decoherence of the internal states, with decoherence factor $r_{ij} = \braket{\phi_j(t)}{\phi_i(t)}$. This same decoherence factor appears when---instead of integrating over all positions---we project the total state vector onto a single motional state corresponding to a classical trajectory, which (along with assumptions about the form of the motional states), is how we impose classicality on the motional degree of freedom in our model. The effect of decoherence when ``following" a specific motional state through space in this way is to reduce the amplitudes of all other states not being followed by the decoherence factor between that state and the one being followed, as shown schematically in Figure [FIGREF SCHEMATIC FROM EARLIER SECTION].
+
+Returning to our arbitrary state vector~\eqref{eq:product_state_vector}, we find (ignoring normalisation) the projected state vector $\ket{\tilde \Psi(t)}$ resulting from projection of the total state vector $\ket{\Psi(t)}$ onto the specific motional state vector $\ket{\phi_\eta(t)}$ corresponding to the state selected by the hidden variable $\eta$. This gives the (non-normalised) state vector one would observe conditional on the particle being in that specific motional state.
+\begin{align}
+\ket{\tilde \Psi(t)} &\equiv \left(\hat 1 \otimes \ketbra{\phi_\eta(t)}{\phi_\eta(t)} \right)\ket{\Psi(t)}\\
+&= \sum_i\braket{\phi_\eta(t)}{\phi_i(t)}c_i(t)\ket{\chi_i}\otimes\ket{\phi_\eta(t)}\\
+\Rightarrow \ket{\tilde \Psi(t)} &= \sum_i\tilde c_i(t)\ket{\chi_i}\otimes\ket{\phi_\eta(t)},
+\end{align}
+where we have defined $\tilde c_i(t) \equiv \braket{\phi_\eta(t)}{\phi_i(t)}c_i(t)$, and can immediately see that the effect of this projection is to reduce the amplitude of all other states ($i\neq\eta$) by the decoherence factor $r_{i\eta}(t)$.
+
+This projection onto a single (albeit still quantum) motional state is the first step in imposing classicality on the motional degree of freedom of our system. Essentially at each timestep we are performing a weak measurement (a positive operator valued measure or POVM [CITE]) of the position degree of freedom, with a hypothetical measurement device that cannot distinguish positions perfectly, and has measurement outcomes corresponding to the set of motional states we have defined. The measurement outcome is not selected randomly at the time the projection is performed, but instead pre-ordained by the current value of the hidden variable $\eta$. The fact that the hidden-variable makes stochastic transitions in a manner consistent with the Born rule guarantees that the probability of each measurement outcome is the same as if we had chosen an outcome randomly based on the Born rule itself at the time of each measurement. See Section [SECREF SPECULATIVE ASIDE] for a discussion of why use of a hidden variable is preferable to actually using the Born rule.
+
+Effectively performing this measurement at each timestep of a simulation means that we are assuming that any amplitude leaving the envelope of the currently tracked motional state will either not come back into it, or will have a minimal effect if it does. Given the six-dimensional size of phase space, in which two separated pieces of amplitude of an atom's wavefunction must find each other if they are to interfere, this is a worthy approximation in many cases, to the extent that until recently [CITE]it was not possible to observe such interference in the case of Stern--Gerlach separation of cold atoms. The problem of getting the wavepackets back together again is called the ``Humpty Dumpty problem" and was a serious concern to early atom interferometry researches before the use of Bragg pulses [CITE] allowed experiments to create large momentum differences between wavepackets without having them more slowly traverse the intermediate regions of momentum space where they might accumulate coherence-destroying phase noise.
+
+Back to our derivation. Recognising that we have a product state:
+\begin{align}
+\ket{\tilde \Psi(t)} = \ket{\tilde\chi(t)}\otimes\ket{\phi_\eta(t)},
+\end{align}
+where
+\begin{align}
+\ket{\tilde\chi(t)} = \sum_i\tilde c_i(t)\ket{\chi_i},
+\end{align}
+we now focus on the dynamics of the projected state vector for the internal state of the atom only, showing how the coefficients $\{\tilde c_i(t)\}$ evolve in time. Since $\ket{\tilde\chi(t)}$ is nto nromalised [use the logarithmic derivative. Investigate the order of indices on the decoherence factor, I don't like it]
+
 \subsection{Approximate Markovian decoherence}
 
 Roughest way to compute decoherence is to just use an average decoherence rate.
-\subsection{Single continuously spawned mean auxiliary trajectories}
+\subsection{Continuously spawned mean auxiliary trajectories}
 
 My fancy cool model which is awesome and rad.
 
@@ -473,7 +538,8 @@ Although the method wasn't original, in rediscovering it I have identified that 
 
 Discuss how it would make sense for the systems to behave in the presence of collisions w.r.t collapse of state vectors.
 
-TODO:
+\subsection{Speculative aside: Monte-Carlo wavefunctions and Stochastic Schr\"odinger equations} 
+The Stochastic Schr\"odinger equation [CITE] is very similar to the case where the measurement outcome is chosen at projection time, randomly each time rather than according to a hidden variable. This produces the same eventual transition probabilities, but is not suitable for us. If we moved the atom according to the force experienced by the state
 
 \section{Approximate Markovian decoherence rate for separating wavepackets}
 
@@ -512,7 +578,7 @@ This is a decoherence \emph{factor}; it is the factor by which the $(i, j)$ off-
 \Gamma_{ij}(t) = - \frac 1 {r_{ij}(t)} \dv t {r_{ij}(t)}.
 \end{align}
 
- The fact that \eqref{eq:decoherence_factor} does not describe a constant decoherence rate (i.e., it does not have the functional form of exponential decay) means that the back-action on the atom's internal state caused by measurements of its motional state will be different depending on the interval of time between measurements.
+ The fact that \eqref{eq:decoherence_factor} does not describe a constant decoherence rate (i.e., it does not have the functional form of exponential decay) means that the back action on the atom's internal state caused by measurements of its motional state will be different depending on the interval of time between measurements.
 
 For example, the logarithmic derivative of \eqref{eq:decoherence_factor} approaches zero as $t$ goes to zero. This means that in the limit of infinitely frequent measurements, no decoherence occurs at all in between measurements, and the motional state is reset after each measurement such that the wavepackets never separate at all. This is the quantum Zeno effect, and its appearance in models of open quantum systems is usually treated as a reminder that the assumption of infinitely frequent strong measurements is unphysical [CITE].
 
