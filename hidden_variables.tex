@@ -612,15 +612,16 @@ and so we see that a a decoherence rate that does not reset the environment stat
 
 \subsection{Approximate Markovian decoherence}
 
-A crude way to include decoherence is just to approximate $R_{\eta i}(t)$ as a decaying exponential with approximately the right decay constant. This is crude because $R_{\eta i}(t)$ does not look much like a decaying exponential [see figure FIGREF]. In the limit of large $t$, its functional form is $e^-{t^4}$, not the exponential decay required to treat the decoherence as Markovian at any timescale.
+A crude way to include decoherence is just to [assuming wavepackets are separating with constant acceleration, move this stuff here?] approximate $R_{\eta i}(t)$ as a decaying exponential with approximately the right decay constant. This is crude because $R_{\eta i}(t)$ does not look much like a decaying exponential [see figure FIGREF]. In the limit of large $t$, its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian at any timescale.
 
 To find an approximate Markovian decoherence rate, we first construct a ``time ignorant" decoherence factor $\tilde R_{\eta i}(t)$ that answers the question ``What is the expected value of $R_{\eta i}(t)$ at all times $t > 0$ if I don't know how long before $t=0$ the two wavepackets began separating?" We can then take the derivative of this time-ignorant decoherence factor at $t=0$ to use as an approximate Markovian decoherence rate $\Gamma^\up{Markovian}_i$. Whilst extremely approximate, this method of including decoherence is nonetheless an improvement over the Ehrenfest method (which has no decoherence), and over Tully's original fewest-hops surface hopping method [CITE], which also lacked any decoherence. Others [CITE HEAPS, LOOK AT REVIEW ARTICLE FOR A LIST MAYBE] have since introduced approximate damping of states in a manner very similar to that presented in this subsection, but I was unaware of these developments when I developed this method.
 
 Proceeding, we define the time-ignorant decoherence factor $\tilde R_{ij}(t)$ as the average\footnote{Not a quantum expectation value, just a weighted sum.} of all decoherence factors one would obtain if the two wavepackets began separating at some point in time before $t=0$:
 \begin{align}
-\tilde R_{ij}(t) &= A\int_{-\infty}^0\braket{\phi_i(t-t^\prime)}{\phi_j(t - t^\prime)} \,\dd t^\prime,
+\tilde R_{ij}(t) &= A\int_{-\infty}^0\braket{\phi_i(t-t^\prime)}{\phi_j(t - t^\prime)} \,\dd t^\prime\\
+&= A\int_{-\infty}^0 R(t-t^\prime) \,\dd t^\prime
 \end{align}
-where $A$ is a normalisation constant such that $\tilde R_{ij}(t) = 0$, and where we take that $\ket{\phi_i(0)} = \ket{\phi_j(0)}$ and each thereafter evolves according to the classical motion of their centre of mass as in [EQUATIONS].
+where $A$ is a normalisation constant such that $\tilde R_{ij}(0) = 0$, and where we take that $\ket{\phi_i(0)} = \ket{\phi_j(0)}$ with each thereafter evolving according to the classical motion of their centre of mass as in [EQUATIONS].
 
 [Notation is a bit shoddy - specify that motional states are dependent on a trajectory? How can I fit that in the notation?]
 
@@ -628,9 +629,43 @@ where $A$ is a normalisation constant such that $\tilde R_{ij}(t) = 0$, and wher
 
 [Make gamma have ij subscripts again with the DE - maybe - think about this]
 
-Our time-ignorant decoherence rate is then the (negative of the) derivative of $\tilde R_{ij}(t) = 0$ at $t=0$:
+Our time-ignorant decoherence rate is then the (negative of the) derivative of $\tilde R_{ij}(t)$ at $t=0$:
 \begin{align}
-\Gamma_i^\up{Markovian}
+\Gamma_i^\up{Markovian} = -\frac{\left[\dv{t}\int_{-\infty}^0 R(t-t^\prime) \,\dd t^\prime\right]_{t=0} }
+{\left[\int_{-\infty}^0 R(t-t^\prime) \,\dd t^\prime\right]_{t=0}}.
+\end{align}
+Moving the derivative inside the integral, noting that $\dv{R(t - t^\prime)}{t} = \dv{R(t - t^\prime)}{t - t^\prime}$ and setting $t = 0$, we get:
+\begin{align}
+\Gamma_i^\up{Markovian} &= -\frac
+{\int_{-\infty}^0 R^\prime(-t^\prime) \,\dd t^\prime}
+{\int_{-\infty}^0 R(-t^\prime) \,\dd t^\prime}\\
+&= -\frac
+{\int_0^\infty R^\prime(t^\prime) \,\dd t^\prime}
+{\int_0^\infty R(t^\prime) \,\dd t^\prime}
+\end{align}
+where $R^\prime$ is the derivative of $R$ with respect to its argument. By the fundamental theorem of calculus the numerator is $-1$, since $R(t)$ decreases from unity at $t=0$ to zero as $t$ goes to infinity, leaving us with:
+
+\begin{align}
+\left(\Gamma_i^\up{Markovian}\right)^{-1} &= 
+  \int_0^\infty R(t^\prime) \,\dd t^\prime\\
+&= \int_0^\infty \ee^{-\left(\frac1{8\sigma^2}\abs{\vec r_{ij}}^2
++ \frac\ii 2 \vec r_{ij}(t^\prime) \cdot \vec k_{ij}(t^\prime) + \frac{\sigma^2}{2} \abs{\vec k_{ij}(t^\prime)}^2
+\right)} \,\dd t^\prime
+\end{align}
+
+[FIX $\vec r_{ij}$ - ``rel"? Gah.]
+
+Approximating the motion of the wavepackets as moving away from each other with constant acceleration based on the adiabatic potentials at position $\vec r$ and time $t$ gives:
+\begin{align}
+\vec r_{ij}(t^\prime) = \frac12\vec a_{ij}(\vec r, t) {t^\prime}^2
+\end{align}
+and
+\begin{align}
+\vec k_{ij}(t^\prime) = \frac m \hbar \vec a_{ij}(\vec r, t) t^\prime,
+\end{align}
+where the relative acceleration is
+\begin{align}
+\vec a_{ij}(\vec r, t) = -\frac1 m\left(\nabla V_{ii}(\vec r, t) - \nabla V_{jj}(\vec r, t)\right).
 \end{align}
 \subsection{Continuously spawned mean auxiliary trajectories}
 
@@ -732,7 +767,7 @@ To that end, we will now construct a ``time ignorant" version of $R_{ij}(t)$ tha
 
 We define the time-ignorant decoherence factor $\tilde R_{ij}(t)$ as the overlap of the wavefunction of the $i^\up{th}$ internal state with a superposition of wavepackets of the $j^\up{th}$ internal state, with the superposition being over all times in the past the wavepackets began separating:
 \begin{align}
-\tilde R_{ij}(t) &= \bra{\psi_i(t)} A\int_{-\infty}^0 \ket{\psi_j(t - t^\prime)} \,\dd t^\prime,
+\tilde R_{ij}(t) &= \bra{\psi_i(t)} A\int_{-\infty}^0 \ket{\psi_j(t - t^\prime)} \,\dd t^\prime\\
 \end{align}
 where $A$ is a normalisation constant such that $\tilde R_{ij}(0) = 1$.
 Since $\ket{\psi_i(t)}$ is time independent (rather, since we can perform our calculations in the frame of reference in which it is stationary), this is:
