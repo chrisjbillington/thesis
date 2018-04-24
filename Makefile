@@ -8,9 +8,9 @@ BASE_LATEX_COMMAND = lualatex -interaction=nonstopmode -halt-on-error -recorder 
 # If "pydflatex" is installed, use it to parse the logfile and print more useful output:
 PYDFLATEX := $(shell command -v pydflatex 2> /dev/null)
 ifdef PYDFLATEX
-	PYDFLATEX_COMMAND = echo '====== BEGIN LATEX LOG ====='; pydflatex -l $(BASENAME).tex; echo '======= END LATEX LOG ======\n'
-    LATEX_COMMAND = $(BASE_LATEX_COMMAND) $(BASENAME).tex > /dev/null; $(PYDFLATEX_COMMAND)
-    LATEXMK_COMMAND = $(BASE_LATEX_COMMAND) %O %S > /dev/null; $(PYDFLATEX_COMMAND)
+   PYDFLATEX_COMMAND = echo '====== BEGIN LATEX LOG ====='; pydflatex -l $(BASENAME).tex; echo '======= END LATEX LOG ======\n'
+   LATEX_COMMAND = $(BASE_LATEX_COMMAND) $(BASENAME).tex > /dev/null; $(PYDFLATEX_COMMAND)
+   LATEXMK_COMMAND = $(BASE_LATEX_COMMAND) %O %S > /dev/null; $(PYDFLATEX_COMMAND)
 else
     LATEX_COMMAND = $(BASE_LATEX_COMMAND) $(BASENAME).tex
     LATEXMK_COMMAND = $(BASE_LATEX_COMMAND) %O %S
