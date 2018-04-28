@@ -504,7 +504,36 @@ A partial trace~\cite{schlosshauer_decoherence:_2007} over the motional degree o
 \end{align}
 So we see that the off diagonals of the density matrix, representing the coherences of the internal states, are reduced by a factor $\braket{\phi_j(t)}{\phi_i(t)}$, which will be unity only for pairs of motional state vectors that are identical. We therefore see that separation in space of the wavefunctions corresponding to different internal states leads to decoherence of the internal states, with decoherence factor $R_{ji} = \braket{\phi_j(t)}{\phi_i(t)}$. This same decoherence factor appears when---instead of integrating over all positions---we project the total state vector onto a single motional state corresponding to a classical trajectory, which (along with assumptions about the form and evolution of the motional states), is how we impose classicality on the motional degree of freedom in our model. The effect of decoherence when ``following" a specific motional state through space in this way is to reduce the amplitudes of all other states not being followed by the decoherence factor between that state and the one being followed, as shown schematically in \figref{fig:HVSC_schematic}.
 
-[TODO: FORM OF RIJ ASSUMING CONSTANT ACCELERATION HERE. EDIT LATER STUFF TO REFER BACK TO THIS INSTEAD OF WRITING IT THERE. OR MOVE THAT STUFF HERE WHEN YOU GET TO EDITING IT]
+To obtain an explicit form for the decoherence factor $R_{ij}(t)$, we need to start imposing our assumptions about the motional states $\{\ket{\phi_i(t)}\}$. As alluded to earlier, we will be assuming that each motional state $\ket{\phi_i(t)}$ is a Gaussian wavepacket propagating---without dispersion---with centre-of-mass motion evolving classically according to the adiabatic potential $V_i(\vec r, t)$ (defined in Section \ref{sec:fewest_switches}). [TODO make sure the single index notation defined there]. Thus the wavefunctions of these motional states are
+\begin{align}
+\braket{\vec r}{\phi_i(t)} &= \phi_i(\vec r, t) = A\exp\left[-\frac{\abs{\vec r - \vec r_i(t)}^2}{4\sigma^2} + \ii \frac m\hbar \vec v_i(t)\cdot (\vec r - \vec r_i(t))\right],
+\end{align}
+Where $A$ is a real normalisation constant,\footnote{The overall phase is determined by the offset $\vec r - \vec r_i(t)$ in the second term in the exponent, and is chosen such that $\phi_i(\vec r, t)$ is real at $\vec r=\vec r_i$, which ensures that $\braket{\phi_i(t)}{\phi_j(t)}$ has a phase depending only on the relative positions of the two wavepackets rather than their distance from some arbitrary origin. Acquiring an additional arbitrary phase at each timestep when we apply our reduction operator $\hat R$ would not affect the system dynamics, but is unappealing nonetheless.} $\vec r_{ij}(t) = \vec r_i(t) - \vec r_j(t)$ and $\vec k_{ij}(t) = \frac m\hbar \left(\vec v_i(t) - \vec v_j(t)\right)$ are the relative mean position and wavevector of the pair of wavepackets, and where the centre-of-mass position and velocity of each wavepacket evolve classically according to
+\begin{align}
+\dv{t} \vec r_i(t) &= \vec v_i(t)\\
+\dv{t} \vec v_i(t) &= -\frac1m\nabla V_i(\vec r_i, t).
+\end{align}
+This gives for the decoherence factor:
+\begin{align}\label{eq:decoherence_factor_const_a}
+R_{ij}(t) = \ee^{-\left(\frac1{8\sigma^2}\abs{\vec r_{ij}}^2
++ \frac\ii 2 \vec r_{ij}(t) \cdot \vec k_{ij}(t) + \frac{\sigma^2}{2} \abs{\vec k_{ij}(t)}^2
+\right)}.
+\end{align}
+As expected, $R_{ij}(t)$ is equal to unity when the two wavepackets have identical positions and velocities, and decays to zero for increasing relative position and velocity. 
+
+If the two motional states being considered are identical at $t=0$ and have constant relative acceleration $\vec a_{ij}$, then we have
+\begin{align}
+\vec r_{ij}(t) = \frac12\vec a_{ij} t^2
+\end{align}
+and
+\begin{align}
+\vec k_{ij}(t) = \frac m \hbar \vec a_{ij} t,
+\end{align}
+which gives for the decoherence factor:
+\begin{align}\label{eq:const_a_decoherence_factor}
+R_{ij}(t) = \exp\left[-\frac {\abs{\vec a_{ij}}^2} 2 \left(\frac1 {16\sigma^2}t^4 + \ii\frac m{2\hbar}t^3 + \frac{m^2\sigma^2}t^2\hbar\right)\right].
+\end{align}
+We will return later to this explicit form of the decoherence factor under these assumptions.
 
 Returning to our arbitrary state vector~\eqref{eq:product_state_vector}, we find (ignoring normalisation) the projected state vector $\ket{\tilde \Psi(t)} = \hat R(t)\ket{\tilde \Psi(t)}$, where $\hat R(t) = \hat 1 \otimes \ketbra{\phi_\eta(t)}{\phi_\eta(t)}$, resulting from projection of the total state vector $\ket{\Psi(t)}$ onto the specific motional state vector $\ket{\phi_\eta(t)}$ corresponding to the state selected by the hidden variable $\eta$. This gives the (non-normalised) state vector one would observe conditional on the particle being in that specific motional state at that specific time.
 \begin{align}
@@ -549,47 +578,33 @@ where $\hat\Gamma_\eta(t)$ is a diagonal operator in the $\{\ket{\chi_i}\}$ basi
 \end{align}
 where we have defined $\gamma_{ij}(t) = -\dv{R_{ij}(t)}{t}$. The diagonals of $\hat \Gamma_\eta(t)$ in the eigenbasis are \emph{decoherence rates}, and cause exponential damping of all internal states other than the $\ket{\chi_\eta}$ state, with faster damping the faster the motional state corresponding to a given internal state diverges with $\ket{\phi_\eta(t)}$.
 
-\subsection{Reframing as continuous weak measurement of internal state}
+% \subsection{Reframing as continuous weak measurement of internal state}
 
-[REVISIT AT END, OR REMOVE IF YOU DON't HAVE TIME]
+% [REVISIT AT END, OR REMOVE IF YOU DON't HAVE TIME]
 
-[Write the set of operators and their probabilities. Talk about the speculative stuff here]
+% [Write the set of operators and their probabilities. Talk about the speculative stuff here]
 
-This projection onto a single (albeit still quantum) motional state is the first step toward imposing classicality on the motional degree of freedom of our system, and is is similar, but not identical to performing a continuous weak quantum measurement of the position degree of freedom. Similarly to the case of continuous weak measurement, we have a set of (time dependent in our case) projection operators $\{\Omega_i(t)\}$ with
-\begin{align}
-\Omega_i(t) = \hat 1 \otimes \int\psi_i(\vec r, t)\ketbra{\vec r}{\vec r} \dd \vec r,
-\end{align}
-and are choosing from them at each timestep with probability of the $i^\up{th}$ outcome being $\matrixel{\Psi(t)}{\Omega_i^\dagger(t)}{\Omega_i(t)}$. This is as if we were performing a measurement with hypothetical measurement device not capable of distinguishing different positions perfectly, but only of determining which of the (not necessarily orthogonal) motional state vectors $\{\ket{\phi_i(t)}\}$ the system is in. 
+% This projection onto a single (albeit still quantum) motional state is the first step toward imposing classicality on the motional degree of freedom of our system, and is is similar, but not identical to performing a continuous weak quantum measurement of the position degree of freedom. Similarly to the case of continuous weak measurement, we have a set of (time dependent in our case) projection operators $\{\Omega_i(t)\}$ with
+% \begin{align}
+% \Omega_i(t) = \hat 1 \otimes \int\psi_i(\vec r, t)\ketbra{\vec r}{\vec r} \dd \vec r,
+% \end{align}
+% and are choosing from them at each timestep with probability of the $i^\up{th}$ outcome being $\matrixel{\Psi(t)}{\Omega_i^\dagger(t)}{\Omega_i(t)}$. This is as if we were performing a measurement with hypothetical measurement device not capable of distinguishing different positions perfectly, but only of determining which of the (not necessarily orthogonal) motional state vectors $\{\ket{\phi_i(t)}\}$ the system is in. 
 
-Essentially at each timestep we are performing a weak measurement (a positive operator valued measure or POVM [CITE]) of the position degree of freedom, with a hypothetical measurement device that cannot distinguish positions perfectly, and has measurement outcomes corresponding to the set of motional states $\{\ket{\phi_i}\}$.
+% Essentially at each timestep we are performing a weak measurement (a positive operator valued measure or POVM [CITE]) of the position degree of freedom, with a hypothetical measurement device that cannot distinguish positions perfectly, and has measurement outcomes corresponding to the set of motional states $\{\ket{\phi_i}\}$.
 
-[ELABORATE. WRITE THE POVMS AND THEIR PROBABILITIES]
+% [ELABORATE. WRITE THE POVMS AND THEIR PROBABILITIES]
 
-The measurement outcome is not selected randomly at the time the projection is performed, but instead pre-ordained by the current value of the hidden variable $\eta$. The fact that the hidden-variable makes stochastic transitions in a manner consistent with the Born rule guarantees that the probability of each measurement outcome is the same as if we had chosen an outcome randomly based on the Born rule itself at the time of each measurement. See Section [SECREF SPECULATIVE ASIDE] for a discussion of why use of a hidden variable is preferable to actually using the Born rule.
+% The measurement outcome is not selected randomly at the time the projection is performed, but instead pre-ordained by the current value of the hidden variable $\eta$. The fact that the hidden-variable makes stochastic transitions in a manner consistent with the Born rule guarantees that the probability of each measurement outcome is the same as if we had chosen an outcome randomly based on the Born rule itself at the time of each measurement. See Section [SECREF SPECULATIVE ASIDE] for a discussion of why use of a hidden variable is preferable to actually using the Born rule.
 
-Effectively performing this measurement at each timestep of a simulation means that we are assuming that any amplitude leaving the envelope of the currently tracked motional state will either not come back into it, or will have a minimal effect if it does. Given the six-dimensional size of phase space, in which two separated pieces of amplitude of an atom's wavefunction must find each other if they are to interfere, this is a worthy approximation in many cases, to the extent that until recently [CITE]it was not possible to observe such interference in the case of Stern--Gerlach separation of cold atoms. The problem of getting the wavepackets back together again is called the ``Humpty Dumpty problem" and was a serious concern to early atom interferometry researches before the use of Bragg pulses [CITE] allowed experiments to create large momentum differences between wavepackets without having them more slowly traverse the intermediate regions of momentum space where they might accumulate coherence-destroying phase noise.
+% Effectively performing this measurement at each timestep of a simulation means that we are assuming that any amplitude leaving the envelope of the currently tracked motional state will either not come back into it, or will have a minimal effect if it does. Given the six-dimensional size of phase space, in which two separated pieces of amplitude of an atom's wavefunction must find each other if they are to interfere, this is a worthy approximation in many cases, to the extent that until recently [CITE]it was not possible to observe such interference in the case of Stern--Gerlach separation of cold atoms. The problem of getting the wavepackets back together again is called the ``Humpty Dumpty problem" and was a serious concern to early atom interferometry researches before the use of Bragg pulses [CITE] allowed experiments to create large momentum differences between wavepackets without having them more slowly traverse the intermediate regions of momentum space where they might accumulate coherence-destroying phase noise.
 
-\subsection{Form of the decoherence factor and the quantum Zeno effect}
-
-Finally we will say something about the motional states $\{\ket{\phi_i(t)}\}$. We will assume that each of them is a Gaussian wavepacket with width equal the thermal wavelength, or a specific coherence length we will define, whichever is smaller (see Section [WRITE SECTION HOW BIG IS A WAVEPACKET?]). Each wavepacket moves, without dispersion, with its mean position subject to the adiabatic potential $V_{ii}(\vec r, t)$ as described in in [SECREF TIME DEPENDENT FORMULATION OF TULLY]. Thus:
-\begin{align}
-\braket{\vec r}{\phi_i(t)} &= \phi_i(\vec r, t) = A\ee^{-\frac{\abs{\vec r - \vec r_i(t)}^2}{4\sigma^2} + \ii \frac m\hbar \vec v_i(t)\cdot (\vec r - \vec r_i(t))}\\
-\dv{t} \vec r_i(t) &= \vec v_i(t)\\
-\dv{t} \vec v_i(t) &= -\frac1m\nabla V_{ii}(\vec r_i, t).
-\end{align}
-Where $A$ is a real normalisation constant.\footnote{The overall phase is determined by the offset $\vec r - \vec r_i(t)$ in the second term in the exponent, and is chosen such that $\phi_i(\vec r, t)$ is real at $\vec r=\vec r_i$, which ensures that $\braket{\phi_i(t)}{\phi_j(t)}$ has a phase depending only on the relative positions of the two wavepackets rather than their distance from some arbitrary origin. Acquiring an additional arbitrary phase at each timestep when we apply our reduction operator $\hat R$ would not affect the system dynamics, but is unappealing nonetheless.} This gives for our decoherence factor:
-\begin{align}
-R_{ij}(t) = \ee^{-\left(\frac1{8\sigma^2}\abs{\vec r_{ij}}^2
-+ \frac\ii 2 \vec r_{ij}(t) \cdot \vec k_{ij}(t) + \frac{\sigma^2}{2} \abs{\vec k_{ij}(t)}^2
-\right)},
-\end{align}
-where $\vec r_{ij}(t) = \vec r_i(t) - \vec r_j(t)$ and $\vec k_{ij}(t) = \frac m\hbar \left(\vec v_i(t) - \vec v_j(t)\right)$ are the relative mean position and wavevector of the pair of wavepackets. As expected, it is equal to unity when the two wavepackets have identical positions and velocities, and decays to zero for increasing relative position and velocity. 
+\subsection{The quantum Zeno effect}
 
 [TODO: Flag in intro that I will summarise the necessary equations later in the algorithm section, and make sure you do that]
 
-But now we arrive at a problem. Because all the motional states are reset to be equal to $\ket{\phi_\eta(t)}$ at each timestep, the relative position and wavevector of the two wavepackets are both zero at all times, and so our decoherence rates are [TODO: rename ``naive" decoherence rate?]:
+But now we arrive at a problem. Because all the motional states are reset to be equal to $\ket{\phi_\eta(t)}$ at each timestep, the relative position and wavevector of the two wavepackets are zero at all times, and so our decoherence rates are:
 \begin{align}
-\Gamma_{ij}(t) &= -\left[\dv{R_{ij}(t)}{t}\right]_{
+\gamma_{ij} &= -\left[\dv{R_{ij}(t)}{t}\right]_{
 \stackon[1pt]
 {$\scriptscriptstyle\, \vec v_{ij} = 0$}
 {$\scriptscriptstyle\, \vec k_{ij} = 0$}
@@ -638,9 +653,15 @@ and so we see that a a decoherence rate that does not reset the environment stat
 
 \subsection{Approximate Markovian decoherence}
 
-A crude way to include decoherence is just to [assuming wavepackets are separating with constant acceleration, move this stuff here?] approximate $R_{\eta i}(t)$ as a decaying exponential with approximately the right decay constant. This is crude because $R_{\eta i}(t)$ does not look much like a decaying exponential [see figure FIGREF]. In the limit of large $t$, its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian at any timescale.
+where the relative acceleration is
 
-To find an approximate Markovian decoherence rate, we first construct a ``time ignorant" decoherence factor $\tilde R_{\eta i}(t)$ that answers the question ``What is the expected value of $R_{\eta i}(t)$ at all times $t > 0$ if I don't know how long before $t=0$ the two wavepackets began separating?" We can then take the derivative of this time-ignorant decoherence factor at $t=0$ to use as an approximate Markovian decoherence rate $\Gamma^\up{Markovian}_i$. Whilst extremely approximate, this method of including decoherence is nonetheless an improvement over the Ehrenfest method (which has no decoherence), and over Tully's original fewest-hops surface hopping method [CITE], which also lacked any decoherence. Others [CITE HEAPS, LOOK AT REVIEW ARTICLE FOR A LIST MAYBE] have since introduced approximate damping of states in a manner very similar to that presented in this subsection, but I was unaware of these developments when I developed this method.
+
+
+A crude way to include decoherence is just to approximate $R_{\eta i}(t)$ as a decaying exponential with approximately the right decay constant. This is crude because $R_{\eta i}(t)$ does not look much like a decaying exponential [see figure FIGREF]. In the limit of large $t$, for the case constant acceleration as in~\eqref{eq:decoherence_factor_const_a} its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian at any timescale.
+
+To find an approximate Markovian decoherence rate, we first construct a ``time ignorant" version $\tilde R_{ij}(t)$ of the decoherence factor $\tilde R_{ij}(t)$ given in~\eqref{eq:decoherence_factor_const_a} that answers the question ``What is the expected value of $R_{\eta i}(t)$ at all times $t > 0$ if I don't know how long before $t=0$ the two wavepackets began separating?" 
+
+We can then take the derivative of this time-ignorant decoherence factor at $t=0$ to use as an approximate Markovian decoherence rate $\Gamma^\up{Markovian}_i$. Whilst extremely approximate, this method of including decoherence is nonetheless an improvement over the Ehrenfest method (which has no decoherence), and over Tully's original fewest-hops surface hopping method [CITE], which also lacked any decoherence. Others [CITE HEAPS, LOOK AT REVIEW ARTICLE FOR A LIST MAYBE] have since introduced approximate damping of states in a manner very similar to that presented in this subsection, but I was unaware of these developments when I developed this method.
 
 Proceeding, we define the time-ignorant decoherence factor $\tilde R_{ij}(t)$ as the average\footnote{Not a quantum expectation value, just a weighted sum.} of all decoherence factors one would obtain if the two wavepackets began separating at some point in time before $t=0$:
 \begin{align}
@@ -679,20 +700,15 @@ where $R^\prime$ is the derivative of $R$ with respect to its argument. By the f
 \right)} \,\dd t^\prime
 \end{align}
 
-[FIX $\vec r_{ij}$ - ``rel"? Gah.]
 
-Approximating the motion of the wavepackets as moving away from each other with constant acceleration based on the adiabatic potentials at position $\vec r$ and time $t$ gives:
+[TODO scrap the following sentence, introduce it some other way, and continue to copy and paste from the other section where this is completed. Get the figure!]
+The expression~\eqref{eq:decoherence_factor_const_a} requires a relative acceleration, for which we use the relative acceleration between the pair of adiabatic potentials at the current moment in time and current position of the atom during a simulation:
 \begin{align}
-\vec r_{ij}(t^\prime) = \frac12\vec a_{ij}(\vec r, t) {t^\prime}^2
+\vec a_{ij} = -\frac1 m\left(\nabla V_i(\vec r, t) - \nabla V_i(\vec r, t)\right).
 \end{align}
-and
-\begin{align}
-\vec k_{ij}(t^\prime) = \frac m \hbar \vec a_{ij}(\vec r, t) t^\prime,
-\end{align}
-where the relative acceleration is
-\begin{align}
-\vec a_{ij}(\vec r, t) = -\frac1 m\left(\nabla V_{ii}(\vec r, t) - \nabla V_{jj}(\vec r, t)\right).
-\end{align}
+
+
+
 \subsection{Continuously spawned mean auxiliary trajectories}
 
 My fancy cool model which is awesome and rad.
