@@ -46,7 +46,7 @@ The Stern--Gerlach effect is a consequence of quantum mechanics, to be sure, but
 
 A similar situation exists in \textsc{rf} evaporative cooling (Section~\ref{sec:evaporative_cooling}) of cold atoms en-route to \textsc{bec}. Atoms are trapped in a magnetic trap, and are spin polarised so as to be fully spin down (for $^{87}$Rb this is the trapped state) with respect to the local magnetic field at the position of each atom. The magnetic field's direction---not just  its magnitude---varies in space, and so different atoms have different spins, but they are all spin down with respect to the quantisation axis of the local magnetic field. As the atoms move through space, they move in orbits---punctuated by collisions---about the magnetic field zero at the centre of the trap, since they feel a force $F\propto-\nabla\abs{\vec B}$ due to the gradient of the Zeeman potential. Provided they are moving slowly (specifically, provided their Larmor precession period is short compared to the time the magnetic field as seen by the atom takes to change by a non-negligible fraction of its current value), the atoms' spins adiabatically follow the local field and remain spin-down, even as the field as seen by each atom fully reverses its direction every half orbital period.
 
-Near the centre of the trap where the atoms are moving faster, the fields are small and therefore have large fractional derivatives and lead to large Larmor periods, adiabaticity no longer holds and the atoms may make spin transitions with respect to their local magnetic field. Once an atom passing close to the field zero has evolved into a superposition of spin projection states with respect to the local field, it is in a situation identical to the initial condition of the Stern--Gerlach experiment, causing the spin projection components to spatially separate in the magnetic field gradient. The spin up component is anti-trapped and repelled from the centre of the trap, and the zero spin projection component (since the groundstate of $^{87}$Rb is spin-$1$) feels no force and moves in a straight line. The spin down component continues on an orbit about the field zero which is just as tight as before, unaffected by the close approach to the field zero other than being reduced in amplitude. Eventually a collision occurs, either with other atoms or with the walls of the vacuum system and the wavefunction collapses to choose one of these options, leading to atoms probabilistically leaving the trap (called Majorana losses \cite{Majorana1932, PhysRevLett.74.3352}) or remaining trapped. Again, the trajectories can still be quite classical, it's just that there are three of them, and which is taken is probabilistic.
+Near the centre of the trap where the atoms are moving faster, the fields are small and therefore have large fractional derivatives and lead to large Larmor periods, adiabaticity no longer holds and the atoms may make spin transitions with respect to their local magnetic field. Once an atom passing close to the field zero has evolved into a superposition of spin projection states with respect to the local field, it is in a situation identical to the initial condition of the Stern--Gerlach experiment, causing the spin projection components to spatially separate in the magnetic field gradient. The spin up component is anti-trapped and repelled from the centre of the trap, and the zero spin projection component (since the groundstate of $^{87}$Rb is spin-$1$) feels no force and moves in a straight line. The spin down component continues on an orbit about the field zero which is just as tight as before, unaffected by the close approach to the field zero other than being reduced in amplitude. Eventually a collision occurs, either with other atoms or with the walls of the vacuum system and the wavefunction collapses to choose one of these options, leading to atoms probabilistically leaving the trap (called Majorana losses~\cite{Majorana1932, PhysRevLett.74.3352}) or remaining trapped. Again, the trajectories can still be quite classical, it's just that there are three of them, and which is taken is probabilistic.
 
 How can we model these effects semiclassically? Equations \eqref{eq:simple_semiclassical_first} to \eqref{eq:simple_semiclassical_last} are not sufficient, because exists no single classical potential $V(\vec r)$ that can describe the motion of the atoms. Rather, the atoms feel a different force depending on which spin state they are in. Just as the Hamiltonian can be a function of space, so can the potential be a function of the internal state of the atom: $V = V(\vec{r}, \ket\chi)$. Ehrenfest's theorem~\cite{Ehrenfest1927} states that
 \begin{align}
@@ -461,7 +461,9 @@ In the case that a transition of the hidden variable does occur to the $i^\up{th
 
 \section{Decoherence}\label{sec:decoherence}
 
-Was not in Tully's original paper. Prior to discovering the surface hopping literature I came up with simple Markovian decoherence as a mean decoherence of thermal wavelength sized Gaussians [see section]. It is below in [SECREF]. After discovering the surface hopping literature and their fondness for spawning additional trajectories to work out decoherence more accurately, I came up with what I believe is an improvement [see subsection].
+In the context of the hidden-variable semiclassical/surface hopping method, \emph{decoherence} refers to the fact that, due to positional separation of different internal states of the atom, those internal states transition from being a coherent superposition into a statistical mixture. For example, in the Stern--Gerlach experiment, a spin may be initially a coherent superposition of spin-up and spin-down, but by the time the two components separate, the superposition is no longer a coherent one. The spin is either up (and the atom off to one one side of the screen) or down (and the atom over the other side of the screen). At this point, no interference between the two internal states is observable, as they are not co-located in space. The motional degree of freedom has played the role of an environment, and, having become entangled with the spin of the atom, decohered the spin state. Recoherence can occur if the two wavepackets are brought back together again to have well overlapping positions and velocities, but this is difficult to achieve even intentionally\footnote{The problem of getting the wavepackets back together again has been coined the ``Humpty-Dumpty problem"~\cite{Schwinger1988, doi:10.1063/1.459170} and has made magnetic separation impractical for large-momentum atom interferometry~\cite{machluf_coherent_2013}, and methods such as the use of Bragg pulses~\cite{PhysRevLett.66.2693, PhysRevLett.75.2633} are needed to create large momentum differences between wavepackets without having them more slowly traverse the intermediate regions of momentum space where they might accumulate coherence-destroying phase noise.}, let alone by accident, 
+
+Decoherence was not part of Tully's original surface hopping model~\cite{doi:10.1063/1.459170}, such that if used to simulate the Stern--Gerlach experiment, two spots would result on the screen, but both spots would comprise a coherent $50:50$ superposition of spin-up and spin-down, rather than one being up and one being down. Some decoherence is necessary to include in a hidden-variable semiclassical/surface hopping model in order to avoid this unphysical outcome, and furthermore, to obtain correct transition probabilities in the case that the atom undergoes multiple periods of local spin transitions (as being in a $50:50$ superposition represents entirely different initial conditions for a Majorana spin flip than being in a single spin state).
 
 In Subsection~\ref{sec:backaction} I show the general mechanism by which the divergence of trajectories decoheres internal states of an atom, and specifically how this appears as an apparent decrease in the amplitudes of each other state when one imposes the adiabatic trajectory corresponding to one specific internal state.
 
@@ -624,44 +626,44 @@ But now we arrive at a problem. Because all the motional states are reset to be 
 }\\
 &= 0.
 \end{align}
-Every decoherence rate is zero. What is going on? The answer is the quantum Zeno effect [CITE LOADS OF THINGS], which is the name given to the fact that, in the limit of infinitely frequent measurements of whether quantum evolution has occurred, the back action of the measurement has the effect of preventing the evolution from occurring at all. One saying is that ``A watched quantum pot never boils" [CITE?]. In our case, the fact that we are projecting constantly onto our assumed set of motional states causes the amplitude flows to the other motional states to be exactly zero. The appearance of the quantum Zeno effect ought to be a reminder that the assumption of infinitely frequent projective measurements is unphysical. In our case it certainly is---we have merely imagined a hypothetical measurement device collapsing our position states because we don't want to simulate them, not because any such measurement device actually exists. Nonetheless the internal states of the atom \emph{do} decohere even in the absence of measurement (and there is eventual measurement when the atoms collide with other atoms or otherwise interact with anything in a position-dependent way), and we wish to model the approximate effect of this.
+Every decoherence rate is zero. What is going on? The answer is the quantum Zeno effect~\cite{PhysRevA.41.2295, doi:10.1063/1.523304}, which is the name given to the fact that, in the limit of infinitely frequent measurements of whether quantum evolution has occurred, the back action of the measurement has the effect of preventing the evolution from occurring at all. A watched quantum pot may never boils, though Schr\"odinger's cat may be happy with the situation~\cite{doi:10.1063/1.523304}:
+\begin{quote}
+In view of
+the Zeno's paradox formulated above, should we conclude
+that the particle will never decay? Will the cat
+escape the cruel death awaiting it, against which it has
+no defense, provided its vital signs are constantly
+watched with loving care? 
+\end{quote}
+
+In our case, the fact that we are projecting constantly onto our assumed set of motional states causes the amplitude flows to the other motional states to be exactly zero. The appearance of the quantum Zeno effect ought to be a reminder that the assumption of infinitely frequent projective measurements is unphysical. In our case it certainly is---we have merely imagined a hypothetical measurement device collapsing our position states because we don't want to simulate them, not because any such measurement device actually exists. Nonetheless the internal states of the atom \emph{do} decohere even in the absence of measurement (and there is eventual measurement when the atoms collide with other atoms or otherwise interact with anything in a position-dependent way), and we wish to model the approximate effect of this, if possible with a differential equation that does not require us to simulate all the quantum details of the motional degree of freedom.
 
 Note that if the decoherence factor had the form of exponential decay:
 \begin{align}
-R^\up{Markovian}_{ij}(t) = e^{-\gamma_{ij} t}, 
+R^\up{Markov}_{ij}(t) = e^{-\gamma_{ij} t}, 
 \end{align}
-then the decoherence rate would be the constant $\gamma_{ij}$, and not zero. This is the case for Markovian decoherence, which is when the environment has no memory of its past interaction with the system. The memory in our case is that the wavepackets accelerate away from each other, starting from zero relative position and velocity at each timestep---the relative position and velocity comprise a memory of the past interaction, which we are erasing each time we reproject.
+then the decoherence rate would be the constant $\gamma_{ij}$, and not zero. This is the case for Markovian decoherence~\cite{schlosshauer_decoherence:_2007}, which is when the environment has no memory of its past interaction with the system. The memory in our case is due to the wavepackets accelerating away from each other, starting from zero relative position and velocity at each timestep---the relative position and velocity comprise a memory of the past interaction, which we are erasing each time we reproject.
 
-The lack of an environmental memory is only ever approximately true, and no decoherence factors in nature have the form of a decaying exponential at all times. At small enough times the overlap between two states can only move away from unity quadratically owing to unitary evolution on account of the Schr\"odinger equation, guaranteeing an initial time derivative of zero for all physical decoherence factors. However in many systems of interest, the specifics of the interaction with the system are quickly forgotten by the environmental states, and the decoherence factor does approach a decaying exponential. This is the case, for example, for spontaneous photon emission by atoms, which one can consider a measurement effect in which the electromagnetic field is being regularly measured by the environment in the photon number basis. In the various quantum trajectories methods used to simulate atoms in the presence of spontaneous emission, if one assumes that the measurements are projective, one must simply assume that the frequent measurements take place at large enough timescales that the decoherence factor is in the exponential decay regime, provided that this is much smaller than other dynamical timescales, which is true for spontaneous emission. This can be recast as a continuous \emph{weak} measurement, rather than infrequent projective measurements [CITE THE STRAIGHTFORWARD INTRODUCTION], which is more physically realistic than the assumption of projective measurements at somewhat arbitrarily chosen intervals, but results in the same differential equations.
+The lack of an environmental memory is only ever approximately true, and no decoherence factors in nature have the form of a decaying exponential at all times. At small enough times the overlap between two states can only move away from unity quadratically owing to unitary evolution on account of the Schr\"odinger equation, guaranteeing an initial time derivative of zero for all physical decoherence factors. However in many systems of interest, the specifics of the interaction with the system are quickly forgotten by the environmental states, and the decoherence factor does approach a decaying exponential~\cite{0034-4885-41-4-003}. This is the case, for example, for spontaneous photon emission by atoms, which one can consider a measurement effect in which the electromagnetic field is being regularly measured by the environment in the photon number basis~\cite{1355-5111-8-1-015}. In the various quantum trajectories methods used to simulate atoms in the presence of spontaneous emission, if one assumes that the measurements are projective, one must simply assume that the frequent measurements take place at large enough timescales that the decoherence factor is in the exponential decay regime, provided that this is much smaller than other dynamical timescales, which is true for spontaneous emission. This can be recast as a continuous \emph{weak} measurement, rather than infrequent projective measurements ~\cite{doi:10.1080/00107510601101934}, which is more physically realistic than the assumption of projective measurements at somewhat arbitrarily chosen intervals, but results in the same differential equations.
 
 A decoherence factor that has the form of a decaying exponential implies that any chosen measurement interval results in the same fractional reduction in state amplitudes, since the differential equation $\dv{\tilde c_{i}(t)}{t} = -\gamma \tilde c_i(t)$ has the solution $\tilde c(t) = e^{-\gamma t} \tilde c(0)$, that is, repeated consideration of only the first part of the decoherence factor ends up tracing out the whole decoherence curve over time.
 
-How can we replicate something like this for our separating wavepackets? I have two approaches. 
+How can we replicate something like this for our separating wavepackets? I have two approaches. The first, described in Section~\ref{sec:markovian_decoherence}, is to gloss over as many of the details of the wavepacket separation as possible and replace the decoherence factor with an exponential one, describing the wavepackets separating on approximately the correct timescale. This is crude, but better than no decoherence at all. The second, described in Section~\ref{sec:spawned_trajectories} method is to introduce a minimal memory of the separation of wavepackets. In this approach, one (but only one) trajectory is simulated for the motional state corresponding to each internal state. Whenever there is population transfer between states, these trajectories are replaced with a weighted average of their existing position with that of the source of the population transfer.
 
-[move this to the other section on non-Markovian decoherence?]
+\subsection{Approximate Markovian decoherence}\label{sec:markovian_decoherence}
 
-Firstly we need to generalise our conception of the decoherence rate. We have assumed so far that the motional states are being ``reset" after each projective measurement to be equal to $\ket{\phi_\eta(t)}$ at each timestep. What is the reduction in the state amplitudes at each timestep if the wavepackets do not reset, but are left as arbitrary states for the time being? We know that if we were to perform a projective measurement at time $t$, the $i^\up{th}$ state amplitude would be reduced by a factor of $R_{\eta i}(t)$ compared to the original state amplitude $c_i(t)$:
-\begin{align}
-\tilde c_i(t) = R_{\eta i}(t) c_i(t).
-\end{align}
-This implies:
-\begin{align}
-\dv{\tilde c_i(t)}{t} &= \dv{R_{\eta i}(t)}{t} c_i(t)\\
-&= \frac1{R_{\eta i}(t)}\dv{R_{\eta i}(t)}{t} \tilde c_i(t).
-\end{align}
-and so we see that a a decoherence rate that does not reset the environment states is the (negative of the) logarithmic derivative of the decoherence factor, rather than just its derivative. This case encompasses the earlier case in which $R_{\eta i}(t) = 1$ at all times, in which case the logarithmic and ordinary derivatives are the same.
+A crude way to include decoherence is just to approximate $R_{\eta i}(t)$ as a decaying exponential with roughly the right decay constant. This is crude because $R_{\eta i}(t)$ does not look much like a decaying exponential (see \figref{fig:decoherence_factor_example}). In the limit of large $t$, for the case constant acceleration as in~\eqref{eq:decoherence_factor_const_a} its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian at any timescale.
 
-\subsection{Approximate Markovian decoherence}
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics{figures/hidden_variables/decoherence_factor_example.pdf}
+    \caption{Caption: write the details, rubidium, what wavepacket size etc from the Python script.}
+    \label{fig:decoherence_factor_example}
+\end{figure}
 
-where the relative acceleration is
+To find an approximate Markovian decoherence rate, we first construct a ``time ignorant" version $\tilde R_{ij}(t)$ of the decoherence factor $\tilde R_{ij}(t)$ given in~\eqref{eq:decoherence_factor_const_a} that answers the question ``What is the expected value of $R_{ij}(t)$ at all times $t > 0$ if I don't know how long before $t=0$ the two wavepackets began separating?" 
 
-
-
-A crude way to include decoherence is just to approximate $R_{\eta i}(t)$ as a decaying exponential with approximately the right decay constant. This is crude because $R_{\eta i}(t)$ does not look much like a decaying exponential [see figure FIGREF]. In the limit of large $t$, for the case constant acceleration as in~\eqref{eq:decoherence_factor_const_a} its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian at any timescale.
-
-To find an approximate Markovian decoherence rate, we first construct a ``time ignorant" version $\tilde R_{ij}(t)$ of the decoherence factor $\tilde R_{ij}(t)$ given in~\eqref{eq:decoherence_factor_const_a} that answers the question ``What is the expected value of $R_{\eta i}(t)$ at all times $t > 0$ if I don't know how long before $t=0$ the two wavepackets began separating?" 
-
-We can then take the derivative of this time-ignorant decoherence factor at $t=0$ to use as an approximate Markovian decoherence rate $\Gamma^\up{Markovian}_i$. Whilst extremely approximate, this method of including decoherence is nonetheless an improvement over the Ehrenfest method (which has no decoherence), and over Tully's original fewest-hops surface hopping method [CITE], which also lacked any decoherence. Others [CITE HEAPS, LOOK AT REVIEW ARTICLE FOR A LIST MAYBE] have since introduced approximate damping of states in a manner very similar to that presented in this subsection, but I was unaware of these developments when I developed this method.
+We can then take the derivative of this time-ignorant decoherence factor at $t=0$ to use as an approximate Markovian decoherence rate $\gamma_{ij}^\up{Markov}$. Whilst extremely approximate, this method of including decoherence is nonetheless an improvement over the Ehrenfest method (which has no decoherence), and over Tully's original fewest-hops surface hopping method~\cite{doi:10.1063/1.459170}, which also lacked any decoherence. Others~\cite{doi:10.1063/1.4733675, doi:10.1063/1.1468887, doi:10.1063/1.470177} have since developed various methods to induce approximate damping of states to achieve a similar outcome, including the approximation of an exponential decoherence factor~\cite{doi:10.1063/1.4733675}, though my development of this method was independent, as I was unaware of this literature at the time.
 
 Proceeding, we define the time-ignorant decoherence factor $\tilde R_{ij}(t)$ as the average\footnote{Not a quantum expectation value, just a weighted sum.} of all decoherence factors one would obtain if the two wavepackets began separating at some point in time before $t=0$:
 \begin{align}
@@ -678,12 +680,12 @@ where $A$ is a normalisation constant such that $\tilde R_{ij}(0) = 0$, and wher
 
 Our time-ignorant decoherence rate is then the (negative of the) derivative of $\tilde R_{ij}(t)$ at $t=0$:
 \begin{align}
-\Gamma_i^\up{Markovian} = -\frac{\left[\dv{t}\int_{-\infty}^0 R(t-t^\prime) \,\dd t^\prime\right]_{t=0} }
+\Gamma_i^\up{Markov} = -\frac{\left[\dv{t}\int_{-\infty}^0 R(t-t^\prime) \,\dd t^\prime\right]_{t=0} }
 {\left[\int_{-\infty}^0 R(t-t^\prime) \,\dd t^\prime\right]_{t=0}}.
 \end{align}
 Moving the derivative inside the integral, noting that $\dv{R(t - t^\prime)}{t} = \dv{R(t - t^\prime)}{t - t^\prime}$ and setting $t = 0$, we get:
 \begin{align}
-\Gamma_i^\up{Markovian} &= -\frac
+\Gamma_i^\up{Markov} &= -\frac
 {\int_{-\infty}^0 R^\prime(-t^\prime) \,\dd t^\prime}
 {\int_{-\infty}^0 R(-t^\prime) \,\dd t^\prime}\\
 &= -\frac
@@ -693,7 +695,7 @@ Moving the derivative inside the integral, noting that $\dv{R(t - t^\prime)}{t} 
 where $R^\prime$ is the derivative of $R$ with respect to its argument. By the fundamental theorem of calculus the numerator is $-1$, since $R(t)$ decreases from unity at $t=0$ to zero as $t$ goes to infinity, leaving us with:
 
 \begin{align}
-\left(\Gamma_i^\up{Markovian}\right)^{-1} &= 
+\left(\Gamma_i^\up{Markov}\right)^{-1} &= 
   \int_0^\infty R(t^\prime) \,\dd t^\prime\\
 &= \int_0^\infty \ee^{-\left(\frac1{8\sigma^2}\abs{\vec r_{ij}}^2
 + \frac\ii 2 \vec r_{ij}(t^\prime) \cdot \vec k_{ij}(t^\prime) + \frac{\sigma^2}{2} \abs{\vec k_{ij}(t^\prime)}^2
@@ -709,7 +711,21 @@ The expression~\eqref{eq:decoherence_factor_const_a} requires a relative acceler
 
 
 
-\subsection{Continuously spawned mean auxiliary trajectories}
+\subsection{Continuously spawned mean auxiliary trajectories}\label{sec:spawned_trajectories}
+
+[move this to the other section on non-Markovian decoherence?]
+
+Firstly we need to generalise our conception of the decoherence rate. We have assumed so far that the motional states are being ``reset" after each projective measurement to be equal to $\ket{\phi_\eta(t)}$ at each timestep. What is the reduction in the state amplitudes at each timestep if the wavepackets do not reset, but are left as arbitrary states for the time being? We know that if we were to perform a projective measurement at time $t$, the $i^\up{th}$ state amplitude would be reduced by a factor of $R_{\eta i}(t)$ compared to the original state amplitude $c_i(t)$:
+\begin{align}
+\tilde c_i(t) = R_{\eta i}(t) c_i(t).
+\end{align}
+This implies:
+\begin{align}
+\dv{\tilde c_i(t)}{t} &= \dv{R_{\eta i}(t)}{t} c_i(t)\\
+&= \frac1{R_{\eta i}(t)}\dv{R_{\eta i}(t)}{t} \tilde c_i(t).
+\end{align}
+and so we see that a a decoherence rate that does not reset the environment states is the (negative of the) logarithmic derivative of the decoherence factor, rather than just its derivative. This case encompasses the earlier case in which $R_{\eta i}(t) = 1$ at all times, in which case the logarithmic and ordinary derivatives are the same.
+
 
 My fancy cool model which is awesome and rad.
 
@@ -804,13 +820,6 @@ If at large enough times, a decoherence rate is independent of time, that decohe
 Unlike quantum optics models, our decoherence factor does not describe Markovian decoherence on any timescale. In the limit of large $t$, its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian [CITE] at that timescale. Nonetheless, if we wish to write a time-local differential equation for the internal state of the atom, Markovian decoherence is the only kind we can include [CITE].
 
 To that end, we will now construct a ``time ignorant" version of $R_{ij}(t)$ that answers the question ``What is the expected decoherence factor at all future times, if you don't know how long it has been since the two wavepackets began separating?" In this way we can compute an \emph{average} decoherence rate $\Gamma_{ij}$ described by our decoherence factor, even though $R_{ij}(t)$ does not have a constant decoherence rate at large times. This essentially amounts to finding the best fitting exponential to $R_{ij}(t)$. Whilst this approximation is crude, it is nonetheless an improvement over the Ehrenfest model, which has no decoherence at all (i.e. it has a decoherence rate that is also constant like ours---but equal to zero).
-
-\begin{figure}[t]
-    \centerfloat
-    \includegraphics{figures/hidden_variables/decoherence_factor_example.pdf}
-    \caption{Caption.}
-    \label{fig:decoherence_factor_example}
-\end{figure}
 
 We define the time-ignorant decoherence factor $\tilde R_{ij}(t)$ as the overlap of the wavefunction of the $i^\up{th}$ internal state with a superposition of wavepackets of the $j^\up{th}$ internal state, with the superposition being over all times in the past the wavepackets began separating:
 \begin{align}

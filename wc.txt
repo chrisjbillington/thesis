@@ -1,17 +1,17 @@
 Total
-Words in text: 47261
+Words in text: 47656
 Words in headers: 420
-Words outside text (captions, etc.): 7171
+Words outside text (captions, etc.): 7245
 Number of headers: 103
 Number of floats/tables/figures: 35
-Number of math inlines: 1805
+Number of math inlines: 1807
 Number of math displayed: 305
 Files: 8
 Subcounts:
   text+headers+captions (#headers/#floats/#inlines/#displayed)
   7422+77+1300 (23/3/559/73) File(s) total: atomic_physics.tex
   50+0+0 (0/0/0/0) File(s) total: front_matter.tex
-  10306+91+1204 (21/6/324/91) File(s) total: hidden_variables.tex
+  10701+91+1278 (21/6/326/91) File(s) total: hidden_variables.tex
   1607+8+98 (3/0/12/0) File(s) total: introduction.tex
   23087+155+3403 (31/15/824/137) File(s) total: numerics.tex
   4+22+0 (5/0/0/0) File(s) total: software.tex
