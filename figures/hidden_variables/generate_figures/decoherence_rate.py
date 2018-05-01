@@ -59,7 +59,7 @@ mu_B = 9.27401e-24               # Bohr magneton
 gF = -0.50182670925              # Lande g-factor of F=1 groundstate of Rubidium 87
 m_Rb = 86.909180526*1.660539e-27 # Rubidium 87 mass
 
-dB_dz = 100*2.5
+dB_dz = 2.5
 
 sigma = np.logspace(-11, -5, 1000)
 
@@ -99,7 +99,7 @@ plt.loglog(sigma, gamma_vel_imag, 'g--', label='low T analytic (imag)')
 plt.loglog(sigma, gamma_pos_real, 'r-', label='high T analytic (real)')
 plt.loglog(sigma, gamma_pos_imag, 'r--', label='high T analytic (imag)')
 plt.grid(True)
-plt.legend(loc='lower center')
+plt.legend(loc=(0.05, 0.3))
 plt.axis([1e-11,1e-5,1,1e8])
 plt.xlabel('Wavepacket size $\sigma$ (m)')
 plt.title('Example markovian decay rate')
@@ -107,6 +107,10 @@ plt.savefig('../decoherence_rate_example.pdf')
 
 t = t[:, 0]
 dt = t[1] - t[0]
+lambda_th = sigma[568]
+
+# print('T = ', (2*pi*hbar)**2 / (2 * pi * m_Rb * k_B * lambda_th ** 2))
+# assert 0
 exact_overlap = exact_overlap[:, 568]
 exact_gamma = exact_gamma[568]
 gamma_overlap = np.exp(-exact_gamma*t)
@@ -117,7 +121,6 @@ for i, tau in enumerate(t):
     print(i)
     convolved_overlap[:-1-i] += exact_overlap[i+1:]*dt
 convolved_overlap /= convolved_overlap[0]
-
 
 
 plt.figure(figsize=(FIG_WIDTH,FIG_HEIGHT))
@@ -131,9 +134,9 @@ plt.grid(True)
 plt.plot(t*1e6, gamma_overlap.real, 'g-', label='Markovian (real)')
 plt.plot(t*1e6, gamma_overlap.imag, 'g--', label='Markovian (imag)')
 
-plt.title('example decay curve')
-plt.xlabel(r't ($\mu$s)')
+# plt.title('example decoherence factor')
+plt.xlabel(r't ($\upmu$s)')
 plt.legend()
-plt.axis([0,10,-0.5,1])
+plt.axis([0, 100, -0.2, 1])
 
 plt.savefig('../decoherence_factor_example.pdf')

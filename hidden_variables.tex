@@ -24,7 +24,7 @@ In this regime, atoms are often modelled semiclassically, with these internal de
     \label{fig:semiclassical}
 \end{figure}
 
-Once one has defined a potential function $V(\vec r)$ and a Hamiltonian (also possibly varying with space) $\hat H(\vec r)$, and other possible additions,\footnote{Such as using a Monte-Carlo wavefunction method~\cite{Molmer:93} to model the effect of spontaneous emission on $\ket\chi$, and modifying $\vec v$ instantaneously by a random-direction recoil velocity upon each photon emission.} ones job is done and the rest can be left to numerical differential equation solvers to evolve some concrete vector representation $\vec\chi$ of $\ket\chi$ as well as the state variables $\vec r$ and $\vec v$ for motional degree of freedom in time according to the coupled differential equations
+Once one has defined a potential function $V(\vec r)$ and a Hamiltonian (also possibly varying with space) $\hat H(\vec r)$, and other possible additions,\footnote{Such as using a Monte-Carlo wavefunction method~\cite{Molmer:93, RevModPhys.70.101} to model the effect of spontaneous emission on $\ket\chi$, and modifying $\vec v$ instantaneously by a random-direction recoil velocity upon each photon emission.} ones job is done and the rest can be left to numerical differential equation solvers to evolve some concrete vector representation $\vec\chi$ of $\ket\chi$ as well as the state variables $\vec r$ and $\vec v$ for motional degree of freedom in time according to the coupled differential equations
 \begin{align}\label{eq:simple_semiclassical_first}
 \dv{t}\ket\chi &= -\frac\ii\hbar \hat H(\vec r)\ket\chi,\\
 \dv{t}\vec v &= -\frac1m\nabla V(\vec r),\\
@@ -270,21 +270,21 @@ We can therefore define the state vector in the eigenbasis of $\hat H$ as\footno
 \ket{\chi_H(t)} &= \hat U_H(\vec r, t)\ket{\chi(t)}\\
 \Rightarrow \ket{\chi(t)} &= \hat U^\dagger_H(\vec r, t)\ket{\chi_H(t)}.
 \end{align}
-Substituting~\eqref{eq:chi_Hbasis} into~\eqref{eq:Tully_schro} and premultiplying by $\hat U(\vec r, t)$ yields
+Substituting~\eqref{eq:chi_Hbasis} into~\eqref{eq:Tully_schro} and premultiplying by $\hat U_H(\vec r, t)$ yields
 \begin{align}
-\ii\hbar\hat U(\vec r, t)\dv{t}\hat U^\dagger_H(\vec r, t)\ket{\chi_H(t)} = \hat U(\vec r, t)\hat H(\vec r, t)\hat U^\dagger_H(\vec r, t)\ket{\chi_H(t)},
+\ii\hbar\hat U_H(\vec r, t)\dv{t}\hat U^\dagger_H(\vec r, t)\ket{\chi_H(t)} = \hat U_H(\vec r, t)\hat H(\vec r, t)\hat U^\dagger_H(\vec r, t)\ket{\chi_H(t)},
 \end{align}
 which via the product rule and our definition of $\hat V(\vec r, t)$ simplifies to the differential equation obeyed by the transformed state vector $\ket{\chi_H(t)}$:
 \begin{align}\label{eq:Tully_adiabatic_schro}
 \ii\hbar\dv{t}\ket{\chi_H(t)} &= \left[
   \hat V(\vec r, t)
-  - \ii\hbar\hat U(\vec r, t)\dv{t}U^\dagger_H(\vec r, t)
+  - \ii\hbar\hat U_H(\vec r, t)\dv{t}U^\dagger_H(\vec r, t)
  \right]\ket{\chi_H(t)}\\
  &= \hat H_\up{eff} \ket{\chi_H(t)}.\label{eq:Tully_adiabatic_eff}
 \end{align}
-This equation has the same form as the Schr\"odinger equation, with the contents of the brackets comprising an effective Hamiltonian dictating the dynamics of the state vector in our chosen basis. Like a non-inertial reference frame in classical mechanics, use of this transformed basis has resulted in the appearance of an extra term in the Hamiltonian, the non-adiabatic coupling term depending on the time derivative of the transformation $\hat U^\dagger$.
+This equation has the same form as the Schr\"odinger equation, with the contents of the brackets comprising an effective Hamiltonian dictating the dynamics of the state vector in the \emph{adiabatic basis} (the basis in which $\hat H$ is diagonal). Like a non-inertial reference frame in classical mechanics, use of this transformed basis has resulted in the appearance of an extra term in the Hamiltonian, the non-adiabatic coupling term depending on the time derivative of the transformation $\hat U_H^\dagger$.
 
-Here we differ from Tully by proceeding without assuming that $\hat U$ has no explicit time dependence. The total time derivative of $\hat U^\dagger$ includes both its direct time dependence and the effect of motion through space; the latter obtainable via the chain rule:
+Here we differ from Tully by proceeding without assuming that $\hat U_H$ has no explicit time dependence. The total time derivative of $\hat U_H^\dagger$ includes both its direct time dependence and the effect of motion through space; the latter obtainable via the chain rule:
 \begin{align}
 \dv{t}\hat U^\dagger_H(\vec r, t)
  = \pdv{t} \hat U^\dagger_H(\vec r, t) + \vec v\cdot \nabla \hat U^\dagger_H(\vec r, t),
@@ -302,7 +302,7 @@ The final term is identical to the non-adiabatic coupling term in the equation o
 \left(- \ii\hbar\vec v\cdot U_H(\vec r, t)\nabla U^\dagger_H(\vec r, t)\right)_{ij}
 = - \ii\hbar\vec v\cdot\matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j (\vec r, t)},
 \end{align}
-where $U_H(\vec r, t)$ is the matrix representation of $U$ in any basis that does not vary spatially (i.e, not the eigenbasis), $\ket{\chi_i(\vec r, t)}$ is the $i^\up{th}$ eigenvector of $\hat H(r, t)$, and $\matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j (\vec r, t)}$ is the \emph{non-adiabatic coupling vector} between the $i^\up{th}$ and $j^\up{th}$ states referred to in the literature. The second to last term in brackets in \eqref{eq:Tully_adiabatic_schro_simplified}
+where $U_H(\vec r, t)$ is the matrix representation of $\hat U$ in any basis that does not vary spatially (i.e, not the eigenbasis), $\ket{\chi_i(\vec r, t)}$ is the $i^\up{th}$ eigenvector of $\hat H(r, t)$, and $\matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j (\vec r, t)}$ is the \emph{non-adiabatic coupling vector} between the $i^\up{th}$ and $j^\up{th}$ states referred to in the literature. The second to last term in brackets in \eqref{eq:Tully_adiabatic_schro_simplified}
 is the additional contribution due to the time-dependence of the Hamiltonian (more specifically: the time-dependence of its eigenbasis).
 
 We now proceed identically to Tully, computing the rate of change of a an eigenstates population $\abs{c_i(t)}^2$ as:
@@ -314,7 +314,7 @@ where via~\eqref{eq:Tully_adiabatic_schro_simplified} we have:
 \dv{t}c_i(t) &= -\frac\ii\hbar\sum_j \left(H_\up{eff}(\vec r, t)\right)_{ij} c_j(t)\\
 \Rightarrow \dv{t}c_i(t) &= -\frac\ii\hbar \sum_j\left[V_{ij}(\vec r, t)
   - \ii\hbar\matrixel{\chi_i(\vec r, t)}{(\partial_t + \vec v\cdot\nabla)}{\chi_j(\vec r, t)}
- \right] c_j(t),
+ \right] c_j(t).
 \end{align}
 This gives for the time rate of change of the population $\abs{c_i(t)}^2$:
 \begin{align}
@@ -339,7 +339,7 @@ The change in $\abs{c_i(t)}^2$ in a small interval $\dd t$ is then:
   \matrixel{\chi_i(\vec r, t)}{(\partial_t + \vec v\cdot\nabla)}{\chi_j(\vec r, t)}
  c_j(t)\right).
 \end{align}
-This is the change in the probability of the particle being in the $i^\up{th}$ state during that time interval. Tully identifies each term in the sum as a probability flow between a pair of states, and if non-negative, equates each term with the (unconditional) probability of a transition from the $j^\up{th}$ state to the $i^\up{th}$ state. We do the same, except that we identify two transition probabilities for each originating state, one due to the spatial variation in the eigenbasis, and one due to the temporal variation. To ensure we don't violate the criterion that on a two-state basis only the minimum number of hops consistent with the total probability flow occur, we clip each probability from above to the probability of any transition occurring at all. This gives us transition probability matrix elements
+This is the change in the probability of the atom being in the $i^\up{th}$ state during that time interval. Tully identifies each term in the sum as a probability flow between a pair of states, and if non-negative, equates each term with the (unconditional) probability of a transition from the $j^\up{th}$ state to the $i^\up{th}$ state. We do the same, except that we identify two transition probabilities for each originating state, one due to the spatial variation in the eigenbasis, and one due to the temporal variation. To ensure we don't violate the criterion that on a two-state basis only the minimum number of hops consistent with the total probability flow occur, we clip each probability from above to the probability of any transition occurring at all. This gives us transition probability matrix elements
 \begin{align}
 P^\up{space}_{ij} &= \min\left\{q^\up{total}_{ij}, q^\up{space}_{ij}\right\},\\
 P^\up{time}_{ij} &= \min\left\{q^\up{total}_{ij}, q^\up{time}_{ij}\right\},
@@ -356,7 +356,7 @@ q^\up{total}_{ij} &= \max\left\{0, (q^\up{space}_{ij} + q^\up{time}_{ij})\right\
 \end{align}
 for transitions of the hidden variable from the $j^\up{th}$ to the $i^\up{th}$ eigenstate of $\hat H(\vec r, t)$ during the time interval $\dd t$ due to non-adiabatic spatial and temporal variations in $\hat H(\vec r, t)$ respectively. These expressions can also be numerically integrated with respect to time to obtain transition probabilities over finite time intervals---numerically integrating over a short time interval $\upDelta t$ using a midpoint or higher order method can produce transition probabilities more accurate than $\Ord{\upDelta t}$, which would be the accuracy if $\upDelta t$ were simply used in place of $\dd t$ in the above expressions.
 
-These matrices have zeros along their diagonals, since the above derivation takes into account only probability changes, and does not count probability remaining in the same state as a transition.\footnote{One can see that the $i=j$ term in~\eqref{eq:Tully_change_in_prob} is zero since $\ket{\chi_i}$ is a unit vector, implying its temporal and spatial derivatives must be orthogonal to $\ket{\chi_i}$ itself resulting in a zero inner product.} To be able to construct properly stochastic matrices, we can take into account the probability mass that remains in the same state simply by imposing conservation of overall probability, defining a diagonal matrix $P^\up{stay}$ for the unconditional probabilities of remaining in a state:
+These matrices have zeros along their diagonals, since the above derivation takes into account only probability changes, and does not count probability remaining in the same state as a transition.\footnote{One can see that the $i=j$ term in~\eqref{eq:Tully_change_in_prob} is zero since $\ket{\chi_i}$ is a unit vector, implying its temporal and spatial derivatives must be orthogonal to $\ket{\chi_i}$ itself, resulting in a zero inner product.} To be able to construct properly stochastic matrices, we can take into account the probability mass that remains in the same state simply by imposing conservation of overall probability, defining a diagonal matrix $P^\up{stay}$ for the unconditional probabilities of remaining in a state:
 \begin{align}
 P^\up{stay}_{ii} = \abs{c_i(t)}^2
 - \sum_{j\neq i} \left(P^\up{space}_{ij} + P^\up{time}_{ij}\right).
@@ -380,12 +380,12 @@ S = S^\up{space} + S^\up{time} + S^\up{stay}.
 In practice we don't need to use this stochastic matrix to make transitions, though it is instructive to know that the sum of the other conditional probability matrices is indeed a stochastic matrix, such that Tully's fewest-switches is indeed a hidden-variable theory.
 Instead we use the individual matrices in order to distinguish between the different types of transitions that can occur, so that we may make the energy conservation part of the surface hopping algorithm conditional on what type of transition took place.
 
-During a simulation, to choose whether a transition occurs due to spatial or temporal variations in the Hamiltonian, one should not make independent random choices based on the three above matrices of conditional probabilities. Rather one should assemble the probabilities of possible events---transitions from the current state to all others via both spatial and temporal non-adiabatic transitions---into a single list of probabilities, and then take the cumulative sum, resulting in a list of numbers between zero and one. A randomly generated number between zero and one can then be used to determine which event occurs, with the correct probability (\figref{fig:random_choice})
+During a simulation, to choose whether a transition occurs due to spatial or temporal variations in the Hamiltonian, one should not make independent random choices based on the three above matrices of conditional probabilities. Rather one should assemble the probabilities of possible events---transitions from the current state to all others via both spatial and temporal non-adiabatic transitions---into a single list of probabilities, and then take the cumulative sum, resulting in a list of numbers between zero and one. A randomly generated number between zero and one can then be used to determine which event occurs, with the correct probability (\figref{fig:random_choice}).
 
 \begin{figure}[t]
     \centerfloat
     \includegraphics{figures/hidden_variables/random_choice.pdf}
-    \caption{Probabilistically choosing a transition. Top: Probability flows between states in a time interval according to the three matrices of unconditional probabilities $P^\up{stay}$, $P^\up{space}$, and $P^\up{time}$ in such a way that one total unit of probability is routed from states at the initial time to states at the final time consistent with the populations resulting from quantum mechanical evolution in that timestep. Centre: The hidden variable transitions according to the corresponding conditional probabilities which are elements of the matrices $S^\up{stay}$, $S^\up{space}$, and $S^\up{time}$. Here the hidden variable is in state $1$ and we are choosing whether it will remain in that state or if it will transition to state $2$ or $3$, and if the latter, whether it transitions via a spatial or temporal non-adiabatic transition. Bottom: All the probabilities for what may happen to the hidden variable in a timestep sum to one, so an array of the cumulative probabilities can be constructed, and a random number drawn from the range $[0,1]$. The index of the smallest element of the array of cumulative sums that the random number is smaller than corresponds to the event to occur. In the above diagrammatic example, the result of the random draw is that the hidden variable is to transition to state $2$ via a spatial non-adiabatic transition.}\label{fig:random_choice}
+    \caption{Probabilistically choosing a transition. Top: Probability flows between states in a time interval according to the three matrices of unconditional probabilities $P^\up{stay}$, $P^\up{space}$, and $P^\up{time}$ in such a way that one total unit of probability is routed from states at the initial time to states at the final time consistent with the populations resulting from quantum mechanical evolution in that timestep. Centre: The hidden variable transitions according to the corresponding conditional probabilities which are elements of the matrices $S^\up{stay}$, $S^\up{space}$, and $S^\up{time}$. Here the hidden variable is in state $1$ and we are choosing whether it will remain in that state or if it will transition to state $2$ or $3$, and whether it transitions via a spatial or temporal non-adiabatic transition. Bottom: All the probabilities for what may happen to the hidden variable in a timestep sum to one, so an array of the cumulative probabilities can be constructed, and a random number drawn from the range $[0,1]$. The index of the smallest element of the array of cumulative sums that the random number is smaller than corresponds to the event to occur. In the above diagrammatic example, the result of the random draw is that the hidden variable is to transition to state $2$ via a spatially induced non-adiabatic transition.}\label{fig:random_choice}
 \end{figure}
 
 \subsubsection{Framing fewest-switches as a hidden-variable theory}
@@ -397,7 +397,7 @@ Tully's fewest-switches algorithm allows one to compute transition probabilities
 where
 \begin{align}
 \hat H_\up{eff} = \hat V(\vec r, t)
-  - \ii\hbar\hat U(\vec r, t)\dv{t}U^\dagger_H(\vec r, t)
+  - \ii\hbar\hat U_H(\vec r, t)\dv{t}U^\dagger_H(\vec r, t)
 \end{align}
 is the effective Hamiltonian in the eigenbasis of $\hat H$, the matrix representation of which can be extracted from the matrix representation of $\hat U(t+\dd t, t)$ as:
 \begin{align}
@@ -406,14 +406,14 @@ H_\up{eff}(\vec r, t)\,\dd t &= \ii\hbar\Log U(t+\dd t, t)\\
 \end{align}
 where $\Log$ is the principal value of the complex matrix logarithm.
 
-Since only the matrix $H_\up{eff}(\vec r, t)\,\dd t$ is required to compute transition probabilities according to~\eqref{eq:fewest_switches_Heff}, and not its component terms,\footnote{Though we do need its component terms if we wish to distinguish between spatially vs.\ temporally induced transitions as in [SECREF].} specifying the initial state vector and unitary for an interval of time evolution (both in the local basis) is a sufficient input to be able to compute transition probabilities using Tully's fewest-switches algorithm. Writing the resulting matrix of probabilities in terms of $U$ gives:
+Since only the matrix $H_\up{eff}(\vec r, t)\,\dd t$ is required to compute transition probabilities according to~\eqref{eq:fewest_switches_Heff}, and not its component terms,\footnote{Though we do need its component terms if we wish to distinguish between spatially vs.\ temporally induced transitions as in Section~\ref{sec:fewest_switches}.} specifying the initial state vector and unitary for an interval of time evolution (both in the local basis) is a sufficient input to be able to compute transition probabilities using Tully's fewest-switches algorithm. Writing the resulting matrix of probabilities in terms of $U$ gives:
 \begin{align}
 P_{ij} = \begin{cases}
 \max\left\{0, 2\re\left(c_i^*(t)U_{ij}(t + \dd t, t)c_j(t)\right)\right\} & i \neq j\\
 \abs{c_i(t)}^2 - \sum_{j\neq i} P_{ij} & i = j
 \end{cases}.
 \end{align}
-The corresponding stochastic matrix $S$ can then be obtained by scaling the columns of $P$ by the state populations as in~\eqref{eq:P_matrix_def}. Tully's fewest-switches algorithm thus satisfies Aaronson's definition of a hidden-variable theory provided that the time interval is small. What is somewhat remarkable is the low computational complexity of computing probabilities via fewest-switches. There is no matrix scaling, no matrix permanents, or any other large computational expense. It is not clear how many of Aaronson's axioms are satisfied by fewest-switches, but since it does depend on the actual coupling strengths between states via the non-adiabatic Hamiltonian, one would expect it to satisfy a few of them. Furthermore, the form of fewest-switches when framed in terms of the unitary for the given time interval is quite similar to that of Schr\"odinger theory. In Schr\"odinger theory one takes the absolute value of elements of $U$ and then applies row and column scalings. In fewest-switches one applies row and column scalings (explicitly given as $c_i(t)^*$ and $c_j(t)$, along with an additional factor of $2$), then takes the real part of the result and clips it to zero from below. The two methods are not identical, but the similarity is striking.
+The corresponding stochastic matrix $S$ can then be obtained by scaling the columns of $P$ by the state populations as in~\eqref{eq:P_matrix_def}. Tully's fewest-switches algorithm thus satisfies Aaronson's definition of a hidden-variable theory provided that the time interval is small. What is somewhat remarkable is the low computational complexity of computing probabilities via fewest-switches. There is no matrix scaling, no matrix permanents, or any other large computational expense. It is not clear how many of Aaronson's axioms are satisfied by fewest-switches, but since it does depend on the actual coupling strengths between states via the non-adiabatic Hamiltonian, one would expect it to satisfy a few of them. Furthermore, the form of fewest-switches when framed in terms of the unitary for the given time interval is quite similar to that of Schr\"odinger theory. In Schr\"odinger theory one takes the absolute value of elements of $U$ and then applies row and column scalings. In fewest-switches one applies row and column scalings (explicitly given as $c_i(t)^*$ and $c_j(t)$, along with a factor of $2$), then takes the real part of the result and clips it to zero from below. The two methods are not identical, but the similarity is striking.
 
 \subsection{Velocity correction and classically disallowed transitions}\label{sec:velocity_correction}
 
@@ -424,13 +424,13 @@ When a transition of the hidden variable occurs due to a spatial non-adiabatic t
 \end{align}
 where $U_H(\vec r, t)$ is the matrix representation, in any fixed basis, of the unitary that takes state vectors into the basis in which $\hat H(\vec r, t)$ is diagonal. To conserve energy, the squared component of an atoms velocity in this direction must change by an amount:
 \begin{align}
-\upDelta v_{ij}^2 = \frac2m\left(V_{jj}(\vec r, t) - V_{ii}(\vec r, t)\right),
+\upDelta v_{ij}^2 = \frac2m\left(V_j(\vec r, t) - V_i(\vec r, t)\right),
 \end{align}
-where $V_{ii}(\vec r, t)$ is the adiabatic potential comprising the $i^\up{th}$ spatially and/or temporally varying eigenvalue of $\hat H(\vec r, t)$. However, it is possible that a change of this size can leave an atom with a negative kinetic energy. Whilst this is quantum-mechanically permissible, it is forbidden classically, and so we simply disallow such transitions, defining a modified matrix of unconditional transition probabilities $\tilde P^\up{space}$ that sets the probability of the disallowed transitions to zero:
+where $V_i(\vec r, t)$ is the adiabatic potential comprising the $i^\up{th}$ spatially and/or temporally varying eigenvalue of $\hat H(\vec r, t)$. However, it is possible that a change of this size can leave an atom with a negative kinetic energy. Whilst this is quantum-mechanically permissible, it is forbidden classically, and so we simply disallow such transitions, defining a modified matrix of unconditional transition probabilities $\tilde P^\up{space}$ that sets the probability of the disallowed transitions to zero:
 \begin{align}
 \tilde P^\up{space}_{ij} =
 \begin{cases}
-P^\up{space}_{ij} & \upDelta v_{ij}^2 + \abs{\vec v\cdot\hat{\vec d_{ij}}}^2 \geq 0 \\
+P^\up{space}_{ij} & \upDelta v_{ij}^2 + \abs{\vec v\cdot\hat{\vec d}_{ij}}^2 \geq 0 \\
 0 & \upDelta v_{ij}^2 + \abs{\vec v\cdot\hat{\vec d}_{ij}}^2 < 0
 \end{cases}
 \end{align}
@@ -447,12 +447,12 @@ The corresponding matrices of conditional probabilities for the hidden variable 
 \tilde S^\up{stay}_{ij} &= \frac1{\abs{c_j(t)}^2} \tilde P^\up{stay}_{ij},
 \end{align}
 Of course, when making probabilistic transitions of the hidden variable, only one
-column of any of the above matrices is used at a time, so the full matrices $\tilde P^\up{space}$, $\tilde P^\up{time}$, $\tilde S^\up{space}$, and $\tilde S^\up{time}$ do not need to be computed at each timestep.
+column of any of the above matrices is used at a time, so the full matrices $\tilde P^\up{space}$, $\tilde P^\up{time}$, $\tilde S^\up{space}$, and $\tilde S^\up{time}$ do not need to be computed at each timestep.\footnote{Though one of my decoherence methods (Section~\ref{sec:spawned_trajectories}) does make use of the full matrices in order to track transitions between other states for the purpose of computing approximate decoherence factors.}
 
 In the case that a transition of the hidden variable does occur to the $i^\up{th}$ from the $j^\up{th}$ state due to a spatial non-adiabatic coupling, the velocity kick to be applied to the classical velocity vector in order to conserve momentum is:
 \begin{align}
 \upDelta \vec v_{ij} = \left[\sgn(\vec v\cdot \hat{\vec d}_{ij})
-\sqrt{(\vec v\cdot \hat{\vec d}_{ij})^2 + \frac2m\left(V_{ii}(\vec r, t) - V_{jj}(\vec r, t)\right)} - (\vec v\cdot \hat{\vec d}_{ij}).
+\sqrt{(\vec v\cdot \hat{\vec d}_{ij})^2 + \frac2m\left(V_i(\vec r, t) - V_j(\vec r, t)\right)} - (\vec v\cdot \hat{\vec d}_{ij}).
 \right]\hat{\vec d}_{ij}
 \end{align}   
 
@@ -462,7 +462,7 @@ In the context of the hidden-variable semiclassical/surface hopping method, \emp
 
 Decoherence was not part of Tully's original surface hopping model~\cite{doi:10.1063/1.459170}, such that if used to simulate the Stern--Gerlach experiment, two spots would result on the screen, but both spots would comprise a coherent $50:50$ superposition of spin-up and spin-down, rather than one being up and one being down. Some decoherence is necessary to include in a hidden-variable semiclassical/surface hopping model in order to avoid this unphysical outcome, and furthermore, to obtain correct transition probabilities in the case that the atom undergoes multiple periods of local spin transitions (as being in a $50:50$ superposition represents entirely different initial conditions for a Majorana spin flip than being in a single spin state).
 
-In Subsection~\ref{sec:backaction} I show the general mechanism by which the divergence of trajectories decoheres internal states of an atom, and specifically how this appears as an apparent decrease in the amplitudes of each other state when one imposes the adiabatic trajectory corresponding to one specific internal state.
+In Subsection~\ref{sec:backaction} I show the general mechanism by which the divergence of trajectories decoheres internal states of an atom, and specifically how this appears as an apparent decrease in the amplitudes of each other state when one imposes the adiabatic trajectory corresponding to one specific internal state. I then show in Subsection~\ref{sec:zeno_effect} why naively projecting the wavefunction onto a single trajectory at all times yields nonsensical results, and then in Subsections~\ref{sec:markovian_decoherence} and~\ref{sec:markovian_decoherence} I present two remedies for how to approximately include decoherence despite this. 
 
 \subsection{Back action of position measurement on internal state}\label{sec:backaction}
 
@@ -503,20 +503,21 @@ A partial trace~\cite{schlosshauer_decoherence:_2007} over the motional degree o
 \end{align}
 So we see that the off diagonals of the density matrix, representing the coherences of the internal states, are reduced by a factor $\braket{\phi_j(t)}{\phi_i(t)}$, which will be unity only for pairs of motional state vectors that are identical. We therefore see that separation in space of the wavefunctions corresponding to different internal states leads to decoherence of the internal states, with decoherence factor $R_{ji} = \braket{\phi_j(t)}{\phi_i(t)}$. This same decoherence factor appears when---instead of integrating over all positions---we project the total state vector onto a single motional state corresponding to a classical trajectory, which (along with assumptions about the form and evolution of the motional states), is how we impose classicality on the motional degree of freedom in our model. The effect of decoherence when ``following" a specific motional state through space in this way is to reduce the amplitudes of all other states not being followed by the decoherence factor between that state and the one being followed, as shown schematically in \figref{fig:HVSC_schematic}.
 
-To obtain an explicit form for the decoherence factor $R_{ij}(t)$, we need to start imposing our assumptions about the motional states $\{\ket{\phi_i(t)}\}$. As alluded to earlier, we will be assuming that each motional state $\ket{\phi_i(t)}$ is a Gaussian wavepacket propagating---without dispersion---with centre-of-mass motion evolving classically according to the adiabatic potential $V_i(\vec r, t)$ (defined in Section \ref{sec:fewest_switches}). [TODO make sure the single index notation defined there]. Thus the wavefunctions of these motional states are
+To obtain an explicit form for the decoherence factor $R_{ij}(t)$, we need to start imposing our assumptions about the motional states $\{\ket{\phi_i(t)}\}$. As alluded to earlier, we will be assuming that each motional state $\ket{\phi_i(t)}$ is a Gaussian wavepacket propagating---without dispersion---with centre-of-mass motion evolving classically according to the adiabatic potential $V_i(\vec r, t)$ experienced by the local eigenstate $\ket{\chi_i}$. Thus the wavefunctions of these motional states are
 \begin{align}
 \braket{\vec r}{\phi_i(t)} &= \phi_i(\vec r, t) = A\exp\left[-\frac{\abs{\vec r - \vec r_i(t)}^2}{4\sigma^2} + \ii \frac m\hbar \vec v_i(t)\cdot (\vec r - \vec r_i(t))\right],
 \end{align}
-Where $A$ is a real normalisation constant,\footnote{The overall phase is determined by the offset $\vec r - \vec r_i(t)$ in the second term in the exponent, and is chosen such that $\phi_i(\vec r, t)$ is real at $\vec r=\vec r_i$, which ensures that $\braket{\phi_i(t)}{\phi_j(t)}$ has a phase depending only on the relative positions of the two wavepackets rather than their distance from some arbitrary origin. Acquiring an additional arbitrary phase at each timestep when we apply our reduction operator $\hat R$ would not affect the system dynamics, but is unappealing nonetheless.} $\vec r_{ij}(t) = \vec r_i(t) - \vec r_j(t)$ and $\vec k_{ij}(t) = \frac m\hbar \left(\vec v_i(t) - \vec v_j(t)\right)$ are the relative mean position and wavevector of the pair of wavepackets, and where the centre-of-mass position and velocity of each wavepacket evolve classically according to
-\begin{align}
+Where $A$ is a real normalisation constant,\footnote{The overall phase is determined by the offset $\vec r - \vec r_i(t)$ in the second term in the exponent, and is chosen such that $\phi_i(\vec r, t)$ is real at $\vec r=\vec r_i$, which ensures that $\braket{\phi_i(t)}{\phi_j(t)}$ has a phase depending only on the relative positions of the two wavepackets rather than their distance from some arbitrary origin. Acquiring an additional arbitrary phase at each timestep when we later apply our reduction operator $\hat R$ would not affect the system dynamics, but is unappealing.} $\vec r_{ij}(t) = \vec r_i(t) - \vec r_j(t)$ and $\vec k_{ij}(t) = \frac m\hbar \left(\vec v_i(t) - \vec v_j(t)\right)$ are the relative mean position and wavevector of the pair of wavepackets, and where the centre-of-mass position and velocity of each wavepacket evolve classically according to
+\begin{align}\label{eq:classical_const_a_first}
 \dv{t} \vec r_i(t) &= \vec v_i(t)\\
 \dv{t} \vec v_i(t) &= -\frac1m\nabla V_i(\vec r_i, t).
+\label{eq:classical_const_a_second}
 \end{align}
 This gives for the decoherence factor:
 \begin{align}\label{eq:decoherence_factor_const_a}
-R_{ij}(t) = \ee^{-\left(\frac1{8\sigma^2}\abs{\vec r_{ij}}^2
+R_{ij}(t) = \exp\left[-\left(\frac1{8\sigma^2}\abs{\vec r_{ij}}^2
 + \frac\ii 2 \vec r_{ij}(t) \cdot \vec k_{ij}(t) + \frac{\sigma^2}{2} \abs{\vec k_{ij}(t)}^2
-\right)}.
+\right)\right].
 \end{align}
 As expected, $R_{ij}(t)$ is equal to unity when the two wavepackets have identical positions and velocities, and decays to zero for increasing relative position and velocity. 
 
@@ -530,7 +531,7 @@ and
 \end{align}
 which gives for the decoherence factor:
 \begin{align}\label{eq:const_a_decoherence_factor}
-R_{ij}(t) = \exp\left[-\frac {\abs{\vec a_{ij}}^2} 2 \left(\frac1 {16\sigma^2}t^4 + \ii\frac m{2\hbar}t^3 + \frac{m^2\sigma^2}t^2\hbar\right)\right].
+R_{ij}(t) = \exp\left[-\frac {\abs{\vec a_{ij}}^2} 2 \left(\frac1 {16\sigma^2}t^4 + \ii\frac m{2\hbar}t^3 + \frac{m^2\sigma^2}\hbar t^2 \right)\right].
 \end{align}
 We will return later to this explicit form of the decoherence factor under these assumptions.
 
@@ -549,7 +550,7 @@ where we have defined $\tilde c_i(t) = \braket{\phi_\eta(t)}{\phi_i(t)}c_i(t)$ a
 \left[\tilde c_i(t) - \frac\ii\hbar\sum_j H_{ij}(t)\tilde c_j(t)\dd t\right]
 \ket{\chi_i}\otimes\ket{\phi_i(t + \dd t)},
 \end{align}
-where $H^\up{red}_{ij}(t) = \matrixel{\chi_i}{\hat H^\up{red}(t)}{\chi_j} = \matrixel{\chi_i\ \phi_\eta(t)}{\hat H(t)}{\chi_j\ \phi_\eta(t)}$ are the elements of the ``reduced" Hamiltonian $\hat H^\up{red}(t) $ dictating the dynamics of the internal state, given the imposed motional state $\ket{\phi_\eta}$ and the total Hamiltonian $\hat H(t)$ of the system. Note that because of the previous projection already performed, all motional states $\ket{\phi_i(t)}$ were ``reset" to be equal to $\ket{\phi_\eta(t)}$ at time $t$, and therefore the evolved motional state $\ket{\phi_i(t + \dd t)}$ (the form of which we have not yet specified) represents the evolution of the motional state corresponding to the $i^\up{th}$ internal state over an interval $\dd t$, starting with the initial condition $\ket{\phi_\eta(t)}$. Accordingly, both motional states will still be approximately equal after this short evolution, allowing us to write
+where $H_{ij}(t) = \matrixel{\chi_i}{\hat H_{\eta}(t)}{\chi_j} = \matrixel{\chi_i\ \phi_\eta(t)}{\hat H(t)}{\chi_j\ \phi_\eta(t)}$ are the elements of the projected Hamiltonian $\hat H_\eta(t) $ dictating the dynamics of the internal state, given the imposed motional state $\ket{\phi_\eta}$ and the total Hamiltonian $\hat H(t)$ of the system. Note that because of the previous projection already performed, all motional states $\ket{\phi_i(t)}$ were ``reset" to be equal to $\ket{\phi_\eta(t)}$ at time $t$, and therefore the evolved motional state $\ket{\phi_i(t + \dd t)}$ (the form of which we have not yet specified) represents the evolution of the motional state corresponding to the $i^\up{th}$ internal state over an interval $\dd t$, starting with the initial condition $\ket{\phi_\eta(t)}$. Accordingly, both motional states will still be approximately equal after this short evolution, allowing us to write
 \begin{align}
 \braket{\phi_\eta(t + \dd t)}{\phi_i(t + \dd t)} &= \braket{\phi_\eta(t)}{\phi_i(t)} + \dv{t}\braket{\phi_\eta(t)}{\phi_i(t)}\dd t\\
 & = 1 + \dv{R_{\eta i}(t)}{t}.
@@ -569,7 +570,7 @@ Using this fact in applying the projection in~\eqref{eq:second_proj} yields a pr
 which we can solve for $\frac1{\dd t}\left(\ket{\tilde \chi(t + \dd t)} - \ket{\tilde \chi(t)}\right)$ to obtain a differential equation for $\ket{\tilde \chi(t)}$:
 \begin{align}
 \dv{t} \ket{\tilde \chi(t)} =
-\left[-\frac\ii\hbar\hat H^\up{red}(t) - \hat\Gamma_\eta(t)\right]\ket{\tilde\chi(t)},
+\left[-\frac\ii\hbar\hat H_\eta(t) - \hat\Gamma_\eta(t)\right]\ket{\tilde\chi(t)},
 \end{align}
 where $\hat\Gamma_\eta(t)$ is a diagonal operator in the $\{\ket{\chi_i}\}$ basis with diagonals
 \begin{align}
@@ -597,9 +598,7 @@ where we have defined $\gamma_{ij}(t) = -\dv{R_{ij}(t)}{t}$. The diagonals of $\
 
 % Effectively performing this measurement at each timestep of a simulation means that we are assuming that any amplitude leaving the envelope of the currently tracked motional state will either not come back into it, or will have a minimal effect if it does. Given the six-dimensional size of phase space, in which two separated pieces of amplitude of an atom's wavefunction must find each other if they are to interfere, this is a worthy approximation in many cases, to the extent that until recently [CITE]it was not possible to observe such interference in the case of Stern--Gerlach separation of cold atoms. The problem of getting the wavepackets back together again is called the ``Humpty Dumpty problem" and was a serious concern to early atom interferometry researches before the use of Bragg pulses [CITE] allowed experiments to create large momentum differences between wavepackets without having them more slowly traverse the intermediate regions of momentum space where they might accumulate coherence-destroying phase noise.
 
-\subsection{The quantum Zeno effect}
-
-[TODO: Flag in intro that I will summarise the necessary equations later in the algorithm section, and make sure you do that]
+\subsection{The quantum Zeno effect}\label{sec:zeno_effect}
 
 But now we arrive at a problem. Because all the motional states are reset to be equal to $\ket{\phi_\eta(t)}$ at each timestep, the relative position and wavevector of the two wavepackets are zero at all times, and so our decoherence rates are:
 \begin{align}
@@ -623,7 +622,7 @@ But now we arrive at a problem. Because all the motional states are reset to be 
 }\\
 &= 0.
 \end{align}
-Every decoherence rate is zero. What is going on? The answer is the quantum Zeno effect~\cite{PhysRevA.41.2295, doi:10.1063/1.523304}, which is the name given to the fact that, in the limit of infinitely frequent measurements of whether quantum evolution has occurred, the back action of the measurement has the effect of preventing the evolution from occurring at all. A watched quantum pot may never boils, though Schr\"odinger's cat may be happy with the situation~\cite{doi:10.1063/1.523304}:
+Every decoherence rate is zero. What is going on? The answer is the quantum Zeno effect~\cite{PhysRevA.41.2295, doi:10.1063/1.523304}, which is the name given to the fact that, in the limit of infinitely frequent measurements of whether quantum evolution has occurred, the back action of the measurement has the effect of preventing the evolution from occurring at all. In our case, the fact that we are projecting constantly onto our assumed motional state causes the amplitude flows to the other motional states to be exactly zero. A sufficiently closely watched quantum pot never boils, and a sufficiently closely watched Schr\"odinger's cat never may never be poisoned~\cite{doi:10.1063/1.523304}:
 \begin{quote}
 In view of
 the Zeno's paradox formulated above, should we conclude
@@ -632,8 +631,7 @@ escape the cruel death awaiting it, against which it has
 no defense, provided its vital signs are constantly
 watched with loving care? 
 \end{quote}
-
-In our case, the fact that we are projecting constantly onto our assumed set of motional states causes the amplitude flows to the other motional states to be exactly zero. The appearance of the quantum Zeno effect ought to be a reminder that the assumption of infinitely frequent projective measurements is unphysical. In our case it certainly is---we have merely imagined a hypothetical measurement device collapsing our position states because we don't want to simulate them, not because any such measurement device actually exists. Nonetheless the internal states of the atom \emph{do} decohere even in the absence of measurement (and there is eventual measurement when the atoms collide with other atoms or otherwise interact with anything in a position-dependent way), and we wish to model the approximate effect of this, if possible with a differential equation that does not require us to simulate all the quantum details of the motional degree of freedom.
+The appearance of the quantum Zeno effect ought to be a reminder that the assumption of infinitely frequent projective measurements is unphysical. In our case it certainly is---we have merely imagined a hypothetical measurement device collapsing our position states because we don't want to simulate them, not because any such measurement device actually exists. Nonetheless the internal states of the atom \emph{do} decohere even in the absence of measurement (and there is eventual measurement when the atoms collide with other atoms or otherwise interact with anything in a position-dependent way), and we wish to model the approximate effect of this, if possible with a differential equation that does not require us to simulate all the quantum details of the motional degree of freedom.
 
 Note that if the decoherence factor had the form of exponential decay:
 \begin{align}
@@ -641,11 +639,11 @@ R^\up{Markov}_{ij}(t) = e^{-\gamma_{ij} t},
 \end{align}
 then the decoherence rate would be the constant $\gamma_{ij}$, and not zero. This is the case for Markovian decoherence~\cite{schlosshauer_decoherence:_2007}, which is when the environment has no memory of its past interaction with the system. The memory in our case is due to the wavepackets accelerating away from each other, starting from zero relative position and velocity at each timestep---the relative position and velocity comprise a memory of the past interaction, which we are erasing each time we reproject.
 
-The lack of an environmental memory is only ever approximately true, and no decoherence factors in nature have the form of a decaying exponential at all times. At small enough times the overlap between two states can only move away from unity quadratically owing to unitary evolution on account of the Schr\"odinger equation, guaranteeing an initial time derivative of zero for all physical decoherence factors. However in many systems of interest, the specifics of the interaction with the system are quickly forgotten by the environmental states, and the decoherence factor does approach a decaying exponential~\cite{0034-4885-41-4-003}. This is the case, for example, for spontaneous photon emission by atoms, which one can consider a measurement effect in which the electromagnetic field is being regularly measured by the environment in the photon number basis~\cite{1355-5111-8-1-015}. In the various quantum trajectories methods used to simulate atoms in the presence of spontaneous emission, if one assumes that the measurements are projective, one must simply assume that the frequent measurements take place at large enough timescales that the decoherence factor is in the exponential decay regime, provided that this is much smaller than other dynamical timescales, which is true for spontaneous emission. This can be recast as a continuous \emph{weak} measurement, rather than infrequent projective measurements ~\cite{doi:10.1080/00107510601101934}, which is more physically realistic than the assumption of projective measurements at somewhat arbitrarily chosen intervals, but results in the same differential equations.
+The lack of an environmental memory is only ever approximately true, and no decoherence factors in nature have the form of a decaying exponential at all times. At small enough times the overlap between two states can only move away from unity quadratically owing to unitary evolution on account of the Schr\"odinger equation, guaranteeing an initial time derivative of zero for all physical decoherence factors. However in many systems of interest, the specifics of the interaction with the system are quickly forgotten by the environmental states, and the decoherence factor does approach a decaying exponential~\cite{0034-4885-41-4-003}. This is the case, for example, for spontaneous photon emission by atoms, which one can consider a measurement effect in which the electromagnetic field is being regularly measured by the environment in the photon number basis~\cite{1355-5111-8-1-015, Molmer:93, RevModPhys.70.101}. In the various quantum trajectories methods used to simulate atoms in the presence of spontaneous emission, if one assumes that the measurements are projective, one must simply assume that the frequent measurements take place at large enough timescales that the decoherence factor is in the exponential decay regime, provided that this is much smaller than other dynamical timescales, which is true for spontaneous emission~\cite{RevModPhys.70.101}. The measurement interval assumed ``should be large enough to allow the photons to get away from the atom"~\cite{2003LNP...622..233H}. This can be recast as a continuous \emph{weak} measurement, rather than infrequent projective measurements~\cite{doi:10.1080/00107510601101934, RevModPhys.70.101}, which is more physically realistic than the assumption of projective measurements at somewhat arbitrarily chosen intervals, but results in the same differential equations.
 
 A decoherence factor that has the form of a decaying exponential implies that any chosen measurement interval results in the same fractional reduction in state amplitudes, since the differential equation $\dv{\tilde c_{i}(t)}{t} = -\gamma \tilde c_i(t)$ has the solution $\tilde c(t) = e^{-\gamma t} \tilde c(0)$, that is, repeated consideration of only the first part of the decoherence factor ends up tracing out the whole decoherence curve over time.
 
-How can we replicate something like this for our separating wavepackets? I have two approaches. The first, described in Section~\ref{sec:markovian_decoherence}, is to gloss over as many of the details of the wavepacket separation as possible and replace the decoherence factor with an exponential one, describing the wavepackets separating on approximately the correct timescale. This is crude, but better than no decoherence at all. The second, described in Section~\ref{sec:spawned_trajectories} method is to introduce a minimal memory of the separation of wavepackets. In this approach, one (but only one) trajectory is simulated for the motional state corresponding to each internal state. Whenever there is population transfer between states, these trajectories are replaced with a weighted average of their existing position with that of the source of the population transfer.
+How can we replicate something like this for our separating wavepackets? I have two approaches. The first, described in Section~\ref{sec:markovian_decoherence}, is to gloss over as many of the details of the wavepacket separation as possible and replace the decoherence factor with an exponential one, describing the wavepackets separating on approximately the correct timescale. This is crude, but better than no decoherence at all. The second, described in Section~\ref{sec:spawned_trajectories}, is to introduce a minimal memory of the separation of wavepackets. In this approach, one (but only one) trajectory is simulated for the motional state corresponding to each internal state. Whenever there is population transfer between states, these trajectories are replaced with a weighted average of their existing position with that of the source of the population transfer.
 
 \subsection{Approximate Markovian decoherence}\label{sec:markovian_decoherence}
 
@@ -654,58 +652,107 @@ A crude way to include decoherence is just to approximate $R_{\eta i}(t)$ as a d
 \begin{figure}[t]
     \centerfloat
     \includegraphics{figures/hidden_variables/decoherence_factor_example.pdf}
-    \caption{Caption: write the details, rubidium, what wavepacket size etc from the Python script.}
+    \caption{Example decoherence factor as a function of time for an experimentally realistic parameters. Plotted in black is the exact decoherence factor $R_{ij}(t)$ (equation~\eqref{eq:decoherence_factor_const_a}) between two adjacent ($\upDelta m_F = \pm 1$) Zeeman sublevels of the $F=1$ groundstate of $^{87}$Rb, assuming constant relative acceleration due to a magnetic field gradient of $250\unit{G\,cm}^{-1}$ and a Gaissian wavepacket width $\sigma=\lambda_\up{th} = 2.6\unit{\mu m}$, corresponding to the thermal wavelength $\lambda_\up{th} = h/\sqrt{2\pi m k_\up{B} T}$ at $T=53\unit{\upmu K}$. Shown in blue is the `time-ignorant' decoherence factor described in text. In green is the Markovian approximation to the exact decoherence factor, obtained by extracting a decay constant from the gradient of the time-ignorant decoherence factor at $t=0$. As can be seen, whilst no decaying exponential is a particularly good fit to the exact decoherence factor, our Markovian approximation is as good as can be expected, decaying to zero over approximately the correct timescale.}
     \label{fig:decoherence_factor_example}
 \end{figure}
 
-To find an approximate Markovian decoherence rate, we first construct a ``time ignorant" version $\tilde R_{ij}(t)$ of the decoherence factor $\tilde R_{ij}(t)$ given in~\eqref{eq:decoherence_factor_const_a} that answers the question ``What is the expected value of $R_{ij}(t)$ at all times $t > 0$ if I don't know how long before $t=0$ the two wavepackets began separating?" 
+To nonetheless find an approximate Markovian decoherence rate, we first construct a ``time ignorant" version $\tilde R_{ij}(t)$ of the decoherence factor $\tilde R_{ij}(t)$ given in~\eqref{eq:decoherence_factor_const_a} that answers the question ``What is the expected value of $R_{ij}(t)$ at all times $t > 0$ if I don't know how long before $t=0$ the two wavepackets began separating?" 
 
 We can then take the derivative of this time-ignorant decoherence factor at $t=0$ to use as an approximate Markovian decoherence rate $\gamma_{ij}^\up{Markov}$. Whilst extremely approximate, this method of including decoherence is nonetheless an improvement over the Ehrenfest method (which has no decoherence), and over Tully's original fewest-hops surface hopping method~\cite{doi:10.1063/1.459170}, which also lacked any decoherence. Others~\cite{doi:10.1063/1.4733675, doi:10.1063/1.1468887, doi:10.1063/1.470177} have since developed various methods to induce approximate damping of states to achieve a similar outcome, including the approximation of an exponential decoherence factor~\cite{doi:10.1063/1.4733675}, though my development of this method was independent, as I was unaware of this literature at the time.
 
 Proceeding, we define the time-ignorant decoherence factor $\tilde R_{ij}(t)$ as the average\footnote{Not a quantum expectation value, just a weighted sum.} of all decoherence factors one would obtain if the two wavepackets began separating at some point in time before $t=0$:
 \begin{align}
 \tilde R_{ij}(t) &= A\int_{-\infty}^0\braket{\phi_i(t-t^\prime)}{\phi_j(t - t^\prime)} \,\dd t^\prime\\
-&= A\int_{-\infty}^0 R(t-t^\prime) \,\dd t^\prime
+&= A\int_{-\infty}^0 R_{ij}(t-t^\prime) \,\dd t^\prime
 \end{align}
-where $A$ is a normalisation constant such that $\tilde R_{ij}(0) = 0$, and where we take that $\ket{\phi_i(0)} = \ket{\phi_j(0)}$ with each thereafter evolving according to the classical motion of their centre of mass as in [EQUATIONS].
-
-[Notation is a bit shoddy - specify that motional states are dependent on a trajectory? How can I fit that in the notation?]
-
-[Mention earlier that the form of $R(t)$ depends on the separation time and is classical evolution of v and t. This will fit right in with the definitions of dv/dt etc.]
-
-[Make gamma have ij subscripts again with the DE - maybe - think about this]
+where $A$ is a normalisation constant such that $\tilde R_{ij}(0) = 0$, and where we take that $\ket{\phi_i(0)} = \ket{\phi_j(0)}$ with each thereafter evolving according to the classical motion of their centre of mass with constant relative acceleration as in~\eqref{eq:classical_const_a_first} and~\eqref{eq:classical_const_a_second} such that the $R_{ij}(t)$ above has the form~\eqref{eq:decoherence_factor_const_a}.
 
 Our time-ignorant decoherence rate is then the (negative of the) derivative of $\tilde R_{ij}(t)$ at $t=0$:
 \begin{align}
-\Gamma_i^\up{Markov} = -\frac{\left[\dv{t}\int_{-\infty}^0 R(t-t^\prime) \,\dd t^\prime\right]_{t=0} }
-{\left[\int_{-\infty}^0 R(t-t^\prime) \,\dd t^\prime\right]_{t=0}}.
+\gamma_{ij}^\up{Markov} = -\frac{\left[\dv{t}\int_{-\infty}^0 R_{ij}(t-t^\prime) \,\dd t^\prime\right]_{t=0} }
+{\left[\int_{-\infty}^0 R_{ij}(t-t^\prime) \,\dd t^\prime\right]_{t=0}}.
 \end{align}
 Moving the derivative inside the integral, noting that $\dv{R(t - t^\prime)}{t} = \dv{R(t - t^\prime)}{t - t^\prime}$ and setting $t = 0$, we get:
 \begin{align}
-\Gamma_i^\up{Markov} &= -\frac
-{\int_{-\infty}^0 R^\prime(-t^\prime) \,\dd t^\prime}
-{\int_{-\infty}^0 R(-t^\prime) \,\dd t^\prime}\\
+\gamma_{ij}^\up{Markov} &= -\frac
+{\int_{-\infty}^0 R_{ij}^\prime(-t^\prime) \,\dd t^\prime}
+{\int_{-\infty}^0 R_{ij}(-t^\prime) \,\dd t^\prime}\\
 &= -\frac
-{\int_0^\infty R^\prime(t^\prime) \,\dd t^\prime}
-{\int_0^\infty R(t^\prime) \,\dd t^\prime}
+{\int_0^\infty R_{ij}^\prime(t^\prime) \,\dd t^\prime}
+{\int_0^\infty R_{ij}(t^\prime) \,\dd t^\prime}
 \end{align}
-where $R^\prime$ is the derivative of $R$ with respect to its argument. By the fundamental theorem of calculus the numerator is $-1$, since $R(t)$ decreases from unity at $t=0$ to zero as $t$ goes to infinity, leaving us with:
+where $R_{ij}^\prime$ is the derivative of $R_{ij}$ with respect to its argument. By the fundamental theorem of calculus the numerator is $-1$, since $R_{ij}(t)$ decreases from unity at $t=0$ to zero as $t$ goes to infinity, leaving us with:
 
-\begin{align}
-\left(\Gamma_i^\up{Markov}\right)^{-1} &= 
-  \int_0^\infty R(t^\prime) \,\dd t^\prime\\
-&= \int_0^\infty \ee^{-\left(\frac1{8\sigma^2}\abs{\vec r_{ij}}^2
+\begin{align}\label{eq:gamma_integral}
+\frac1{\gamma_{ij}^\up{Markov}} &= 
+  \int_0^\infty R_{ij}(t^\prime) \,\dd t^\prime\\
+&= \int_0^\infty \exp\left[-\left(\frac1{8\sigma^2}\abs{\vec r_{ij}}^2
 + \frac\ii 2 \vec r_{ij}(t^\prime) \cdot \vec k_{ij}(t^\prime) + \frac{\sigma^2}{2} \abs{\vec k_{ij}(t^\prime)}^2
-\right)} \,\dd t^\prime
+\right)\right]\,\dd t^\prime
 \end{align}
-
-
-[TODO scrap the following sentence, introduce it some other way, and continue to copy and paste from the other section where this is completed. Get the figure!]
 The expression~\eqref{eq:decoherence_factor_const_a} requires a relative acceleration, for which we use the relative acceleration between the pair of adiabatic potentials at the current moment in time and current position of the atom during a simulation:
 \begin{align}
-\vec a_{ij} = -\frac1 m\left(\nabla V_i(\vec r, t) - \nabla V_i(\vec r, t)\right).
+\vec a_{ij}(\vec r, t) \approx -\frac1 m\left(\nabla V_i(\vec r, t) - \nabla V_j(\vec r, t)\right).
+\end{align}
+This now gives a decoherence factor depending on position and time:
+\begin{align}
+\frac1{\gamma_{ij}^\up{Markov}(\vec r, t)} &=
+  \int_0^\infty 
+    \exp\left[
+      -\frac {\abs{\vec a_{ij}(\vec r, t)}^2} 2 \left(\frac1 {16\sigma^2}{t^\prime}^4 + \ii\frac m{2\hbar}{t^\prime}^3 + \frac{m^2\sigma^2}\hbar {t^\prime}^2 \right)
+      \right]
+    \,\dd t^\prime
+\end{align}
+In order to obtain an approximate analytic expression for this integral, we consider two limiting cases and then stitch them together in the intermediate regime. In the limit of small wavepackets, $\sigma$ is small and thus the first term in the exponent in \eqref{eq:gamma_integral} is largest, and the third term is smallest. In this regime, which describes when positional separation (as opposed to separation in $k$-space) dominates the decoherence, we'll neglect the third term in the exponent and treat the second term as small relative to the first.
+This gives us:
+[TODO REWRITE WITH T, NOT X AND K]
+\begin{align}
+\frac1{\gamma_{ij\,\up{(pos)}}^\up{Markov}(\vec r, t)} &\approx 
+  \int_0^\infty \exp\left[
+        -\frac{1} {8\sigma^2} \abs{\vec r_{ij}}^2
+      - \frac \ii2 \vec r_{ij} \cdot \vec k_{ij}
+      \right]\, \dd t^\prime\\
+      &\approx \int_0^\infty \exp\left[-
+              \frac{1} {8\sigma^2} \abs{\vec r_{ij}}^2\right]\left(1 - \frac \ii2 \vec r_{ij} \cdot \vec k_{ij}\right)\, \dd t^\prime\label{eq:gamma_pos_exp}\\
+      &= 2^{\frac54}\upGamma(\tfrac54)\sqrt{\frac{\sigma}{\abs{\vec a_{ij}(\vec r, t)}}} - 2\ii\frac{m \sigma^2}{\hbar},\label{eq:gamma_pos_recip}
+\end{align}
+where we used a first-order Taylor expansion of an exponential in \eqref{eq:gamma_pos_exp}. We similarly use a first order expansion to take the reciprocal of \eqref{eq:gamma_pos_recip} (since the second term is much smaller than the first\footnote{This isn't necessary in order to obtain a simple expression for $\gamma_{ij\,\up{(pos)}}$---the reciprocal without this approximation is equally simple---but it leaves us with power laws for the real and imaginary parts of $\gamma_{ij\,\up{(pos)}}$, which are easier to stitch together with those from the large $\sigma$ regime.}), and arrive at:
+\begin{align}
+\gamma_{ij\,\up{(pos)}}^\up{Markov} &\approx \frac1{2^{\frac54}\upGamma(\tfrac54)}\sqrt{\frac{\abs{\vec a_{ij}(\vec r, t)}}{\sigma}}
++ \frac \ii {2\sqrt{2}\upGamma(\tfrac54)^2} \frac{m\sigma \abs{\vec a_{ij}(\vec r, t)}}{\hbar}\label{eq:gamma_pos_final}%\\
+% &\approx 0.463865\sqrt{\frac{a_{ij}}{\sigma}}
+% + 0.430341 i \frac{m\sigma a_{ij}}{\hbar}.
 \end{align}
 
+Similarly for the large $\sigma$ regime, we neglect the first term in the exponent of \eqref{eq:gamma_integral} and consider the second term small relative to the third. This is the regime in which the decrease in overlap of the two wavepackets is dominated by their separation in velocity space. Following the same process as above gives:
+\begin{align}
+\Gamma_{ij\,\up{(vel)}}^{-1} &\approx \int_0^\infty e^{-\left[
+        \frac i2 x_{\mathrm{rel}} k_\up{rel}
+        + \frac{\sigma^2}{2} k_\up{rel}^2
+      \right]}\, \dd t.\\
+      &\approx \int_0^\infty \left(1 - \frac i2 x_{\mathrm{rel}} k_\up{rel}\right)
+      e^{-\frac{\sigma^2}{2} k_\up{rel}^2}\, \dd t\\
+      & = \sqrt{\frac\pi2}\frac\hbar{m \sigma a_{ij}} - i\frac{\hbar^3}{2m^3 \sigma^4 a_{ij}^2}\\
+      \Rightarrow \Gamma_{ij\,\up{(vel)}} &\approx \sqrt{\frac2\pi}\frac{m \sigma a_{ij}}\hbar
+                                          + \frac i\pi \frac\hbar{m \sigma^2}
+                                          \label{eq:gamma_vel_final}
+\end{align}
+Equations \eqref{eq:gamma_pos_final} and \eqref{eq:gamma_vel_final} are our final expressions for the docoherence rate in the limit of small and large wavepackets respectively. Adding their real parts in quadrature and adding the reciprocals of their imaginary parts then provides a reasonable approximation for $\Gamma_{ij}$ over all wavepacket sizes:
+\begin{align}
+\Gamma_{ij} \approx
+\left[\re(\Gamma_{ij\,\up{(pos)}})^2 + \re(\Gamma_{ij\,\up{(vel)}})^2\right]^{\frac12}
++ i\left[\im(\Gamma_{ij\,\up{(pos)}})^{-1} + \im(\Gamma_{ij\,\up{(vel)}})^{-1}\right]^{-1}.
+\label{eq:gamma_total}
+\end{align}
+
+\begin{figure}[t]
+    \centerfloat
+    \includegraphics{figures/hidden_variables/decoherence_rate_example.pdf}
+    \caption{Caption.}\label{fig:decoherence_rate_example}
+\end{figure}
+
+We now have an approximate analytic expression that is computationally inexpensive to evaluate for each atom in an ensemble at every timestep of a differential equation.
+An example showing the accuracy of \eqref{eq:gamma_total}, compared to the exact expression \eqref{eq:gamma_integral} for $\Gamma_{ij}$ over a range of wavepacket sizes is shown in \figref{fig:decoherence_rate_example}.
 
 
 \subsection{Continuously spawned mean auxiliary trajectories}\label{sec:spawned_trajectories}
@@ -759,6 +806,8 @@ Pretty results go here
 \section{Discussion and conclusion}\label{sec:HVSC_discussion}
 
 Although the method wasn't original, in rediscovering it I have identified that hidden-variable theories and hopping algorithms are in fact the same thing. I am relieved that I can use a hidden-variable theory that is numerically faster to compute then Schrodinger theory and wonder what the implications are for Aaronson's ideas, given the reasoning outlined in the intro that hidden-variable theories ought to be hard to compute. In addition, my decoherence method totally kicks butt and the time dependence thing is nifty.
+
+The recognition that surface hopping algorithms are hidden variable theories may be due to me.
 
 Discuss how it would make sense for the systems to behave in the presence of collisions w.r.t collapse of state vectors.
 
@@ -837,59 +886,11 @@ Our average decoherence rate $\Gamma_{ij}$ is then given by the logarithmic deri
         \frac{1} {8\sigma^2} x_\up{rel}^2
       + \frac i2 x_{\mathrm{rel}} k_\up{rel}
       + \frac{\sigma^2}{2} k_\up{rel}^2
-      \right]}\, \dd t.\label{eq:gamma_integral}
+      \right]}\, \dd t.
 \end{align}
 
 As mentioned, $\Gamma_{ij}$ is the decay constant for the best fitting exponential to our decoherence factor \eqref{eq:decoherence_factor}. Although \eqref{eq:decoherence_factor} looks nothing like a decaying exponential in time, an exponential approximation to it nonetheless ought to decay to zero on the same timescale. An example of this is shown in \figref{fig:decoherence_factor_example}
 
-In order to obtain an approximate analytic expression for this integral, we consider two limiting cases and then stitch them together in the intermediate regime. In the limit of small wavepackets, $\sigma$ is small and thus the first term in the exponent in \eqref{eq:gamma_integral} is largest, and the third term is smallest. In this regime, which describes when positional separation (as opposed to separation in $k$-space) dominates the decoherence, we'll neglect the third term in the exponent and treat the second term as small relative to the first.
-This gives us:
-\begin{align}
-\Gamma_{ij\,\up{(pos)}}^{-1} &\approx \int_0^\infty e^{-\left[
-        \frac{1} {8\sigma^2} x_\up{rel}^2
-      + \frac i2 x_{\mathrm{rel}} k_\up{rel}
-      \right]}\, \dd t.\\
-      &\approx \int_0^\infty e^{-
-              \frac{1} {8\sigma^2} x_\up{rel}^2}\left(1 - \frac i2 x_{\mathrm{rel}} k_\up{rel}\right)\, \dd t.\label{eq:gamma_pos_exp}\\
-      &= 2^{\frac54}\upGamma(\tfrac54)\sqrt{\frac{\sigma}{a_{ij}}} - 2i\frac{m \sigma^2}{\hbar},\label{eq:gamma_pos_recip}
-\end{align}
-where we used a first-order Taylor expansion of an exponential in \eqref{eq:gamma_pos_exp}. We similarly use a first order expansion to take the reciprocal of \eqref{eq:gamma_pos_recip} (since the second term is much smaller than the first\footnote{This isn't necessary in order to obtain a simple expression for $\Gamma_{ij\,\up{(pos)}}$---the reciprocal without this approximation is equally simple---but it leaves us with power laws for the real and imaginary parts of $\Gamma_{ij\,\up{(pos)}}$, which are easier to stitch together with those from the large $\sigma$ regime.}), and arrive at:
-\begin{align}
-\Gamma_{ij\,\up{(pos)}} &\approx \frac1{2^{\frac54}\upGamma(\tfrac54)}\sqrt{\frac{a_{ij}}{\sigma}}
-+ \frac i {2\sqrt{2}\upGamma(\tfrac54)^2} \frac{m\sigma a_{ij}}{\hbar}\label{eq:gamma_pos_final}%\\
-% &\approx 0.463865\sqrt{\frac{a_{ij}}{\sigma}}
-% + 0.430341 i \frac{m\sigma a_{ij}}{\hbar}.
-\end{align}
-
-Similarly for the large $\sigma$ regime, we neglect the first term in the exponent of \eqref{eq:gamma_integral} and consider the second term small relative to the third. This is the regime in which the decrease in overlap of the two wavepackets is dominated by their separation in velocity space. Following the same process as above gives:
-\begin{align}
-\Gamma_{ij\,\up{(vel)}}^{-1} &\approx \int_0^\infty e^{-\left[
-        \frac i2 x_{\mathrm{rel}} k_\up{rel}
-        + \frac{\sigma^2}{2} k_\up{rel}^2
-      \right]}\, \dd t.\\
-      &\approx \int_0^\infty \left(1 - \frac i2 x_{\mathrm{rel}} k_\up{rel}\right)
-      e^{-\frac{\sigma^2}{2} k_\up{rel}^2}\, \dd t\\
-      & = \sqrt{\frac\pi2}\frac\hbar{m \sigma a_{ij}} - i\frac{\hbar^3}{2m^3 \sigma^4 a_{ij}^2}\\
-      \Rightarrow \Gamma_{ij\,\up{(vel)}} &\approx \sqrt{\frac2\pi}\frac{m \sigma a_{ij}}\hbar
-                                          + \frac i\pi \frac\hbar{m \sigma^2}
-                                          \label{eq:gamma_vel_final}
-\end{align}
-Equations \eqref{eq:gamma_pos_final} and \eqref{eq:gamma_vel_final} are our final expressions for the docoherence rate in the limit of small and large wavepackets respectively. Adding their real parts in quadrature and adding the reciprocals of their imaginary parts then provides a reasonable approximation for $\Gamma_{ij}$ over all wavepacket sizes:
-\begin{align}
-\Gamma_{ij} \approx
-\left[\re(\Gamma_{ij\,\up{(pos)}})^2 + \re(\Gamma_{ij\,\up{(vel)}})^2\right]^{\frac12}
-+ i\left[\im(\Gamma_{ij\,\up{(pos)}})^{-1} + \im(\Gamma_{ij\,\up{(vel)}})^{-1}\right]^{-1}.
-\label{eq:gamma_total}
-\end{align}
-
-\begin{figure}[t]
-    \centerfloat
-    \includegraphics{figures/hidden_variables/decoherence_rate_example.pdf}
-    \caption{Caption.}\label{fig:decoherence_rate_example}
-\end{figure}
-
-We now have an approximate analytic expression that is computationally inexpensive to evaluate for each atom in an ensemble at every timestep of a differential equation.
-An example showing the accuracy of \eqref{eq:gamma_total}, compared to the exact expression \eqref{eq:gamma_integral} for $\Gamma_{ij}$ over a range of wavepacket sizes is shown in \figref{fig:decoherence_rate_example}.
 
 \section{Choice of wavepacket size}
 
