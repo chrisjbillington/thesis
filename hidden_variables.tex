@@ -462,7 +462,7 @@ In the context of the hidden-variable semiclassical/surface hopping method, \emp
 
 Decoherence was not part of Tully's original surface hopping model~\cite{doi:10.1063/1.459170}, such that if used to simulate the Stern--Gerlach experiment, two spots would result on the screen, but both spots would comprise a coherent $50:50$ superposition of spin-up and spin-down, rather than one being up and one being down. Some decoherence is necessary to include in a hidden-variable semiclassical/surface hopping model in order to avoid this unphysical outcome, and furthermore, to obtain correct transition probabilities in the case that the atom undergoes multiple periods of local spin transitions (as being in a $50:50$ superposition represents entirely different initial conditions for a Majorana spin flip than being in a single spin state).
 
-In Subsection~\ref{sec:backaction} I show the general mechanism by which the divergence of trajectories decoheres internal states of an atom, and specifically how this appears as an apparent decrease in the amplitudes of each other state when one imposes the adiabatic trajectory corresponding to one specific internal state. I then show in Subsection~\ref{sec:zeno_effect} why naively projecting the wavefunction onto a single trajectory at all times yields nonsensical results, and then in Subsections~\ref{sec:markovian_decoherence} and~\ref{sec:markovian_decoherence} I present two remedies for how to approximately include decoherence despite this. 
+In Section~\ref{sec:backaction} I show the general mechanism by which the divergence of trajectories decoheres internal states of an atom, and specifically how this appears as an apparent decrease in the amplitudes of each other state when one imposes the adiabatic trajectory corresponding to one specific internal state. I then show in Section~\ref{sec:zeno_effect} why naively projecting the wavefunction onto a single trajectory at all times yields nonsensical results, and then in Subsections~\ref{sec:markovian_decoherence} and~\ref{sec:markovian_decoherence} I present two remedies for how to approximately include decoherence despite this. 
 
 \subsection{Back action of position measurement on internal state}\label{sec:backaction}
 
@@ -550,7 +550,7 @@ where we have defined $\tilde c_i(t) = \braket{\phi_\eta(t)}{\phi_i(t)}c_i(t)$ a
 \left[\tilde c_i(t) - \frac\ii\hbar\sum_j H_{ij}(t)\tilde c_j(t)\dd t\right]
 \ket{\chi_i}\otimes\ket{\phi_i(t + \dd t)},
 \end{align}
-where $H_{ij}(t) = \matrixel{\chi_i}{\hat H_{\eta}(t)}{\chi_j} = \matrixel{\chi_i\ \phi_\eta(t)}{\hat H(t)}{\chi_j\ \phi_\eta(t)}$ are the elements of the projected Hamiltonian $\hat H_\eta(t) $ dictating the dynamics of the internal state, given the imposed motional state $\ket{\phi_\eta}$ and the total Hamiltonian $\hat H(t)$ of the system. Note that because of the previous projection already performed, all motional states $\ket{\phi_i(t)}$ were ``reset" to be equal to $\ket{\phi_\eta(t)}$ at time $t$, and therefore the evolved motional state $\ket{\phi_i(t + \dd t)}$ (the form of which we have not yet specified) represents the evolution of the motional state corresponding to the $i^\up{th}$ internal state over an interval $\dd t$, starting with the initial condition $\ket{\phi_\eta(t)}$. Accordingly, both motional states will still be approximately equal after this short evolution, allowing us to write
+where $H_{ij}(t) = \matrixel{\chi_i}{\hat H_{\eta}(t)}{\chi_j} = \matrixel{\chi_i\ \phi_\eta(t)}{\hat H(t)}{\chi_j\ \phi_\eta(t)}$ are the elements of the projected Hamiltonian $\hat H_\eta(t)$ dictating the dynamics of the internal state, given the imposed motional state $\ket{\phi_\eta}$ and the total Hamiltonian $\hat H(t)$ of the system. Note that because of the previous projection already performed, all motional states $\ket{\phi_i(t)}$ were ``reset" to be equal to $\ket{\phi_\eta(t)}$ at time $t$, and therefore the evolved motional state $\ket{\phi_i(t + \dd t)}$ (the form of which we have not yet specified) represents the evolution of the motional state corresponding to the $i^\up{th}$ internal state over an interval $\dd t$, starting with the initial condition $\ket{\phi_\eta(t)}$. Accordingly, both motional states will still be approximately equal after this short evolution, allowing us to write
 \begin{align}
 \braket{\phi_\eta(t + \dd t)}{\phi_i(t + \dd t)} &= \braket{\phi_\eta(t)}{\phi_i(t)} + \dv{t}\braket{\phi_\eta(t)}{\phi_i(t)}\dd t\\
 & = 1 + \dv{R_{\eta i}(t)}{t}.
@@ -842,6 +842,23 @@ The above scheme is constructed to track a mean trajectory for each state, where
 
 \section{Algorithm}\label{sec:HVSC_algorithm}
 
+Now we have presented all the pieces from which the two versions of the hidden variables semiclassical method are constructed. One more approximation is yet to be mentioned, and that is that the projected Hamiltonian $\hat H_\eta(t)$ first introduced in Section~\ref{sec:backaction} is approximated by the value of the full Hamiltonian at the centre-of-mass position of the main trajectory's Gaussian wavepacket, without computing an integral:
+\begin{align}
+\matrixel{\chi_i}{\hat H_{\eta}(t)}{\chi_j} &= \matrixel{\chi_i\ \phi_\eta(t)}{\hat H(t)}{\chi_j\ \phi_\eta(t)}\\
+&\approx \matrixel{\chi_i\ \vec r_\eta(t)}{\hat H(t)}{\chi_j\ \vec r_\eta(t)}\\
+&\equiv H_{ij}(\vec r_\eta, t). 
+\end{align}
+With this final approximation, there are no longer any Guassian wavepackets to compute integrals over or anything else---all details of the wavepackets have been encapsulated and parametrised by the approximations and analytics in the preceding sections, and we can now focus on the classical dynamics of them atoms' centre of mass motion and the quantum evolution of their internal states.
+
+\subsection{Markovian hidden-variable semiclassical method}
+This is the simplest version of my method, using crude Markovian decoherence as discussed in Section~\ref{sec:markovian_decoherence}, and simulating only one trajectory corresponding to the centre-of-mass motion of the state corresponding to the hidden variable at each moment in time.
+
+\subsection{State variables}
+The Markovian hidden-variable semiclassical method 
+
+\subsubsection{Initial conditions}
+
+\subsection{Mean auxiliary trajectories hidden-variables semiclassical method}
 % \subsection{Further approximations}
 
 % say that H is based on centre of mass of the eta component
@@ -874,81 +891,81 @@ The Stochastic Schr\"odinger equation [CITE] is very similar to the case where t
 
 [DELETE EVERYTHING AFTER THIS AFTER MAKING SURE IT EXISTS ELSEWHERE SATISFACTORILY]
 
-\section{Approximate Markovian decoherence rate for separating wavepackets}
+% \section{Approximate Markovian decoherence rate for separating wavepackets}
 
-Positional separation of two different internal states of an atom leads to decoherence of those states, with a decoherence factor $R_{ij}(t)$ equal to the overlap of the spatial wavefunctions of the two components in question a time $t$ after they began separating. Approximating both wavepackets as initially overlapping Gaussians of width $\sigma$, ignoring dispersion, and assuming they separate with constant relative acceleration $a_{ij}$, the decoherence factor is
+% Positional separation of two different internal states of an atom leads to decoherence of those states, with a decoherence factor $R_{ij}(t)$ equal to the overlap of the spatial wavefunctions of the two components in question a time $t$ after they began separating. Approximating both wavepackets as initially overlapping Gaussians of width $\sigma$, ignoring dispersion, and assuming they separate with constant relative acceleration $a_{ij}$, the decoherence factor is
 
-\begin{align}
-R_{ij}(t) &= \braket{\psi_i(t)}{\psi_j(t)}\\
- &= C \int_{-\infty}^{\infty} e^{-\frac{x^2}{4\sigma^2}}e^{-\frac{(x-x_\up{rel})^2}{4\sigma^2} + ik_\up{rel}x}\,\dd x,\label{eq:gaussian_integral}
-\end{align}
-where
-\begin{align}
-x_{\mathrm{rel}}(t) = \frac12a_{ij}t^2
-\end{align}
-and
-\begin{align}
-k_\up{rel}(t) = \frac m \hbar a_{ij} t
-\end{align}
-are the wavepackets' relative\footnote{$a_{ij}$, $x_\up{rel}$ and $k_\up{rel}$ are the acceleration, position, and wavenumber of the $j^\up{th}$ component with respect to the $i^\up{th}$ component, that is, $a_{ij} = a_j - a_i$, etc.} position and wavenumber due to acceleration for a time $t$ starting from zero relative velocity, and
-\begin{align}
-C^{-1}=\int_{-\infty}^\infty e^{-\frac{x^2}{2\sigma^2}}\,\dd x\label{supp:eq:Cdef}
-\end{align}
-is a normalisation constant [TODO CHECK IF NEEDS TO BE SQUARED]. Note that this expression holds for any number of dimensions---relative motion is only along one axis so the integrals in all other directions equal one.
+% \begin{align}
+% R_{ij}(t) &= \braket{\psi_i(t)}{\psi_j(t)}\\
+%  &= C \int_{-\infty}^{\infty} e^{-\frac{x^2}{4\sigma^2}}e^{-\frac{(x-x_\up{rel})^2}{4\sigma^2} + ik_\up{rel}x}\,\dd x,\label{eq:gaussian_integral}
+% \end{align}
+% where
+% \begin{align}
+% x_{\mathrm{rel}}(t) = \frac12a_{ij}t^2
+% \end{align}
+% and
+% \begin{align}
+% k_\up{rel}(t) = \frac m \hbar a_{ij} t
+% \end{align}
+% are the wavepackets' relative\footnote{$a_{ij}$, $x_\up{rel}$ and $k_\up{rel}$ are the acceleration, position, and wavenumber of the $j^\up{th}$ component with respect to the $i^\up{th}$ component, that is, $a_{ij} = a_j - a_i$, etc.} position and wavenumber due to acceleration for a time $t$ starting from zero relative velocity, and
+% \begin{align}
+% C^{-1}=\int_{-\infty}^\infty e^{-\frac{x^2}{2\sigma^2}}\,\dd x\label{supp:eq:Cdef}
+% \end{align}
+% is a normalisation constant [TODO CHECK IF NEEDS TO BE SQUARED]. Note that this expression holds for any number of dimensions---relative motion is only along one axis so the integrals in all other directions equal one.
 
-Evaluating the Gaussian integral \eqref{eq:gaussian_integral} gives the following expression for the decoherence factor $R_{ij}(t)$:
-\begin{align}
-R_{ij}(t)&= e^{-\left[
-        \frac{1} {8\sigma^2} x_\up{rel}^2
-      + \frac i2 x_{\mathrm{rel}} k_\up{rel}
-      + \frac{\sigma^2}{2} k_\up{rel}^2
-      \right]}%\label{eq:decoherence_factor}.
-\end{align}
+% Evaluating the Gaussian integral \eqref{eq:gaussian_integral} gives the following expression for the decoherence factor $R_{ij}(t)$:
+% \begin{align}
+% R_{ij}(t)&= e^{-\left[
+%         \frac{1} {8\sigma^2} x_\up{rel}^2
+%       + \frac i2 x_{\mathrm{rel}} k_\up{rel}
+%       + \frac{\sigma^2}{2} k_\up{rel}^2
+%       \right]}%\label{eq:decoherence_factor}.
+% \end{align}
 
-This is a decoherence \emph{factor}; it is the factor by which the $(i, j)$ off-diagonal of the reduced density matrix for the atom's internal state will be reduced at time $t$. The corresponding decoherence \emph{rate} is given by the logarithmic derivative of \eqref{eq:decoherence_factor}:
+% This is a decoherence \emph{factor}; it is the factor by which the $(i, j)$ off-diagonal of the reduced density matrix for the atom's internal state will be reduced at time $t$. The corresponding decoherence \emph{rate} is given by the logarithmic derivative of \eqref{eq:decoherence_factor}:
 
-\begin{align}
-\Gamma_{ij}(t) = - \frac 1 {R_{ij}(t)} \dv t {R_{ij}(t)}.
-\end{align}
+% \begin{align}
+% \Gamma_{ij}(t) = - \frac 1 {R_{ij}(t)} \dv t {R_{ij}(t)}.
+% \end{align}
 
- The fact that \eqref{eq:decoherence_factor} does not describe a constant decoherence rate (i.e., it does not have the functional form of exponential decay) means that the back action on the atom's internal state caused by measurements of its motional state will be different depending on the interval of time between measurements.
+%  The fact that \eqref{eq:decoherence_factor} does not describe a constant decoherence rate (i.e., it does not have the functional form of exponential decay) means that the back action on the atom's internal state caused by measurements of its motional state will be different depending on the interval of time between measurements.
 
-For example, the logarithmic derivative of \eqref{eq:decoherence_factor} approaches zero as $t$ goes to zero. This means that in the limit of infinitely frequent measurements, no decoherence occurs at all in between measurements, and the motional state is reset after each measurement such that the wavepackets never separate at all. This is the quantum Zeno effect, and its appearance in models of open quantum systems is usually treated as a reminder that the assumption of infinitely frequent strong measurements is unphysical [CITE].
+% For example, the logarithmic derivative of \eqref{eq:decoherence_factor} approaches zero as $t$ goes to zero. This means that in the limit of infinitely frequent measurements, no decoherence occurs at all in between measurements, and the motional state is reset after each measurement such that the wavepackets never separate at all. This is the quantum Zeno effect, and its appearance in models of open quantum systems is usually treated as a reminder that the assumption of infinitely frequent strong measurements is unphysical [CITE].
 
-Since experimentally we are not measuring atoms' motional states so frequently, we ought to wait until the wavepackets are completely separated before performing a projective measurement. As in quantum optics models of open quantum systems, in which the measurement interval ``should be large enough to allow the photons to get away from the atom" [CITE The Quantum Jump Approach
-and Quantum Trajectories Gerhard C. Hegerfeldt], ours should be large enough for the atomic states to get away from each other.
+% Since experimentally we are not measuring atoms' motional states so frequently, we ought to wait until the wavepackets are completely separated before performing a projective measurement. As in quantum optics models of open quantum systems, in which the measurement interval ``should be large enough to allow the photons to get away from the atom" [CITE The Quantum Jump Approach
+% and Quantum Trajectories Gerhard C. Hegerfeldt], ours should be large enough for the atomic states to get away from each other.
 
-If at large enough times, a decoherence rate is independent of time, that decoherence is called Markovian at that timescale. A Markovian environment is one that has no memory of the decoherence process---it ``forgets" any information caused by past interaction with the system. Even though at short times, all decoherence rates in quantum mechanics tend to zero [CITE], if they become Markovian on a timescale shorter than other timescales of interest, the Markov approximation can be used and a constant decoherence rate used at all times. In quantum optics, the decoherence factor for the internal state of an atom due to photon emission indeed tends to exponential decay on timescales that are still much shorter than that of the system evolution, and thus the Markov approximation is accurate.
+% If at large enough times, a decoherence rate is independent of time, that decoherence is called Markovian at that timescale. A Markovian environment is one that has no memory of the decoherence process---it ``forgets" any information caused by past interaction with the system. Even though at short times, all decoherence rates in quantum mechanics tend to zero [CITE], if they become Markovian on a timescale shorter than other timescales of interest, the Markov approximation can be used and a constant decoherence rate used at all times. In quantum optics, the decoherence factor for the internal state of an atom due to photon emission indeed tends to exponential decay on timescales that are still much shorter than that of the system evolution, and thus the Markov approximation is accurate.
 
-Unlike quantum optics models, our decoherence factor does not describe Markovian decoherence on any timescale. In the limit of large $t$, its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian [CITE] at that timescale. Nonetheless, if we wish to write a time-local differential equation for the internal state of the atom, Markovian decoherence is the only kind we can include [CITE].
+% Unlike quantum optics models, our decoherence factor does not describe Markovian decoherence on any timescale. In the limit of large $t$, its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian [CITE] at that timescale. Nonetheless, if we wish to write a time-local differential equation for the internal state of the atom, Markovian decoherence is the only kind we can include [CITE].
 
-To that end, we will now construct a ``time ignorant" version of $R_{ij}(t)$ that answers the question ``What is the expected decoherence factor at all future times, if you don't know how long it has been since the two wavepackets began separating?" In this way we can compute an \emph{average} decoherence rate $\Gamma_{ij}$ described by our decoherence factor, even though $R_{ij}(t)$ does not have a constant decoherence rate at large times. This essentially amounts to finding the best fitting exponential to $R_{ij}(t)$. Whilst this approximation is crude, it is nonetheless an improvement over the Ehrenfest model, which has no decoherence at all (i.e. it has a decoherence rate that is also constant like ours---but equal to zero).
+% To that end, we will now construct a ``time ignorant" version of $R_{ij}(t)$ that answers the question ``What is the expected decoherence factor at all future times, if you don't know how long it has been since the two wavepackets began separating?" In this way we can compute an \emph{average} decoherence rate $\Gamma_{ij}$ described by our decoherence factor, even though $R_{ij}(t)$ does not have a constant decoherence rate at large times. This essentially amounts to finding the best fitting exponential to $R_{ij}(t)$. Whilst this approximation is crude, it is nonetheless an improvement over the Ehrenfest model, which has no decoherence at all (i.e. it has a decoherence rate that is also constant like ours---but equal to zero).
 
-We define the time-ignorant decoherence factor $\tilde R_{ij}(t)$ as the overlap of the wavefunction of the $i^\up{th}$ internal state with a superposition of wavepackets of the $j^\up{th}$ internal state, with the superposition being over all times in the past the wavepackets began separating:
-\begin{align}
-\tilde R_{ij}(t) &= \bra{\psi_i(t)} A\int_{-\infty}^0 \ket{\psi_j(t - t^\prime)} \,\dd t^\prime\\
-\end{align}
-where $A$ is a normalisation constant such that $\tilde R_{ij}(0) = 1$.
-Since $\ket{\psi_i(t)}$ is time independent (rather, since we can perform our calculations in the frame of reference in which it is stationary), this is:
-\begin{align}
-\tilde R_{ij}(t) &= A\int_{-\infty}^0 R_{ij}(t - t^\prime) \,\dd t^\prime,
-\end{align}
-which is simply the convolution of our decoherence factor with a step function which is nonzero at all negative times.
-Our average decoherence rate $\Gamma_{ij}$ is then given by the logarithmic derivative of $\tilde R_{ij}(t)$ at $t=0$:
+% We define the time-ignorant decoherence factor $\tilde R_{ij}(t)$ as the overlap of the wavefunction of the $i^\up{th}$ internal state with a superposition of wavepackets of the $j^\up{th}$ internal state, with the superposition being over all times in the past the wavepackets began separating:
+% \begin{align}
+% \tilde R_{ij}(t) &= \bra{\psi_i(t)} A\int_{-\infty}^0 \ket{\psi_j(t - t^\prime)} \,\dd t^\prime\\
+% \end{align}
+% where $A$ is a normalisation constant such that $\tilde R_{ij}(0) = 1$.
+% Since $\ket{\psi_i(t)}$ is time independent (rather, since we can perform our calculations in the frame of reference in which it is stationary), this is:
+% \begin{align}
+% \tilde R_{ij}(t) &= A\int_{-\infty}^0 R_{ij}(t - t^\prime) \,\dd t^\prime,
+% \end{align}
+% which is simply the convolution of our decoherence factor with a step function which is nonzero at all negative times.
+% Our average decoherence rate $\Gamma_{ij}$ is then given by the logarithmic derivative of $\tilde R_{ij}(t)$ at $t=0$:
 
-\begin{align}
-\Gamma_{ij} &= -\frac {\tilde R_{ij}^\prime(0)} {\tilde R_{ij}(0)}\\
-&= -\frac {\int_0^\infty \tilde R_{ij}^\prime(t)\,\dd t} {\int_0^\infty \tilde R_{ij}(t)\, \dd t}\\
-\Rightarrow \Gamma_{ij}^{-1}&= \int_0^\infty e^{-\left[
-        \frac{1} {8\sigma^2} x_\up{rel}^2
-      + \frac i2 x_{\mathrm{rel}} k_\up{rel}
-      + \frac{\sigma^2}{2} k_\up{rel}^2
-      \right]}\, \dd t.
-\end{align}
+% \begin{align}
+% \Gamma_{ij} &= -\frac {\tilde R_{ij}^\prime(0)} {\tilde R_{ij}(0)}\\
+% &= -\frac {\int_0^\infty \tilde R_{ij}^\prime(t)\,\dd t} {\int_0^\infty \tilde R_{ij}(t)\, \dd t}\\
+% \Rightarrow \Gamma_{ij}^{-1}&= \int_0^\infty e^{-\left[
+%         \frac{1} {8\sigma^2} x_\up{rel}^2
+%       + \frac i2 x_{\mathrm{rel}} k_\up{rel}
+%       + \frac{\sigma^2}{2} k_\up{rel}^2
+%       \right]}\, \dd t.
+% \end{align}
 
-As mentioned, $\Gamma_{ij}$ is the decay constant for the best fitting exponential to our decoherence factor \eqref{eq:decoherence_factor}. Although \eqref{eq:decoherence_factor} looks nothing like a decaying exponential in time, an exponential approximation to it nonetheless ought to decay to zero on the same timescale. An example of this is shown in \figref{fig:decoherence_factor_example}
+% As mentioned, $\Gamma_{ij}$ is the decay constant for the best fitting exponential to our decoherence factor \eqref{eq:decoherence_factor}. Although \eqref{eq:decoherence_factor} looks nothing like a decaying exponential in time, an exponential approximation to it nonetheless ought to decay to zero on the same timescale. An example of this is shown in \figref{fig:decoherence_factor_example}
 
 
-\section{Choice of wavepacket size}
+% \section{Choice of wavepacket size}
 
-How big is a wavepacket? Be sure to say it's the thermal wavelength except not too big because the single mode approximation won't be valid otherwise. 
+% How big is a wavepacket? Be sure to say it's the thermal wavelength except not too big because the single mode approximation won't be valid otherwise. 
