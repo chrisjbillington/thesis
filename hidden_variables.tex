@@ -214,9 +214,9 @@ Written in the same way as we previously described semiclassical models, the equ
 \end{align}
 where $\ket{\tilde\chi}$ is the (non-normalised) internal state vector including the effect of back-action, $\hat\Gamma_\eta(\vec r, t)$ is a non-Hermitian operator that implements this back-action by decaying the amplitude of states not being followed (there are many ways to do this, all approximate, discussed in Section~\ref{sec:decoherence}), $\eta$ is the hidden variable, $V_\eta$ is the adiabatic potential experienced by the eigenstate selected by the hidden variable, $\vec\chi$ is the vector representation of the (normalised) state vector in the local eigenbasis, and $U_\up{eff}(t^\prime, t)$ is the unitary matrix describing the evolution of the state vector from time $t$ to $t^\prime$ in the local eigenbasis under the action of the effective Hamiltonian $\hat H_\up{eff}$, defined in Section~\ref{sec:fewest_switches}. In addition to these evolution rules, the state vector must be normalised at each timestep of simulation,\footnote{It would be relatively simple to include a term in the differential equation to preserve normalisation, but the non-normalisation-preserving differential equation is simpler to write, compute, and understand.} and the velocity of the atom modified instantaneously whenever a transition is made in order to conserve energy. This latter requirement is detailed in Section~\ref{sec:velocity_correction}.
 
-\section{Implementation details}\label{sec:implementation_details}
+\section{Hidden variables: implementation details}\label{sec:implementation_details}
 
-In this section I go into the gritty details of numerically evaluating hidden-variable theories, approximating the back-action caused by the imposition of continuous projection onto a single motional state, and some other concerns.
+In this section I go into the gritty details of numerically evaluating hidden-variable theories, conserving energy when a transition occurs, and some other concerns.
 
 \subsection{Numerically evaluating Schr\"odinger theory}\label{sec:schrodinger_theory_numerics}
 
@@ -514,7 +514,7 @@ Where $A$ is a real normalisation constant,\footnote{The overall phase is determ
 \label{eq:classical_const_a_second}
 \end{align}
 This gives for the decoherence factor:
-\begin{align}\label{eq:decoherence_factor_const_a}
+\begin{align}\label{eq:decoherence_factor}
 R_{ij}(t) = \exp\left[-\left(\frac1{8\sigma^2}\abs{\vec r_{ij}}^2
 + \frac\ii 2 \vec r_{ij}(t) \cdot \vec k_{ij}(t) + \frac{\sigma^2}{2} \abs{\vec k_{ij}(t)}^2
 \right)\right].
@@ -614,8 +614,14 @@ But now we arrive at a problem. Because all the motional states are reset to be 
 {$\scriptscriptstyle\, \vec v_{ij} = 0$}
 {$\scriptscriptstyle\, \vec k_{ij} = 0$}
 }\\
-&= -\left[
-2\vec k_{ij}R_{ij}(t)\cdot\dv{\vec k_{ij}(t)}{t}\right]_{
+&= \left[
+\left(
+\frac{\vec r_{ij}}{4\sigma^2} + \frac\ii2\vec k_{ij}
+\right)R_{ij}(t)\cdot\dv{\vec r_{ij}(t)}{t}
++ \left(
+\sigma^2\vec k_{ij} + \frac\ii2\vec r_{ij}
+\right)R_{ij}(t)\cdot\dv{\vec k_{ij}(t)}{t}
+\right]_{
 \stackon[1pt]
 {$\scriptscriptstyle\, \vec v_{ij} = 0$}
 {$\scriptscriptstyle\, \vec k_{ij} = 0$}
@@ -647,16 +653,16 @@ How can we replicate something like this for our separating wavepackets? I have 
 
 \subsection{Approximate Markovian decoherence}\label{sec:markovian_decoherence}
 
-A crude way to include decoherence is just to approximate $R_{\eta i}(t)$ as a decaying exponential with roughly the right decay constant. This is crude because $R_{\eta i}(t)$ does not look much like a decaying exponential (see \figref{fig:decoherence_factor_example}). In the limit of large $t$, for the case constant acceleration as in~\eqref{eq:decoherence_factor_const_a} its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian at any timescale.
+A crude way to include decoherence is just to approximate $R_{\eta i}(t)$ as a decaying exponential with roughly the right decay constant. This is crude because $R_{\eta i}(t)$ does not look much like a decaying exponential (see \figref{fig:decoherence_factor_example}). In the limit of large $t$, for the case constant acceleration as in~\eqref{eq:const_a_decoherence_factor} its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian at any timescale.
 
 \begin{figure}[t]
     \centerfloat
     \includegraphics{figures/hidden_variables/decoherence_factor_example.pdf}
-    \caption{Example decoherence factor as a function of time for an experimentally realistic parameters. Plotted in black is the exact decoherence factor $R_{ij}(t)$ (equation~\eqref{eq:decoherence_factor_const_a}) between two adjacent ($\upDelta m_F = \pm 1$) Zeeman sublevels of the $F=1$ groundstate of $^{87}$Rb, assuming constant relative acceleration due to a magnetic field gradient of $250\unit{G\,cm}^{-1}$ and a Gaissian wavepacket width $\sigma=\lambda_\up{th} = 2.6\unit{\mu m}$, corresponding to the thermal wavelength $\lambda_\up{th} = h/\sqrt{2\pi m k_\up{B} T}$ at $T=53\unit{\upmu K}$. Shown in blue is the `time-ignorant' decoherence factor described in text. In green is the Markovian approximation to the exact decoherence factor, obtained by extracting a decay constant from the gradient of the time-ignorant decoherence factor at $t=0$. As can be seen, whilst no decaying exponential is a particularly good fit to the exact decoherence factor, our Markovian approximation is as good as can be expected, decaying to zero over approximately the correct timescale.}
+    \caption{Example decoherence factor as a function of time for an experimentally realistic parameters. Plotted in black is the exact decoherence factor $R_{ij}(t)$ (equation~\eqref{eq:const_a_decoherence_factor}) between two adjacent ($\upDelta m_F = \pm 1$) Zeeman sublevels of the $F=1$ groundstate of $^{87}$Rb, assuming constant relative acceleration due to a magnetic field gradient of $250\unit{G\,cm}^{-1}$ and a Gaissian wavepacket width $\sigma=\lambda_\up{th} = 2.6\unit{\mu m}$, corresponding to the thermal wavelength $\lambda_\up{th} = h/\sqrt{2\pi m k_\up{B} T}$ at $T=53\unit{\upmu K}$. Shown in blue is the `time-ignorant' decoherence factor described in text. In green is the Markovian approximation to the exact decoherence factor, obtained by extracting a decay constant from the gradient of the time-ignorant decoherence factor at $t=0$. As can be seen, whilst no decaying exponential is a particularly good fit to the exact decoherence factor, our Markovian approximation is as good as can be expected, decaying to zero over approximately the correct timescale.}
     \label{fig:decoherence_factor_example}
 \end{figure}
 
-To nonetheless find an approximate Markovian decoherence rate, we first construct a ``time ignorant" version $\tilde R_{ij}(t)$ of the decoherence factor $\tilde R_{ij}(t)$ given in~\eqref{eq:decoherence_factor_const_a} that answers the question ``What is the expected value of $R_{ij}(t)$ at all times $t > 0$ if I don't know how long before $t=0$ the two wavepackets began separating?" 
+To nonetheless find an approximate Markovian decoherence rate, we first construct a ``time ignorant" version $\tilde R_{ij}(t)$ of the decoherence factor $\tilde R_{ij}(t)$ given in~\eqref{eq:const_a_decoherence_factor} that answers the question ``What is the expected value of $R_{ij}(t)$ at all times $t > 0$ if I don't know how long before $t=0$ the two wavepackets began separating?" 
 
 We can then take the derivative of this time-ignorant decoherence factor at $t=0$ to use as an approximate Markovian decoherence rate $\gamma_{ij}^\up{Markov}$. Whilst extremely approximate, this method of including decoherence is nonetheless an improvement over the Ehrenfest method (which has no decoherence), and over Tully's original fewest-hops surface hopping method~\cite{doi:10.1063/1.459170}, which also lacked any decoherence. Others~\cite{doi:10.1063/1.4733675, doi:10.1063/1.1468887, doi:10.1063/1.470177} have since developed various methods to induce approximate damping of states to achieve a similar outcome, including the approximation of an exponential decoherence factor~\cite{doi:10.1063/1.4733675}, though my development of this method was independent, as I was unaware of this literature at the time.
 
@@ -665,14 +671,14 @@ Proceeding, we define the time-ignorant decoherence factor $\tilde R_{ij}(t)$ as
 \tilde R_{ij}(t) &= A\int_{-\infty}^0\braket{\phi_i(t-t^\prime)}{\phi_j(t - t^\prime)} \,\dd t^\prime\\
 &= A\int_{-\infty}^0 R_{ij}(t-t^\prime) \,\dd t^\prime
 \end{align}
-where $A$ is a normalisation constant such that $\tilde R_{ij}(0) = 0$, and where we take that $\ket{\phi_i(0)} = \ket{\phi_j(0)}$ with each thereafter evolving according to the classical motion of their centre of mass with constant relative acceleration as in~\eqref{eq:classical_const_a_first} and~\eqref{eq:classical_const_a_second} such that the $R_{ij}(t)$ above has the form~\eqref{eq:decoherence_factor_const_a}.
+where $A$ is a normalisation constant such that $\tilde R_{ij}(0) = 0$, and where we take that $\ket{\phi_i(0)} = \ket{\phi_j(0)}$ with each thereafter evolving according to the classical motion of their centre of mass with constant relative acceleration as in~\eqref{eq:classical_const_a_first} and~\eqref{eq:classical_const_a_second} such that the $R_{ij}(t)$ above has the form~\eqref{eq:const_a_decoherence_factor}.
 
 Our time-ignorant decoherence rate is then the (negative of the) derivative of $\tilde R_{ij}(t)$ at $t=0$:
 \begin{align}
 \gamma_{ij}^\up{Markov} = -\frac{\left[\dv{t}\int_{-\infty}^0 R_{ij}(t-t^\prime) \,\dd t^\prime\right]_{t=0} }
 {\left[\int_{-\infty}^0 R_{ij}(t-t^\prime) \,\dd t^\prime\right]_{t=0}}.
 \end{align}
-Moving the derivative inside the integral, noting that $\dv{R(t - t^\prime)}{t} = \dv{R(t - t^\prime)}{t - t^\prime}$ and setting $t = 0$, we get:
+Moving the derivative inside the integral, noting that $\dv{R(t - t^\prime)}{t} = \dv{R(t - t^\prime)}{(t - t^\prime)}$ and setting $t = 0$, we get:
 \begin{align}
 \gamma_{ij}^\up{Markov} &= -\frac
 {\int_{-\infty}^0 R_{ij}^\prime(-t^\prime) \,\dd t^\prime}
@@ -690,7 +696,7 @@ where $R_{ij}^\prime$ is the derivative of $R_{ij}$ with respect to its argument
 + \frac\ii 2 \vec r_{ij}(t^\prime) \cdot \vec k_{ij}(t^\prime) + \frac{\sigma^2}{2} \abs{\vec k_{ij}(t^\prime)}^2
 \right)\right]\,\dd t^\prime
 \end{align}
-The expression~\eqref{eq:decoherence_factor_const_a} requires a relative acceleration, for which we use the relative acceleration between the pair of adiabatic potentials at the current moment in time and current position of the atom during a simulation:
+The expression~\eqref{eq:const_a_decoherence_factor} requires a relative acceleration, for which we use the relative acceleration between the pair of adiabatic potentials at the current moment in time and current position of the atom during a simulation:
 \begin{align}
 \vec a_{ij}(\vec r, t) \approx -\frac1 m\left(\nabla V_i(\vec r, t) - \nabla V_j(\vec r, t)\right).
 \end{align}
@@ -703,7 +709,7 @@ This now gives a decoherence factor depending on position and time:
       \right]
     \,\dd t^\prime\label{eq:markov_decoherence_factor_time_dep}
 \end{align}
-In order to obtain an approximate analytic expression for this integral, we consider two limiting cases and then stitch them together in the intermediate regime. In the limit of small wavepackets, $\sigma$ is small and thus the first term in the exponent in \eqref{eq:gamma_integral} is largest, and the third term is smallest. In this regime, which describes when positional separation (as opposed to separation in $k$-space) dominates the decoherence, we'll neglect the third term in the exponent and treat the second term as small relative to the first.
+In order to obtain an approximate analytic expression for this integral, we consider two limiting cases and then stitch them together in the intermediate regime. In the limit of small wavepackets, $\sigma$ is small and thus the first term in the exponent in~\eqref{eq:gamma_integral} is largest, and the third term is smallest. In this regime, which describes when positional separation (as opposed to separation in $k$-space) dominates the decoherence, we'll neglect the third term in the exponent and treat the second term as small relative to the first.
 This gives us:
 \begin{align}
 \frac1{\gamma_{ij\,\up{(pos)}}^\up{Markov}(\vec r, t)} &\approx 
@@ -743,7 +749,7 @@ Equations~\eqref{eq:gamma_pos_final} and~\eqref{eq:gamma_vel_final} are our fina
 \begin{align}
 \gamma_{ij}^\up{Markov}(\vec r, t) &\approx
 \left[\re(\gamma_{ij\,\up{(pos)}}^\up{Markov}(\vec r, t))^2 + \re(\gamma_{ij\,\up{(vel)}}^\up{Markov}(\vec r, t))^2\right]^{\frac12}\nonumber\\
-&+ \ii\left[\im(\gamma_{ij\,\up{(pos)}}^\up{Markov}(\vec r, t))^{-1} + \im(\gamma_{ij\,\up{(vel)}}^\up{Markov}(\vec r, t))^{-1}\right]^{-1}.
+&\phantom{\approx}+ \ii\left[\im(\gamma_{ij\,\up{(pos)}}^\up{Markov}(\vec r, t))^{-1} + \im(\gamma_{ij\,\up{(vel)}}^\up{Markov}(\vec r, t))^{-1}\right]^{-1}.
 \label{eq:gamma_total}
 \end{align}
 We now have an approximate analytic expression for a Markovian decoherence rate that is computationally inexpensive to evaluate for each atom in an ensemble at every timestep of a differential equation.
@@ -752,14 +758,22 @@ An example showing the accuracy of~\eqref{eq:gamma_total}, compared to the exact
 \begin{figure}[t]
     \centerfloat
     \includegraphics{figures/hidden_variables/decoherence_rate_example.pdf}
-    \caption{Caption.}\label{fig:decoherence_rate_example}
+    \caption{Comparison of approximate analytic Markovian decoherence rate with exact Markovian decoherence rate between adjacent ($\upDelta m_F = \pm 1$) Zeeman sublevels of the $F=1$ groundstate of a $^{87}$Rb atom in a $250\unit{G\,cm}^{-1}$ magnetic field gradient. Real (solid) and imaginary (dashed) parts of the small wavepacket (red) and large wavepacket (green) limits are shown, their stitching together in the intermediate wavepacket regime (blue) and the exact expression they approximate (black, not easily visible due to being similar to the blue curves). There is good agreement over all wavepacket sizes.}\label{fig:decoherence_rate_example}
 \end{figure}
 
-\subsection{Continuously spawned mean auxiliary trajectories}\label{sec:spawned_trajectories}
+\subsection{Decoherence with mean auxiliary trajectories}\label{sec:spawned_trajectories}
 
-[move this to the other section on non-Markovian decoherence?]
+A more accurate approach to including decoherence is to compute a decoherence factor at each timestep of the simulation by modelling the wavepackets as they accelerate away from each other, retaining in the model the position and velocity of each wavepacket. This inclusion of additional positions and velocities in the model comprises a minimal memory of the past interaction between the system and environment---that is, the internal and motional degrees of freedom of the atom.
 
-Firstly we need to generalise our conception of the decoherence rate. We have assumed so far that the motional states are being ``reset" after each projective measurement to be equal to $\ket{\phi_\eta(t)}$ at each timestep. What is the reduction in the state amplitudes at each timestep if the wavepackets do not reset, but are left as arbitrary states for the time being? We know that if we were to perform a projective measurement at time $t$, the $i^\up{th}$ state amplitude would be reduced by a factor of $R_{\eta i}(t)$ compared to the original state amplitude $c_i(t)$:
+In quantum mechanics there is not, in general, a single Gaussian wavepacket for each state, and even if the wavefunction corresponding to the originating state is a Guassian wavepacket, transitions to other states at different times can produce an arbitrary superposition of Gaussian wavepackets in each other state. If we were to simulate this arbitrary superposition for all components of the multi-component wavefunction, we would not be saving any computational power at all, as we would have reverted to a fully quantum description of the motional degree of freedom, which is not at all our intention. Therefore we draw the line at modelling a single trajectory for each state, in order to maintain simplicity whilst including at least some dynamics of the system--environment interaction.
+
+Below I will talk about how to convert a decoherence factor at each point in time into a decoherence \emph{rate} at each point in time, that can be included in a differential equation for the state vector of the atom's internal state. Then I will introduce the averaging scheme I am using in order to turn what would be many trajectories for each state into one average trajectory.
+
+This use of `auxiliary trajectories' for computing decoherence is common in the surface-hopping literature. There is a range of methods called `multiple spawning' methods, in which additional auxiliary trajectories regularly branch off the main trajectory (the one corresponding to the hidden variable), and are all considered in order to compute the overlap with the main wavepacket and hence the decoherence factor~\cite{doi:10.1021/jp994174i, doi:10.1063/1.476142, doi:10.1063/1.3103930}. These methods generally contain a parameter controlling the likelihood of new trajectories branching off, and trajectories can be discarded once they recede far enough from the main trajectory. If the parameter is tuned far enough, there can be so many auxiliary trajectories that an extremely accurate decoherence rate can be computed, though the computational cost in this case approaches that of a fully quantum simulation. A method by Shenvi et al.~\cite{doi:10.1063/1.3575588}, like mine, tracks only one auxiliary trajectory per internal atomic state, probabilistically replacing them with newly spawned trajectories rather than simulating multiple auxiliary trajectories per state. However, the trajectories are spawned at specific moments---when the non-adiabatic coupling strength reaches a local maximum---leading to different behaviour in different locations in space. For example, if an atom were orbiting a magnetic field zero in a magnetic trap, this method would only spawn new trajectories at the orbit's point of closest approach, and decoherence rates would be inaccurate at other points in the orbit, even if the non-adiabatic coupling were still high throughout the orbit. My method, though not thoroughly tested, has the potential to improve upon this due to the fact that it is in a sense spawning new trajectories all the time---rather than only at specific points in space as the method by Shenvi et al.---and avoids the problem of an exponential proliferation of trajectories by only retaining an average of each state's trajectory rather than a set of them. 
+
+\subsubsection{Decoherence rate in the absence of projective measurement}
+
+Here we generalise our conception of the decoherence rate by removing the assumption that motional states are ``reset" at each timestep. This resetting, which we assumed in Section~\ref{sec:backaction}, set each motional state to be equal to $\ket{\phi_\eta(t)}$ at each timestep, and this led to all decoherence rates being zero due to the quantum Zeno effect (Section~\ref{sec:zeno_effect}). What is the reduction in the state amplitudes at each timestep if the wavepackets are not reset, but are left as arbitrary states for the time being? We know that if we were to perform a projective measurement at time $t$, the $i^\up{th}$ state amplitude would be reduced by a factor of $R_{\eta i}(t)$ compared to the original state amplitude $c_i(t)$:
 \begin{align}
 \tilde c_i(t) = R_{\eta i}(t) c_i(t).
 \end{align}
@@ -768,20 +782,63 @@ This implies:
 \dv{\tilde c_i(t)}{t} &= \dv{R_{\eta i}(t)}{t} c_i(t)\\
 &= \frac1{R_{\eta i}(t)}\dv{R_{\eta i}(t)}{t} \tilde c_i(t).
 \end{align}
-and so we see that a a decoherence rate that does not reset the environment states is the (negative of the) logarithmic derivative of the decoherence factor, rather than just its derivative. This case encompasses the earlier case in which $R_{\eta i}(t) = 1$ at all times, in which case the logarithmic and ordinary derivatives are the same.
-
-
-My fancy cool model which is awesome and rad.
-
+and so we see that a a decoherence rate that does not reset the environment states is the (negative of the) logarithmic derivative of the decoherence factor at any time, rather than just its derivative at $t=0$. This case encompasses the earlier case in which $R_{\eta i}(t) = 1$ at all times, in which case the logarithmic and ordinary derivatives are the same. Thus, given the decoherence factor between two states, along with its time derivative, we can compute a decoherence rate
 \begin{align}
-\vec r_{i\neq\eta}(t + \dd t) &= \frac{\sum_j \tilde P_{ij}\vec r_j(t)}
-{\abs{c_i(t+\dd t)}^2},\\
-\vec v_{i\neq\eta}(t + \dd t) &= \frac{\sum_j 
-\left((P^\up{time}_{ij} + \tilde P^\up{stay}_{ij})\vec v_j(t)
-+ \tilde P^\up{space}_{ij}(\vec v_i + \upDelta \vec v_{ij})\right)}
-{\abs{c_i(t+\dd t)}^2}.
+\gamma^\up{mm}_{ij}(t) =  -\frac1{R_{ij}(t)}\dv{R_{ij}(t)}{t},
 \end{align}
+such that in the absence of Hamiltonian evolution
+\begin{align}
+\dv{\tilde c_i(t)}{t} &= -\gamma^\up{mm}_{\eta i}(t)\,\tilde c_i(t),
+\end{align}
+where ``mm" stands for ``minimal-memory".
 
+The (negative) logarithmic derivative of the decoherence factor for our fixed-width Gaussian wavepackets~\eqref{eq:decoherence_factor} gives the decoherence rate
+\begin{align}
+\gamma^\up{mm}_{ij}(t) = \left(
+\frac{\vec r_{ij}}{4\sigma^2} + \frac\ii2\vec k_{ij}
+\right)\cdot\dv{\vec r_{ij}(t)}{t}
++ \left(
+\sigma^2\vec k_{ij} + \frac\ii2\vec r_{ij}
+\right)\cdot\dv{\vec k_{ij}(t)}{t},
+\end{align}
+which for a given relative acceleration $\vec a_{ij}$ between the states, based on the potential gradient at each modelled position, and written in terms of relative velocity instead of wavenumber, is
+\begin{align}
+\gamma^\up{mm}_{ij}(t) = 
+\frac{1}{4\sigma^2}\vec r_{ij}(t)\cdot\vec v_{ij}(t)
++ \frac{\sigma^2 m^2}{\hbar^2}\vec v_{ij}(t)\cdot\vec a_{ij}(t)
++ \ii\frac{m} {2\hbar} \left(\abs{\vec v_{ij}(t)}^2 + \vec r_{ij}(t)\cdot \vec a_{ij}(t)\right),
+\end{align}\label{eq:minimal_memory_decoherence_rate}
+where $\vec r_{ij}(t) = \vec r_i(t) - \vec r_j(t)$ and $\vec v_{ij}(t) = \vec v_i(t) - \vec v_j(t)$ are the relative position and velocity of the two states, and $\vec a_{ij}(t)$ is their relative acceleration:
+\begin{align}
+\vec a_{ij}(t) = -\frac1 m\left(\nabla V_i(\vec r_i, t) - \nabla V_j(\vec r_j, t)\right).
+\end{align}
+Note this is slightly different to the relative acceleration used in the Markovian decoherence calculation in Section~\ref{sec:markovian_decoherence}. Here, we actually have (approximate) positions $\vec r_i(t)$ and $\vec r_j(t)$ for both states' wavepackets, and so we can evaluate the potential gradient separately at the two positions rather than having to use the position of the state currently selected by the hidden variable for both.
+
+Equation~\eqref{eq:minimal_memory_decoherence_rate} is our minimal-memory decoherence rate, and requires as input the centre-of-mass position and velocity of each Gaussian wavepacket as input. Let's now move on to how these trajectories are computed.
+
+[TODO: remove consideration of transitions between auxiliary trajectories? Yes, doing this. Need to update comments and footnotes about this earlier in the text]
+
+\subsubsection{From many trajectories, one}
+
+As mentioned, this method track only one trajectory per state. However, it continuously considers the spawning of new trajectories, and rather than actually tracking multiple trajectories per state or probabilistically replacing the existing trajectories with the new ones, it simply averages the trajectories together, weighted by their quantum probabilities. At the end of each timestep, positions and velocities (other than those of the main trajectory) are updated according to a weighted sum of their present values with those of the main trajectory:
+\begin{align}
+\vec r_{i\neq\eta}(t^\prime) &\rightarrow 
+  Q_{i\eta}(t^\prime, t)\,\vec r_\eta(t^\prime)
+  + \left(1 - Q_{i\eta}(t^\prime, t)\right)\vec r_i(t^\prime),\\
+\vec v_{i\neq\eta}(t^\prime) &\rightarrow
+  Q^\up{time}_{i\eta}(t^\prime, t)\vec v_\eta(t^\prime)
+  + \tilde Q^\up{space}_{i\eta}(t^\prime, t)(\vec v_\eta(t^\prime) + \upDelta \vec v_{i\eta}(t^\prime))\nonumber\\
+  &\phantom{\rightarrow} + \left(1 - Q^\up{time}_{i\eta}(t^\prime, t) - \tilde Q^\up{space}_{i\eta}(t^\prime, t)\right)\vec v_i(t^\prime),
+\end{align}
+where $Q_{i\eta}(t^\prime, t) = P_{i\eta}(t^\prime, t)/\abs{c_i(t^\prime)}^2$ is the fraction of the population of state $i$ at time $t^\prime$ that flowed to it from state $\eta$ in the interval $t$ to $t^\prime$, with $Q_{i\eta}^\up{time}(t^\prime, t)$ and $\tilde Q_{i\eta}^\up{space}(t^\prime, t)$ defined similarly in terms of $P_{i\eta}^\up{time}$ and $\tilde P_{i\eta}^\up{time}$ as defined in Section~\ref{sec:velocity_correction}, and where $\upDelta \vec v_{i\eta}(t^\prime)$ is the required velocity correction for a transition from state $\eta$ to state $i$ state at time $t^\prime$, as discussed in Section~\ref{sec:velocity_correction}:
+\begin{align}
+\upDelta \vec v_{i\eta}(\vec r, t^\prime) = \left[\sgn(\vec v\cdot \hat{\vec d}_{i\eta})
+\sqrt{(\vec v\cdot \hat{\vec d}_{i\eta})^2 + \frac2m\left(V_i(\vec r, t^\prime) - V_\eta(\vec r, t^\prime)\right)} - (\vec v\cdot \hat{\vec d}_{i\eta}),
+\right]\hat{\vec d}_{i\eta},
+\end{align}
+where $\vec r = \vec r_\eta(t^\prime)$ and $\vec v = \vec v_\eta(t^\prime)$ are the position and velocity of the main trajectory at time $t^\prime$, and the adiabatic coupling unit vector $\hat{\vec d}_{i\eta} = \hat{\vec d}_{i\eta}(\vec r_\eta(t^\prime))$ is evaluated at the position along the main trajectory at time $t^\prime$.
+
+The above scheme is constructed to track a mean trajectory for each state, where `mean' is defined as a weighted sum of positions and velocities with those of the main trajectory whenever transitions from the latter occur, taking into account velocity jumps and frustrated transitions, with the energy conservation calculation for the velocity jumps based on the potentials at the location of the main trajectory.
 
 \section{Algorithm}\label{sec:HVSC_algorithm}
 
@@ -845,7 +902,7 @@ R_{ij}(t)&= e^{-\left[
         \frac{1} {8\sigma^2} x_\up{rel}^2
       + \frac i2 x_{\mathrm{rel}} k_\up{rel}
       + \frac{\sigma^2}{2} k_\up{rel}^2
-      \right]}\label{eq:decoherence_factor}.
+      \right]}%\label{eq:decoherence_factor}.
 \end{align}
 
 This is a decoherence \emph{factor}; it is the factor by which the $(i, j)$ off-diagonal of the reduced density matrix for the atom's internal state will be reduced at time $t$. The corresponding decoherence \emph{rate} is given by the logarithmic derivative of \eqref{eq:decoherence_factor}:
