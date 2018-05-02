@@ -531,7 +531,7 @@ and
 \end{align}
 which gives for the decoherence factor:
 \begin{align}\label{eq:const_a_decoherence_factor}
-R_{ij}(t) = \exp\left[-\frac {\abs{\vec a_{ij}}^2} 2 \left(\frac1 {16\sigma^2}t^4 + \ii\frac m{2\hbar}t^3 + \frac{m^2\sigma^2}\hbar t^2 \right)\right].
+R_{ij}(t) = \exp\left[-\frac {\abs{\vec a_{ij}}^2} 2 \left(\frac1 {16\sigma^2}t^4 + \ii\frac m{2\hbar}t^3 + \frac{m^2\sigma^2}{\hbar^2} t^2 \right)\right].
 \end{align}
 We will return later to this explicit form of the decoherence factor under these assumptions.
 
@@ -699,61 +699,61 @@ This now gives a decoherence factor depending on position and time:
 \frac1{\gamma_{ij}^\up{Markov}(\vec r, t)} &=
   \int_0^\infty 
     \exp\left[
-      -\frac {\abs{\vec a_{ij}(\vec r, t)}^2} 2 \left(\frac1 {16\sigma^2}{t^\prime}^4 + \ii\frac m{2\hbar}{t^\prime}^3 + \frac{m^2\sigma^2}\hbar {t^\prime}^2 \right)
+      -\frac {\abs{\vec a_{ij}(\vec r, t)}^2} 2 \left(\frac1 {16\sigma^2}{t^\prime}^4 + \ii\frac m{2\hbar}{t^\prime}^3 + \frac{m^2\sigma^2}{\hbar^2} {t^\prime}^2 \right)
       \right]
-    \,\dd t^\prime
+    \,\dd t^\prime\label{eq:markov_decoherence_factor_time_dep}
 \end{align}
 In order to obtain an approximate analytic expression for this integral, we consider two limiting cases and then stitch them together in the intermediate regime. In the limit of small wavepackets, $\sigma$ is small and thus the first term in the exponent in \eqref{eq:gamma_integral} is largest, and the third term is smallest. In this regime, which describes when positional separation (as opposed to separation in $k$-space) dominates the decoherence, we'll neglect the third term in the exponent and treat the second term as small relative to the first.
 This gives us:
-[TODO REWRITE WITH T, NOT X AND K]
 \begin{align}
 \frac1{\gamma_{ij\,\up{(pos)}}^\up{Markov}(\vec r, t)} &\approx 
-  \int_0^\infty \exp\left[
-        -\frac{1} {8\sigma^2} \abs{\vec r_{ij}}^2
-      - \frac \ii2 \vec r_{ij} \cdot \vec k_{ij}
-      \right]\, \dd t^\prime\\
+  \int_0^\infty 
+    \exp\left[
+      -\frac {\abs{\vec a_{ij}(\vec r, t)}^2} 2 \left(\frac1 {16\sigma^2}{t^\prime}^4 + \ii\frac m{2\hbar}{t^\prime}^3\right)
+      \right]
+    \,\dd t^\prime\\
       &\approx \int_0^\infty \exp\left[-
-              \frac{1} {8\sigma^2} \abs{\vec r_{ij}}^2\right]\left(1 - \frac \ii2 \vec r_{ij} \cdot \vec k_{ij}\right)\, \dd t^\prime\label{eq:gamma_pos_exp}\\
+              \frac{\abs{\vec a_{ij}(\vec r, t)}^2} {32\sigma^2} {t^\prime}^4\right]\left(1 -\ii \frac {m\abs{\vec a_{ij}(\vec r, t)}^2}{4\hbar} {t^\prime}^3\right)\, \dd t^\prime\label{eq:gamma_pos_exp}\\
       &= 2^{\frac54}\upGamma(\tfrac54)\sqrt{\frac{\sigma}{\abs{\vec a_{ij}(\vec r, t)}}} - 2\ii\frac{m \sigma^2}{\hbar},\label{eq:gamma_pos_recip}
 \end{align}
-where we used a first-order Taylor expansion of an exponential in \eqref{eq:gamma_pos_exp}. We similarly use a first order expansion to take the reciprocal of \eqref{eq:gamma_pos_recip} (since the second term is much smaller than the first\footnote{This isn't necessary in order to obtain a simple expression for $\gamma_{ij\,\up{(pos)}}$---the reciprocal without this approximation is equally simple---but it leaves us with power laws for the real and imaginary parts of $\gamma_{ij\,\up{(pos)}}$, which are easier to stitch together with those from the large $\sigma$ regime.}), and arrive at:
+where we used a first-order Taylor expansion of an exponential in \eqref{eq:gamma_pos_exp}. We similarly use a first-order expansion $(x + \varepsilon)^{-1} \approx x^{-1} - \varepsilon x^{-2}$ to take the reciprocal of \eqref{eq:gamma_pos_recip} (since the second term is much smaller than the first\footnote{This isn't necessary in order to obtain a simple expression for $\gamma_{ij\,\up{(pos)}}$---the reciprocal without this approximation is equally simple---but it leaves us with power laws for the real and imaginary parts of $\gamma_{ij\,\up{(pos)}}$, which are easier to stitch together with those from the large $\sigma$ regime.}), and arrive at:
 \begin{align}
-\gamma_{ij\,\up{(pos)}}^\up{Markov} &\approx \frac1{2^{\frac54}\upGamma(\tfrac54)}\sqrt{\frac{\abs{\vec a_{ij}(\vec r, t)}}{\sigma}}
-+ \frac \ii {2\sqrt{2}\upGamma(\tfrac54)^2} \frac{m\sigma \abs{\vec a_{ij}(\vec r, t)}}{\hbar}\label{eq:gamma_pos_final}%\\
+\gamma_{ij\,\up{(pos)}}^\up{Markov}(\vec r, t) &\approx \frac1{2^{\frac54}\upGamma(\tfrac54)}\sqrt{\frac{\abs{\vec a_{ij}(\vec r, t)}}{\sigma}}
++ \frac \ii {2^{\frac32}\upGamma(\tfrac54)^2} \frac{m\sigma \abs{\vec a_{ij}(\vec r, t)}}{\hbar}.\label{eq:gamma_pos_final}%\\
 % &\approx 0.463865\sqrt{\frac{a_{ij}}{\sigma}}
 % + 0.430341 i \frac{m\sigma a_{ij}}{\hbar}.
 \end{align}
-
-Similarly for the large $\sigma$ regime, we neglect the first term in the exponent of \eqref{eq:gamma_integral} and consider the second term small relative to the third. This is the regime in which the decrease in overlap of the two wavepackets is dominated by their separation in velocity space. Following the same process as above gives:
+Similarly for the large $\sigma$ regime, we neglect the first term in the exponent of~\eqref{eq:gamma_integral} and consider the second term small relative to the third. This is the regime in which the decrease in overlap of the two wavepackets is dominated by their separation in velocity space. Following the same process as above gives:
 \begin{align}
-\Gamma_{ij\,\up{(vel)}}^{-1} &\approx \int_0^\infty e^{-\left[
-        \frac i2 x_{\mathrm{rel}} k_\up{rel}
-        + \frac{\sigma^2}{2} k_\up{rel}^2
-      \right]}\, \dd t.\\
-      &\approx \int_0^\infty \left(1 - \frac i2 x_{\mathrm{rel}} k_\up{rel}\right)
-      e^{-\frac{\sigma^2}{2} k_\up{rel}^2}\, \dd t\\
-      & = \sqrt{\frac\pi2}\frac\hbar{m \sigma a_{ij}} - i\frac{\hbar^3}{2m^3 \sigma^4 a_{ij}^2}\\
-      \Rightarrow \Gamma_{ij\,\up{(vel)}} &\approx \sqrt{\frac2\pi}\frac{m \sigma a_{ij}}\hbar
-                                          + \frac i\pi \frac\hbar{m \sigma^2}
+\frac1{\gamma_{ij\,\up{(vel)}}^\up{Markov}(\vec r, t)} &\approx 
+  \int_0^\infty 
+    \exp\left[
+      -\frac {\abs{\vec a_{ij}(\vec r, t)}^2} 2 \left(\ii\frac m{2\hbar}{t^\prime}^3  + \frac{m^2\sigma^2}{\hbar^2} {t^\prime}^2 \right)
+      \right]
+    \,\dd t^\prime\\
+      &\approx \int_0^\infty 
+      \left(1 -\ii \frac {m\abs{\vec a_{ij}(\vec r, t)}^2}{4\hbar} {t^\prime}^3\right)
+      \exp\left[-\frac{m^2\sigma^2\abs{\vec a_{ij}(\vec r, t)}^2}{2\hbar^2} {t^\prime}^2\right]\, \dd t\\
+      & = \sqrt{\frac\pi2}\frac\hbar{m \sigma \abs{\vec a_{ij}(\vec r, t)}} - \ii\frac{\hbar^3}{2m^3 \sigma^4 \abs{\vec a_{ij}(\vec r, t)}^2}\\
+      \Rightarrow \gamma_{ij\,\up{(vel)}}^\up{Markov}(\vec r, t) &\approx \sqrt{\frac2\pi}\frac{m \sigma \abs{\vec a_{ij}(\vec r, t)}}\hbar
+                                          + \ii \frac\hbar{\pi m \sigma^2}
                                           \label{eq:gamma_vel_final}
 \end{align}
-Equations \eqref{eq:gamma_pos_final} and \eqref{eq:gamma_vel_final} are our final expressions for the docoherence rate in the limit of small and large wavepackets respectively. Adding their real parts in quadrature and adding the reciprocals of their imaginary parts then provides a reasonable approximation for $\Gamma_{ij}$ over all wavepacket sizes:
+Equations~\eqref{eq:gamma_pos_final} and~\eqref{eq:gamma_vel_final} are our final expressions for the Markovian docoherence rate in the limit of small and large wavepackets respectively. Adding their real parts in quadrature and adding the reciprocals of their imaginary parts then provides a reasonable approximation for $\gamma_{ij}^\up{Markov}(\vec r, t)$ over all wavepacket sizes:
 \begin{align}
-\Gamma_{ij} \approx
-\left[\re(\Gamma_{ij\,\up{(pos)}})^2 + \re(\Gamma_{ij\,\up{(vel)}})^2\right]^{\frac12}
-+ i\left[\im(\Gamma_{ij\,\up{(pos)}})^{-1} + \im(\Gamma_{ij\,\up{(vel)}})^{-1}\right]^{-1}.
+\gamma_{ij}^\up{Markov}(\vec r, t) &\approx
+\left[\re(\gamma_{ij\,\up{(pos)}}^\up{Markov}(\vec r, t))^2 + \re(\gamma_{ij\,\up{(vel)}}^\up{Markov}(\vec r, t))^2\right]^{\frac12}\nonumber\\
+&+ \ii\left[\im(\gamma_{ij\,\up{(pos)}}^\up{Markov}(\vec r, t))^{-1} + \im(\gamma_{ij\,\up{(vel)}}^\up{Markov}(\vec r, t))^{-1}\right]^{-1}.
 \label{eq:gamma_total}
 \end{align}
+We now have an approximate analytic expression for a Markovian decoherence rate that is computationally inexpensive to evaluate for each atom in an ensemble at every timestep of a differential equation.
+An example showing the accuracy of~\eqref{eq:gamma_total}, compared to the exact expression~\eqref{eq:markov_decoherence_factor_time_dep} for $\gamma_{ij}^\up{Markov}$ over a range of wavepacket sizes is shown in \figref{fig:decoherence_rate_example}.
 
 \begin{figure}[t]
     \centerfloat
     \includegraphics{figures/hidden_variables/decoherence_rate_example.pdf}
     \caption{Caption.}\label{fig:decoherence_rate_example}
 \end{figure}
-
-We now have an approximate analytic expression that is computationally inexpensive to evaluate for each atom in an ensemble at every timestep of a differential equation.
-An example showing the accuracy of \eqref{eq:gamma_total}, compared to the exact expression \eqref{eq:gamma_integral} for $\Gamma_{ij}$ over a range of wavepacket sizes is shown in \figref{fig:decoherence_rate_example}.
-
 
 \subsection{Continuously spawned mean auxiliary trajectories}\label{sec:spawned_trajectories}
 
