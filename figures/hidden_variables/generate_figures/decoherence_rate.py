@@ -28,7 +28,7 @@ rcParams['ytick.minor.size'] = 0
 ### Legends ###
 rcParams['legend.fontsize'] = 8.5 # memoir \scriptsize for default 10pt
 rcParams['legend.borderpad'] = 0
-rcParams['legend.handlelength'] = 1.0 # Big enough for multiple dashes or dots
+rcParams['legend.handlelength'] = 1.5 # Big enough for multiple dashes or dots
 rcParams['legend.handletextpad'] = 0.3
 rcParams['legend.labelspacing'] = 0.3
 rcParams['legend.frameon'] = False
@@ -93,16 +93,17 @@ plt.loglog(sigma, exact_gamma.imag, 'k--', label=r'exact numeric (imag)')
 plt.loglog(sigma, gamma_total_real, 'b-', label='approx analytic (real)')
 plt.loglog(sigma, gamma_total_imag, 'b--', label='approx analytic (imag)')
 
-plt.loglog(sigma, gamma_vel_real, 'g-', label='low T analytic (real)')
-plt.loglog(sigma, gamma_vel_imag, 'g--', label='low T analytic (imag)')
+plt.loglog(sigma, gamma_vel_real, 'g-', label='large $\sigma$ analytic (real)')
+plt.loglog(sigma, gamma_vel_imag, 'g--', label='large $\sigma$ analytic (imag)')
 
-plt.loglog(sigma, gamma_pos_real, 'r-', label='high T analytic (real)')
-plt.loglog(sigma, gamma_pos_imag, 'r--', label='high T analytic (imag)')
+plt.loglog(sigma, gamma_pos_real, 'r-', label='small $\sigma$ analytic (real)')
+plt.loglog(sigma, gamma_pos_imag, 'r--', label='small $\sigma$ analytic (imag)')
 plt.grid(True)
-plt.legend(loc=(0.05, 0.3))
+plt.legend(loc=(0.0125, 0.3))
 plt.axis([1e-11,1e-5,1,1e8])
 plt.xlabel('Wavepacket size $\sigma$ (m)')
-plt.title('Example markovian decay rate')
+plt.ylabel('Decoherence rate (s$^{-1}$)')
+# plt.title('Example markovian decay rate')
 plt.savefig('../decoherence_rate_example.pdf')
 
 t = t[:, 0]
