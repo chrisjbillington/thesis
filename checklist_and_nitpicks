@@ -74,3 +74,5 @@ Go through bibiolgraphy fixing everything
 RK4 not stable for any timestep - really? Maybe only for nonlinear problems. 
 
 Ctrl-f for "of course", "obviously", "simply",  "just" and consider removing
+
+Fix references that all have bogus arxiv links
