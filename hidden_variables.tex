@@ -348,10 +348,10 @@ where
 \begin{align}
 q^\up{space}_{ij} &= 2\dd t\re\left(c_i^*(t)
 \matrixel{\chi_i(\vec r, t)}{\vec v\cdot\nabla}{\chi_j(\vec r, t)}
- c_j(t)\right),\\
+ c_j(t)\right),\label{eq:q_space}\\
 q^\up{time}_{ij} &= 2\dd t\re\left(c_i^*(t)
 \matrixel{\chi_i(\vec r, t)}{\partial_t}{\chi_j(\vec r, t)},
- c_j(t)\right),\\
+ c_j(t)\right),\label{eq:q_time}\\
 q^\up{total}_{ij} &= \max\left\{0, (q^\up{space}_{ij} + q^\up{time}_{ij})\right\},
 \end{align}
 for transitions of the hidden variable from the $j^\up{th}$ to the $i^\up{th}$ eigenstate of $\hat H(\vec r, t)$ during the time interval $\dd t$ due to non-adiabatic spatial and temporal variations in $\hat H(\vec r, t)$ respectively. These expressions can also be numerically integrated with respect to time to obtain transition probabilities over finite time intervals---numerically integrating over a short time interval $\upDelta t$ using a midpoint or higher order method can produce transition probabilities more accurate than $\Ord{\upDelta t}$, which would be the accuracy if $\upDelta t$ were simply used in place of $\dd t$ in the above expressions.
@@ -367,11 +367,11 @@ P &= P^\up{space} + P^\up{time} + P^\up{stay},\\
 \Rightarrow \sum_j P_{ij} &= \abs{c_i(t)}^2,\\
 \sum_i P_{ij} &= \abs{c_j(t + \dd t)}^2.
 \end{align}
-The corresponding conditional probabilities of a transition to the $i^\up{th}$ state occurring---given that the hidden variable was already in the $j^\up{th}$ state---can be obtained via ~\eqref{eq:P_matrix_def} as:
+The corresponding conditional probabilities of a transition to the $i^\up{th}$ state occurring---given that the hidden variable was already in the $j^\up{th}$ state---can be obtained via~\eqref{eq:P_matrix_def} as:
 \begin{align}
-S^\up{space}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{space}_{ij},\\
-S^\up{time}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{time}_{ij}\\
-S^\up{stay}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{stay}_{ij},
+S^\up{space}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{space}_{ij},\label{eq:S_space}\\
+S^\up{time}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{time}_{ij}\label{eq:S_time}\\
+S^\up{stay}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{stay}_{ij}\label{eq:S_stay},
 \end{align}
 and the sum of these three matrices of conditional probabilities is the overall (left) stochastic matrix for the fewest-switches hidden-variable theory:
 \begin{align}
@@ -418,23 +418,23 @@ The corresponding stochastic matrix $S$ can then be obtained by scaling the colu
 \subsection{Velocity correction and classically disallowed transitions}\label{sec:velocity_correction}
 
 When a transition of the hidden variable occurs due to a spatial non-adiabatic transition, the kinetic energy of the atom must be adjusted to conserve overall energy. The force on an atom during a transition from the $j^\up{th}$ state to the $i^\up{th}$ state due to the spatial non-adiabatic coupling term in the effective Hamiltonian is in the direction of the non-adiabatic coupling vector~\cite{doi:10.1146/annurev-physchem-040215-112245}
-\begin{align}
-\vec d_{ij} &= \matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j(\vec r, t)}\\
+\begin{align}\label{eq:non_adiabatic_coupling_vector}
+\vec d_{ij}(\vec r, t) &= \matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j(\vec r, t)}\\
 &= \left(U_H(\vec r, t)\nabla U_H^\dagger(\vec r, t)\right)_{ij}
 \end{align}
 where $U_H(\vec r, t)$ is the matrix representation, in any fixed basis, of the unitary that takes state vectors into the basis in which $\hat H(\vec r, t)$ is diagonal. To conserve energy, the squared component of an atoms velocity in this direction must change by an amount:
-\begin{align}
+\begin{align}\label{eq:delta_v_squared}
 \upDelta v_{ij}^2 = \frac2m\left(V_j(\vec r, t) - V_i(\vec r, t)\right),
 \end{align}
 where $V_i(\vec r, t)$ is the adiabatic potential comprising the $i^\up{th}$ spatially and/or temporally varying eigenvalue of $\hat H(\vec r, t)$. However, it is possible that a change of this size can leave an atom with a negative kinetic energy. Whilst this is quantum-mechanically permissible, it is forbidden classically, and so we simply disallow such transitions, defining a modified matrix of unconditional transition probabilities $\tilde P^\up{space}$ that sets the probability of the disallowed transitions to zero:
-\begin{align}
+\begin{align}\label{eq:tilde_P_space}
 \tilde P^\up{space}_{ij} =
 \begin{cases}
 P^\up{space}_{ij} & \upDelta v_{ij}^2 + \abs{\vec v\cdot\hat{\vec d}_{ij}}^2 \geq 0 \\
 0 & \upDelta v_{ij}^2 + \abs{\vec v\cdot\hat{\vec d}_{ij}}^2 < 0
 \end{cases}
 \end{align}
-where $\hat{\vec d}_{ij}$ is the unit vector in the direction of $\vec d_{ij}$.\footnote{The surface hopping literature calls these classically disallowed transitions \emph{frustrated} transitions. Prior to encountering the surface-hopping literature, my method of conserving energy was identical to this (for the case of time-independent potentials), with the exception that I did not know what direction the velocity kick ought to be in, limiting my method to one spatial dimension only. There is much interest in alternate methods of energy conservation in chemical physics, since bound electrons can spend quite a bit of their time energetically `out of their depths' with negative kinetic energy. However this is outside of the scope of my interest in these methods for simulating cold atoms, where purely classical modelling of motional states is likely to be more acceptable than for bound electrons.}
+where $\hat{\vec d}_{ij} = \hat{\vec d}_{ij}(\vec r, t)$ is the unit vector in the direction of $\vec d_{ij}(\vec r, t)$.\footnote{The surface hopping literature calls these classically disallowed transitions \emph{frustrated} transitions. Prior to encountering the surface-hopping literature, my method of conserving energy was identical to this (for the case of time-independent potentials), with the exception that I did not know what direction the velocity kick ought to be in, limiting my method to one spatial dimension only. There is much interest in alternate methods of energy conservation in chemical physics, since bound electrons can spend quite a bit of their time energetically `out of their depths' with negative kinetic energy. However this is outside of the scope of my interest in these methods for simulating cold atoms, where purely classical modelling of motional states is likely to be more acceptable than for bound electrons.}
 
 The diagonal matrix for the probabilities of remaining in each state must be adjusted similarly to absorb the probability discarded this way:
 \begin{align}
@@ -442,15 +442,15 @@ The diagonal matrix for the probabilities of remaining in each state must be adj
 \abs{c_i(t)}^2 - \sum_{j\neq i}\left(\tilde P^\up{space}_{ij} + P^\up{time}_{ij}\right)
 \end{align}
 The corresponding matrices of conditional probabilities for the hidden variable transitioning, given that it is already in the $j^\up{th}$ state, are
-\begin{align}
+\begin{align}\label{eq:tilde_S_space}
 \tilde S^\up{space}_{ij} &= \frac1{\abs{c_j(t)}^2} \tilde P^\up{space}_{ij},\\
 \tilde S^\up{stay}_{ij} &= \frac1{\abs{c_j(t)}^2} \tilde P^\up{stay}_{ij},
 \end{align}
 Of course, when making probabilistic transitions of the hidden variable, only one
 column of any of the above matrices is used at a time, so the full matrices $\tilde P^\up{space}$, $\tilde P^\up{time}$, $\tilde S^\up{space}$, and $\tilde S^\up{time}$ do not need to be computed at each timestep.\footnote{Though one of my decoherence methods (Section~\ref{sec:spawned_trajectories}) does make use of the full matrices in order to track transitions between other states for the purpose of computing approximate decoherence factors.}
 
-In the case that a transition of the hidden variable does occur to the $i^\up{th}$ from the $j^\up{th}$ state due to a spatial non-adiabatic coupling, the velocity kick to be applied to the classical velocity vector in order to conserve momentum is:
-\begin{align}
+In the case that a transition of the hidden variable does occur to the $i^\up{th}$ from the $j^\up{th}$ state due to a spatial non-adiabatic coupling, the velocity kick to be applied to the classical velocity vector in order to conserve energy is:
+\begin{align}\label{eq:velocity_jump}
 \upDelta \vec v_{ij} = \left[\sgn(\vec v\cdot \hat{\vec d}_{ij})
 \sqrt{(\vec v\cdot \hat{\vec d}_{ij})^2 + \frac2m\left(V_i(\vec r, t) - V_j(\vec r, t)\right)} - (\vec v\cdot \hat{\vec d}_{ij}).
 \right]\hat{\vec d}_{ij}
@@ -802,7 +802,7 @@ The (negative) logarithmic derivative of the decoherence factor for our fixed-wi
 \right)\cdot\dv{\vec k_{ij}(t)}{t},
 \end{align}
 which for a given relative acceleration $\vec a_{ij}$ between the states, based on the potential gradient at each modelled position, and written in terms of relative velocity instead of wavenumber, is
-\begin{align}
+\begin{align}\label{eq:mm_decoherence_rate}
 \gamma^\up{mm}_{ij}(t) = 
 \frac{1}{4\sigma^2}\vec r_{ij}(t)\cdot\vec v_{ij}(t)
 + \frac{\sigma^2 m^2}{\hbar^2}\vec v_{ij}(t)\cdot\vec a_{ij}(t)
@@ -820,18 +820,19 @@ Equation~\eqref{eq:minimal_memory_decoherence_rate} is our minimal-memory decohe
 
 \subsubsection{From many trajectories, one}
 
-As mentioned, this method track only one trajectory per state. However, it continuously considers the spawning of new trajectories, and rather than actually tracking multiple trajectories per state or probabilistically replacing the existing trajectories with the new ones, it simply averages the trajectories together, weighted by their quantum probabilities. At the end of each timestep, positions and velocities (other than those of the main trajectory) are updated according to a weighted sum of their present values with those of the main trajectory:
-\begin{align}
-\vec r_{i\neq\eta}(t^\prime) &\rightarrow 
+As mentioned, this method track only one trajectory per state. However, it continuously considers the spawning of new trajectories, and rather than actually tracking multiple trajectories per state or probabilistically replacing the existing trajectories with the new ones, it simply averages the trajectories together, weighted by their quantum probabilities. At the end of each timestep, positions and velocities (other than those of the main trajectory) are updated according to a weighted sum of their present values and those of the main trajectory:
+\begin{align}\label{eq:position_averaging}
+\vec r_{i\neq\eta}(t^\prime) &\leftarrow 
   Q_{i\eta}(t^\prime, t)\,\vec r_\eta(t^\prime)
   + \left(1 - Q_{i\eta}(t^\prime, t)\right)\vec r_i(t^\prime),\\
-\vec v_{i\neq\eta}(t^\prime) &\rightarrow
+\vec v_{i\neq\eta}(t^\prime) &\leftarrow
   Q^\up{time}_{i\eta}(t^\prime, t)\vec v_\eta(t^\prime)
   + \tilde Q^\up{space}_{i\eta}(t^\prime, t)(\vec v_\eta(t^\prime) + \upDelta \vec v_{i\eta}(t^\prime))\nonumber\\
   &\phantom{\rightarrow} + \left(1 - Q^\up{time}_{i\eta}(t^\prime, t) - \tilde Q^\up{space}_{i\eta}(t^\prime, t)\right)\vec v_i(t^\prime),
+  \label{eq:velocity_averaging}
 \end{align}
 where $Q_{i\eta}(t^\prime, t) = P_{i\eta}(t^\prime, t)/\abs{c_i(t^\prime)}^2$ is the fraction of the population of state $i$ at time $t^\prime$ that flowed to it from state $\eta$ in the interval $t$ to $t^\prime$, with $Q_{i\eta}^\up{time}(t^\prime, t)$ and $\tilde Q_{i\eta}^\up{space}(t^\prime, t)$ defined similarly in terms of $P_{i\eta}^\up{time}$ and $\tilde P_{i\eta}^\up{time}$ as defined in Section~\ref{sec:velocity_correction}, and where $\upDelta \vec v_{i\eta}(t^\prime)$ is the required velocity correction for a transition from state $\eta$ to state $i$ state at time $t^\prime$, as discussed in Section~\ref{sec:velocity_correction}:
-\begin{align}
+\begin{align}\label{eq:non_markovian_velocity_jump}
 \upDelta \vec v_{i\eta}(\vec r, t^\prime) = \left[\sgn(\vec v\cdot \hat{\vec d}_{i\eta})
 \sqrt{(\vec v\cdot \hat{\vec d}_{i\eta})^2 + \frac2m\left(V_i(\vec r, t^\prime) - V_\eta(\vec r, t^\prime)\right)} - (\vec v\cdot \hat{\vec d}_{i\eta}),
 \right]\hat{\vec d}_{i\eta},
@@ -840,7 +841,7 @@ where $\vec r = \vec r_\eta(t^\prime)$ and $\vec v = \vec v_\eta(t^\prime)$ are 
 
 The above scheme is constructed to track a mean trajectory for each state, where `mean' is defined as a weighted sum of positions and velocities with those of the main trajectory whenever transitions from the latter occur, taking into account velocity jumps and frustrated transitions, with the energy conservation calculation for the velocity jumps based on the potentials at the location of the main trajectory.
 
-\section{Algorithm}\label{sec:HVSC_algorithm}
+\section{Algorithms}\label{sec:HVSC_algorithm}
 
 Now we have presented all the pieces from which the two versions of the hidden variables semiclassical method are constructed. One more approximation is yet to be mentioned, and that is that the projected Hamiltonian $\hat H_\eta(t)$ first introduced in Section~\ref{sec:backaction} is approximated by the value of the full Hamiltonian at the centre-of-mass position of the main trajectory's Gaussian wavepacket, without computing an integral:
 \begin{align}
@@ -848,31 +849,131 @@ Now we have presented all the pieces from which the two versions of the hidden v
 &\approx \matrixel{\chi_i\ \vec r_\eta(t)}{\hat H(t)}{\chi_j\ \vec r_\eta(t)}\\
 &\equiv H_{ij}(\vec r_\eta, t). 
 \end{align}
-With this final approximation, there are no longer any Guassian wavepackets to compute integrals over or anything else---all details of the wavepackets have been encapsulated and parametrised by the approximations and analytics in the preceding sections, and we can now focus on the classical dynamics of them atoms' centre of mass motion and the quantum evolution of their internal states.
+If projecting onto a motional state other than $\ket{\phi_\eta}$, we use the position of that motional state instead. Projecting the Hamiltonian onto an arbitrary position state $\ket{\vec r}$ gives an operator valued function of space (and time) $\hat H(\vec r, t)$, which operates only on the internal degrees of freedom of the atom.
+
+With this final approximation, there are no longer any Guassian wavepackets to compute integrals over or anything else---all details of the wavepackets have been encapsulated and parametrised by the approximations and analytics in the preceding sections, and we can now focus on the classical dynamics of them atoms' centre-of-mass motion and the quantum evolution of their internal states according to $\hat H(\vec r, t)$ evaluated at the classical positions (representing the centre-of-mass position of the wavepackets) of the atoms.
 
 \subsection{Markovian hidden-variable semiclassical method}
 This is the simplest version of my method, using crude Markovian decoherence as discussed in Section~\ref{sec:markovian_decoherence}, and simulating only one trajectory corresponding to the centre-of-mass motion of the state corresponding to the hidden variable at each moment in time.
 
-\subsection{State variables}
-The Markovian hidden-variable semiclassical method 
+\subsubsection{State variables}
+The Markovian variant of the hidden-variable semiclassical method has the following state variables describing the state of each simulated atom at each moment of time:
+\begin{itemize}
+    \item The internal state vector of the atom $\ket{\tilde\chi(t)}$, in any chosen basis (though the local eigenbasis is likely to be computationally simplest to perform calculations in).
+    \item The position $\vec r(t)$ and velocity $\vec v(t)$ of the atom.
+    \item The hidden variable $\eta(t)$, equal to an integer index specifying one of the eigenstates $\ket{\chi_\eta(\vec r, t)}$ of the Hamiltonian $\hat H(\vec r, t)$ atom in the local energy eigenbasis.
+\end{itemize}
+
+[TODO CITATION SOMEWHERE ABOUT THERMAL WAVELENGTH BEING THE SIZE OF A WAVEPACKET WHEN COLLIDING IN A THERMAL GAS]
 
 \subsubsection{Initial conditions}
 
-\subsection{Mean auxiliary trajectories hidden-variables semiclassical method}
-% \subsection{Further approximations}
+Strictly, the hidden-variable semiclassical method is intended to simulate the classical centre-of-mass motion of thermal wavelength sized Gaussian wavepackets. Therefore the initial conditions for the positions and velocities of the atoms in an ensemble are arbitrary, classical initial conditions, and so one might draw them, along with the internal states, randomly from a Boltzmann distribution for a given confining potential and temperature, such that the initial internal state of each atom is an eigenstate $\ket{\chi_i(\vec r, t=0)}$. In this case the initial value $\eta(t=0)$ of the hidden variable for each atom should correspond to its chosen eigenstate.
 
-% say that H is based on centre of mass of the eta component
+However, one might want to convert an initial \emph{wavefunction} into an ensemble of positions and velocities, in which case one can draw positions and momenta from the quantum probability distributions $\matrixel{\psi(t=0)}{\hat{\vec r}}{\psi(t=0)}$ and $\matrixel{\psi(t=0)}{\hat{\vec p}}{\psi(t=0)}$ for an initial motional state vector $\ket{\psi}$.
+Similarly, one can set the initial internal state vector of each atom to an arbitrary desired internal state vector appropriate for the problem at hand, in which case the initial values of the hidden variable for each atom in an ensemble being simulated should be chosen randomly with probability equal to the internal state populations $\abs{\braket{\chi_i(\vec r, t=0)}{\tilde\chi(\vec r, t=0)}}^2$ in the local basis at the position of each atom.
+More complex initial conditions are possible, there is no reason why one can't draw positions, velocities and internal states from arbitrary joint probability distributions, or use hand-crafted initial states, provided that the hidden variables are chosen randomly at the end with probabilities equal to the internal state populations in the local basis of each atom.
 
+\subsubsection{Evolution}
 
-Specifics of the algorithm, now that everything is defined.
+Evolving the Markovian hidden-variable semiclassical method involves three coupled differential equations, a stochastic evolution rule, and some additional steps to be performed in between numerical integration steps. Because the modifications in between steps can be discontinuous, multi-step integration schemes that retain information from previous integration steps should not be used. One step of the Markovian hidden variable semiclassical method comprises the following steps to evolve the state variables from time $t$ to $t^\prime = t + \upDelta t$, where $\upDelta t$ is small compared to dynamical timescales of the problem.
 
+\begin{enumerate}
+    \item Evolve the internal state vector and motional state variables of each atom from time $t$ to $t^\prime$ according to the the following coupled differential equations, using one or more steps of your favourite non-multi-step numerical integration method:
+    \begin{align}
+    \dv{t}\ket{\tilde\chi(t)} &= -\frac\ii\hbar \hat H(\vec r, t)\ket{\tilde\chi(t)} - \hat\Gamma^\up{Markov}_\eta(\vec r, t)\ket{\tilde\chi(t)},\\
+    \dv{t}\vec v(t) &= -\frac1m\nabla V_\eta(\vec r, t),\\
+    \dv{t}\vec r(t) &= \vec v(t),
+    \end{align}
+    where $V_\eta(\vec r, t)$ is the (space- and/or time-dependent) eigenvalue of $\hat H(\vec r, t)$ corresponding to the eigenstate $\ket{\chi_\eta(\vec r, t)}$, and the Markovian decoherence operator is
+    \begin{align}
+    \hat\Gamma^\up{Markov}_\eta(\vec r, t) = \sum_i\ketbra{\chi_i(\vec r, t)}{\chi_i(\vec r, t)}\gamma^\up{Markov}_{\eta i}(\vec r, t),
+    \end{align}
+    where $\gamma^\up{Markov}_{ij}(\vec r, t)$ are the approximate Markovian decoherence rates given by~\eqref{eq:gamma_total}. The integration of the internal state can be performed in the local eigenbasis using the transformed Hamiltonian defined in~\eqref{eq:Tully_adiabatic_schro}, in which case the decoherence operator is diagonal with the $i^\up{th}$ diagonal equal to $\gamma^\up{Markov}_{\eta i}(\vec r, t)$.
+
+    \item Normalise the internal state vector to unit norm:
+    \begin{align}
+    \ket{\tilde\chi(t^\prime)} \leftarrow \frac{\ket{\tilde\chi(t^\prime)}}
+                               {\sqrt{\braket{\tilde\chi(t^\prime)}{\tilde\chi(t^\prime)}}}
+    \end{align}
+
+    \item Evaluate the $S^\up{time}$, $S^\up{space}$ and $S^\up{stay}$ matrices over this time interval for Tully's minimal-switches algorithm as described in Section~\ref{sec:fewest_switches}; equations~(\ref{eq:S_space}--\ref{eq:S_stay}). This may require numerical differentiation of the basis vectors of the Hamiltonian with respect to space and time, and possibly numerical diagonalisation of the Hamiltonian to obtain the basis vectors as functions of space and time, if analytic expressions are not known. If $\upDelta t$ is not small enough to be considered infinitesimal for the purposes of evaluating~\eqref{eq:q_space} and~\eqref{eq:q_time}, and one numerically integrates them for a more accurate result, note that these expressions require the state populations $\{c_i(t)\}$ in the local basis in the \emph{absence} of decoherence; one therefore cannot do this integral in tandem with integrating the above differential equation for the internal state.\footnote{Though with split-operator methods and some care, the decoherence term can be treated separately such that the two integrals can be evaluated without repeating calculations unnecessarily.} Alternately, compute the overall $S$ matrix of your favourite hidden-variable theory for evolution over the given time interval in the local eigenbasis (similarly keeping in mind that the effective unitary given to the hidden variable theory must be due to the evolution of $\hat H_\up{eff}(t)$ only, and not the decoherence term). If it saves computational power to do so, only compute column $\eta$ of $S$, since only transitions from state $\eta$ to other states need be considered.
+
+    \item Compute $\tilde P^\up{space}$~\eqref{eq:tilde_P_space} and hence $\tilde S^\up{space}$~\eqref{eq:tilde_S_space} to set the probability of classically disallowed transitions to zero as described in Section~\ref{sec:velocity_correction}.
+
+    \item Modify the hidden variable with probability
+    \begin{align}
+    \Pr(\eta\toverset{\up{space}}\rightarrow i) &= \tilde S^\up{space}_{i\eta}
+    \end{align}
+    that it transitions to the state ($i\neq\eta$) via a spatially induced transition, and probability
+    \begin{align}
+    \Pr(\eta\toverset{\up{time}}\rightarrow i) &= S^\up{time}_{i\eta}
+    \end{align}
+    that it transitions to a state ($i\neq\eta$) via a temporally induced probability, and probability
+    \begin{align}
+    \Pr(\eta\rightarrow\eta) &= 1 - \sum_i \left(\tilde S^\up{space}_{i\eta} + S^\up{time}_{i\eta}\right)
+    \end{align}
+    that it keeps its current value. These choices can be randomly chosen between with the correct probabilities as described in \figref{fig:random_choice}.
+
+    \item If the hidden variable did transition to a different state $i\neq\eta$, and if it was a spatially induced transition, instantaneously adjust the atom's velocity as required by energy conservation:
+    \begin{align}
+    \vec v(t^\prime) \leftarrow \vec v(t^\prime) + \upDelta \vec v_{\eta i}(\vec r, t),
+    \end{align}
+    where $\upDelta \vec v_{\eta i}(\vec r, t)$ is given by~\eqref{eq:velocity_jump}.
+\end{enumerate}
+
+This completes the Markovian hidden-variable semiclassical method.
+
+\subsection{Mean auxiliary trajectories hidden-variable semiclassical method}
+
+This is the more complex version of my method. Additional classical trajectories are propagated---one for each internal state of each atom---but other than classically evolving these additional trajectories, the increase in computational cost is minimal.
+
+\subsubsection{State variables}
+The non-Markovian/Mean auxiliary trajectories variant of the hidden-variable semiclassical method has the following state variables describing the state of each simulated atom at each moment of time:
 \begin{itemize}
-    \item Schr\"odinger HVSC: with either Markovian decoherence, or auxilliary trajectories. No time dependence allowed
-
-    \item Fewest hops HVSC/surface hopping: either with Markovian decoherence or
-    auxilliary trajectories. Time dependence allowed!
-
+    \item The internal state vector of the atom $\ket{\tilde\chi(t)}$, in any chosen basis (though the local eigenbasis is likely to be computationally simplest to perform calculations in).
+    \item A set of positions $\{\vec r_i(t)\}$ and velocities $\{\vec v_i(t)\}$, one position and velocity for each internal state of the atom.
+    \item The hidden variable $\eta(t)$, equal to an integer index specifying one of the eigenstates $\ket{\chi_\eta(\vec r_\eta, t)}$ of the Hamiltonian $\hat H(\vec r_\eta, t)$ atom in the local energy eigenbasis at the location $\vec r_\eta$ of the main trajectory.
 \end{itemize}
+
+\subsubsection{Initial conditions}
+The manner of generating initial conditions of the mean auxiliary trajectories variant of the hidden-variable semiclassical method is identical to that of the Markovian variant, with the exception that multiple initial positions and velocities are required instead of just one. The initial positions and velocities of all auxiliary trajectories can however simply be set equal to those of the main trajectory for each atom.
+
+\subsubsection{Evolution}
+
+The evolution of the state variables for each atom from time $t$ to $t^\prime = t + \upDelta t$ in the non-Markovian hidden-variable semiclassical method proceeds similarly to the Markovian variant.
+
+\begin{enumerate}
+    \item Evolve the internal state vector and set of motional state variables of each atom from time $t$ to $t^\prime$ according to the the following coupled differential equations, using one or more steps of your favourite non-multi-step numerical integration method:
+    \begin{align}
+    \dv{t}\ket{\tilde\chi(t)} &= -\frac\ii\hbar \hat H(\vec r_\eta, t)\ket{\tilde\chi(t)} - \hat\Gamma^\up{mm}_\eta(t)\ket{\tilde\chi(t)},\\
+    \dv{t}\vec v_i(t) &= -\frac1m\nabla V_i(\vec r_i, t),\\
+    \dv{t}\vec r_i(t) &= \vec v_i(t),
+    \end{align}
+    where $V_i(\vec r_i, t)$ is the (space- and/or time-dependent) eigenvalue of $\hat H(\vec r_i, t)$ corresponding to the eigenstate $\ket{\chi_i(\vec r_i, t)}$ at the position of the $i^\up{th}$ trajectory, which may be the main ($i=\eta$) or an auxiliary ($i\neq\eta$) trajectory; and the non-Markovian decoherence operator is
+    \begin{align}
+    \hat\Gamma^\up{mm}_\eta(t) = \sum_i\ketbra{\chi_i(\vec r_\eta, t)}{\chi_i(\vec r_\eta, t)}\gamma^\up{mm}_{\eta i}(t),
+    \end{align}
+    where $\gamma^\up{mm}_{ij}(t)$ are the minimal-memory non-Markovian decoherence rates given by~\eqref{eq:mm_decoherence_rate}; $\gamma^\up{mm}_{\eta j}(t)$ comprising the diagonals of $\hat\Gamma^\up{mm}_\eta(t)$ if working in the local eigenbasis along the main trajectory.
+
+    \item Normalise the internal state vector to unit norm:
+    \begin{align}
+    \ket{\tilde\chi(t^\prime)} \leftarrow \frac{\ket{\tilde\chi(t^\prime)}}
+                               {\sqrt{\braket{\tilde\chi(t^\prime)}{\tilde\chi(t^\prime)}}}
+    \end{align}
+
+    \item Evaluate the $S^\up{time}$, $S^\up{space}$ and $S^\up{stay}$ matrices as in Step 3 for the Markovian case 
+
+    \item Compute $\tilde S^\up{space}$ as in Step 4 for the Markovian case. We treat transitions to have occurred at the location of the originating trajectory, therefore for the purposes of computing $\tilde S^\up{space}$, the expressions for $\upDelta v^2_{ij}(\vec r, t)$~\eqref{eq:delta_v_squared} and $\hat{\vec d}_{ij}(\vec r, t)$~\eqref{eq:non_adiabatic_coupling_vector} must be evaluated using $\vec r = \vec r_i(t^\prime)$, and the conditional in $\tilde P^\up{space}$~\eqref{eq:tilde_P_space} evaluated with $\vec v = \vec v_i(t^\prime)$. Again, since only transitions from the current state specified by the hidden variable to other states need to be considered, one only needs to compute column $\eta$ of $\tilde S^\up{space}$, in which case only $\vec r_\eta$ and $\vec v_\eta$ are necessary. This is then identical to the non-Markovian case, in which the main trajectory is the only trajectory simulated.
+
+    \item Modify the hidden variable as in Step 5 for the Markovian case
+    
+    \item Compute and apply a velocity jump to the atom in the case that it transitioned via a spatially-induced non-adiabatic transition, as in step 6 for the Markovian case. Note that, as with Step 4, since we treat transitions to have occurred at the location of the main trajectory, the velocity difference~\eqref{eq:velocity_jump}expression should be evaluated using the position and velocity of the main trajectory, as emphasised in~\eqref{eq:non_markovian_velocity_jump}.
+
+    \item If the hidden variable did \emph{not} transition to a different state, instantaneously modify the positions and velocities of all auxiliary trajectories ($i\neq\eta$) according to~\eqref{eq:position_averaging} and~\eqref{eq:velocity_averaging}. This in essence spawns new auxiliary trajectories at the location of the main trajectory, but does not keep them: the averaging expressions replace each auxiliary trajectory with a weighted sum of its previous position and velocity and the position and velocity of the new trajectory.
+\end{enumerate}
+
+This completes the mean auxiliary trajectories hidden-variable semiclassical method.
 
 \section{Results}\label{sec:HVSC_results}
 Pretty results go here
