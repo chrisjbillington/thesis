@@ -458,11 +458,11 @@ In the case that a transition of the hidden variable does occur to the $i^\up{th
 
 \section{Decoherence}\label{sec:decoherence}
 
-In the context of the hidden-variable semiclassical/surface hopping method, \emph{decoherence} refers to the fact that, due to positional separation of different internal states of the atom, those internal states transition from being a coherent superposition into a statistical mixture. For example, in the Stern--Gerlach experiment, a spin may be initially a coherent superposition of spin-up and spin-down, but by the time the two components separate, the superposition is no longer a coherent one. The spin is either up (and the atom off to one one side of the screen) or down (and the atom over the other side of the screen). At this point, no interference between the two internal states is observable, as they are not co-located in space. The motional degree of freedom has played the role of an environment, and, having become entangled with the spin of the atom, decohered the spin state. Recoherence can occur if the two wavepackets are brought back together again to have well overlapping positions and velocities, but this is difficult to achieve even intentionally\footnote{The problem of getting the wavepackets back together again has been coined the ``Humpty-Dumpty problem"~\cite{Schwinger1988, doi:10.1063/1.459170} and has made magnetic separation impractical for large-momentum atom interferometry~\cite{machluf_coherent_2013}, and methods such as the use of Bragg pulses~\cite{PhysRevLett.66.2693, PhysRevLett.75.2633} are needed to create large momentum differences between wavepackets without having them more slowly traverse the intermediate regions of momentum space where they might accumulate coherence-destroying phase noise.}, let alone by accident, 
+In the context of the hidden-variable semiclassical/surface hopping method, \emph{decoherence} refers to the fact that, due to positional separation of different internal states of the atom, those internal states transition from being a coherent superposition into a statistical mixture. For example, in the Stern--Gerlach experiment, a spin may be initially a coherent superposition of spin-up and spin-down, but by the time the two components separate, the superposition is no longer a coherent one. The spin is either up (and the atom off to one one side of the screen) or down (and the atom over the other side of the screen). At this point, no interference between the two internal states is observable, as they are not co-located in space. The motional degree of freedom has played the role of an environment, and, having become entangled with the spin of the atom, decohered the spin state. Recoherence can occur if the two wavepackets are brought back together again to have well overlapping positions and velocities, but this is difficult to achieve even intentionally,\footnote{The problem of getting the wavepackets back together again has been coined the ``Humpty-Dumpty problem"~\cite{Schwinger1988, doi:10.1063/1.459170} and has made magnetic separation impractical for large-momentum atom interferometry~\cite{machluf_coherent_2013}, and methods such as the use of Bragg pulses~\cite{PhysRevLett.66.2693, PhysRevLett.75.2633} are needed to create large momentum differences between wavepackets without having them more slowly traverse the intermediate regions of momentum space where they might accumulate coherence-destroying phase noise.} let alone by accident, 
 
 Decoherence was not part of Tully's original surface hopping model~\cite{doi:10.1063/1.459170}, such that if used to simulate the Stern--Gerlach experiment, two spots would result on the screen, but both spots would comprise a coherent $50:50$ superposition of spin-up and spin-down, rather than one being up and one being down. Some decoherence is necessary to include in a hidden-variable semiclassical/surface hopping model in order to avoid this unphysical outcome, and furthermore, to obtain correct transition probabilities in the case that the atom undergoes multiple periods of local spin transitions (as being in a $50:50$ superposition represents entirely different initial conditions for a Majorana spin flip than being in a single spin state).
 
-In Section~\ref{sec:backaction} I show the general mechanism by which the divergence of trajectories decoheres internal states of an atom, and specifically how this appears as an apparent decrease in the amplitudes of each other state when one imposes the adiabatic trajectory corresponding to one specific internal state. I then show in Section~\ref{sec:zeno_effect} why naively projecting the wavefunction onto a single trajectory at all times yields nonsensical results, and then in Subsections~\ref{sec:markovian_decoherence} and~\ref{sec:markovian_decoherence} I present two remedies for how to approximately include decoherence despite this. 
+In Section~\ref{sec:backaction} I show the general mechanism by which the divergence of trajectories decoheres internal states of an atom, and specifically how this appears as an apparent decrease in the amplitudes of each other state when one imposes the adiabatic trajectory corresponding to one specific internal state. I then show in Section~\ref{sec:zeno_effect} why na\"ively projecting the wavefunction onto a single trajectory at all times yields nonsensical results, and then in Subsections~\ref{sec:markovian_decoherence} and~\ref{sec:non_markovian_decoherence} I present two remedies for how to approximately include decoherence despite this. 
 
 \subsection{Back action of position measurement on internal state}\label{sec:backaction}
 
@@ -792,7 +792,7 @@ such that in the absence of Hamiltonian evolution
 \end{align}
 where ``mm" stands for ``minimal-memory".
 
-The (negative) logarithmic derivative of the decoherence factor for our fixed-width Gaussian wavepackets~\eqref{eq:decoherence_factor} gives the decoherence rate
+The (negative) logarithmic derivative of the decoherence factor for our fixed-width Gaussian wavepackets~\eqref{eq:decoherence_factor} gives the decoherence rates
 \begin{align}
 \gamma^\up{mm}_{ij}(t) = \left(
 \frac{\vec r_{ij}}{4\sigma^2} + \frac\ii2\vec k_{ij}
@@ -831,7 +831,7 @@ As mentioned, this method track only one trajectory per state. However, it conti
   &\phantom{\rightarrow} + \left(1 - Q^\up{time}_{i\eta}(t^\prime, t) - \tilde Q^\up{space}_{i\eta}(t^\prime, t)\right)\vec v_i(t^\prime),
   \label{eq:velocity_averaging}
 \end{align}
-where $Q_{i\eta}(t^\prime, t) = P_{i\eta}(t^\prime, t)/\abs{c_i(t^\prime)}^2$ is the fraction of the population of state $i$ at time $t^\prime$ that flowed to it from state $\eta$ in the interval $t$ to $t^\prime$, with $Q_{i\eta}^\up{time}(t^\prime, t)$ and $\tilde Q_{i\eta}^\up{space}(t^\prime, t)$ defined similarly in terms of $P_{i\eta}^\up{time}$ and $\tilde P_{i\eta}^\up{time}$ as defined in Section~\ref{sec:velocity_correction}, and where $\upDelta \vec v_{i\eta}(t^\prime)$ is the required velocity correction for a transition from state $\eta$ to state $i$ state at time $t^\prime$, as discussed in Section~\ref{sec:velocity_correction}:
+where $Q_{i\eta}(t^\prime, t) = P_{i\eta}(t^\prime, t)/\abs{c_i(t^\prime)}^2$ is the fraction of the population\footnote{Note that $\abs{c_i(t^\prime)}^2$ is the $i^\up{th}$ population at time $t^\prime$ due to unitary evolution only over the time interval, without taking into account decoherence, since all population flows are computed from unitary evolution only and decoherence is treated separately.} of state $i$ at time $t^\prime$ that flowed to it from state $\eta$ in the interval $t$ to $t^\prime$, with $Q_{i\eta}^\up{time}(t^\prime, t)$ and $\tilde Q_{i\eta}^\up{space}(t^\prime, t)$ defined similarly in terms of $P_{i\eta}^\up{time}$ and $\tilde P_{i\eta}^\up{time}$ as defined in Section~\ref{sec:velocity_correction}, and where $\upDelta \vec v_{i\eta}(t^\prime)$ is the required velocity correction for a transition from state $\eta$ to state $i$ state at time $t^\prime$, as discussed in Section~\ref{sec:velocity_correction}:
 \begin{align}\label{eq:non_markovian_velocity_jump}
 \upDelta \vec v_{i\eta}(\vec r, t^\prime) = \left[\sgn(\vec v\cdot \hat{\vec d}_{i\eta})
 \sqrt{(\vec v\cdot \hat{\vec d}_{i\eta})^2 + \frac2m\left(V_i(\vec r, t^\prime) - V_\eta(\vec r, t^\prime)\right)} - (\vec v\cdot \hat{\vec d}_{i\eta}),
@@ -841,17 +841,50 @@ where $\vec r = \vec r_\eta(t^\prime)$ and $\vec v = \vec v_\eta(t^\prime)$ are 
 
 The above scheme is constructed to track a mean trajectory for each state, where `mean' is defined as a weighted sum of positions and velocities with those of the main trajectory whenever transitions from the latter occur, taking into account velocity jumps and frustrated transitions, with the energy conservation calculation for the velocity jumps based on the potentials at the location of the main trajectory.
 
-\section{Algorithms}\label{sec:HVSC_algorithm}
+\subsection{A different kind of ``following"}
 
-Now we have presented all the pieces from which the two versions of the hidden variables semiclassical method are constructed. One more approximation is yet to be mentioned, and that is that the projected Hamiltonian $\hat H_\eta(t)$ first introduced in Section~\ref{sec:backaction} is approximated by the value of the full Hamiltonian at the centre-of-mass position of the main trajectory's Gaussian wavepacket, without computing an integral:
+[TODO: EDITS EARLIER TO TAKE THIS INTO ACCOUNT - WHEN I FIRST MENTION FOLLOWING]
+
+Now that we've worked out a way to approximate the result of projecting the multi-component wavefunction onto a specific motional state (a Gaussian wavepacket) without resetting all motional states (also Gaussian wavepackets) to be equal to it, why not take the process further? We can use the same method to project onto any wavefunction we like, in order to inspect what the multi-component wavefunction looks like projected onto the wavefunction in question.
+
+For example, if we projected onto a Dirac delta, that would tell us what the multi-component wavefunction looks like at a specific point in space, say, the centre-of-mass position of the wavepacket corresponding to the hidden variable.
+
+There reasons why this is appealing. Firstly, consider the projected Hamiltonian $\hat H_\eta(t)$ first introduced in Section~\ref{sec:backaction}. Since we do not want to actually have to construct Gaussian wavepackets in order to compute the integral which defines the projected Hamiltonian, our only recourse is to approximate the projected Hamiltonian as the value of the full Hamiltonian at the centre-of-mass position of the main trajectory's Gaussian wavepacket:
 \begin{align}
 \matrixel{\chi_i}{\hat H_{\eta}(t)}{\chi_j} &= \matrixel{\chi_i\ \phi_\eta(t)}{\hat H(t)}{\chi_j\ \phi_\eta(t)}\\
 &\approx \matrixel{\chi_i\ \vec r_\eta(t)}{\hat H(t)}{\chi_j\ \vec r_\eta(t)}\\
-&\equiv H_{ij}(\vec r_\eta, t). 
+&\equiv H_{ij}(\vec r_\eta, t),
 \end{align}
-If projecting onto a motional state other than $\ket{\phi_\eta}$, we use the position of that motional state instead. Projecting the Hamiltonian onto an arbitrary position state $\ket{\vec r}$ gives an operator valued function of space (and time) $\hat H(\vec r, t)$, which operates only on the internal degrees of freedom of the atom.
+which can be considered a small-wavepacket approximation, as mentioned in [SECREF] in the context of the Ehrenfest semiclassical model. If an arbitrary position is used in place of $\vec r_\eta$, this results in an operator valued function of space $\hat H(\vec r, t)$, which operates only on the internal degrees of freedom of the atom.
 
-With this final approximation, there are no longer any Guassian wavepackets to compute integrals over or anything else---all details of the wavepackets have been encapsulated and parametrised by the approximations and analytics in the preceding sections, and we can now focus on the classical dynamics of them atoms' centre-of-mass motion and the quantum evolution of their internal states according to $\hat H(\vec r, t)$ evaluated at the classical positions (representing the centre-of-mass position of the wavepackets) of the atoms.
+This is the operator we actually use in the algorithm, and with it, there are no longer any Guassian wavepackets to compute integrals over or anything else---all details of the wavepackets are encapsulated and parametrised by the approximations and analytics in this and the preceding sections, leaving us to focus on the classical dynamics of them atoms' centre-of-mass motion and the quantum evolution of their internal states according to $\hat H(\vec r, t)$ evaluated at the classical positions (representing the centre-of-mass position of the wavepackets) of the atoms.
+
+Although this can be considered a small wavepacket approximation, we cannot use arbitrarily small wavepacket sizes in our decoherence calculations, as the decoherence rates (under both the Markovian and auxiliary trajectories approach) do not converge to a constant as the wavepacket sizes decrease---rather they become arbitrarily large. Very high spin decoherence rates have the potential to prevent spin flips altogether, also a result of the quantum Zeno effect, since high decoherence rates imply strong measurement, and strong measurement of an observable prevents evolution of that variable.\footnote{I have sometimes wondered if there is a way to harness this to prevent Majorana losses in evaporation to \textsc{bec}, by measuring very strongly whether they have occurred.} So there is a possible inconsistency here: can we make the wavepackets small or not?
+
+On the other hand, note what happens in Figure [FIGREF] when wavepackets get large. The decoherence rate also gets large, as does the non-Markovian decoherence rate [EQREF]. In both cases this is decoherence due to separation in velocity space. While this is the correct result, given our assumptions, it causes problems when combined with the above way of approximating the projected Hamiltonian. Essentially, rapid velocity-induced decoherence occurs when the wavepackets are large because spatially large Gaussians are small in velocity space, and hence do not need to accelerate much to be non-overlapping any more in velocity space. But do we really expect our wavepackets to be minimal uncertainty wavepackets? Certainly not when they are large compared to the structure of a spatially varying Hamiltonian. A real wavepacket, whilst undergoing a transition to another state, does not do so everywhere in space the same, as in a single-mode approximation, but our formulation so far assumes it does. In the limit of a very large wavepacket undergoing a complete majorana spin flip due to a magnetic field zero for example, would appear, as its centre-of-mass passed over the zero, as two half-Gaussians, one in each state. I don't know what the half-Gaussians' velocity distributions would look like, but I doubt they are narrow enough to lead to decoherence rates as high as the expressions we've derived so far suggest. Narrow velocity distributions are therefore inconsistent with the other assumptions of our model and any consequences of rapid velocity separation in the model should be viewed with scepticism.
+
+Another argument is that, if two wavepackets are co-located in space but not in velocity space, the amplitude of one of them as seen from the centre-of-mass position of the other is not, of course, zero. It's the fact that their relative phase varies so much over the extent of the wavepackets that causes their projection onto each other to be small when their velocities are very different.\footnote{Some call this `dephasing' to distinguish from other forms of decoherence} So it's only after this averaging process---integrating over all space---that the wavepackets look like they are small from each other's perspective. One of the common themes of this method as a whole is that we are often happy with \emph{representative} results rather than average ones, drawing results from the correct statistical distributions, and only observing the complete distribution when we analyse a large sample of results. Continuing in this vein, why not consider the value of the multi-component wavefunction along a specific trajectory in space, rather than its projection onto a Gaussian? The projection of a multi-component wavefunction onto a Gaussian isn't an any more useful or intuitive quantity than tracing a line through spacetime and asking ``what is the wavefunction here?" This way instead of a simulation telling us ``There was, on average, no population transfer to such-and-such state", it would give a (more likely to be useful in my opinion) answer ``there was a lot of population transfer to this state, but the phase is essentially random". 
+
+The final argument is empirical: I've tried simulating the model with the Guassian projections, and it doesn't work well unless wavepackets are small. The decoherence rates are too high, presumably for the speculative reasons discussed above. This damps the population of states other than that selected by the hidden varaible too quickly, such that the simulation says that the population of a state is zero even though according to the Schr\"odinger wave equation it should not be (it merely has an inhomogeneous phase). Simply deleting the terms caused by velocity separation from the decoherence rate expressions still does not yield great results.
+
+What has yielded good results is to project onto a delta function instead, resulting in a decoherence factor:
+\begin{align}
+R_{ij}(t) = \braket{\vec r_i(t)}{\phi_j(t)}
+\end{align}
+where $\ket{\phi_j(t)}$ is one of our usual Gaussian motional states. Following identical arguments to the previous two sections, we obtain decoherence rates for the Markovian case as
+\begin{align}
+\gamma^\up{Markov}_{ij}(\vec r, t) \approx \frac1{2\upGamma(\frac54)}\sqrt{\frac{\abs{\vec a_{ij}(\vec r, t)}}{\sigma}} + \ii\frac1{2\upGamma(\frac54)^2}\frac{m\sigma\abs{\vec a_{ij}(\vec r, t)}}{\hbar},
+\end{align}
+which is identical to the position-only approximation [EQREF] up to a factor of $2^{\frac14}$, and for minimal-memory non-Markovian case as 
+\begin{align}
+\gamma^\up{mm}_{ij}(t) = \frac1{2\sigma^2}\vec r_{ij}(t)\cdot\vec v_{ij}(t)
+                        - \ii \frac m\hbar\vec r_{ij}(t)\cdot \vec a_{ij}(t),
+\end{align}
+with all symbols as defined in sections [SECREF] and [SECREF] respectively.
+
+\section{Algorithms}\label{sec:HVSC_algorithm}
+
+Now we have presented all the pieces from which the two versions of the hidden-variable semiclassical method are constructed. In this section I present step-by-step instructions for implementing the two versions of the method.
 
 \subsection{Markovian hidden-variable semiclassical method}
 This is the simplest version of my method, using crude Markovian decoherence as discussed in Section~\ref{sec:markovian_decoherence}, and simulating only one trajectory corresponding to the centre-of-mass motion of the state corresponding to the hidden variable at each moment in time.
@@ -924,7 +957,12 @@ Evolving the Markovian hidden-variable semiclassical method involves three coupl
 
 This completes the Markovian hidden-variable semiclassical method.
 
-\subsection{Mean auxiliary trajectories hidden-variable semiclassical method}
+\subsection{Mean auxiliary trajectories hidden-variable semiclassical method}\label{sec:non_markovian_decoherence}
+
+[TODO: UPDATE AUX TRAJECTORIES BEFORE COMPUTING JUMPS, UPON JUMP DISCARD AUX TRAJECTORY AND REPLACE WITH PREVIOUS MAIN TRAJECTORY. DISCARD AUX TRAJECTORIES THAT HAVE SMALL POPULATIONS - REPLACE WITH MAIN TRAJECTORY PLUS VELOCITY DIFFERENCE. DISCARD VELOCITY SEPARATION DECOHERENCE. NEVER RECOHERE...? POINT OUT SOMEWHERE THAT SCHRODINHER THEORY WORKS FOR LARGER TIMESTEPS SINCE IT TAKES ARBITRARY UNITARIES AND NOT JUST INFINITESMAL TIMESTEPS. POINT OUT THAT FRAMING FEWEST SWITCHES AS A HIDDEN VARIABLE THEORY MAKES THE CODE REALLY SIMPLE. INLUDE THE PYTHON FUNCTION. ENSURE THE UPDATING OF AUX TRAJECTORIES MATCHES THE PYTHON CODE. INCLUDE PLOTS OF BZ FOR THE MIRROR SIMS AND NORMAL SIMS.  MENTION THAT TAYLOR EXPANDING MARRKOVIAN DECOHERENCES HELPS US NOT DIVIDE BY a=0]
+
+[CHANGING TO PROJECTING GAUSSIANS ONTO ONLY A SMALL GAUSSIAN "We imagine we are observing a small slice of the wavepacket"]
+
 
 This is the more complex version of my method. Additional classical trajectories are propagated---one for each internal state of each atom---but other than classically evolving these additional trajectories, the increase in computational cost is minimal.
 
@@ -976,9 +1014,109 @@ The evolution of the state variables for each atom from time $t$ to $t^\prime = 
 This completes the mean auxiliary trajectories hidden-variable semiclassical method.
 
 \section{Results}\label{sec:HVSC_results}
-Pretty results go here
+
+Here I demonstrate the two variants of the method, each for two different spatially dependent Hamiltonians in one dimension, and compare them to the numerical result from the full Schr\"odinger wave equation. All simulations are for $^{87}$Rb atoms in the $F=1$ groundstate subject to the Zeeman Hamiltonian for a given magnetic field profile. In scenario 1 atoms in the trapped state (for $^{87}$, the locally spin-down sate is magnetically trappable) pass over a field minimum, which induces Majorana transitions, allowing the spin-flipped atoms to escape. In scenario 2 the magnetic field profile is modified to create two closely spaced field minima. This scenario demonstrates the importance of accurate decoherence in surface-hopping/hidden-variable semiclassical methods, as the two regions of non-adiabatic coupling are encountered in a time comparable to the decoherence timescale where the exact form of the decoherence model can strongly influence the outcome of transitions.
+
+\subsection{Scenario 1}
+
+In this scenario, a $^{87}$Rb atom begins as an initially stationary Gaussian wavepacket of width $600\unit{nm}$ centred at $z_0 = -20\unit{\upmu m}$ in the Zeeman potential experienced by the $F=1$ groundstate manifold [SEC SECREF ATOMIC PHYSICS] with the following magnetic field profile:
+\begin{align}
+\vec B_\up{trap}(z) = (B_x, B_y, B_z) = \left(B_\perp, 0, B_z^\prime z\right)
+\end{align}
+where the transverse magnetic field is $B_\perp = 162.5\unit{mG}$ and the $z$-gradient is $B_z^\prime = 250\unit{G\,cm^{-1}}$. This potential provides a region close to $z=0$ where the magnetic field rapidly reverses direction too quickly for the atom's spin to adiabatically follow, inducing Majorana transitions. The atom accelerates under the initial potential gradient toward this region.
+
+I simulated this scenario first using the Schr\"odinger wave equation, as the gold-standard against which to benchmark the other methods. Numerically I solved the for the three-component wavefunction using fourth order Runge--Kutta [SECREF] and the Fourier method of evaluating spatial derivatives [SECREF]. I added imaginary potentials near the boundaries of the region I wished to simulate to absorb untrapped wavepackets rather than have them reflect or wrap around due to periodic boundary conditions inherent in the Fourier method of derivatives. The initial condition was a Gaussian wavepacket in the locally spin-down eigenstate, $m_F = -1$, though I simulated in the eigenbasis of $\hat F_z$, transforming as necessary to create the initial condition and later to compare state populations in the local eigenbasis.
+
+I then simulated the scenario with $1\times10^4$ semiclassical atoms using the Ehrenfest semiclassical method. The initial conditions were set by drawing positions and velocities randomly for each semiclassical particle from the position and velocity probability distributions implied by the Gaussian wavepacket.
+
+Then, I simulated the same scenario with the Markovian hidden variables semiclassical method, also with $1\times10^4$ atoms and initial conditions chosen the same way as in the Ehrenfest model. Finally, I simulated the scenario using the mean-auxiliary-trajectories variant of the hidden variables semiclassical method, with again the same number of atoms and initial conditions. Results are shown in Figure~\ref{fig:scenario_one_markovian} for the Markovian model and Figure\ref{fig:scenario_one_aux} for the auxiliary trajectories model.
+
+\afterpage{
+\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+\begin{figure}
+    % \centering
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc/populations.pdf}
+    }\\
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc/populations_along_trajects.pdf}
+    }
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc/trajectories.pdf}
+    }
+    \caption{Scenario 1 Markovian}\label{fig:scenario_one_markovian}
+\end{figure}
+\restoregeometry}
+
+\afterpage{
+\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+\begin{figure}
+    % \centering
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux/populations.pdf}
+    }\\
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux/populations_along_trajects.pdf}
+    }
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux/trajectories.pdf}
+    }
+    \caption{Scenario 1 Aux trajects}\label{fig:scenario_one_aux}
+\end{figure}
+\restoregeometry}
+
+\subsection{Scenario 2}
+
+Scenario 2 is identical to scenario 1, except that the magnetic field profile is instead
+\begin{align}
+\vec B_\up{trap}(z) = (B_x, B_y, B_z) = \begin{cases}
+\left(B_\perp, 0, B_z^\prime (z + z_\up{fieldmin})\right) & z < 0\\
+\\
+\left(B_\perp, 0, -B_z^\prime  (z + z_\up{fieldmin})\right) & z >= 0
+\end{cases}
+\end{align}
+where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimum to the origin, such that the two minima are separated by $5\unit{\upmu m}$, and with the other variables having the same values as in scenario 1. This field profile is unphysical, but serves as a good test that highlights the improvement of the mean-auxiliary-trajectories method over the Markovian method. Results are shown in Figure~\ref{fig:scenario_two_markovian} for the Markovian model and Figure\ref{fig:scenario_two_aux} for the auxiliary trajectories model.
+
+\afterpage{
+\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+\begin{figure}
+    % \centering
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_mirror/populations.pdf}
+    }\\
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_mirror/populations_along_trajects.pdf}
+    }
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_mirror/trajectories.pdf}
+    }
+    \caption{Scenario 2 Markovian}\label{fig:scenario_two_markovian}
+\end{figure}
+\restoregeometry}
+
+\afterpage{
+\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+\begin{figure}
+    % \centering
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux_mirror/populations.pdf}
+    }\\
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux_mirror/populations_along_trajects.pdf}
+    }
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux_mirror/trajectories.pdf}
+    }
+    \caption{Scenario 2 Aux trajects}\label{fig:scenario_two_aux}
+\end{figure}
+\restoregeometry}
+
+
+
 
 \section{Discussion and conclusion}\label{sec:HVSC_discussion}
+
+[AD HOC, HAVE NOT CONSOLIDATED TO MINIMAL ASSUMPTIONS]
 
 Although the method wasn't original, in rediscovering it I have identified that hidden-variable theories and hopping algorithms are in fact the same thing. I am relieved that I can use a hidden-variable theory that is numerically faster to compute then Schrodinger theory and wonder what the implications are for Aaronson's ideas, given the reasoning outlined in the intro that hidden-variable theories ought to be hard to compute. In addition, my decoherence method totally kicks butt and the time dependence thing is nifty.
 
