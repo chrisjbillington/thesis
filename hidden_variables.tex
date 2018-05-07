@@ -1033,6 +1033,8 @@ Then, I simulated the same scenario with the Markovian hidden variables semiclas
 
 \subsubsection{Scenario 2}
 
+[MIRROR SIMS DO NOT HAVE CORRECT FLIPS CHOSEN IN POPS ALONG TRAJECTS, MAKE BETTER ONES]
+
 Scenario 2 is identical to scenario 1, except that the magnetic field profile is instead
 \begin{align}
 \vec B_\up{trap}(z) = (B_x, B_y, B_z) = \begin{cases}
@@ -1115,6 +1117,15 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
 \section{Discussion and conclusion}\label{sec:HVSC_discussion}
 
 [AD HOC, HAVE NOT CONSOLIDATED TO MINIMAL ASSUMPTIONS]
+
+[MINIMAL HOPPING IS BEST BECAUSE LESS UNCERTAINTY]
+
+[SCHRODINGER THEORIES ONLY REDEEMING FEATURE IS THAT IT WORKS FOR LARGE TIMESTEPS]
+
+[MY METHOD MOST SIMILAR TO THIS ONE: Simultaneous-trajectory surface hopping: A parameter-free algorithm for implementing
+decoherence in nonadiabatic dynamics. But they use Gaussians and have to contort themselves to get out of the velocity separation shenanigans.]
+
+[DECOHERENCE RATE ISN"T ACTUALLY ZERO BECAUSE THERE ARE VELOCITY JUMPS ENSURINGG OTHER TRAJECTS ARE NOT THE SAME SPEED - BUT IT IS FAR TOO SMALL TO BE USEFUL]
 
 Although the method wasn't original, in rediscovering it I have identified that hidden-variable theories and hopping algorithms are in fact the same thing. I am relieved that I can use a hidden-variable theory that is numerically faster to compute then Schrodinger theory and wonder what the implications are for Aaronson's ideas, given the reasoning outlined in the intro that hidden-variable theories ought to be hard to compute. In addition, my decoherence method totally kicks butt and the time dependence thing is nifty.
 
