@@ -1017,7 +1017,7 @@ This completes the mean auxiliary trajectories hidden-variable semiclassical met
 
 Here I demonstrate the two variants of the method, each for two different spatially dependent Hamiltonians in one dimension, and compare them to the numerical result from the full Schr\"odinger wave equation. All simulations are for $^{87}$Rb atoms in the $F=1$ groundstate subject to the Zeeman Hamiltonian for a given magnetic field profile. In scenario 1 atoms in the trapped state (for $^{87}$, the locally spin-down sate is magnetically trappable) pass over a field minimum, which induces Majorana transitions, allowing the spin-flipped atoms to escape. In scenario 2 the magnetic field profile is modified to create two closely spaced field minima. This scenario demonstrates the importance of accurate decoherence in surface-hopping/hidden-variable semiclassical methods, as the two regions of non-adiabatic coupling are encountered in a time comparable to the decoherence timescale where the exact form of the decoherence model can strongly influence the outcome of transitions.
 
-\subsection{Scenario 1}
+\subsubsection{Scenario 1}
 
 In this scenario, a $^{87}$Rb atom begins as an initially stationary Gaussian wavepacket of width $600\unit{nm}$ centred at $z_0 = -20\unit{\upmu m}$ in the Zeeman potential experienced by the $F=1$ groundstate manifold [SEC SECREF ATOMIC PHYSICS] with the following magnetic field profile:
 \begin{align}
@@ -1031,41 +1031,7 @@ I then simulated the scenario with $1\times10^4$ semiclassical atoms using the E
 
 Then, I simulated the same scenario with the Markovian hidden variables semiclassical method, also with $1\times10^4$ atoms and initial conditions chosen the same way as in the Ehrenfest model. Finally, I simulated the scenario using the mean-auxiliary-trajectories variant of the hidden variables semiclassical method, with again the same number of atoms and initial conditions. Results are shown in Figure~\ref{fig:scenario_one_markovian} for the Markovian model and Figure\ref{fig:scenario_one_aux} for the auxiliary trajectories model.
 
-\afterpage{
-\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
-\begin{figure}
-    % \centering
-    \subfloat[]{
-    \includegraphics{figures/hidden_variables/hvsc/populations.pdf}
-    }\\
-    \subfloat[]{
-    \includegraphics{figures/hidden_variables/hvsc/populations_along_trajects.pdf}
-    }
-    \subfloat[]{
-    \includegraphics{figures/hidden_variables/hvsc/trajectories.pdf}
-    }
-    \caption{Scenario 1 Markovian}\label{fig:scenario_one_markovian}
-\end{figure}
-\restoregeometry}
-
-\afterpage{
-\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
-\begin{figure}
-    % \centering
-    \subfloat[]{
-    \includegraphics{figures/hidden_variables/hvsc_aux/populations.pdf}
-    }\\
-    \subfloat[]{
-    \includegraphics{figures/hidden_variables/hvsc_aux/populations_along_trajects.pdf}
-    }
-    \subfloat[]{
-    \includegraphics{figures/hidden_variables/hvsc_aux/trajectories.pdf}
-    }
-    \caption{Scenario 1 Aux trajects}\label{fig:scenario_one_aux}
-\end{figure}
-\restoregeometry}
-
-\subsection{Scenario 2}
+\subsubsection{Scenario 2}
 
 Scenario 2 is identical to scenario 1, except that the magnetic field profile is instead
 \begin{align}
@@ -1082,6 +1048,40 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
 \begin{figure}
     % \centering
     \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc/populations.pdf}
+    }\\
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc/populations_along_trajects.pdf}
+    }
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc/trajectories.pdf}
+    }
+    \caption{Simulation results comparing the Schr\"odinger wave equation, Ehrenfest semiclassical method, and hidden-variable semiclassical method using approximate Markovian decoherence in scenario 1. (a) The populations $N$ in each spin projection state (denoted $N_\pm$, $N_0$ for $m_F=\pm 1$ and $m_F=0$ respectively) over time, obtained for the Schr\"odinger wave equation ($N_\up{S}$) by integration in the local basis over all space, for the Ehrenfest semiclassical model ($N_\up{E}$) as an expectation value over all semiclassical atoms' internal state vectors, and for the hidden-variable semiclassical method ($N_\up{H}$) as the proportion of atoms with the hidden variable specifying each state at each moment of time. The lines ending just after $1\unit{ms}$ is due to atoms/amplitude leaving the integration region. There is good agreement between all methods for the first approach of the field minimum, though the Ehrenfest trajectories do not make a second approach within the simulation time. The remaining deviations between the Schr\"odinger and hidden-variable curves are within the random variation of the stochastic method. (b) The state populations along specific trajectories corresponding to classical motion in $m_F=-1$ (top) for all time, switching to $m_F=0$ at the first field minimum (middle), and to $m_F=1$ (bottom). Obtained by interpolation and normalisation of the Schr\"odinger wave equation results and by selecting the semiclassical atoms making hidden-variable transitions closest to the chosen points (black lines). An Ehrenfest atom is chosen for comparison that was close to the given trajectory until the field minimum, after which it diverged. This plot shows the shape of the decoherence curves and how our exponential approximation is a poor fit, but does have the correct timescale and is better than the Ehrenfest method's absence of any decoherence. (c) Probability density of trajectories. Schr\"odinger wave equation results are shaded, and Ehrenfest and hidden-variable semiclassical results shown with a single contour line for a chosen density. Inset: The probability distributions at $1\unit{ms}$. There is good agreement between the hidden-variable semiclassical and Schr\"odinger wave equation results.}\label{fig:scenario_one_markovian}
+\end{figure}
+\restoregeometry}
+
+\afterpage{
+\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+\begin{figure}
+    % \centering
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux/populations.pdf}
+    }\\
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux/populations_along_trajects.pdf}
+    }
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux/trajectories.pdf}
+    }
+    \caption{Simulation results comparing the Schr\"odinger wave equation, Ehrenfest semiclassical method, and hidden-variable semiclassical method using auxiliary trajectories in scenario 1. (a) as described in~\figref{fig:scenario_one_markovian}. Once again, there is good agreement between all methods for the first approach to the field minimum, and good agreement between the hidden-variable semiclassical method for the second approach, though the Ehrenfest trajectories do not approach a second time. Again, the remaining deviation is within the range expected given the stochastic algorithm and could be reduced by increasing the sample size. (b) Populations after projecting onto specific classical trajectories, as and comparing with semiclassical atoms closest to those trajectories, as also described in~\figref{fig:scenario_one_markovian}. Here we see that the decoherence curves traced out by the auxiliary-trajectories method are in much closer agreement with the results of the Schr\"odinger wave equation than those of the Markovian model. Again, the discrepancies are within the random error of the model; shown in each subplot the atom that was closest to the given trajectory but none are exactly aligned with their trajectories. (c). Probability density of trajectories of the three methods, as described in~\figref{fig:scenario_one_markovian}. Once again there is excellent agreement between the Schr\"odinger wave equation and hidden-variable semiclassical methods, with the Ehrenfest trajectories showing the expected unphysical behaviour.}\label{fig:scenario_one_aux}
+\end{figure}
+\restoregeometry}
+
+\afterpage{
+\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+\begin{figure}
+    % \centering
+    \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc_mirror/populations.pdf}
     }\\
     \subfloat[]{
@@ -1090,7 +1090,7 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
     \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc_mirror/trajectories.pdf}
     }
-    \caption{Scenario 2 Markovian}\label{fig:scenario_two_markovian}
+    \caption{Simulation results comparing the Schr\"odinger wave equation, Ehrenfest semiclassical method, and hidden-variable semiclassical method using approximate Markovian decoherence in scenario 2. All subfigures as described in~\figref{fig:scenario_one_markovian}. There are two minima in the magnetic field, closely spaced near $z=0$. Here we see the breakdown of the Markovian model in the presence of a second region of non-adiabatic coupling that the atoms encounter before they have fully decohered after the first. (a) The inaccurate modelling of decoherence has resulted in the wrong relative populations and phases between the states when the atom encounters the second region of coupling, leading to completely different populations after it emerges from the second field minimum. (b) Populations along specific classical trajectories. Incorrect decoherence curves were inconsequential when there were no closely spaced field minima, but here the wrong curves mean the wrong initial conditions as the atom begins to make transitions again near second field minimum. If the minima were farther separated, the exponential decoherence curve would decay the system back to a single eigenstate, which would be correct. At shorter times, it matters whether the decoherence curves actually have the right shape. (c) Probability distributions of trajectories. The trajectories themselves are in excellent agreement with the Schr\"odinger wave equation---but there are the wrong proportion of atoms in each cluster of trajectories.}\label{fig:scenario_two_markovian}
 \end{figure}
 \restoregeometry}
 
@@ -1107,11 +1107,9 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
     \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc_aux_mirror/trajectories.pdf}
     }
-    \caption{Scenario 2 Aux trajects}\label{fig:scenario_two_aux}
+    \caption{Simulation results comparing the Schr\"odinger wave equation, Ehrenfest semiclassical method, and hidden-variable semiclassical method using auxiliary trajectories in scenario 2. All subfigures as described in~\figref{fig:scenario_one_markovian}. (a) Here we see that the auxiliary-trajectories method of modelling decoherence leads to correct populations (again, they are within statistical error), even when there are two field minima closely spaced. The Ehrenfest method also is quite close in this case, but this is a coincidence [TODO RUN AGAIN WITH LARGER FIELD MINIMUM SPACING TO AVOID THIS?] (b) Here we see why: the decoherence curves match those of the Schr\"odinger wave equation in between the two field minima (identifiable by the two large vertical drops in the $m_F=-1$ population), providing the correct initial conditions as the atoms approach the second field minimum. (c) The trajectories and probability density functions agree well.}\label{fig:scenario_two_aux}
 \end{figure}
 \restoregeometry}
-
-
 
 
 \section{Discussion and conclusion}\label{sec:HVSC_discussion}
