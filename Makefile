@@ -41,7 +41,7 @@ hglog:
 
 clean:
 	@# Delete temporary files
-	@rm -rf *.aux *.log *.out *.toc *.bbl *.blg *.brf *.fls *.fdb_latexmk hglog.txt _minted-$(BASENAME)/
+	@rm -rf *.aux *.log *.out *.toc *.loc *.lot *.bbl *.blg *.brf *.fls *.fdb_latexmk hglog.txt _minted-$(BASENAME)/
 
 
 

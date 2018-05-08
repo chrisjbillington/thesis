@@ -11,3 +11,5 @@ _minted*
 *.fls
 hglog.txt
 *.pyc
+*.lof
+*.lot
