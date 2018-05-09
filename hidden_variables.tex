@@ -112,7 +112,7 @@ U_{31}(t^\prime, t) & U_{32}(t^\prime, t) & U_{33}(t^\prime, t)&\hdots\\
 c_1(t)\\c_2(t)\\c_3(t)\\\vdots
 \end{matrix}\right],
 \end{align}
-where $c_i = \braket{\chi_i}{\chi}$ and $U_{ij}(t^\prime, t) = \matrixel{\chi_i}{\hat U(t^\prime, t)}{\chi_j}$, then a hidden-variable theory is a matrix-valued function $S(U(t^\prime, t), \vec\chi(t)))$, where $\vec\chi(t)$ and $U(t^\prime, t)$ are the vector and matrix representations of the state vector $\ket{\chi(t)}$ and unitary $\hat U(t^\prime, t)$ in the $\{\ket{\chi_i}\}$ basis, that satisfies
+where $c_i = \braket{\chi_i}{\chi}$ and $U_{ij}(t^\prime, t) = \matrixel{\chi_i}{\hat U(t^\prime, t)}{\chi_j}$, then a hidden-variable theory is a matrix-valued function $S(U(t^\prime, t), \vec\chi(t)))$, where $\vec\chi(t)$ and $U(t^\prime, t)$ are the vector and matrix representations of the state vector $\ket{\chi(t)}$ and unitary $\hat U(t^\prime, t)$ in the $\{\ket{\chi_i}\}$ basis, that satisfies\footnote{In order to more clearly compare to quantum evolution, we are using \emph{left stochastic} matrices, which multiply column vectors of probabilities from the left, contrary to the most common convention for stochastic matrices which is to multiply row matrices from the right. Thus $S$ has unit column sums, whereas the corresponding right stochastic matrix (its transpose) would have unit row sums.}
 \begin{align}
 \left[\begin{matrix}
 \abs{c_1(t^\prime)}^2\\\abs{c_2(t^\prime)}^2\\\abs{c_3(t^\prime)}^2\\\vdots
@@ -159,9 +159,9 @@ such that:
 = \sum_j P_{ij}.
 \end{align}
 So we have that $P$ has row sums equal to the final squared amplitudes.
-And, because $P_{ij} = S_{ij}\abs{c_j(t)}^2$ and $S$ is a stochastic matrix with column sums equal to one,\footnote{In order to more clearly compare to quantum evolution, we are using \emph{left stochastic} matrices, which multiply column vectors of probabilities from the left, contrary to the most common convention for stochastic matrices which is to multiply row matrices from the right. Thus $S$ has unit column sums, whereas the corresponding right stochastic matrix (its transpose) would have unit row sums.} we have that $P$ must have row sums equal to the initial squared amplitudes.
+And, because $P_{ij} = S_{ij}\abs{c_j(t)}^2$ and $S$ is a stochastic matrix with column sums equal to one, we have that $P$ must have row sums equal to the initial squared amplitudes.
 
-Now that we have introduced $P$ and shown what its row and column sums must be, we come to a particularly simply defined hidden-variable theory called the Schr\"odinger theory, discussed in Aaronson's hidden variables paper~\cite{PhysRevA.71.032325}. The idea is to form $P$ by starting with the matrix of absolute values of $U$, and simply scaling its rows and columns to have the correct values:\footnote{One might expect that the absolute value squared might be a better choice, since this matches Fermi's golden rule. Aaronson argues in his paper, when discussing his own hidden-variable theory \emph{Flow theory} why absolute values of elements of the unitary have nice properties, and we show later that the row and column scalings reproduce Fermi's golden rule in any case, as they must for the hidden-variable theory to agree with quantum probabilities.}
+Now that we have introduced $P$ and shown what its row and column sums must be, we come to a particularly simply defined hidden-variable theory called the Schr\"odinger theory, discussed in Aaronson's hidden variables paper~\cite{PhysRevA.71.032325}. The idea is to form $P$ by starting with the matrix of absolute values of $U$, and simply scaling its rows and columns to have the correct values:\footnote{One might expect that the absolute value squared might be a better choice, since this matches Fermi's golden rule. Aaronson discusses in his paper, when presenting his own hidden-variable theory \emph{Flow theory}, how absolute values of elements of the unitary have some appealing properties.}
 \begin{align}
 P = \left[\begin{matrix}
 a_1b_1\abs{U_{11}(t^\prime, t)} & a_1b_2\abs{U_{12}(t^\prime, t)} & a_1b_3\abs{U_{13}(t^\prime, t)}&\hdots\\
@@ -590,26 +590,6 @@ where $\hat\Gamma_\eta(t)$ is a diagonal operator in the $\{\ket{\chi_i}\}$ basi
 \end{align}
 where we have defined $\gamma_{ij}(t) = -\dv{R_{ij}(t)}{t}$. The diagonals of $\hat \Gamma_\eta(t)$ in the adiabatic basis are \emph{decoherence rates}, and cause exponential damping of all internal states other than the $\ket{\chi_\eta}$ state, with faster damping the faster the motional state corresponding to a given internal state diverges with $\ket{\phi_\eta(t)}$.
 
-% \subsection{Reframing as continuous weak measurement of internal state}
-
-% [REVISIT AT END, OR REMOVE IF YOU DON't HAVE TIME]
-
-% [Write the set of operators and their probabilities. Talk about the speculative stuff here]
-
-% This projection onto a single (albeit still quantum) motional state is the first step toward imposing classicality on the motional degree of freedom of our system, and is is similar, but not identical to performing a continuous weak quantum measurement of the position degree of freedom. Similarly to the case of continuous weak measurement, we have a set of (time dependent in our case) projection operators $\{\Omega_i(t)\}$ with
-% \begin{align}
-% \Omega_i(t) = \hat 1 \otimes \int\psi_i(\vec r, t)\ketbra{\vec r}{\vec r} \dd \vec r,
-% \end{align}
-% and are choosing from them at each timestep with probability of the $i^\up{th}$ outcome being $\matrixel{\Psi(t)}{\Omega_i^\dagger(t)}{\Omega_i(t)}$. This is as if we were performing a measurement with hypothetical measurement device not capable of distinguishing different positions perfectly, but only of determining which of the (not necessarily orthogonal) motional state vectors $\{\ket{\phi_i(t)}\}$ the system is in. 
-
-% Essentially at each timestep we are performing a weak measurement (a positive operator valued measure or POVM [CITE]) of the position degree of freedom, with a hypothetical measurement device that cannot distinguish positions perfectly, and has measurement outcomes corresponding to the set of motional states $\{\ket{\phi_i}\}$.
-
-% [ELABORATE. WRITE THE POVMS AND THEIR PROBABILITIES]
-
-% The measurement outcome is not selected randomly at the time the projection is performed, but instead pre-ordained by the current value of the hidden variable $\eta$. The fact that the hidden-variable makes stochastic transitions in a manner consistent with the Born rule guarantees that the probability of each measurement outcome is the same as if we had chosen an outcome randomly based on the Born rule itself at the time of each measurement. See Section [SECREF SPECULATIVE ASIDE] for a discussion of why use of a hidden variable is preferable to actually using the Born rule.
-
-% Effectively performing this measurement at each timestep of a simulation means that we are assuming that any amplitude leaving the envelope of the currently tracked motional state will either not come back into it, or will have a minimal effect if it does. Given the six-dimensional size of phase space, in which two separated pieces of amplitude of an atom's wavefunction must find each other if they are to interfere, this is a worthy approximation in many cases, to the extent that until recently [CITE]it was not possible to observe such interference in the case of Stern--Gerlach separation of cold atoms. The problem of getting the wavepackets back together again is called the ``Humpty Dumpty problem" and was a serious concern to early atom interferometry researches before the use of Bragg pulses [CITE] allowed experiments to create large momentum differences between wavepackets without having them more slowly traverse the intermediate regions of momentum space where they might accumulate coherence-destroying phase noise.
-
 \subsection{The quantum Zeno effect}\label{sec:zeno_effect}
 
 But now we arrive at a problem. Because all the motional states are reset to be equal to $\ket{\phi_\eta(t)}$ at each timestep, the relative position and wavevector of the two wavepackets are zero at all times, and so our decoherence rates are:
@@ -802,7 +782,7 @@ such that in the absence of Hamiltonian evolution
 \begin{align}
 \dv{\tilde c_i(t)}{t} &= -\gamma^\up{\textsc{mm}}_{\eta i}(t)\,\tilde c_i(t),
 \end{align}
-where ``mm" stands for ``minimal-memory".
+where ``\textsc{mm}" stands for ``minimal-memory".
 
 The (negative) logarithmic derivative of the decoherence factor for our fixed-width Gaussian wavepackets~\eqref{eq:decoherence_factor} gives the decoherence rates
 \begin{align}
@@ -847,7 +827,7 @@ where $Q_{i\eta}(t^\prime, t) = P_{i\eta}(t^\prime, t)/\abs{c_i(t^\prime)}^2$ is
 \sqrt{(\vec v\cdot \hat{\vec d}_{i\eta})^2 + \frac2m\left(V_i(\vec r, t^\prime) - V_\eta(\vec r, t^\prime)\right)} - (\vec v\cdot \hat{\vec d}_{i\eta}),
 \right]\hat{\vec d}_{i\eta},
 \end{align}
-where $\vec r = \vec r_\eta(t^\prime)$ and $\vec v = \vec v_\eta(t^\prime)$ are the position and velocity of the main trajectory at time $t^\prime$, and the adiabatic coupling unit vector $\hat{\vec d}_{i\eta} = \hat{\vec d}_{i\eta}(\vec r_\eta(t^\prime))$ is evaluated at the position along the main trajectory at time $t^\prime$.
+where $\vec r = \vec r_\eta(t^\prime)$ and $\vec v = \vec v_\eta(t^\prime)$ are the position and velocity of the main trajectory at time $t^\prime$, and the non-adiabatic coupling unit vector $\hat{\vec d}_{i\eta} = \hat{\vec d}_{i\eta}(\vec r_\eta(t^\prime))$ is evaluated at the position along the main trajectory at time $t^\prime$.
 
 The above scheme is constructed to track a mean trajectory for each state, where `mean' is defined as a weighted sum of positions and velocities with those of the main trajectory whenever transitions from the latter occur, taking into account velocity jumps and frustrated transitions, with the energy conservation calculation for the velocity jumps based on the potentials at the location of the main trajectory.
 
@@ -873,7 +853,7 @@ On the other hand, note what happens in~\figref{fig:decoherence_rate_example} wh
 
 Another argument is that, if two wavepackets are co-located in space but not in velocity space, the amplitude of one of them as seen from the centre-of-mass position of the other is not zero. It's the fact that their relative phase varies so much over the extent of the wavepackets that causes their projection onto each other to be small when their velocities are very different.\footnote{Some call this `dephasing' to distinguish from other forms of decoherence.} So it's only after this averaging process---integrating over all space---that the wavepackets look like they are small from each other's perspective. One of the common themes of this method as a whole is that we are often happy with \emph{representative} results rather than average ones, drawing results from approximately correct statistical distributions, and only observing the complete distribution when we analyse a large sample of results. Continuing in this vein, why not consider the value of the multi-component wavefunction along a specific trajectory in space, rather than its projection onto a Gaussian? The projection of a multi-component wavefunction onto a Gaussian isn't an any more useful or intuitive quantity than tracing a curve through spacetime and asking ``what is the wavefunction here?" This way instead of a simulation telling us ``There was, on average, no population transfer to such-and-such state", it would give a (more likely to be useful in my opinion) answer ``there was a lot of population transfer to this state, but the phase is essentially random". 
 
-The final argument is empirical: I've tried simulating the model with the Guassian projections, and it doesn't work well unless wavepackets are small. The decoherence rates are too high, presumably for the speculative reasons discussed above. This damps the population of states other than that selected by the hidden varaible too quickly, such that the simulation says that the population of a state is zero even though according to the Schr\"odinger wave equation it should not be (it merely has an inhomogeneous phase). Simply deleting the terms caused by velocity separation from the decoherence rate expressions still does not yield great results. But if project onto a Dirac delta then there is no velocity-separation term to argue for the deletion of, and I obtain better results in any case.
+The final argument is empirical: I've tried simulating the model with the Guassian projections, and it doesn't work well unless wavepackets are small. The decoherence rates are too high, presumably for the speculative reasons discussed above. This damps the population of states other than that selected by the hidden varaible too quickly, such that the simulation says that the population of a state is zero even though according to the Schr\"odinger wave equation it should not be (it merely has an inhomogeneous phase). Simply deleting the terms caused by velocity separation from the decoherence rate expressions improves the results somewhat. But if project onto a Dirac delta then there are no velocity-separation terms to argue for the deletion of, and I obtain modestly better results in any case (as shown in Section~\ref{sec:results}).
 
 Shenvi et al.~\cite{doi:10.1063/1.3575588} also seem to find the velocity-separation term of their decoherence factor troublesome, and opt to remove it by gauge transforming the wavepackets to have the same velocity. They argue that because at least a small initial velocity difference between wavepackets is required by energy conservation (i.e.~the velocity jumps from Section~\ref{sec:velocity_correction}), that it is `unfair' to have an initial sudden drop in coherence because of this. I agree that it is strange, but suspect that it is because we are insisting on projecting onto Gaussians. After all, velocity jumps or not, unless there is a mistake in our maths these are the actual decoherence factors between two Gaussians. If we don't like the answer, perhaps the projection of the total wavefunction onto a Guassian isn't the question we meant to ask. Perhaps we should be asking simply what value a multi-component wavefunction has at a specific point in space. Shenvi et al.~gauge transform away the entire velocity difference between the wavepackets, not only the part of it mandated by energy conservation, leading me to suspect that some of the same concerns I outlined above occurred to them too, or that they simply observed, like me, that the velocity separation was responsible for what appeared to be unphysically large decoherence rates in their results.
 
@@ -923,7 +903,7 @@ More complex initial conditions are possible, there is no reason why one can't d
 Evolving the Markovian hidden-variable semiclassical method involves three coupled differential equations, a stochastic evolution rule, and some additional steps to be performed in between numerical integration steps. Because the modifications in between steps can be discontinuous, multi-step integration schemes that retain information from previous integration steps should be avoided. One step of the Markovian hidden variable semiclassical method comprises the following steps to evolve the state variables from time $t$ to $t^\prime = t + \upDelta t$, where $\upDelta t$ is small compared to dynamical timescales of the problem.
 
 \begin{enumerate}
-    \item Evolve the internal state vector and motional state variables of each atom from time $t$ to $t^\prime$ according to the the following coupled differential equations, using one or more steps of your favourite non-multi-step numerical integration method:
+    \item Evolve the internal state vector and motional state variables of each atom from time $t$ to $t^\prime$ according to the following coupled differential equations, using one or more steps of your favourite non-multi-step numerical integration method:
     \begin{align}
     \dv{t}\ket{\tilde\chi(t)} &= -\frac\ii\hbar \hat H(\vec r, t)\ket{\tilde\chi(t)} - \hat\Gamma^\up{Markov\,\textsc{dd}}_\eta(\vec r, t)\ket{\tilde\chi(t)},\\
     \dv{t}\vec v(t) &= -\frac1m\nabla V_\eta(\vec r, t),\\
@@ -970,8 +950,6 @@ This completes the Markovian hidden-variable semiclassical method.
 
 \subsection{Mean auxiliary trajectories hidden-variable semiclassical method}\label{sec:non_markovian_decoherence}
 
-[TODO: UPDATE AUX TRAJECTORIES BEFORE COMPUTING JUMPS, UPON JUMP DISCARD AUX TRAJECTORY AND REPLACE WITH PREVIOUS MAIN TRAJECTORY. DISCARD AUX TRAJECTORIES THAT HAVE SMALL POPULATIONS - REPLACE WITH MAIN TRAJECTORY PLUS VELOCITY DIFFERENCE. ENSURE THE UPDATING OF AUX TRAJECTORIES MATCHES THE PYTHON CODE. INCLUDE PLOTS OF BZ FOR THE MIRROR SIMS AND NORMAL SIMS.]
-
 This is the more complex version of my method. Additional classical trajectories are propagated---one for each internal state of each atom---but other than classically evolving these additional trajectories, the increase in computational cost is minimal.
 
 \subsubsection{State variables}
@@ -990,7 +968,7 @@ The manner of generating initial conditions of the mean auxiliary trajectories v
 The evolution of the state variables for each atom from time $t$ to $t^\prime = t + \upDelta t$ in the non-Markovian hidden-variable semiclassical method proceeds similarly to the Markovian variant.
 
 \begin{enumerate}
-    \item Evolve the internal state vector and set of motional state variables of each atom from time $t$ to $t^\prime$ according to the the following coupled differential equations, using one or more steps of your favourite non-multi-step numerical integration method:
+    \item Evolve the internal state vector and set of motional state variables of each atom from time $t$ to $t^\prime$ according to the following coupled differential equations, using one or more steps of your favourite non-multi-step numerical integration method:
     \begin{align}
     \dv{t}\ket{\tilde\chi(t)} &= -\frac\ii\hbar \hat H(\vec r_\eta, t)\ket{\tilde\chi(t)} - \hat\Gamma^\up{\textsc{mmdd}}_\eta(t)\ket{\tilde\chi(t)},\\
     \dv{t}\vec v_i(t) &= -\frac1m\nabla V_i(\vec r_i, t),\\
@@ -1000,7 +978,7 @@ The evolution of the state variables for each atom from time $t$ to $t^\prime = 
     \begin{align}
     \hat\Gamma^\up{\textsc{mmdd}}_\eta(t) = \sum_i\ketbra{\chi_i(\vec r_\eta, t)}{\chi_i(\vec r_\eta, t)}\gamma^\up{\textsc{mmdd}}_{\eta i}(t),
     \end{align}
-    where $\gamma^\up{\textsc{mmdd}}_{ij}(t)$ are the minimal-memory non-Markovian decoherence rates given by~\eqref{eq:minimal_memory_decoherence_rate_dd}; $\gamma^\up{\textsc{mmdd}}_{\eta j}(t)$ comprising the diagonals of $\hat\Gamma^\up{\textsc{mmdd}}_\eta(t)$ if working in the local eigenbasis along the main trajectory.
+    where $\gamma^\up{\textsc{mmdd}}_{ij}(t)$ are the minimal-memory non-Markovian decoherence rates given by~\eqref{eq:minimal_memory_decoherence_rate_dd}; $\gamma^\up{\textsc{mmdd}}_{\eta j}(t)$ comprising the diagonals of $\hat\Gamma^\up{\textsc{mmdd}}_\eta(t)$ if working in the local eigenbasis along the main trajectory. When computing $\gamma^\up{\textsc{mmdd}}_\eta(t)$, clip its real part from below to zero. Although such recoherence can in principle be physically meaningful, it can arise out of tiny amplitudes of states with auxiliary trajectories far from the main trajectory, and is hence subject to large floating point error.\footnote{Large error in \emph{positive} (real parts of) decoherence rates in the same context is not a problem, as the state amplitudes are already very close to zero, so the accuracy of the rate at which they more closely approach zero is of no consequence.} I have not observed this problem with the Dirac-delta based decoherence rates, but it does seem to appear if the Gaussian-projection based decoherence rates are used.
 
     \item Normalise the internal state vector to unit norm:
     \begin{align}
@@ -1031,9 +1009,7 @@ Here I demonstrate the two variants of the method, each for two different spatia
 
 I simulated both scenarios first using the Schr\"odinger wave equation, as the gold-standard against which to benchmark the other methods. Numerically I solved the for the three-component wavefunction using fourth order Runge--Kutta (Section~\ref{sec:rk4}) and the Fourier method of evaluating spatial derivatives (Section \ref{sec:fourier_pseudospectral}). I added imaginary potentials near the boundaries of the region I wished to simulate to absorb untrapped wavepackets rather than have them reflect or wrap around due to periodic boundary conditions inherent in the Fourier method of derivatives. The initial condition was a Gaussian wavepacket in the locally spin-down eigenstate, $m_F = -1$, though I simulated in the eigenbasis of $\hat F_z$, transforming as necessary to create the initial condition and later to compare state populations in the local eigenbasis.
 
-I then simulated both scenarios with $1\times10^4$ semiclassical atoms using the Ehrenfest semiclassical method. The initial conditions were set by drawing positions and velocities randomly for each semiclassical particle from the position and velocity probability distributions implied by the Gaussian wavepacket.
-
-Then, I simulated the same scenarios with the Markovian hidden variables semiclassical method, also with $1\times10^4$ atoms and initial conditions chosen the same way as in the Ehrenfest model. Finally, I simulated the scenarios using the mean-auxiliary-trajectories variant of the hidden variables semiclassical method, with again the same number of atoms and initial conditions.
+I then simulated both scenarios with $1\times10^4$ semiclassical atoms using the Ehrenfest semiclassical method, the Markovian hidden-variable semiclassical method, and the mean auxiliary trajectories hidden-variable semiclassical model. The initial conditions were set by drawing positions and velocities randomly for each semiclassical particle from the position and velocity probability distributions implied by the Gaussian wavepacket.
 
 For both semiclassical methods I used simple first-order split-step evolution for the quantum evolution in the local eigenbasis, and evolved the classical trajectories analytically using constant acceleration over each timestep:
 \begin{align}
@@ -1045,15 +1021,24 @@ where $z$, $v$ and $t$ are the position, velocity and time at the start of a tim
 
 \subsubsection{Scenario I}
 
-In this scenario, a $^{87}$Rb atom begins as an initially stationary Gaussian wavepacket of width $600\unit{nm}$ centred at $z_0 = -20\unit{\upmu m}$ in the Zeeman potential experienced by the $F=1$ groundstate manifold [SEC SECREF ATOMIC PHYSICS] with the following magnetic field profile:
+In this scenario, a $^{87}$Rb atom begins as an initially stationary Gaussian wavepacket of width $600\unit{nm}$ centred at $z_0 = -20\unit{\upmu m}$ in the Zeeman potential experienced by the $F=1$ groundstate manifold (Section~\ref{sec:zeeman_sublevels}) with the following magnetic field profile:
 \begin{align}
 \vec B_\up{trap}(z) = (B_x, B_y, B_z) = \left(B_\perp, 0, B_z^\prime z\right)
 \end{align}
-where the transverse magnetic field is $B_\perp = 162.5\unit{mG}$ and the $z$-gradient is $B_z^\prime = 250\unit{G\,cm^{-1}}$. This potential provides a region close to $z=0$ where the magnetic field rapidly reverses direction too quickly for the atom's spin to adiabatically follow, inducing Majorana transitions. The atom accelerates under the initial potential gradient toward this region. Results are shown in Figure~\ref{fig:scenario_one_markovian} for the Markovian model and Figure~\ref{fig:scenario_one_aux} for the auxiliary trajectories model.
+where the transverse magnetic field is $B_\perp = 162.5\unit{mG}$ and the $z$-gradient is $B_z^\prime = 250\unit{G\,cm^{-1}}$. This potential provides a region close to $z=0$ where the magnetic field rapidly reverses direction too quickly for the atom's spin to adiabatically follow, inducing Majorana transitions. The atom accelerates under the initial potential gradient toward this region. The adiabatic potentials resulting from the Zeeman Hamiltonian with this magnetic field are shown in~\figref{fig:scenario_1}. Results are shown in Figure~\ref{fig:scenario_one_markovian} for the Markovian model and Figure~\ref{fig:scenario_one_aux} for the auxiliary trajectories model.
 
+\begin{figure}[h]
+    \centerfloat
+    \includegraphics{figures/hidden_variables/scenario_1.pdf}
+    \caption{Adiabatic potentials for scenario I with a single region of coupling. The initial probability distribution of the atoms is depicted (in arbitrary units), offset for clarity by the adiabatic potential of the initial state.}\label{fig:scenario_1}
+\end{figure}
+\begin{figure}[h]
+    \centerfloat
+    \includegraphics{figures/hidden_variables/scenario_2.pdf}
+    \caption{Adiabatic potentials for scenario II, with two closely spaced coupling regions. The initial probability distribution of the atoms is depicted (in arbitrary units), offset for clarity by the adiabatic potential of the initial state.}\label{fig:scenatio_2}
+\end{figure}
 \subsubsection{Scenario II}
-
-Scenario II is identical to scenario I, except that the magnetic field profile is instead
+Scenario II is identical to scenario I, except that the magnetic field profile is instead\footnote{This field profile is unphysical, but serves as a good test that highlights the improvement of the mean auxiliary trajectories method over the Markovian method.}
 \begin{align}
 \vec B_\up{trap}(z) = (B_x, B_y, B_z) = \begin{cases}
 \left(B_\perp, 0, B_z^\prime (z + z_\up{fieldmin})\right) & z < 0\\
@@ -1061,7 +1046,7 @@ Scenario II is identical to scenario I, except that the magnetic field profile i
 \left(B_\perp, 0, -B_z^\prime  (z + z_\up{fieldmin})\right) & z >= 0
 \end{cases}
 \end{align}
-where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimum to the origin, such that the two minima are separated by $5\unit{\upmu m}$, and with the other variables having the same values as in scenario I. This field profile is unphysical, but serves as a good test that highlights the improvement of the mean-auxiliary-trajectories method over the Markovian method. Results are shown in Figure~\ref{fig:scenario_two_markovian} for the Markovian model and Figure\ref{fig:scenario_two_aux} for the auxiliary trajectories model.
+where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimum to the origin, such that the two minima are separated by $5\unit{\upmu m}$, and with the other variables having the same values as in scenario I. The adiabatic potentials resulting from the Zeeman Hamiltonian with this magnetic field are shown in~\figref{fig:scenario_2}. Results are shown in Figure~\ref{fig:scenario_two_markovian} for the Markovian model and Figure\ref{fig:scenario_two_aux} for the auxiliary trajectories model.
 
 \afterpage{
 \newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
@@ -1076,7 +1061,7 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
     \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc/trajectories.pdf}
     }
-    \caption{Simulation results comparing the Schr\"odinger wave equation, Ehrenfest semiclassical method, and hidden-variable semiclassical method using approximate Markovian decoherence in scenario I. (a) The populations $N$ in each spin projection state (denoted $N_\pm$, $N_0$ for $m_F=\pm 1$ and $m_F=0$ respectively) over time, obtained for the Schr\"odinger wave equation ($N_\up{S}$) by integration in the local basis over all space, for the Ehrenfest semiclassical model ($N_\up{E}$) as an expectation value over all semiclassical atoms' internal state vectors, and for the hidden-variable semiclassical method ($N_\up{H}$) as the proportion of atoms with the hidden variable specifying each state at each moment of time. The lines ending just after $1\unit{ms}$ is due to atoms/amplitude leaving the integration region. There is good agreement between all methods for the first approach of the field minimum, though the Ehrenfest trajectories do not make a second approach within the simulation time. The remaining deviations between the Schr\"odinger and hidden-variable curves are within the random variation of the stochastic method. (b) The state populations along specific trajectories corresponding to classical motion in $m_F=-1$ (top) for all time, switching to $m_F=0$ at the first field minimum (middle), and to $m_F=1$ (bottom). Obtained by interpolation and normalisation of the Schr\"odinger wave equation results and by selecting the semiclassical atoms making hidden-variable transitions closest to the chosen points (black lines). An Ehrenfest atom is chosen for comparison that was close to the given trajectory until the field minimum, after which it diverged. This plot shows the shape of the decoherence curves and how our exponential approximation is a poor fit, but does have the correct timescale and is better than the Ehrenfest method's absence of any decoherence. (c) Probability density of trajectories. Schr\"odinger wave equation results are shaded, and Ehrenfest and hidden-variable semiclassical results shown with a single contour line for a chosen density. Inset: The probability distributions at $1\unit{ms}$. There is good agreement between the hidden-variable semiclassical and Schr\"odinger wave equation results.}\label{fig:scenario_one_markovian}
+    \caption{Scenario I results for the approximate Markovian decoherence hidden variable semiclassical method, compared to the Schr\"odinger wave equation and Ehrenfest semiclassical method. (a) The populations $N$ in each spin projection state (denoted $N_\pm$, $N_0$ for $m_F=\pm 1$ and $m_F=0$ respectively) over time, obtained for the Schr\"odinger wave equation ($N_\up{S}$) by integration in the local basis over all space, for the Ehrenfest semiclassical model ($N_\up{E}$) as an expectation value over all semiclassical atoms' internal state vectors, and for the hidden-variable semiclassical method ($N_\up{H}$) as the proportion of atoms with the hidden variable specifying each state at each moment of time. The lines ending just after $1\unit{ms}$ is due to atoms/amplitude leaving the integration region. There is good agreement between all methods for the first approach of the field minimum, though the Ehrenfest trajectories do not make a second approach within the simulation time. The remaining deviations between the Schr\"odinger and hidden-variable curves are within the random variation of the stochastic method. (b) The state populations along specific trajectories corresponding to classical motion in $m_F=-1$ (top) for all time, switching to $m_F=0$ at the first field minimum (middle), and to $m_F=1$ (bottom). Obtained by interpolation and normalisation of the Schr\"odinger wave equation results and by selecting the semiclassical atoms making hidden-variable transitions closest to the chosen points (black lines). An Ehrenfest atom is chosen for comparison that was close to the given trajectory until the field minimum, after which it diverged. This plot shows the shape of the decoherence curves and how our exponential approximation is a poor fit, but does have the correct timescale and is better than the Ehrenfest method's absence of any decoherence. (c) Probability density of trajectories. Schr\"odinger wave equation results are shaded, and Ehrenfest and hidden-variable semiclassical results shown with a single contour line for a chosen density. Inset: The probability distributions at $1\unit{ms}$. There is good agreement between the hidden-variable semiclassical and Schr\"odinger wave equation results.}\label{fig:scenario_one_markovian}
 \end{figure}
 \restoregeometry}
 
@@ -1093,7 +1078,7 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
     \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc_aux/trajectories.pdf}
     }
-    \caption{Simulation results comparing the Schr\"odinger wave equation, Ehrenfest semiclassical method, and hidden-variable semiclassical method using auxiliary trajectories in scenario I. (a) as described in~\figref{fig:scenario_one_markovian}. Once again, there is good agreement between all methods for the first approach to the field minimum, and good agreement between the hidden-variable semiclassical method for the second approach, though the Ehrenfest trajectories do not approach a second time. Again, the remaining deviation is within the range expected given the stochastic algorithm and could be reduced by increasing the sample size. (b) Populations after projecting onto specific classical trajectories, as and comparing with semiclassical atoms closest to those trajectories, as also described in~\figref{fig:scenario_one_markovian}. Here we see that the decoherence curves traced out by the auxiliary-trajectories method are in much closer agreement with the results of the Schr\"odinger wave equation than those of the Markovian model. Again, the discrepancies are within the statistical variation of the model; shown in each subplot is the atom that was closest to the given trajectory but none are exactly aligned with the trajectories. (c). Probability density of trajectories of the three methods, as described in~\figref{fig:scenario_one_markovian}. Once again there is excellent agreement between the Schr\"odinger wave equation and hidden-variable semiclassical methods, with the Ehrenfest trajectories showing the expected unphysical behaviour.}\label{fig:scenario_one_aux}
+    \caption{Scenario I results for the mean-auxiliary-trajectories hidden variable semiclassical method compared to the Schr\"odinger wave equation (Ehrenfest results excluded from this and subsequent results plots for clarity). (a) as described in~\figref{fig:scenario_one_markovian}. Once again, there is good agreement between all methods for the first approach to the field minimum, and good agreement between the hidden-variable semiclassical method for the second approach, though the Ehrenfest trajectories do not approach a second time. Again, the remaining deviation is within the range expected given the stochastic algorithm and could be reduced by increasing the sample size. (b) Populations after projecting onto specific classical trajectories, as and comparing with semiclassical atoms closest to those trajectories, as also described in~\figref{fig:scenario_one_markovian}. Here we see that the decoherence curves traced out by the auxiliary-trajectories method are in much closer agreement with the results of the Schr\"odinger wave equation than those of the Markovian model. Again, the discrepancies are within the statistical variation of the model; shown in each subplot is the atom that was closest to the given trajectory but none are exactly aligned with the trajectories. (c). Probability density of trajectories of the three methods, as described in~\figref{fig:scenario_one_markovian}. Once again there is excellent agreement between the Schr\"odinger wave equation and hidden-variable semiclassical methods, with the Ehrenfest trajectories showing the expected unphysical behaviour.}\label{fig:scenario_one_aux}
 \end{figure}
 \restoregeometry}
 
@@ -1110,7 +1095,7 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
     \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc_mirror/trajectories.pdf}
     }
-    \caption{Simulation results comparing the Schr\"odinger wave equation, Ehrenfest semiclassical method, and hidden-variable semiclassical method using approximate Markovian decoherence in scenario II. All subfigures as described in~\figref{fig:scenario_one_markovian}. There are two minima in the magnetic field, closely spaced near $z=0$. Here we see the breakdown of the Markovian model in the presence of a second region of non-adiabatic coupling that the atoms encounter before they have fully decohered after the first. (a) The inaccurate modelling of decoherence has resulted in the wrong relative populations and phases between the states when the atom encounters the second region of coupling, leading to completely different populations after it emerges from the second field minimum. (b) Populations along specific classical trajectories. Incorrect decoherence curves were inconsequential when there were no closely spaced field minima, but here the wrong curves mean the wrong initial conditions as the atom begins to make transitions again near second field minimum. If the minima were farther separated, the exponential decoherence curve would decay the system back to a single eigenstate, which would be correct. At shorter times, it matters whether the decoherence curves actually have the right shape. (c) Probability distributions of trajectories. The trajectories themselves are in excellent agreement with the Schr\"odinger wave equation---but there are the wrong proportion of atoms in each cluster of trajectories.}\label{fig:scenario_two_markovian}
+    \caption{Scenario II results for the approximate Markovian decoherence hidden variable semiclassical method compared to the Schr\"odinger wave equation. All subfigures as described in~\figref{fig:scenario_one_markovian}. There are two minima in the magnetic field, closely spaced near $z=0$. Here we see the breakdown of the Markovian model in the presence of a second region of non-adiabatic coupling that the atoms encounter before they have fully decohered after the first. (a) The inaccurate modelling of decoherence has resulted in the wrong relative populations and phases between the states when the atom encounters the second region of coupling, leading to completely different populations after it emerges from the second field minimum. (b) Populations along specific classical trajectories. Incorrect decoherence curves were inconsequential when there were no closely spaced field minima, but here the wrong curves mean the wrong initial conditions as the atom begins to make transitions again near second field minimum. If the minima were farther separated, the exponential decoherence curve would decay the system back to a single eigenstate, which would be correct. At shorter times, it matters whether the decoherence curves actually have the right shape. Because our semiclassical atoms near the centre of the wavepacket have very small population in $m_F=0$ and $m_F=-1$ states after the second region of coupling, my algorithm for finding the best atom to plot was unable to find any atoms whose hidden variable remained in these two states after the first region of coupling. I therefore allowed it to include atoms that made additional spin flips, so long as they quickly transitioned back to the desired state. This can be seen as groups of multiple black lines indicating a number of closely spaced spin flips. As mentioned earlier, this is one disadvantage of Schr\"odinger theory: it often makes multiple transitions in a region of coupling in cases where Tully's fewest-switches algorithm would make only one, making it harder to pick out which atoms made certain transitions of interest. (c) Probability distributions of trajectories. The trajectories themselves are in excellent agreement with the Schr\"odinger wave equation---but there are the wrong proportion of atoms in each cluster of trajectories.}\label{fig:scenario_two_markovian}
 \end{figure}
 \restoregeometry}
 
@@ -1127,115 +1112,72 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
     \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc_aux_mirror/trajectories.pdf}
     }
-    \caption{Simulation results comparing the Schr\"odinger wave equation, Ehrenfest semiclassical method, and hidden-variable semiclassical method using auxiliary trajectories in scenario II. All subfigures as described in~\figref{fig:scenario_one_markovian}. (a) Here we see that the auxiliary-trajectories method of modelling decoherence leads to correct populations (again, they are within statistical error), even when there are two field minima closely spaced. (b) Here we see why: the decoherence curves match those of the Schr\"odinger wave equation in between the two field minima (identifiable by the two large vertical drops in the $m_F=-1$ population), providing the correct initial conditions as the atoms approach the second field minimum. (c) The trajectories and probability density functions agree well.}\label{fig:scenario_two_aux}
+    \caption{Scenario II results for the mean-auxiliary-trajectories hidden variable semiclassical method compared to the Schr\"odinger wave equation. All subfigures as described in~\figref{fig:scenario_one_markovian}. (a) Here we see that the auxiliary-trajectories method of modelling decoherence leads to correct populations (again, they are within statistical error), even when there are two field minima closely spaced. (b) Here we see why: the decoherence curves match those of the Schr\"odinger wave equation in between the two field minima (identifiable by the two large vertical drops in the $m_F=-1$ population), providing the correct initial conditions as the atoms approach the second field minimum. (c) The trajectories and probability density functions agree well.}\label{fig:scenario_two_aux}
 \end{figure}
 \restoregeometry}
 
+\clearpage
+
+\subsection{Gaussian projection results}
+
+Here I demonstrate the difference between the above results, which use the Dirac-delta decoherence rates, with what one obtains if projecting onto a Gaussian instead as we originally proposed before changing our minds in Section~\ref{sec:dirac_deltas}. Here I only use the mean-auxiliary-trajectories method; though as argued in Section~\ref{sec:dirac_deltas}, the Markovian decoherence rate has its problems too when derived assuming Gaussian projections.
+
+For these results I simulated scenario II, in which there are two closely spaced magnetic field minima, using two different decoherence rates. In the first, I take the decoherence rate $\gamma^\up{\textsc{mm}}_{ij}(t)$ given by~\eqref{eq:mm_decoherence_rate} at face value, velocity-space separation included. This leads to poor results as the decoherence is clearly too fast, as shown in~\figref{fig:very_bad_gamma}.
+
+In the second, I make a similar change to that of Shenvi et al.~\cite{doi:10.1063/1.3575588}, setting $\vec k_{ij} = 0$ for the relative wavenumber of the two Gaussian wavepackets in the decoherence factor~\eqref{eq:decoherence_factor}, and otherwise proceeding as normal. This gives a decoherence rate
+\begin{align}
+\gamma^\up{\textsc{mm}}_{ij}|_{\vec k_{ij} = 0}(t) = \frac{1}{4\sigma^2}\vec r_{ij}(t)\cdot\vec v_{ij}(t).
+\end{align}
+This leads to much better results, shown in~\figref{fig:bad_gamma} but still not as good as the Dirac-delta projection based decoherence rate. 
+
+\afterpage{
+\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+\begin{figure}
+    % \centering
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux_mirror_very_bad_gamma/populations.pdf}
+    }\\
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux_mirror_very_bad_gamma_delta/populations_along_trajects.pdf}
+    }
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux_mirror_very_bad_gamma/trajectories.pdf}
+    }
+    \caption{Scenario II results with Gaussian-projection based decoherence with the mean-auxiliary-trajectories hidden-variable semiclassical model, compared to the Schr\"odinger wave equation. All subplots as described in~\figref{fig:scenario_one_markovian}. (a) Populations after the first region of coupling are correct, but are clearly not correct after the second region of coupling. (b) We see that the cause of this is decoherence that is much too fast decoherence, with population of states other than that selected by the hidden variable decaying away at a rate as fast or faster than that at which it appears, leading to symmetrical profiles in population around the coupling regions. Of course, since this plot is comparing the state vector's populations to the exact wavefunction along specific trajectories, and the decoherence model for this simulation is one based on projecting onto Gaussians rather than Dirac deltas centred exactly on the trajectory, we should not expect them to exactly agree (for that we would need to compare to projections of the exact wavefunctions onto Gaussians). However the disagreement is stark enough to make our point despite this. (c) As with the other results with poor modelling of decoherence, the trajectories are correct but the populations are not.}\label{fig:very_bad_gamma}
+\end{figure}
+\restoregeometry}
+
+\afterpage{
+\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+\begin{figure}
+    % \centering
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux_mirror_bad_gamma/populations.pdf}
+    }\\
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux_mirror_bad_gamma_delta/populations_along_trajects.pdf}
+    }
+    \subfloat[]{
+    \includegraphics{figures/hidden_variables/hvsc_aux_mirror_bad_gamma/trajectories.pdf}
+    }
+    \caption{Scenario II results with Gaussian-projection based decoherence under the assumption of zero relative wavenumber between the Gaussians being projected onto each other when computing the decoherence rate. This decoherence rate $\gamma^\up{\textsc{mm}}_{ij}|_{\vec k_{ij} = 0}(t)$ is used with the mean-auxiliary-trajectories hidden-variable semiclassical model, and the results compared to the Schr\"odinger wave equation. All subplots as described in~\figref{fig:scenario_one_markovian}. (a) State populations are in much closer agreement with the Schr\"odinger wave equation results than when we did not set the relative wavenumber of the Gaussians to zero (\figref{fig:very_bad_gamma}). However, they are still not as accurate as our Dirac-delta based decoherence model (\figref{fig:scenario_two_aux}). (b) As with~\figref{fig:very_bad_gamma}, we should not expect the Schr\"odinger wave equation results along the trajectories of the semiclassical atoms to agree with the state populations. However, for the three semiclassical atoms plotted (chosen as their trajectories were closest to the centre of the Gaussians and their transitions closest to the centre of the first region of coupling), they appear to agree quite well, including immediately after the second region of coupling. This may be a coincidence, or perhaps population transfers for atoms near the centre of the Gaussian are computed accurately with this decoherence model, but less accurately for atoms on other trajectories. (c). As usual, the trajectories are correct. We can see the minor error in populations in the inset, and it does not appear that the populations are more accurate in the centre as we just speculated. So any region of high accuracy in population transfer must be small enough to be hidden within the bins of the histogram, and is therefore not particularly of interest.}\label{fig:bad_gamma}
+\end{figure}
+\restoregeometry}
+
+\clearpage
 
 \section{Discussion and conclusion}\label{sec:HVSC_discussion}
 
-[AD HOC, HAVE NOT CONSOLIDATED TO MINIMAL ASSUMPTIONS]
+The methods presented in this chapter give acceptable results in different scenarios. The Markovian decoherence model (Section~\ref{sec:markovian_decoherence} and modifications in Section~\ref{sec:dirac_deltas}) is able to obtain accurate trajectories and state populations for semiclassical atoms in the case of non-adiabatic coupling regions that are encountered at intervals that are large compared to the decoherence time, but produces inaccurate populations if multiple coupling regions are encountered at smaller time intervals. The mean auxiliary trajectories method (Section~\ref{sec:non_markovian_decoherence} and modifications in Section~\ref{sec:dirac_deltas}) solves this problem by more accurately modelling dynamic decoherence curves, and is therefore able to obtain accurate trajectories and state populations even in the presence of multiple regions of coupling encountered at intervals comparable to the decoherence timescale. Both methods are improvements over the Ehrenfest semiclassical method, which has no decoherence and no separation of trajectories, and over Tully's original model, which had separation of trajectories but no decoherence. 
 
-[MINIMAL HOPPING IS BEST BECAUSE LESS UNCERTAINTY]
+The problem of velocity separation of wavepackets causing unexpected and undesired additional decoherence appears to be resolvable by instead modelling a projected state vector that is a projection of the multi-component wavefunction onto a Dirac delta---rather than a Gaussian wavepacket---equivalent to evaluating the wavefunction at a specific point in space following a classical trajectory over time (Section~\ref{sec:dirac_deltas}). The total multi-component wavefunction is still modelled as a collection of Gaussian wavepackets following classical trajectories. I believe that this is a more natural way to obtain state vectors that are statistically representative of the underlying multi-component wavefunctions we are approximating. By not being based on integrating wavepacket overlaps over space, population in a state with a different phase gradient is not treated as having vanished merely because it has an inhomogeneous phase---instead we obtain some population, and some (perhaps rapidly varying) phase.
 
-[SCHRODINGER THEORIES ONLY REDEEMING FEATURE IS THAT IT WORKS FOR LARGE TIMESTEPS]
+The above solution to the velocity separation problem, along with my method of averaging auxiliary trajectories in order to model only one trajectory per internal state of the atom, are modest improvements over similar methods such as that by Shenvi et al.~\cite{doi:10.1063/1.3575588}. The decoherence rate that results when Shenvi et al.~remove velocity separation from their decoherence calculation are still based on the overlap of two Gaussians, and is therefore still a kind of average over the entire wavepacket. The real part of the resulting decoherence rate is different from mine, based on Dirac deltas, by a factor of two, and lacks an imaginary part (velocity separation in my model still causes a phase shift). As I've argued, using the value at the centre of the wavepacket is more natural than averaging, as this gives you something closer to a value the wavefunction actually has at some point in space, and this is borne out by the simulation results in the previous section.
 
-[MY METHOD MOST SIMILAR TO THIS ONE: Simultaneous-trajectory surface hopping: A parameter-free algorithm for implementing
-decoherence in nonadiabatic dynamics. But they use Gaussians and have to contort themselves to get out of the velocity separation shenanigans.]
+Schr\"odinger theory is new to surface hopping as far as I know, and I've shown in the results section of this chapter that it gives good results. However, as discussed in Section~\ref{sec:schrodinger_theory_numerics}, it is considerably computationally expensive to compute transition probabilities from, though it can take as input arbitrary unitaries, allowing one to compute transition probabilities consistent with quantum evolution over arbitrary time intervals, rather than integrating infinitesimal transition probabilities over a finite time interval as with Tully's fewest switches. 
 
-[DECOHERENCE RATE ISN"T ACTUALLY ZERO BECAUSE THERE ARE VELOCITY JUMPS ENSURINGG OTHER TRAJECTS ARE NOT THE SAME SPEED - BUT IT IS FAR TOO SMALL TO BE USEFUL]
+The fact that Tully's fewest-switches algorithm gives smaller transition probabilities than Schr\"odinger theory (even though both are consistent with the quantum probabilities) makes it more desirable for use in a surface-hopping/hidden-variable semiclassical model. This is because every transition the hidden variable of a semiclassical atom makes is an opportunity for the atom to spend some time subject to a different potential. Even if the probability of the atom ending up in the right state is correct, the more potential surfaces it visits on its way there, the larger the variance in the integrated force it experienced will be, and hence the larger the variance in its final trajectory. A larger number of transitions also implies a larger variance in the number of atoms in each state (as given by their hidden variable), even though the expectation value might agree with the quantum populations. A `fewest-switches' algorithm is therefore likely to be the most accurate in this sense of reduced statistical variation. One final advantage of fewest hops in the context of my mean-auxiliary-trajectories method is that it means the algorithm will not discard as many auxiliary trajectories upon switching to them, resulting in possibly more accurate decoherence.
 
-[VARIATIONS: DON'T UPDATE AUX TRAJECTORIES UPON FLIP, JUST JUMP TO THEM UNMODIFIED, AND REPROJECT THE WAVEFUNCTION. DOESN'T WORK WITH TIME-DEPENDENT FLIPS UNLESS WE DOUBLE THE NUMBER OF TRAJECTORIES. AVERAGE ALL TRAJECTORIES WITH ALL OTHERS BASED ON FLOWS? TOGETHER, THESE WOULD VERY MUCH DECREASE THE VARIANCE IN FINAL TRAJECTORY AFTER A FLIP - RIGHT NOW EACH FLIP INCREASES THE VARIANCE BECAUSE IT HAPPENS AT A RANDOM TIME]
+On that note, one could also imagine a variation of the method where an auxiliary trajectory is simply considered the main trajectory upon a transition, and not replaced by the previous main trajectory. In that case the number of hops would not influence whether the decoherence history was destroyed more than necessary. I have not though of a way to make this retention of auxiliary trajectories workable in light of conditional velocity jumps, though of course since the conditional velocity jump idea is untested, it may not turn out to be a problem.
 
-[FEWEST-HOPS DECREASES THE VARIANCE!]
-
-Although the method wasn't original, in rediscovering it I have identified that hidden-variable theories and hopping algorithms are in fact the same thing. I am relieved that I can use a hidden-variable theory that is numerically faster to compute then Schrodinger theory and wonder what the implications are for Aaronson's ideas, given the reasoning outlined in the intro that hidden-variable theories ought to be hard to compute. In addition, my decoherence method totally kicks butt and the time dependence thing is nifty.
-
-The recognition that surface hopping algorithms are hidden variable theories may be due to me.
-
-Discuss how it would make sense for the systems to behave in the presence of collisions w.r.t collapse of state vectors.
-
-\subsection{Comparison with Monte-Carlo wavefunction method and Stochastic Schr\"odinger equation} 
-The Stochastic Schr\"odinger equation [CITE] is very similar to the case where the measurement outcome is chosen at projection time, randomly each time rather than according to a hidden variable. This produces the same eventual transition probabilities, but is not suitable for us. If we moved the atom according to the force experienced by the state
-
-
-[DELETE EVERYTHING AFTER THIS AFTER MAKING SURE IT EXISTS ELSEWHERE SATISFACTORILY]
-
-% \section{Approximate Markovian decoherence rate for separating wavepackets}
-
-% Positional separation of two different internal states of an atom leads to decoherence of those states, with a decoherence factor $R_{ij}(t)$ equal to the overlap of the spatial wavefunctions of the two components in question a time $t$ after they began separating. Approximating both wavepackets as initially overlapping Gaussians of width $\sigma$, ignoring dispersion, and assuming they separate with constant relative acceleration $a_{ij}$, the decoherence factor is
-
-% \begin{align}
-% R_{ij}(t) &= \braket{\psi_i(t)}{\psi_j(t)}\\
-%  &= C \int_{-\infty}^{\infty} e^{-\frac{x^2}{4\sigma^2}}e^{-\frac{(x-x_\up{rel})^2}{4\sigma^2} + ik_\up{rel}x}\,\dd x,\label{eq:gaussian_integral}
-% \end{align}
-% where
-% \begin{align}
-% x_{\mathrm{rel}}(t) = \frac12a_{ij}t^2
-% \end{align}
-% and
-% \begin{align}
-% k_\up{rel}(t) = \frac m \hbar a_{ij} t
-% \end{align}
-% are the wavepackets' relative\footnote{$a_{ij}$, $x_\up{rel}$ and $k_\up{rel}$ are the acceleration, position, and wavenumber of the $j^\up{th}$ component with respect to the $i^\up{th}$ component, that is, $a_{ij} = a_j - a_i$, etc.} position and wavenumber due to acceleration for a time $t$ starting from zero relative velocity, and
-% \begin{align}
-% C^{-1}=\int_{-\infty}^\infty e^{-\frac{x^2}{2\sigma^2}}\,\dd x\label{supp:eq:Cdef}
-% \end{align}
-% is a normalisation constant [TODO CHECK IF NEEDS TO BE SQUARED]. Note that this expression holds for any number of dimensions---relative motion is only along one axis so the integrals in all other directions equal one.
-
-% Evaluating the Gaussian integral \eqref{eq:gaussian_integral} gives the following expression for the decoherence factor $R_{ij}(t)$:
-% \begin{align}
-% R_{ij}(t)&= e^{-\left[
-%         \frac{1} {8\sigma^2} x_\up{rel}^2
-%       + \frac i2 x_{\mathrm{rel}} k_\up{rel}
-%       + \frac{\sigma^2}{2} k_\up{rel}^2
-%       \right]}%\label{eq:decoherence_factor}.
-% \end{align}
-
-% This is a decoherence \emph{factor}; it is the factor by which the $(i, j)$ off-diagonal of the reduced density matrix for the atom's internal state will be reduced at time $t$. The corresponding decoherence \emph{rate} is given by the logarithmic derivative of \eqref{eq:decoherence_factor}:
-
-% \begin{align}
-% \Gamma_{ij}(t) = - \frac 1 {R_{ij}(t)} \dv t {R_{ij}(t)}.
-% \end{align}
-
-%  The fact that \eqref{eq:decoherence_factor} does not describe a constant decoherence rate (i.e., it does not have the functional form of exponential decay) means that the back action on the atom's internal state caused by measurements of its motional state will be different depending on the interval of time between measurements.
-
-% For example, the logarithmic derivative of \eqref{eq:decoherence_factor} approaches zero as $t$ goes to zero. This means that in the limit of infinitely frequent measurements, no decoherence occurs at all in between measurements, and the motional state is reset after each measurement such that the wavepackets never separate at all. This is the quantum Zeno effect, and its appearance in models of open quantum systems is usually treated as a reminder that the assumption of infinitely frequent strong measurements is unphysical [CITE].
-
-% Since experimentally we are not measuring atoms' motional states so frequently, we ought to wait until the wavepackets are completely separated before performing a projective measurement. As in quantum optics models of open quantum systems, in which the measurement interval ``should be large enough to allow the photons to get away from the atom" [CITE The Quantum Jump Approach
-% and Quantum Trajectories Gerhard C. Hegerfeldt], ours should be large enough for the atomic states to get away from each other.
-
-% If at large enough times, a decoherence rate is independent of time, that decoherence is called Markovian at that timescale. A Markovian environment is one that has no memory of the decoherence process---it ``forgets" any information caused by past interaction with the system. Even though at short times, all decoherence rates in quantum mechanics tend to zero [CITE], if they become Markovian on a timescale shorter than other timescales of interest, the Markov approximation can be used and a constant decoherence rate used at all times. In quantum optics, the decoherence factor for the internal state of an atom due to photon emission indeed tends to exponential decay on timescales that are still much shorter than that of the system evolution, and thus the Markov approximation is accurate.
-
-% Unlike quantum optics models, our decoherence factor does not describe Markovian decoherence on any timescale. In the limit of large $t$, its functional form is $e^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian [CITE] at that timescale. Nonetheless, if we wish to write a time-local differential equation for the internal state of the atom, Markovian decoherence is the only kind we can include [CITE].
-
-% To that end, we will now construct a ``time ignorant" version of $R_{ij}(t)$ that answers the question ``What is the expected decoherence factor at all future times, if you don't know how long it has been since the two wavepackets began separating?" In this way we can compute an \emph{average} decoherence rate $\Gamma_{ij}$ described by our decoherence factor, even though $R_{ij}(t)$ does not have a constant decoherence rate at large times. This essentially amounts to finding the best fitting exponential to $R_{ij}(t)$. Whilst this approximation is crude, it is nonetheless an improvement over the Ehrenfest model, which has no decoherence at all (i.e. it has a decoherence rate that is also constant like ours---but equal to zero).
-
-% We define the time-ignorant decoherence factor $\tilde R_{ij}(t)$ as the overlap of the wavefunction of the $i^\up{th}$ internal state with a superposition of wavepackets of the $j^\up{th}$ internal state, with the superposition being over all times in the past the wavepackets began separating:
-% \begin{align}
-% \tilde R_{ij}(t) &= \bra{\psi_i(t)} A\int_{-\infty}^0 \ket{\psi_j(t - t^\prime)} \,\dd t^\prime\\
-% \end{align}
-% where $A$ is a normalisation constant such that $\tilde R_{ij}(0) = 1$.
-% Since $\ket{\psi_i(t)}$ is time independent (rather, since we can perform our calculations in the frame of reference in which it is stationary), this is:
-% \begin{align}
-% \tilde R_{ij}(t) &= A\int_{-\infty}^0 R_{ij}(t - t^\prime) \,\dd t^\prime,
-% \end{align}
-% which is simply the convolution of our decoherence factor with a step function which is nonzero at all negative times.
-% Our average decoherence rate $\Gamma_{ij}$ is then given by the logarithmic derivative of $\tilde R_{ij}(t)$ at $t=0$:
-
-% \begin{align}
-% \Gamma_{ij} &= -\frac {\tilde R_{ij}^\prime(0)} {\tilde R_{ij}(0)}\\
-% &= -\frac {\int_0^\infty \tilde R_{ij}^\prime(t)\,\dd t} {\int_0^\infty \tilde R_{ij}(t)\, \dd t}\\
-% \Rightarrow \Gamma_{ij}^{-1}&= \int_0^\infty e^{-\left[
-%         \frac{1} {8\sigma^2} x_\up{rel}^2
-%       + \frac i2 x_{\mathrm{rel}} k_\up{rel}
-%       + \frac{\sigma^2}{2} k_\up{rel}^2
-%       \right]}\, \dd t.
-% \end{align}
-
-% As mentioned, $\Gamma_{ij}$ is the decay constant for the best fitting exponential to our decoherence factor \eqref{eq:decoherence_factor}. Although \eqref{eq:decoherence_factor} looks nothing like a decaying exponential in time, an exponential approximation to it nonetheless ought to decay to zero on the same timescale. An example of this is shown in \figref{fig:decoherence_factor_example}
-
-
-% \section{Choice of wavepacket size}
-
-% How big is a wavepacket? Be sure to say it's the thermal wavelength except not too big because the single mode approximation won't be valid otherwise. 
+Although the core idea of using a stochastically evolving variable to choose which classical force to subject a semiclassical atom to wasn't original, in rediscovering it I have identified that hidden-variable theories and hopping algorithms are in fact the same thing. With the ideas from the surface-hopping literature that my method previously lacked, and with my own improvements, I look forward to evangelising the method's use in the cold atom physics communities, as I think it has its place among the Monte Carlo wavefunction methods and stochastic Schr\"odinger equations in simulating evaporative cooling, laser cooling, and other phenomena in cold atom physics whenever thermal atoms are subject to state-dependent forces. 
