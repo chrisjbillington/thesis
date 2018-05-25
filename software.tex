@@ -42,8 +42,10 @@ We refer to the process of passing the HDF5 file to the user's code and running 
 \end{figure}
 
 \subsection{runviewer}
-[SCREENSHOT]
 
+[TODO SCREENSHOT]
+
+Runviewer is a program for viewing the results of \texttt{labscript} compilation in the form of graphical plots of the voltages, digital values, frequencies etc that comprise the hardware instructions produced. This is useful for debugging experiment design and timing of instructions, as well as verifying that a newly made \texttt{labscript} device class (the `driver' code for each device that converts \texttt{labscript}'s intermediate description of hardware instructions into the actual format required for a given device) is functioning as intended.
 \subsection{BLACS}
 
 \begin{figure}
@@ -55,6 +57,10 @@ We refer to the process of passing the HDF5 file to the user's code and running 
 
 BLACS (Better Lab Apparatus Control System) is a graphical program responsible for queueing experiment shots as compiled by labscript and runmanager, and executing them one after the other on the hardware. As such, BLACS interacts with a number of python classes that function as \emph{drivers} for each devices, containing code that uses the required software libraries, hardware drivers or communication protocols to communicate with the devices in the manner required by each one individually. BLACS executes the code for communicating with each device in a separate process in order to isolate them from each other, so that communication failures, software bugs or other failures that may occur in the interactions with one device will not stop BLACS from continuing to function in other respects. Errors are presented graphically and each device process may be restarted with the click of a button if something goes wrong. This is useful for both responding to unexpected failure, as well as for debugging during the development of the driver for a new device (or of new features for an existing device) being integrated with the labscript suite.
 
+Upon receiving an HDF5 file from \texttt{runmanager}, BLACS adds it to the queue of shots to be executed on the hardware. It then executes these shots in order, by programming the instructions stored in the HDF5 file into each device, and then giving the top level device the command to begin the experiment. Devices are programmed in parallel in their separate processes, saving time.\footnote{Particularly since many delays in programming the devices are communication delays, during which the process is simply idle.} Once the shot is complete, each device process is given the command to write any data acquired to the HDF5 file.
+
+BLACS can also repeat shots, by copying and then `cleaning' an HDF5 file after it has already run to produce a new shot file ready to be run on the hardware. It can repeat either all the shots, or just the last one in the queue. This ability to always keep running by repeating the last shot in the queue is crucial for experiments using alkali metal dispensers (`getters') or desorbing metal vapour using UV desorption [CITE, check correct name], as these must run on an approximately fixed duty cycle to maintain the desired atomic vapour pressure. If the experiment stops running, it will have to `warm up' again.
+
 \subsection{lyse}
 \begin{figure}
 \begin{center}
@@ -62,17 +68,47 @@ BLACS (Better Lab Apparatus Control System) is a graphical program responsible f
 \caption{Lyse as of 2018}\label{fig:lyse}
 \end{center}
 \end{figure}
-[SCREENSHOT]
 
-it's text:
+Once BLACS is done with the experiment, the shot files are optionally passed on to the analysis program \texttt{lyse}. \texttt{lyse} is essentially a scheduler for user-provided analysis routines. A list of analysis routines (in the form of Python scripts), called \emph{single-shot routines} are executed in order whenever a new shot is received by \texttt{lyse}, with the shot file as input. The analysis routines may read raw data from the HDF5 file, or read analysis results saved by previously-run analysis routines, and save their own results. Analyis routines may also produce plots using the \texttt{matplotlib} library---\texttt{lyse} detects these and re-uses the same window for subsequent plots so that repeated runs of the analysis routines result in the plot updating in-place, rather than a proliferation of plot windows. Any other plotting library can be used (for example \texttt{pyqtgraph} [CITE]), though the user needs to write their code for the updating behaviour in this case.
 
-standard tools
+The shot globals and analysis results for all shots received by \texttt{lyse} are maintained in a tabular data structure: a `dataframe' provided by the \texttt{pandas} [CITE] Python package, which is browsable in the \texttt{lyse} interface. This table of data is available to a further list of analysis routines, called \texttt{multi-shot\ routines}. This list of analysis routines is also run in sequence, but only once single-shot analysis has completed on all shots presently loaded into \texttt{lyse}. These routines can be analyses of relations between input parameters and analysis results of the shots, in order to say, measure a trend of the number of atoms in a MOT as the magnetic field gradient was varied. Both single-shot and multi-shot routines can be run from within lyse, or externally by running Python manually. In this latter case, the shot file on which to run single shot analysis can be provided as a command line argument, and the dataframe analysed by multi-shot routines will be obtained from a running instance of lyse over the network. This is no different to what happens when multi-shot routines are run from within lyse: they are simply run by lyse with no input, and are expected to call a function \texttt{lyse.data()} to obtain the dataframe. Because of the way this is implemented, one can also open an interactive Python interpreter on any computer on the same network, type \texttt{import lyse; df = lyse.data(hostname)} (where \texttt{hostname} is the hostname of the computer running lyse) and begin interactively exploring the data using the pandas library, one of its great strengths.
 
-it's code: experiments are code.
+\section{Design philosophy and advantages of approach}
 
-unix philosophy:
+\subsection{It's code}
+The design of our software brings the process of experimental physics closer to that of software development, making it amenable to many of the tools and processes in use in software development such as version control, bug tracking, textual diffs of what has changed in experiments. Both the experiment logic and the analysis routines comprise Python code that can be examined for changes using standard `diff' tools, stored in version control, or forked into multiple versions using distributed version control and merged back together again. This can allow risky changes to experiment logic or analysis code with the reassurance of being able to roll back to a known working state should the changes not prove fruitful. One exception to this `everything is code' philosophy is the globals themselves, they are stored in HDF5 files, though we do have a tool for `diffing' them too to highlight what has changed between two globals files, or between the current set of values configured in \texttt{runmanager} as compared to a particular shot file (\figref{fig:globals_diff}).
 
-disconnected parts with well defined interfaces easier to maintain. Easier to extend, people can put their own code in there.
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{figures/software/globals_diff.png}
+\caption{Helpful advice from a PhD student of the Spinor BEC lab}\label{fig:globals_diff}
+\end{center}
+\end{figure}
+
+As in software development, experimental physics re-uses the same procedures time and time again, and needs a way to manage the complexity of turning large parts of functionality on and off. In a traditional atomic physics control system, disabling a part of the experiment logic might involve tedious clicking to remove or disable each instruction involved. In Python, this can be a single \texttt{if} statement wrapping a function call containing all the complexity of the part of the experiment being disabled. The ability of high level programming languages to manage complexity via encapsulation and code re-use with functions, classes and modules carries well over to experimental physics. Using an existing programming language saves us, as the developers of a control system from having to re-invent (likely badly) the features of a programming language within our control system. For example, the tedious clicking required to `comment out' part of an experiment in the aforementioned hypothetical `traditional' control system could be avoided if the system implemented a feature for this in particular. But then what about \emph{nested} if statements? To support all the use cases that might come up, one would have to essentially invent a programming language within such a control system. Instead of this, why not use an existing programming language?
+
+The use of an existing programming language only aids the labscript suite in the case of `compile-time' conditionals and other control statements--- that can be evaluated when the hardware instructions are produced by labscript, as opposed to `run-time' when the experiment is run on the hardware (such as conditionally turning a laser on if a photon is detected on a photo-detector). These `run time' control statements do require special treatment in labscript, and labscript currently only has one type of functionality like this built-in. This is the ability to pause the experiment until a pulse is produced that resumes the master pseudoclock. This allows the common use case of synchronisation with the background $50\unit{Hz}$ magnetic noise from mains electricity by pausing the experiment until a fixed point in the $50\unit{Hz}$ cycle to ensure the magnetic field is close to identical from one shot to the next. It also allows servoing of the MOT load, by loading for a variable amount of time based on a threshold fluorescence such that variations in MOT loading efficiency from one shot to the next do not result in variations in actual atom numbers.
+
+Further `run-time' control flow tools such as conditional branches would not be too difficult to incorporate into labscript in the future, but would require hardware capable of holding multiple alternative sets of instructions in memory and able to switch between them on receipt of a digital pulse on some input. The SpinCore PulseBlaster [R?]---the device used by most users of the labscript suite to produce clocking pulses---supports this [VERIFY], but most output devices labs use with the labscript suite do not.
+
+\subsection{Coupled components and the Unix philosophy}
+
+An aspect of the Unix philosophy [CITE] is that tools should `do one thing and do it well'. The components of the labscript suite are not as minimal as they could be, but are nonetheless separate components that talk to each other over network connections.\footnote{This is in violation of another part of the Unix philosophy that says programs should exchange text streams: our programs mostly exchange messages over network sockets, containing filenames pointing to HDF5 files on a network drive.} Thus in principle once can remove a component and replace it with another that plays a different role. For example, \texttt{runmanager} has been re-purposed by Philip Starkey [thesis in preparation] to generate parameter space scans for numerical simulations instead of experiments, by calling code other than labscript code. \texttt{lyse} is in use by one group [CITE THE GROUP? FRED] for on-line analysis of experiment results in the form of HDF5 files that were produced by Matlab code.
+
+The separate programs of the labscript suite are also implemented in many cases as separate processes exchanging instructions over network sockets. Whilst these processes are so far running on the same computer, it is possible to extend them to run on separate computers merely by changing the hostname that the network sockets connect to from \texttt{'localhost'} to the hostname of some other computer (actually starting the other process on the other computer automatically whilst retaining security is another matter). This makes it not too large a modification to be able to have lyse analysis routines run on a remote computer (perhaps a server with a powerful GPU or many CPU cores for computationally intensive analyses), or to have devices controlled by \texttt{BLACS} be connected to a different computer than the one running \texttt{BLACS}. This latter configuration can aid in reducing the size of ground loops due to long cables, or allow the simultaneous use of devices that require different operating systems or other conflicting software or hardware configurations preventing them from being used on the same computer.\footnote{A pertinent example is the bandwidth of a computer's USB2 bus being the limiting factor in the speed at which one lab can run experiments: using two computers to program two USB devices could halve the programming time between shots}.
+
+\texttt{runmanager} is a graphical program, but also a software library for setting globals and compiling shots by running labscript code, and so is in a sense two separate components. As a result, it is possible to write code that produces shots based on something other than the simple parameter space scans runmanager is capable of producing. In the past, the labscript suite contained a program called \texttt{mise}, used for performing optimisation of the experiment. \texttt{mise} would use the runmanager library (but not the graphical interface) to produce shots based on a genetic algorithm and the results of analysis communicated to it by \texttt{lyse} analysis routines. This type of optimisation was powerful, but has been superseded, and we no longer maintain \texttt{mise}. However a similar workflow is used in the spinor BEC laboratory at Monash to integrate the MLOOP machine-learning optimisation library with the labscript suite for experiment optimisation.
+
+The separation of components also aids in development of the labscript suite. Programs can be ported to use updated versions of libraries one at a time, and tested separately, enabling a more flexible process of development.
+
+
+\subsection{Off-the-shelf hardware}
+
+The labscript suite is the software part of an experiment control system, and does not mandate any particular hardware. Whilst certain hardware drivers are developed and maintained by myself and the other labscript suite developers, if one wants to use different hardware, one can write drivers for it and use it with the labscript suite. This does mean that the software cannot make hard assumptions about the hardware and has to deal with a wider range of possibilities, which is a complicating factor in maintaining the code, but I believe this approach is the better one compared to having a limited range of hardware designed specifically for the labscript suite. It is hard to predict what hardware people will need for atomic physics experiments, and our efforts are better spent making software than hardware. Labscript developers and users have made some hardware of their own as well however, and there exists a low-cost pseudoclock and and a digital out device both based on a sub-\$100 microcontroller board [CITE SOMETHING? Phil, me, Martijn?]. However these have proved difficult to maintain in the face of changing software development kits for the microcontrollers, and I suspect FPGAs are a better solution. Rory Spiers [CITE thesis? Or say recently graduated Melbourne and now at JQI?] has developed a low-cost FPGA-based pseudoclock [not yet published] that may be an attractive alternative to the PulseBlaster.
+
+\subsection{Open source Python}
+
+
 
 open source and using open source libraries: advantage: patching upstream is a viable option. I have submitted and had patches accepted by numpy, pandas, h5py and pyzmq that improved their usability for specific use cases we have had. 
 
@@ -80,7 +116,7 @@ crowdsource bugfixes! Lots of competent programmers in physics groups. They impl
 that we have not had time to implement ourselves.
 
 Popular, dynamic programming language
-Allows us to hack on it to intoriduce custom behavour whilst keeping the benefits of using a general purpose programming language. Allows new students to get up to speed quickly. Allows interoperability with a wide range of tools and protocols for talking to other code and to hardware.
+Allows us to hack on it to introduce custom behaviour whilst keeping the benefits of using a general purpose programming language. Allows new students to get up to speed quickly. Allows interoperability with a wide range of tools and protocols for talking to other code and to hardware.
 
 Standard format: HDF5
 
@@ -101,11 +137,15 @@ Output capturing of subprocesses now captures ouput of subsequent subprocesses a
 More flexible camera interfaces, there are several Python camera servers. We no longer treat cameras as special, and if they need to be on a different computer for reasons of hardware or screen real estate, the remote devices feature will get that.
 A port to the Qt GUI toolkit
 
+Delete shots functionality - lyse can deal with it and BLACS has a plugin to do it
+
 Labscript:
 Arbitrary function ramps
 Markers
 Inverted DO
 Gated clocks: allow more devices to run off the same clock given very different memory capacities.
+
+lkyse: copy to clipboard
 
 BLACS:
 Repeat functionality repeat last
@@ -123,6 +163,7 @@ Agnostic compilation: can be used to make parameter space scans for arbitrary th
 runviewer:
 Saving and loading of configuration settings
 nonlinear time (using markers)
+dont' revernse engineer data? Save extra data? Maybe, maybe not.
 
 lyse:
 Copy figures to clipboard
