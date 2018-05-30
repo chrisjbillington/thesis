@@ -153,11 +153,11 @@ There are three states that the atom might end up in as a result of decay from t
 This scheme was simulated for the case of a single atom, with the internal state of the atom modelled with the Schr\"odinger equation in the spin basis, the state vector being a complex 32-vector\footnote{One complex number for each state in Fig. \ref{fig:cooling_full}.}. The coupling terms between each pair of states were computed by solving the eigenvalue problem in the spin basis, with the Hamiltonian including Zeeman terms, and projecting the resulting eigenvectors onto the zero field eigenvectors. The zero field eigenvectors have easily computed coupling constants\footnote{Using the dipole approximation and the rotating wave approximation, following the derivation in \cite[p 9]{steck_rubidium_2010}.}, a weighted sum of which gives the coupling constants for the states at higher field\footnote{Each energy eigenstate at nonzero field is a superposition of exactly two of the zero field eigenstates.}. Since the coupling constants are dependent on the laser intensity, they were re-computed constantly as the atom moved through different intensities of the cooling beams. This process produced a set of 32 coupled differential equations for the complex amplitudes of each state \cite[p 4]{metcalf_laser_1999}, of the form :
 
 \begin{equation}
-i\hbar\frac{dc_e(t)}{dt} = -\frac12e\sum_{g,\ n} E_n \langle g |  q_n | e \rangle c_g(t) e^{-i\delta_{nge}t},
+i\hbar\frac{dc_e(t)}{dt} = -\frac12e\sum_{g,\ n} E_n \langle g |  q_n | e \rangle c_g(t) \ee^{-\ii\delta_{nge}t},
 \end{equation}
 and
 \begin{equation}
-i\hbar\frac{dc_g(t)}{dt} = -\frac12e\sum_{e,\ n} E_n \langle g |  q_n | e \rangle c_e(t) e^{i\delta_{nge}t},
+i\hbar\frac{dc_g(t)}{dt} = -\frac12e\sum_{e,\ n} E_n \langle g |  q_n | e \rangle c_e(t) \ee^{\ii\delta_{nge}t},
 \end{equation}
 where each $c(t)$ is the complex amplitude of one state; the $e$ indices are over the excited states and the $g$ indices over the groundstates\footnote{not to be confused with the electron charge or base of the natural logarithm, also used but not as indices.}; the $n$ indices are over the lasers, with $E_n$ being the amplitude of the $n$\textsuperscript{th} laser's electric field, $\delta_{nge}$ the detuning of the $n$\textsuperscript{th} laser from the transition between the $g$\textsuperscript{th} ground and $e$\textsuperscript{th} excited states, and $\langle g |  q_n | e \rangle$ the dipole moment between the $g$\textsuperscript{th} ground and $e$\textsuperscript{th} excited states for the polarisation of the $n$\textsuperscript{th} laser.
 
