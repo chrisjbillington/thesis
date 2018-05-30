@@ -11,8 +11,8 @@
 %%%   * Replace ", editor(s)" with "(editor(s))" in incollection/inproceedings
 %%%   * Lowercase and emphasise title of incollection/inproceedings
 %%% ... by R. P. Anderson (Monash University, Australia), 27 May 2014 (updated 16 June 2015)
-%%%   * First initial only of author names
-%%%    Editied by Chris Billington 10 March 2017
+%%%   * First initial only of author names (Chris Billington 10 March 2017)
+%%%   * Italicise all titles, not just journal articles (Chris Billington 30 May 2018)
 %%% -------------------------------------------------------------------------------------------------
 %%% Modification of BibTeX style file /usr/local/texlive/2009/texmf-dist/bibtex/bst/base/unsrt.bst
 %%% ... by urlbst, version 0.7 (marked with "% urlbst")
@@ -1189,7 +1189,7 @@ FUNCTION {mastersthesis}
   format.authors "author" output.check
   new.block
   title empty$ 'skip$ 'possibly.setup.inlinelink if$ % urlbst
-  format.title "title" output.check
+  format.title emphasize "title" output.check
   new.block
   "Master's thesis" format.thesis.type output.nonnull
   school "school" output.check
@@ -1205,7 +1205,7 @@ FUNCTION {misc}
   format.authors output
   title howpublished new.block.checkb
   title empty$ 'skip$ 'possibly.setup.inlinelink if$ % urlbst
-  format.title output
+  format.title emphasize output
   howpublished new.block.checka
   howpublished output
   format.date output
@@ -1288,7 +1288,7 @@ FUNCTION {unpublished}
   format.authors "author" output.check
   new.block
   title empty$ 'skip$ 'possibly.setup.inlinelink if$ % urlbst
-  format.title "title" output.check
+  format.title emphasize "title" output.check
   new.block
   note "note" output.check
   format.date output
