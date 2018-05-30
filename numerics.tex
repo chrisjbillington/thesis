@@ -63,7 +63,7 @@ H = QDQ^\dagger,
 \end{align}
 where $D$ is a diagonal matrix and Q is a unitary matrix\footnote{Note that the diagonals of $D$ are the eigenvalues of $H$, and the columns of $Q$ are its eigenvectors.}, then
 \begin{align}\label{eq:diagonal_expm}
-\ee^{-\frac \ii \hbar H \upDelta t} = Q e^{-\frac \ii \hbar D \upDelta t} Q^\dagger.
+\ee^{-\frac \ii \hbar H \upDelta t} = Q \ee^{-\frac \ii \hbar D \upDelta t} Q^\dagger.
 \end{align}
 This is simple to evaluate because the exponentiation of a diagonal matrix can be performed by exponentiating each diagonal matrix element individually\footnote{The reason for this is clear from the Taylor series definition of matrix exponentiation, since matrix multiplication and addition can both be performed elementwise for diagonal matrices.}
 
@@ -80,7 +80,7 @@ On the other hand, if an analytic diagonalisation is already known, it would see
 \end{align}
 for a specific $\vec \psi(t_0)$, then one needs only matrix-vector multiplications and not matrix-matrix multiplications in order to evaluate
 \begin{align}
-\vec\psi(t) = U e^{-\frac \ii \hbar D \upDelta t} U^\dagger \vec\psi(t_0),
+\vec\psi(t) = U \ee^{-\frac \ii \hbar D \upDelta t} U^\dagger \vec\psi(t_0),
 \end{align}
 from right-to-left, reducing the computational cost to $\Ord{n^2}$ compared to evaluating it left-to-right.
 
@@ -690,7 +690,7 @@ It turns out that discretising space in this way can indeed be equivalent to cho
 One possible basis for representing all possible state vectors is the Fourier basis $\{\ket{\vec k_{ij}}\}$. With it, any state vector (whose wavefunction is nonzero only within the \textsc{2d} region) can be represented as the sum of basis vectors whose wavefunctions are \textsc{2d} plane waves, also localised to the 2\textsc{d} region:
 \begin{align}\label{eq:spatial_plane_wave_basis}
 \braket{\vec r}{\vec k_{ij}} = \begin{cases}
-\frac 1 {\sqrt A} e^{i\vec k_{ij}\cdot\vec r}\qquad (\vec r\ \textrm{within \textsc{2d} region})\\
+\frac 1 {\sqrt A} \ee^{i\vec k_{ij}\cdot\vec r}\qquad (\vec r\ \textrm{within \textsc{2d} region})\\
 0\qquad(\vec r\ \textrm{not within \textsc{2d} region}),
 \end{cases}
 \end{align}
@@ -702,7 +702,7 @@ where $i$ and $j$ are (possibly negative) integers. Any state vector whose wavef
 \begin{align}
 \ket\psi &= \sum_{i=0}^\infty\sum_{j=0}^\infty \braket{\vec k_{i,j}}\psi \ket{\vec k_{i,j}}\\
 \Rightarrow \psi(\vec r) &= \braket{\vec r}{\psi} = \begin{cases}
-\sum_{i=0}^\infty\sum_{j=0}^\infty \braket{\vec k_{ij}}\psi \frac 1 {\sqrt A} e^{i\vec k_{ij}\cdot\vec r}
+\sum_{i=0}^\infty\sum_{j=0}^\infty \braket{\vec k_{ij}}\psi \frac 1 {\sqrt A} \ee^{i\vec k_{ij}\cdot\vec r}
 \qquad (\vec r\ \textrm{within \textsc{2d} region})\\
 0\qquad(\vec r\ \textrm{not within \textsc{2d} region}).
 \end{cases}
@@ -733,12 +733,12 @@ where $k = |\vec k_{ij}|$, by excluding basis vectors with larger wavevectors, w
 
 Now we have a set of basis vectors---a discrete Fourier basis---but their spatial wavefunctions still don't have the property of being nonzero only at a single gridpoint each. On the contrary, each plane wave has has a constant amplitude everywhere in space. But consider the following superposition of Fourier basis vectors:
 \begin{align}\label{eq:DFT_basischange}
-\ket{\vec r_{ij}} = \sum_{i^\prime}\sum_{j^\prime} e^{-i \vec k_{i^\prime j^\prime} \cdot \vec r_{i j}}\ket{\vec k_{i^\prime j^\prime}}
+\ket{\vec r_{ij}} = \sum_{i^\prime}\sum_{j^\prime} \ee^{-\ii \vec k_{i^\prime j^\prime} \cdot \vec r_{i j}}\ket{\vec k_{i^\prime j^\prime}}
 \end{align}
 
 with $\vec r_{i j} = (i \upDelta x, j \upDelta y)^\up{T}$. The set of vectors $\{\ket{\vec r_{i, j}}\}$ are also an orthonormal basis, related to the discrete Fourier basis by a unitary transformation with matrix elements:
 \begin{align}
-U_{\textsc{dft2}, i^\prime j^\prime ij} = \braket{\vec k_{i^\prime j^\prime}}{\vec r_{i j}} = e^{-i \vec k_{i^\prime j^\prime} \cdot \vec r_{i j}}.
+U_{\textsc{dft2}, i^\prime j^\prime ij} = \braket{\vec k_{i^\prime j^\prime}}{\vec r_{i j}} = \ee^{-\ii \vec k_{i^\prime j^\prime} \cdot \vec r_{i j}}.
 \end{align}
 
 This unitary transformation is in fact a two-dimensional discrete Fourier transform (hence the subscript), and the basis vectors $\{\ket{\vec r_{ij}}\}$ have spatially localised wavefunctions that are nonzero only at one of the spatial gridpoints. Vectors and matrices can be transformed from their discrete Fourier space representation to their discrete real-space representation and back using the unitary $U_{\textsc{dft2}}$:
@@ -761,9 +761,9 @@ where $\vec\psi_\up{real}$ is the vector of coefficients $\psi_{\up{real},ij}= \
 
 The spatial representation of the basis vectors $\{\ket{\vec r_{ij}}\}$ can be computed using \eqref{eq:spatial_plane_wave_basis} as:
 \begin{align}
-\phi_{ij}(\vec r) &= \braket{\vec r}{\vec r_{i j}} = \sum_{i^\prime j^\prime} e^{-\ii \vec k_{i^\prime j^\prime} \cdot \vec r_{i j}}\braket{\vec r}{\vec k_{i^\prime j^\prime}}\\
+\phi_{ij}(\vec r) &= \braket{\vec r}{\vec r_{i j}} = \sum_{i^\prime j^\prime} \ee^{-\ii \vec k_{i^\prime j^\prime} \cdot \vec r_{i j}}\braket{\vec r}{\vec k_{i^\prime j^\prime}}\\
 \Rightarrow \phi_{ij}(\vec r) &=\begin{cases}
-\sum_{i^\prime j^\prime} \frac 1 {\sqrt {L_x L_y}} e^{\ii \vec k_{i^\prime j^\prime} \cdot (\vec r - \vec r_{i j})}\qquad (\vec r\ \textrm{within \textsc{2d} region})\\
+\sum_{i^\prime j^\prime} \frac 1 {\sqrt {L_x L_y}} \ee^{\ii \vec k_{i^\prime j^\prime} \cdot (\vec r - \vec r_{i j})}\qquad (\vec r\ \textrm{within \textsc{2d} region})\\
 0\qquad(\vec r\ \textrm{not within \textsc{2d} region}),
 \end{cases}
 \end{align}
@@ -965,9 +965,9 @@ No, the practical advantages of finite differences compared to Fourier transform
     \end{align}
 yielding a diagonalisation of the original matrix that can be used to apply an exponentiation of the original matrix to a vector with matrix-vector multiplications only in the $x$ any $y$ subspaces and not the total Hilbert space. Here, the matrix-vector multiplication in the $x$ subspace is the identity, but more generally the above idea can be used to exponentiate any operator that can be written as the product of operators that act on different subspaces:
 \begin{align}\label{eq:arb_product_operators}
-e^{A \otimes B} =
+\ee^{A \otimes B} =
 \left(Q^\dagger_A \otimes Q^\dagger_B\right)
-e^{\left(D_A \otimes D_B\right)}
+\ee^{\left(D_A \otimes D_B\right)}
 \left(Q_A \otimes Q_B\right).
 \end{align}
 Since $X$ is already diagonal, $\delta^{(4)}_{\upDelta y}$ can be written as the sum of two block-diagonal matrices as described in section \ref{sec:split-step-parallel}, allowing \eqref{eq:Lz_split} to be evaluated as the sum of two terms $-\ii\hbar X \otimes \delta^{(4)}_{\upDelta y} = -\ii\hbar (X \otimes \delta_\up{even} + X \otimes \delta_\up{odd})$, one for each of the block-diagonal matrices $\delta_\up{even}$ and $\delta_\up{odd}$. The diagonalisation of each term then has matrix-vector products taking place in a space of the size of each block, that is, in the expression
@@ -1321,7 +1321,7 @@ and
 G(t, \psi(\vec r, t)) = \frac1\hbar\big[\underbrace{V(\vec r, t) + g|\psi(\vec r, t)|^2}_{\hat H_\up{diag}}\big].
 \end{align}
 
-Note that each symbol in bold in the algorithm below denotes an array containing one element for each basis vector $\ket{n}$, subscripts denote the different stages of \textsc{rk4}, and all arithmetic operations between arrays are elementwise\footnote{For example, the expression \mbox{$\mathbf{a}\leftarrow e^{-i\mathbf{\omega}\upDelta t}\mathbf{b}$} indicates that for all $n$, \mbox{$a_n\leftarrow e^{-i\omega_n\upDelta t}b_n$}, where $a_n$ denotes the $n^\up{th}$ element of $\mathbf{a}$ etc.} The only opportunity for non-elementwise operations to occur is within $F$, which contains the details (via $\hat H_\up{nondiag}$) of any couplings between basis states for whatever system of equations is being solved, for example, using \textsc{fft}s or finite differences to evaluate the Laplacian in \eqref{eq:RK4_ILIP_GPE}.
+Note that each symbol in bold in the algorithm below denotes an array containing one element for each basis vector $\ket{n}$, subscripts denote the different stages of \textsc{rk4}, and all arithmetic operations between arrays are elementwise\footnote{For example, the expression \mbox{$\mathbf{a}\leftarrow \ee^{-\ii\mathbf{\omega}\upDelta t}\mathbf{b}$} indicates that for all $n$, \mbox{$a_n\leftarrow \ee^{-\ii\omega_n\upDelta t}b_n$}, where $a_n$ denotes the $n^\up{th}$ element of $\mathbf{a}$ etc.} The only opportunity for non-elementwise operations to occur is within $F$, which contains the details (via $\hat H_\up{nondiag}$) of any couplings between basis states for whatever system of equations is being solved, for example, using \textsc{fft}s or finite differences to evaluate the Laplacian in \eqref{eq:RK4_ILIP_GPE}.
 
 
 \begin{breakablealgorithm}
