@@ -37,7 +37,7 @@ The \textsc{gui} of \texttt{runmanager} is shown in~\figref{fig:runmanager}. \te
 
 We refer to the process of passing the \textsc{hdf5} file to the user's code and running it as `compilation', and the resulting \textsc{hdf5} file containing both globals and hardware instructions a `compiled shot file'. Compilation occurs in a separate process from the \texttt{runmanager} graphical interface, allowing a clean separation between user code and \texttt{runmanager}, so that even the most low-level crashes of the user's code cannot crash \texttt{runmanager} and only require a restart of its subprocess. This type of separation is a repeated theme in the labscript suite and has been invaluable for making robust programs that can continue to operate in the case of inevitable crashes of user code, or of bugs within the labscript suite itself.
 
-\begin{figure}
+\begin{figure}[t]
 \begin{center}
 \includegraphics[width=\textwidth]{figures/software/new_screenshots/runmanager.png}
 \caption{\texttt{runmanager} as of 2018, showing the interface for entering `globals', so called because they appear to the user's code as global variables. Boolean globals can be turned on and off with a checkbox, and expressions resulting in an error are highlighted in red. The `expansion' column is where the user specifies whether a global should be considered a list of values to loop over, re-running the experiment each time, and if so if that loop should be combined with other such globals to loop over the resulting product space (`outer') or whether the globals should be looped over together (`zip'). Zipped globals can be grouped together by typing a name in the expansion column to identify which `zip group' the global belongs to. Globals in the same zip group will loop together, and multiple zip groups will form separate axes of a product space.}\label{fig:runmanager}
@@ -46,18 +46,16 @@ We refer to the process of passing the \textsc{hdf5} file to the user's code and
 
 \subsection{\texttt{runviewer}}
 
-[TODO SCREENSHOT]
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=\textwidth]{figures/software/new_screenshots/runviewer.png}
+\caption{The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog. The quick brown fox jumped over the lazy dog}\label{fig:runviewer}
+\end{center}
+\end{figure}
 
 \texttt{runviewer} is a program for viewing the results of \texttt{labscript} compilation in the form of graphical plots of the voltages, digital values, frequencies etc that comprise the hardware instructions produced. This is useful for debugging experiment design and timing of instructions, as well as verifying that a newly made \texttt{labscript} device class (the `driver' code for each device that converts \texttt{labscript}'s intermediate description of hardware instructions into the actual format required for a given device) is functioning as intended.
 
 \subsection{\texttt{BLACS}}
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{figures/software/new_screenshots/blacs.png}
-\caption{\texttt{BLACS} as of 2018, showing the experiment queue to the left and manual controls of devices within a tabbed interface to the right. When a hardware-timed experiment is not in progress, outputs may be controlled manually using this interface. Presently the \texttt{gui} for four devices can be displayed simultaneously (only one is shown here), though we plan to allow \texttt{BLACS} tabs to occupy their own windows or even reside on different computers to allow a better use of screen space.}\label{fig:blacs}
-\end{center}
-\end{figure}
 
 \texttt{BLACS} (Better Lab Apparatus Control System) is a graphical program responsible for queueing experiment shots as compiled by \texttt{labscript} in tandem with \texttt{runmanager}, and executing them one after the other on the hardware. As such, \texttt{BLACS} interacts with a number of Python classes that function as \emph{drivers} for each devices, containing code that uses the required software libraries, hardware drivers or communication protocols to communicate with the devices in the manner required by each one individually. \texttt{BLACS} executes the code for communicating with each device in a separate process in order to isolate them from each other, so that communication failures, software bugs or other failures that may occur in the interactions with one device will not stop \texttt{BLACS} from continuing to function in other respects. Errors are presented graphically and each device process may be restarted with the click of a button if something goes wrong, re-initialising communication with the offending device. This is useful for both responding to unexpected failure, as well as for debugging during the development of the driver for a new device (or of new features for an existing device) being integrated with the labscript suite.
 
@@ -65,18 +63,33 @@ Upon receiving an \textsc{hdf5} file from \texttt{runmanager}, \texttt{BLACS} ad
 
 \texttt{BLACS} can also repeat shots, by copying and then `cleaning' an \textsc{hdf5} file after it has already run to produce a new shot file ready to be run on the hardware. It can repeat either all the shots, or just the last one in the queue. This ability to always keep running by repeating the last shot in the queue is crucial for experiments using alkali metal dispensers (`getters') or ultraviolet light-induced atom desorption~\cite{klempt_ultraviolet_2006}, as these processes must run on an approximately fixed duty cycle to maintain the desired atomic vapour pressure, otherwise experiments need to `warm up' after being idle to reach adequate pressure.
 
-\subsection{\texttt{lyse}}
+\afterpage{
+    \newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+    \begin{sidewaysfigure}[th]
+    \centerfloat
+    \includegraphics[width=\textwidth]{figures/software/new_screenshots/blacs.png}
+    \caption{\texttt{BLACS} as of 2018, showing the experiment queue to the left and manual controls of devices within a tabbed interface to the right. When a hardware-timed experiment is not in progress, outputs may be controlled manually using this interface. Presently the \texttt{gui} for four devices can be displayed simultaneously (only one is shown here), though we plan to allow \texttt{BLACS} tabs to occupy their own windows or even reside on different computers to allow a better use of screen space.}
+    \label{fig:blacs}
+    \end{sidewaysfigure}
+    \restoregeometry
+}
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=\textwidth]{figures/software/new_screenshots/lyse.png}
-\caption{\texttt{lyse} as of 2018. To the top left is the list of single-shot routines, and to the right of it the multi-shot routines presently loaded. The list of shots is below them, showing some of the globals and analysis results of these shots. To the right is the output box where any textual output produced by analysis routines is displayed. Overlaid is a plot produced by a single-shot analysis routine [TODO DO THIS.}\label{fig:lyse}
-\end{center}
-\end{figure}
+\subsection{\texttt{lyse}}
 
 Once \texttt{BLACS} has finished with a shot, the shot files are optionally passed on to the analysis program \texttt{lyse}. \texttt{lyse} is essentially a scheduler for user-provided analysis routines. A list of analysis routines (in the form of Python scripts), called \emph{single-shot routines} are executed in order whenever a new shot is received by \texttt{lyse}, with the shot file provided as input to each script. The analysis routines may read raw data from the \textsc{hdf5} file, or read analysis results saved by previously-run analysis routines, and save their own results. Analyis routines may also produce plots using the \texttt{matplotlib} library~\cite{Hunter:2007}---\texttt{lyse} detects these and reuses the same window for subsequent plots so that repeated runs of the analysis routines result in the plot updating in-place, rather than a proliferation of plot windows. Any other plotting library can be used (for example \texttt{pyqtgraph}~\cite{campagnola_pyqtgraph_2016}), though the user needs to write their code for the updating behaviour in this case.
 
-The shot globals and analysis results for all shots received by \texttt{lyse} are maintained in a tabular data structure: a `dataframe' provided by the \texttt{pandas}~\cite{mckinney-proc-scipy-2010} Python package, which is browsable in the \texttt{lyse} interface. This table of data is available to a further list of analysis routines, called \emph{multi-shot routines}. This list of analysis routines is also run in sequence, but only once single-shot analysis has completed on all shots presently loaded into \texttt{lyse}. These routines can be analyses of relations between input parameters and analysis results of the shots, in order to say, measure a trend of the number of atoms in a MOT as the magnetic field gradient was varied. Both single-shot and multi-shot routines can be run from within \texttt{lyse}, or externally by running Python manually. In this latter case, the shot file on which to run single shot analysis can be provided as a command line argument, and the dataframe analysed by multi-shot routines can be obtained from a running instance of \texttt{lyse} over the network. This is no different to what happens when multi-shot routines are run from within \texttt{lyse}: they are simply run by \texttt{lyse} with no input, and are expected to call a function \texttt{lyse.data()} to obtain the dataframe containing multi-shot data. Because of the way this is implemented, one can also open an interactive Python interpreter on any computer on the same network, type \texttt{import lyse; df = lyse.data(hostname)} (where \texttt{hostname} is the hostname of the computer running \texttt{lyse}) and begin interactively exploring the data using the \texttt{pandas} library, one of its great strengths.
+The shot globals and analysis results for all shots received by \texttt{lyse} are maintained in a tabular data structure: a `dataframe' provided by the \texttt{pandas}~\cite{mckinney-proc-scipy-2010} Python package, which is browsable in the \texttt{lyse} interface. This table of data is available to a further list of analysis routines, called \emph{multi-shot routines}. This list of analysis routines is also run in sequence, but only once single-shot analysis has completed on all shots presently loaded into \texttt{lyse}. These routines can be analyses of relations between input parameters and analysis results of the shots, in order to say, measure a trend of the number of atoms in a MOT as the magnetic field gradient was varied. Both single-shot and multi-shot routines can be run from within \texttt{lyse}, or externally by running Python manually. In this latter case, the shot file on which to run single shot analysis can be provided as a command line argument, and the dataframe analysed by multi-shot routines can be obtained from a running instance of \texttt{lyse} over the network. This is no different to what happens when multi-shot routines are run from within \texttt{lyse}: they are simply run by \texttt{lyse} with no input, and are expected to call a function \texttt{lyse.data()} to obtain the dataframe containing multi-shot data. Because of the way this is implemented, one can also open an interactive Python interpreter such as IPython~\cite{perez_ipython:_2007} on any computer on the same network, type \texttt{import lyse; df = lyse.data(hostname)} (where \texttt{hostname} is the hostname of the computer running \texttt{lyse}) and begin interactively exploring the data using the \texttt{pandas} library, one of its great strengths.
+
+\afterpage{
+    \newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+    \begin{sidewaysfigure}[th]
+    \centerfloat
+    \includegraphics[width=\textwidth]{figures/software/new_screenshots/lyse.png}
+    \caption{\texttt{lyse} as of 2018. To the top left is the list of single-shot routines, and to the right of it the multi-shot routines presently loaded. The list of shots is below them, showing some of the globals and analysis results of these shots. To the right is the output box where any textual output produced by analysis routines is displayed. Overlaid is a plot produced by a single-shot analysis routine [TODO DO THIS.}
+    \label{fig:lyse}
+    \end{sidewaysfigure}
+    \restoregeometry
+}
 
 \section{Design philosophy and advantages of approach}
 
@@ -223,7 +236,7 @@ The \texttt{labscript} compiler itself is the oldest part of our codebase, and h
 To address these three concerns, I have been working on an experimental restructuring of the core instruction and timing processing of \texttt{labscript}, in which all processing is non-destructive, the points in the user's code where instructions are created are noted for later use in error messages, and all timing calculations are performed using integer arithmetic after quantising timing details as early as possible in processing according to the time resolution of the pseudoclock controlling the timing of each device. This project, called \texttt{labscript\_core}, if successful will eventually replace the part of \texttt{labscript} responsible for timing calculations and instruction handling, making the code better from both the perspectives of users and developers. If possible I will keep the timing computations separate from the other higher level parts of \texttt{labscript} (globals, device properties, \textsc{hdf5} files) so that it can be independently tested (ideally in the context of an automated test suite) and verified so that we can have a high degree of confidence in the output it produces, and confidence that regressions have not been introduced when changes are made.
 
 
-\section{Other Future developments}
+\section{Other future developments}
 
 A pressing concern is to unify the mainline labscript code with the Spielman group's fork of the code. This will involve merging (or re-implementing in the mainline codebase) the remaining features present in the Spielman fork as discussed in the previous sections, as well as others I have not mentioned such as a progress bar showing the progression of the experiment, and the ability to insert small analysis scripts to be executed by BLACS at the end of a shot with the sole purpose of updating parameters in \texttt{runmanager} for feed-forward functionality as described in Section~\ref{sec:jit}.
 

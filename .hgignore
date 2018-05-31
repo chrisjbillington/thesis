@@ -13,3 +13,4 @@ hglog.txt
 *.pyc
 *.lof
 *.lot
+figures/software/new_screenshots/data/*
