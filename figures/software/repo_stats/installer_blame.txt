@@ -1,0 +1,527 @@
+cbilling: from labscript import *
+cbilling: from labscript_devices.PulseBlaster import PulseBlaster
+cbilling: 
+cbilling: PulseBlaster('pulseblaster_0')
+cbilling: 
+cbilling: start()
+cbilling: 
+cbilling: stop(1)
+        cbilling: #####################################################################
+        cbilling: #                                                                   #
+        cbilling: # /setup.py                                                         #
+        cbilling: #                                                                   #
+        cbilling: # Copyright 2014, Monash University                                 #
+        cbilling: #                                                                   #
+        cbilling: # This file is part of the installer for the  labscript             #
+        cbilling: # suite (see http://labscriptsuite.org), and is licensed under the  #
+        cbilling: # Simplified BSD License. See the license.txt file in the root of   #
+        cbilling: # the project for the full license.                                 #
+        cbilling: #                                                                   #
+        cbilling: #####################################################################
+        cbilling: 
+        cbilling: from __future__ import division, unicode_literals, print_function, absolute_import
+        cbilling: import os
+        cbilling: import sys
+        cbilling: import errno
+        cbilling: import subprocess
+        cbilling: import shutil
+        cbilling: import zipfile
+        cbilling: import traceback
+        cbilling: import site
+        cbilling: import imp
+        cbilling: from collections import OrderedDict
+        cbilling: import ast
+        cbilling: import textwrap
+        cbilling: import contextlib
+            dihm: import struct
+            dihm: import platform
+        cbilling: 
+            dihm: # check version of python running installer
+            dihm: if sys.version_info[0] == 2:
+        cbilling:     input = raw_input
+        cbilling: else:
+        cbilling:     from importlib import reload
+        cbilling: 
+        cbilling: this_folder = os.path.realpath(os.path.dirname(__file__))
+        cbilling: os.chdir(this_folder)
+        cbilling: 
+        cbilling: devnull = open(os.devnull, 'w')
+        cbilling: 
+        cbilling: usage = """
+        cbilling: usage:
+        cbilling:   python setup.py install
+        cbilling:   python setup.py uninstall [<path>]
+        cbilling:   python setup.py build
+        cbilling:   python setup.py dist
+        cbilling:   python setup.py clean
+        cbilling: """
+        cbilling: 
+        cbilling: __version__ = '2.1.0'
+        cbilling: 
+        cbilling: bitbucket_page = 'https://bitbucket.org/labscript_suite/'
+        cbilling: 
+        cbilling: # Can specify the specific tags or changesets to be used, should be 'branch(default) and max(tag())'
+        cbilling: # for stable releases.
+        cbilling: repos = {
+        cbilling:     'labscript': 'branch(default) and max(tag())',
+        cbilling:     'runmanager': 'branch(default) and max(tag())',
+        cbilling:     'runviewer': 'branch(default) and max(tag())',
+        cbilling:     'blacs': 'branch(default) and max(tag())',
+        cbilling:     'lyse': 'branch(default) and max(tag())',
+        cbilling:     'labscript_utils': 'branch(default) and max(tag())',
+        cbilling:     'labscript_devices': 'branch(default) and max(tag())',
+        cbilling: }
+        cbilling: 
+        cbilling: # Which programs should have application shortcuts made for them:
+        cbilling: gui_programs = ['runmanager', 'runviewer', 'blacs', 'lyse']
+        cbilling: 
+        cbilling: # The name of the readme file:
+        shjohnst: README = 'README.md'
+        cbilling: 
+        cbilling: # The name of the dependencies file:
+        cbilling: DEPENDENCIES = 'dependencies.txt'
+        cbilling: 
+        cbilling: # These folders, which contain user code and settings,
+        cbilling: # will not be deleted during uninstallation or overwritten
+        cbilling: # during installation:
+        cbilling: do_not_delete = ['userlib', 'labconfig']
+        cbilling: 
+        cbilling: output_base = 'labscript_suite_' + __version__
+        cbilling: output_file = output_base + '.zip'
+        cbilling: 
+        cbilling: # What will the shortcuts be called on Windows?
+        cbilling: shortcut_format = 'labscript suite - %s.lnk'
+        cbilling: 
+        cbilling: if os.name == 'nt':
+        cbilling:     default_install_folder = r'C:\labscript_suite'
+        cbilling: else:
+        cbilling:     default_install_folder = os.path.join(os.getenv('HOME'), 'labscript_suite')
+        cbilling: 
+        cbilling: IS_LABSCRIPT_SUITE = '.is_labscript_suite_install_dir'
+        cbilling: IS_BUILD = '.is_labscript_suite_build_dir'
+        cbilling: 
+        cbilling: SUDO = False
+        cbilling: if os.name == 'posix':
+        cbilling:     sudo_uid = os.getenv('SUDO_UID')
+        cbilling:     if sudo_uid is not None:
+        cbilling:         SUDO = True
+        cbilling:         SUDO_UID = int(sudo_uid)
+        cbilling:         # Remove root privileges until we need them:
+        cbilling:         os.seteuid(SUDO_UID)
+        cbilling: 
+        cbilling: @contextlib.contextmanager
+        cbilling: def escalated_privileges():
+        cbilling:     # Temporarily regain root privileges
+        cbilling:     if SUDO:
+        cbilling:         os.seteuid(0)
+        cbilling:     try:
+        cbilling:         yield
+        cbilling:     finally:
+        cbilling:         # Back to normal permissions
+        cbilling:         if SUDO:
+        cbilling:             os.seteuid(SUDO_UID)
+        cbilling: 
+        cbilling: 
+           Chris: def mkdir_p(path):
+           Chris:     try:
+           Chris:         os.makedirs(path)
+           Chris:     except OSError as exc:
+           Chris:         if exc.errno == errno.EEXIST and os.path.isdir(path):
+           Chris:             pass
+           Chris:         else:
+           Chris:             raise
+           Chris: 
+        cbilling: def get_all_files_and_folders(path):
+        cbilling:     import itertools
+        cbilling:     yield path
+        cbilling:     if os.path.isdir(path):
+        cbilling:         for root, folders, files in os.walk(path):
+        cbilling:             for entry in itertools.chain(folders, files):
+        cbilling:                 yield os.path.join(root, entry)
+        cbilling: 
+        cbilling: 
+        cbilling: def exclude_from_copying(path):
+        cbilling:     # Ignore dotfiles in the top level of the installer folder:
+        cbilling:     if os.path.relpath(path, this_folder).startswith('.'):
+        cbilling:         return True
+        cbilling:     # Ignore the output zip file itself:
+        cbilling:     elif os.path.abspath(path) == os.path.abspath(output_file):
+        cbilling:         return True
+        cbilling:     return False
+        cbilling: 
+        cbilling: 
+        cbilling: def runcommand(args, check_retcode=True, print_command=True, input=None):
+        cbilling:     import pipes
+        cbilling:     command = ' '.join(pipes.quote(arg) for arg in args)
+        cbilling:     if print_command:
+        cbilling:         print('    ' + command)
+        cbilling:     child = subprocess.Popen(args, stdin=subprocess.PIPE)
+        cbilling:     stdout, stderr = child.communicate(input)
+        cbilling:     if check_retcode and child.returncode != 0:
+        cbilling:         raise OSError('Error running %s' % command)
+        cbilling: 
+        cbilling: 
+        cbilling: def check_dependencies():
+        cbilling:     deps = OrderedDict()
+        cbilling:     print('Checking dependencies...\n')
+        cbilling:     try:
+        cbilling:         print('  checking for mercurial...', end='')
+        cbilling:         subprocess.check_call(['hg'], stdout=devnull, stderr=devnull)
+        cbilling:         print('yes')
+        cbilling:     except OSError:
+        cbilling:         print('no')
+        cbilling:         sys.stderr.write('Please install mercurial (tortoisehg recommended) before continuing\n' +
+        cbilling:                          'You will have to restart this terminal after installation for the installer to find it.\n')
+        cbilling:         sys.exit(1)
+        cbilling:     with open(DEPENDENCIES) as f:
+        cbilling:         lines = f.readlines()
+        cbilling:         for i, line in enumerate(lines):
+        cbilling:             if line.strip() and not line.startswith('#'):
+        cbilling:                 package_name, module_name, optional, install_methods = line.split()
+        cbilling:                 optional = ast.literal_eval(optional)
+        cbilling:                 if optional:
+        cbilling:                     comment = ''
+        cbilling:                     j = 1
+        cbilling:                     while lines[i - j].strip().startswith('#'):
+        cbilling:                         comment = lines[i - j].strip().strip('#').strip() + ' ' + comment
+        cbilling:                         j += 1
+        cbilling:                 else:
+        cbilling:                     comment = None
+        cbilling:                 deps[module_name] = package_name, optional, install_methods, comment
+        cbilling:     nonoptional_missing = False
+        cbilling:     optional_missing = False
+        cbilling:     output_lines = []
+        cbilling:     for module_name in deps:
+        cbilling:         package_name, optional, install_methods, comment = deps[module_name]
+        cbilling:         # Don't bother checking pywin32 if we are not on Windows:
+        cbilling:         if package_name == 'pywin32' and not os.name == 'nt':
+        cbilling:             continue
+chrisjbillington:         print('  checking for %s...' % package_name, end='')
+chrisjbillington:         for alternate_name in module_name.split('/'):
+chrisjbillington:             try:
+chrisjbillington:                 imp.find_module(alternate_name)
+chrisjbillington:                 print('yes')
+chrisjbillington:                 break
+chrisjbillington:             except ImportError:
+chrisjbillington:                 continue
+chrisjbillington:         else:
+        cbilling:             print('no')
+        cbilling:             if optional:
+        cbilling:                 optional_missing = True
+        cbilling:             else:
+        cbilling:                 nonoptional_missing = True
+        cbilling:             if optional:
+        cbilling:                 output_lines.append('')
+        cbilling:                 for line in textwrap.wrap(comment):
+        cbilling:                     output_lines.append('  # ' + line)
+        cbilling:                 output_lines.append('  [OPTIONAL] %s not found, installable via %s' % (package_name, install_methods))
+        cbilling:             else:
+        cbilling:                 output_lines.append('  %s not found, installable via %s' % (package_name, install_methods))
+        cbilling:     if nonoptional_missing or optional_missing:
+        cbilling:         print('\nMissing dependencies:\n')
+        cbilling:     for line in output_lines:
+        cbilling:         print(line)
+        cbilling: 
+        cbilling:     if nonoptional_missing:
+        cbilling:         sys.stderr.write('\nNon-optional dependencies are missing.\nPlease install dependencies and run again.\n')
+        cbilling:         sys.exit(1)
+        cbilling:     elif optional_missing:
+        cbilling:         print('\nAll not-optional dependencies satisfied.')
+        cbilling:         sys.stderr.write('\nSome optional dependencies were not satisfied.' +
+        cbilling:                          'Please review the above and decide whether you require these packages.\n')
+        cbilling:         if not yn_choice('Continue without these optional packages?', default='n'):
+        cbilling:             sys.exit(1)
+        cbilling:     else:
+        cbilling:         print('\nAll dependencies satisfied')
+        cbilling: 
+        cbilling: 
+        cbilling: def build():
+        cbilling:     if os.path.exists(IS_BUILD):
+        cbilling:         sys.stderr.write('Previous build exists, run \'clean\' command first.\n' + usage)
+        cbilling:         sys.exit(1)
+        cbilling:     for repo in repos:
+        cbilling:         print('cloning %s' % repo)
+        cbilling:         runcommand(['hg', 'clone', bitbucket_page + repo])
+        cbilling:         os.chdir(repo)
+        cbilling:         print('updating to %s' % repos[repo])
+        cbilling:         runcommand(['hg', 'update', '-r', repos[repo]])
+        cbilling:         os.chdir(this_folder)
+        cbilling:     # Add file that marks this as a labscript suite install dir:
+        cbilling:     with open(IS_BUILD, 'w'):
+        cbilling:         pass
+        cbilling: 
+        cbilling: 
+        cbilling: def dist():
+        cbilling:     if os.path.exists(IS_BUILD):
+        cbilling:         sys.stderr.write('Build exists, run \'clean\' command first.\n' + usage)
+        cbilling:         sys.exit(1)
+        cbilling:     print('Writing %s...' % output_file)
+        cbilling:     with zipfile.ZipFile(output_file, 'w') as f:
+        cbilling:         for entry in get_all_files_and_folders('.'):
+        cbilling:             if not exclude_from_copying(entry):
+        cbilling:                 f.write(entry, os.path.join(output_base, entry))
+        cbilling:     print('done')
+        cbilling: 
+        cbilling: 
+        cbilling: def sdist():
+        cbilling:     dist()
+        cbilling: 
+        cbilling: 
+        cbilling: def bdist():
+        cbilling:     dist()
+        cbilling: 
+        cbilling: 
+        cbilling: def clean():
+        cbilling:     try:
+        cbilling:         os.unlink(IS_BUILD)
+        cbilling:         print('deleted', IS_BUILD)
+        cbilling:     except OSError:
+        cbilling:         pass
+        cbilling:     if os.path.exists(output_file):
+        cbilling:         try:
+        cbilling:             os.unlink(output_file)
+        cbilling:             print('deleted', output_file)
+        cbilling:         except OSError as e:
+        cbilling:             sys.stderr.write('Could not delete %s:\n%s\n' % (output_file, str(e)))
+        cbilling:     for repo in repos:
+        cbilling:         if os.path.exists(repo):
+        cbilling:             try:
+        cbilling:                 shutil.rmtree(repo)
+        cbilling:                 print('deleted', repo)
+        cbilling:             except OSError as e:
+        cbilling:                 sys.stderr.write('Could not delete %s:\n%s\n' % (repo, str(e)))
+        cbilling: 
+        cbilling: 
+        cbilling: def getinput(prompt, default):
+        cbilling:     try:
+        cbilling:         result = input(prompt + '\n(%s): ' % default)
+        cbilling:         return result or default
+        cbilling:     except (KeyboardInterrupt, EOFError):
+        cbilling:         sys.exit(1)
+        cbilling: 
+        cbilling: 
+        cbilling: def yn_choice(message, default='y'):
+        cbilling:     try:
+        cbilling:         choices = 'Y/n' if default.lower() in ('y', 'yes') else 'y/N'
+            dihm:         choice = input("%s\n(%s): " % (message, choices))
+        cbilling:         values = ('y', 'yes', '') if default == 'y' else ('y', 'yes')
+        cbilling:         return choice.strip().lower() in values
+        cbilling:     except (KeyboardInterrupt, EOFError):
+        cbilling:         sys.exit(1)
+        cbilling: 
+        cbilling: 
+        cbilling: def make_labconfig_file(install_folder):
+        cbilling:     from labscript_utils.labconfig import LabConfig, default_config_path
+        cbilling:     source_path = os.path.join(install_folder, 'labconfig', 'example.ini')
+        cbilling:     target_path = default_config_path
+        cbilling:     if os.path.exists(target_path):
+        cbilling:         # Don't modify it, leave their config as it is:
+        cbilling:         return
+        cbilling:     print('making default labconfig file')
+        cbilling:     with open(source_path) as infile, open(target_path, 'w') as outfile:
+        cbilling:         data = infile.read()
+        cbilling:         data = data.replace('\\', os.path.sep)
+        cbilling:         outfile.write(data)
+        cbilling:     # Now change some things about it:
+        cbilling:     config = LabConfig()
+        cbilling:     config.set('DEFAULT', 'labscript_suite', install_folder)
+        cbilling:     if sys.platform == 'linux2':
+        cbilling:         config.set('programs', 'text_editor', 'gedit')
+        cbilling:     elif sys.platform == 'darwin':
+        cbilling:         config.set('programs', 'text_editor', 'open')
+        cbilling:         config.set('programs', 'text_editor_arguments', '-a TextEdit {file}')
+        cbilling:     if sys.platform != 'win32':
+        cbilling:         config.set('programs', 'hdf5_viewer', 'hdfview')
+           Chris:         config.set('DEFAULT', 'shared_drive', os.path.join(os.getenv('HOME'), 'labscript_shared'))
+        cbilling: 
+        cbilling: def install():
+        cbilling:     check_dependencies()
+        cbilling:     if not os.path.exists(IS_BUILD):
+        cbilling:         build()
+        cbilling:     install_folder = getinput('\nEnter custom installation directory or press enter', default_install_folder)
+        cbilling:     install_folder = os.path.abspath(install_folder)
+        cbilling: 
+        cbilling:     if os.path.exists(install_folder) and os.path.exists(os.path.join(install_folder, IS_LABSCRIPT_SUITE)):
+        cbilling:         if not yn_choice('\nReplace existing installation? in %s? ' % install_folder +
+        cbilling:                          'userlib and configuration ' +
+        cbilling:                          'will be kept, but backing them up is recommended.', default='n'):
+        cbilling:             print('Cancelled')
+        cbilling:             sys.exit(1)
+        cbilling:         uninstall(confirm=False)
+        cbilling:         os.chdir(this_folder)
+        cbilling: 
+        cbilling:     # Add libs to python's search path:
+        cbilling:     site_packages_dir = site.getsitepackages()[0]
+        cbilling:     pth_file = os.path.join(site_packages_dir, 'labscript_suite.pth')
+        cbilling:     print('Adding to Python search path (%s)' % pth_file)
+        cbilling:     # temporarily escalate privileges so we can create the .pth file:
+        cbilling:     with escalated_privileges():
+        cbilling:         with open(pth_file, 'w') as f:
+        cbilling:             f.write(install_folder + '\n')
+        cbilling:             f.write(os.path.join(install_folder, 'userlib') + '\n')
+        cbilling:             f.write(os.path.join(install_folder, 'userlib', 'pythonlib') + '\n')
+        cbilling: 
+        cbilling:     print('Copying files')
+        cbilling:     if not os.path.exists(install_folder):
+        cbilling:         try:
+        cbilling:             os.mkdir(install_folder)
+        cbilling:         except OSError as e:
+        cbilling:             sys.stderr.write('Could not create to install directory:\n %s' % str(e))
+        cbilling:             sys.exit(1)
+        cbilling:     try:
+        cbilling:         # Add file that marks this as a labscript suite install dir:
+        cbilling:         with open(os.path.join(install_folder, IS_LABSCRIPT_SUITE), 'w'):
+        cbilling:             pass
+        cbilling:         for entry in os.listdir('.'):
+        cbilling:             if not exclude_from_copying(entry):
+        cbilling:                 if os.path.isdir(entry):
+        cbilling:                     dest = os.path.join(install_folder, entry)
+        cbilling:                     copy = shutil.copytree
+        cbilling:                 else:
+        cbilling:                     dest = install_folder
+        cbilling:                     copy = shutil.copy
+        cbilling:                 if entry in do_not_delete:
+        cbilling:                     if os.path.exists(dest):
+        cbilling:                         continue
+        cbilling:                 copy(entry, dest)
+        cbilling:     except OSError as e:
+        cbilling:         sys.stderr.write('Could not write to install directory:\n %s' % str(e))
+        cbilling:         sys.exit(1)
+        cbilling:     # Rename setup.py to uninstall.py, as it will function only as an uninstaller from within the
+        cbilling:     # labscript install directory:
+        cbilling:     shutil.move(os.path.join(install_folder, 'setup.py'), os.path.join(install_folder, 'uninstall.py'))
+        cbilling:     # Replace the readme file with one with instructions for uninstalling only
+        cbilling:     os.unlink(os.path.join(install_folder, README))
+        cbilling:     with open(os.path.join(install_folder, 'README_uninstall.txt'), 'w') as f:
+        cbilling:         f.write('To uninstall, run: \n\n' +
+        cbilling:                 '    python uninstall.py\n\n' +
+        cbilling:                 'in this directory.\n' +
+        cbilling:                 'userlib and configuration ' +
+        cbilling:                 'will be kept, but backing them up is recommended.\n')
+        cbilling:     # Remove the dependencies.txt file:
+        cbilling:     os.unlink(os.path.join(install_folder, DEPENDENCIES))
+        cbilling:     # Reload the site module so later code sees these paths:
+        cbilling:     reload(site)
+        cbilling:     make_labconfig_file(install_folder)
+           Chris:     mkdir_p(os.path.join(install_folder, 'userlib', 'app_saved_configs'))
+        cbilling:     if os.name == 'nt':
+        cbilling:         print('adding application shortcuts')
+        cbilling:         # TODO make this work on linux!
+        cbilling:     if os.name == 'nt':
+        cbilling:         from labscript_utils.winshell import appids, app_descriptions, make_shortcut, add_to_start_menu
+        cbilling:         for program in gui_programs:
+        cbilling:             path = os.path.join(install_folder, shortcut_format % program)
+        cbilling:             executable = sys.executable.lower()
+        cbilling:             if not executable.endswith('w.exe'):
+        cbilling:                 executable = executable.replace('.exe', 'w.exe')
+        cbilling:             target = executable
+        cbilling:             arguments = os.path.join(install_folder, program, '__main__.py')
+        cbilling:             working_directory = os.path.join(install_folder, program)
+        cbilling:             icon_path = os.path.join(install_folder, program, '%s.ico' % program)
+        cbilling:             description = app_descriptions[program]
+        cbilling:             appid = appids[program]
+        cbilling:             make_shortcut(path, target, arguments, working_directory, icon_path, description, appid)
+        cbilling:             add_to_start_menu(path)
+        cbilling:         # Clear the icon cache so Windows gets the shortcut icons right even if they were previously broken:
+            dihm:         if not (struct.calcsize("P") == 8) and (platform.machine().endswith('64')):
+            dihm:             # 64-bit windows auto-redirects 32-bit python calls away from system32
+            dihm:             # have to use full path with emulator re-direct
+            dihm:             exe = os.path.join(os.environ['WINDIR'],'sysnative','ie4uinit.exe')
+            dihm:         else:
+            dihm:             exe = 'ie4uinit.exe'
+            dihm:             
+        cbilling:         try:
+            dihm:             subprocess.Popen([exe, '-ClearIconCache'])
+        cbilling:         except Exception:
+        cbilling:             sys.stderr.write('failed to clear icon cache, icons might be blank\n')
+        cbilling:     print('done')
+        cbilling: 
+        cbilling: 
+        cbilling: def uninstall(*args, **kwargs):
+        cbilling:     confirm = kwargs.pop('confirm', True)
+        cbilling:     if kwargs:
+        cbilling:         raise TypeError('uninstall() got unexpected keyword argument \'%s\'' % kwargs.popitem()[0])
+        cbilling:     if len(args) > 1:
+        cbilling:         raise TypeError('uninstall() takes at most one positional argument (%s given)' % len(args))
+        cbilling:     elif args:
+        cbilling:         uninstall_folder = args[0]
+        cbilling:     else:
+        cbilling:         for path in sys.path:
+        cbilling:             if os.path.exists(os.path.join(path, IS_LABSCRIPT_SUITE)):
+        cbilling:                 uninstall_folder = path
+        cbilling:                 break
+        cbilling:         else:
+        cbilling:             if not os.path.exists(os.path.join(default_install_folder, IS_LABSCRIPT_SUITE)):
+        cbilling:                 sys.stderr.write('\nERROR: Cannot find a labscript suite installation on this system\n'
+        cbilling:                                  'Please provide the install directory')
+        cbilling:                 sys.stderr.write(usage)
+        cbilling:                 sys.exit(1)
+        cbilling:             uninstall_folder = default_install_folder
+        cbilling:     if confirm:
+        cbilling:         if not yn_choice('\nUninstall the labscript suite from %s? ' % uninstall_folder +
+        cbilling:                          'userlib and configuration ' +
+        cbilling:                          'will be kept, but backing them up is recommended.', default='n'):
+        cbilling:             print('Cancelled')
+        cbilling:             sys.exit(1)
+        cbilling:     if not os.path.exists(os.path.join(uninstall_folder, IS_LABSCRIPT_SUITE)):
+        cbilling:         sys.stderr.write(
+        cbilling:             '\nERROR: %s does not appear to be a labscript suite installation directory. ' % uninstall_folder +
+        cbilling:             'If you really want it gone, please delete it manually.\n')
+        cbilling:         sys.exit(1)
+        cbilling:     if os.name == 'nt':
+        cbilling:         print('Removing application shortcuts')  # TODO unix
+        cbilling:         from labscript_utils.winshell import remove_from_start_menu
+        cbilling:         for program in gui_programs:
+        cbilling:             remove_from_start_menu(shortcut_format % program)
+        cbilling:     site_packages_dir = site.getsitepackages()[0]
+        cbilling:     pth_file = os.path.join(site_packages_dir, 'labscript_suite.pth')
+        cbilling:     print('Removing from Python search path (%s)' % pth_file)
+        cbilling:     if os.path.exists(pth_file):
+        cbilling:         with escalated_privileges():
+        cbilling:             os.unlink(pth_file)
+        cbilling:     print('Deleting files')
+        cbilling:     # So we can use relative paths, helps reduce the risk of deleting stuff elsewhere:
+        cbilling:     os.chdir(uninstall_folder)
+        cbilling:     for entry in os.listdir('.'):
+        cbilling:         if os.path.isdir(entry):
+        cbilling:             delete = shutil.rmtree
+        cbilling:         else:
+        cbilling:             delete = os.unlink
+        cbilling:         if entry not in do_not_delete and entry != IS_LABSCRIPT_SUITE:
+        cbilling:             delete(entry)
+        cbilling:     os.unlink(IS_LABSCRIPT_SUITE)
+        cbilling:     print('done')
+        cbilling: 
+        cbilling: 
+        cbilling: if __name__ == '__main__':
+        cbilling:     if os.path.exists(IS_LABSCRIPT_SUITE):
+        cbilling:         # Once copied into the labscript install directory at install time,
+        cbilling:         # this script will function as an uninstaller only.
+        cbilling:         uninstall()
+        cbilling:         sys.exit(0)
+        cbilling:     else:
+        cbilling:         actions = {'install': install,
+        cbilling:                    'uninstall': uninstall,
+        cbilling:                    'build': build,
+        cbilling:                    'dist': dist,
+        cbilling:                    'clean': clean,
+        cbilling:                    'check_dependencies': check_dependencies
+        cbilling:                    }
+        cbilling: 
+        cbilling:         if len(sys.argv) < 2:
+        cbilling:             sys.stderr.write(usage)
+        cbilling:             sys.exit(1)
+        cbilling:         action = sys.argv[1]
+        cbilling:         try:
+        cbilling:             function = actions[action]
+        cbilling:         except KeyError:
+        cbilling:             sys.stderr.write(usage)
+        cbilling:             sys.exit(1)
+        cbilling:         else:
+        cbilling:             args = sys.argv[2:]
+        cbilling:             try:
+        cbilling:                 function(*args)
+        cbilling:             except Exception:
+        cbilling:                 sys.stderr.write(traceback.format_exc())
+        cbilling:                 sys.stderr.write(usage)
+        cbilling:                 sys.exit(1)

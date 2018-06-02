@@ -258,16 +258,48 @@ Because the labscript suite is open source, an effective strategy to implementin
 
 There is also a substantial quantity of best-practices and lore built up about hardware as well as software, including many tips and tricks that are specific to certain setups. Whilst the labscript suite has a mailing list in which much of this information is exchanged, it would probably benefit the project to have a user-editable wiki, to decrease the barrier-to-entry for users to share this type of domain-specific knowledge outside the context of an email thread even though it may not suit the official project documentation.
 
+\section{Project history and attribution}
+
+\begin{figure}
+    \centering
+    \subfloat[]{
+    \includegraphics{figures/software/churn.pdf}
+    }\\
+    \subfloat[]{
+    \includegraphics{figures/software/blame.pdf}
+    }
+    \caption{Churn and blame}\label{fig:line_counts}
+\end{figure}
+
+This section acknowledges the contributions of different authors to the different components of the labscript suite, and provides a history of major developments. This is not comprehensive, and many improvements have been provided by others; nonetheless the majority of the design and programming effort behind the labscript suite is due to the authors responsible for the initial creation and major developments of each subproject as outlined below.  A full history of the codebase is publicly available on our on-line version control repositories [CITE BITBUCKET ALSO ZPROCESS AND QTUTILS] and can be used to credit any particular change or piece of code to the appropriate author.\footnote{With the exception of generic usernames occasionally being used from lab computers such that authorship was not recorded} Comprehensive tables of authors by number of lines changed made are provided at the end of this section [TODO remove this sentence if you don't do this].
+
+
+[DAVID HALL TEXT BASED AND PSEUDOCLOCK - don't attribute lincoln this way]
+
+
+The initial idea of having object-oriented Python code compiled to low-level instructions subsequently programmed into hardware was advocated by Lincoln Turner, and I developed an initial implementation of the \texttt{labscript} compiler in Python in February 2011, subsequently improving it over time. Throughout the following year or so, the architecture of the software suite, its components and how they would interact was developed by members of the Monash Quantum Fluids group including Lincoln Turner, Russell Anderson, myself, Philip Starkey, Shaun Johnsone, Martijn Jasperse, and others.
+
+The initial implementation of programming the \texttt{labscript}-generated instructions into hardware in LabVIEW was due to Russell Anderson in early 2011, followed by the initial version of \texttt{runmanager} written by me in August 2011 and the initial version of \texttt{runviewer}, also by me, in September 2011. Early in development I moved \texttt{runviewer} to use the Qt toolkit in order to take advantage of the \texttt{pyqtgraph}~\cite{campagnola_pyqtgraph_2016} plotting library, which was necessary for acceptable performance of \texttt{runviewer}.
+
+Philip Starkey wrote the initial version of \texttt{BLACS} in October 2011, superseding the LabVIEW control system. In November 2011 Philip Starkey and I re-architected \texttt{BLACS} to move to a multi-process model (it was previously only multi-threaded) and improve the state machine architecture it uses.
+
+[WHEN WAS BIAS WRITTEN? OR JUST WRITE: WAS WRITTEN PRIMARILY BY MARTAIJN AND MAINTAINED THROUGHOUT]
+
+In February 2012 I wrote \texttt{lyse}. In April 2012, Philip Starkey re-wrote a substantial portion of \texttt{runmanager}, making its user interface suitable for larger number of globals and improving other functionality.
+
+In January 2013, Philip Starkey ported \texttt{BLACS} to use the Qt toolkit.
+
+In May 2014, Philip Starkey expanded the capabilities of the \texttt{labscript} compiler by implemeting the `gated clocks' feature, allowing more devices to be controlled by a single pseudoclock device such as a SpinCore PulseBlaster. Between August and November 2014 while visiting Ian Spielman's group, I ported \texttt{runmanager} and \texttt{lyse} to the Qt toolkit, wrote the labscript suite installer script and adopted semantic versioning for all components.
+
+Throughout this time device driver code was contributed, various features implemented and bugs fixed by many, including Russell Anderson, Shaun Johnstone, Martijn Jasperse and Ian Spielman. Documentation written primarily by Philip Starkey. \texttt{BIAS} was written and maintained by Martijn Jasperse.
+
+When we started writing applications in Qt, I wrote the initial code for multithreading in Qt that became the \texttt{qtutils}~\cite{starkey_qtutils_2018} package, with most of the later functionality in the package due to Philip Starkey.
+
+Many of the applications make use of multiprocessing and message passing, most of which has been encapsulated by the \texttt{zprocess} package written and maintained by me~\cite{christopher_j._billington_zprocess_2018} (as always, with some bugfixes and features contributed by others).
 
 \section{Conclusion}
 
 The labscript suite is an increasingly mature software project for control of hardware-timed experiments. It has an increasing number of users and contributors, and has evolved to keep up with changing software environments in the sense of switching to use more dependable software libraries such as the Qt \textsc{gui} toolkit, and of keeping up with updates in language and library changes, such as the shift to Qt version 5 and to Python 3. It is a living project accepting changes from non-core developers, and is free for anybody to use under a permissive license. Due to the modular design and open development process, the labscript suite has thus far avoided some of the pitfalls that befall many laboratory control systems and software, such as relegation to legacy software or hardware environments due to a lack of development effort and testing to keep them up to date, or long-standing bugs not being resolved because a fix applied in one place has no mechanism of making it into other users' installs of the software, or because the source code is only understood by or available to a small few. The labscript suite is hardware-agnostic, ensuring its use is not restricted to officially sanctioned or in-house hardware. And it is written in a very popular programming language with an abundance of on-line resources and a vibrant community behind it, within both scientific and software engineering circles. Rather than the implementation details of the code itself, it is these decisions that I think are causing the project to thrive and be as beneficial to experiment physics research as it has.
-
-\section{Project attribution}
-
-todo: Who made which code by lines changed?
-
-summarise who wrote each app initially and designed interfaces. Summarise the large changes that each has gone through, i.e. rewrites by phil, then me, then phil, etc. Acknowledge testers!
 
 \section{Reproduced publication: A scripted control system for autonomous hardware-timed experiments}
 
