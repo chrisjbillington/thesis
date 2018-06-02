@@ -1,0 +1,1860 @@
+cbilling: #####################################################################
+cbilling: #                                                                   #
+cbilling: # /__init__.py                                                      #
+cbilling: #                                                                   #
+cbilling: # Copyright 2013, Monash University                                 #
+cbilling: #                                                                   #
+cbilling: # This file is part of the program runviewer, in the labscript     #
+cbilling: # suite (see http://labscriptsuite.org), and is licensed under the  #
+cbilling: # Simplified BSD License. See the license.txt file in the root of   #
+cbilling: # the project for the full license.                                 #
+cbilling: #                                                                   #
+cbilling: #####################################################################
+cbilling: 
+  philip: __version__ = '2.2.0'
+        pstarkey: #####################################################################
+        pstarkey: #                                                                   #
+        pstarkey: # /main.pyw                                                         #
+        pstarkey: #                                                                   #
+        pstarkey: # Copyright 2014, Monash University                                 #
+        pstarkey: #                                                                   #
+        pstarkey: # This file is part of the program runviewer, in the labscript      #
+        pstarkey: # suite (see http://labscriptsuite.org), and is licensed under the  #
+        pstarkey: # Simplified BSD License. See the license.txt file in the root of   #
+        pstarkey: # the project for the full license.                                 #
+        pstarkey: #                                                                   #
+        pstarkey: #####################################################################
+     janwerkmann: from __future__ import division, unicode_literals, print_function, absolute_import
+     janwerkmann: from labscript_utils import PY2
+        pstarkey: 
+        pstarkey: import os
+        pstarkey: import sys
+        pstarkey: import time
+        pstarkey: import threading
+        pstarkey: import logging
+        pstarkey: import ctypes
+        pstarkey: import socket
+     janwerkmann: if PY2:
+     janwerkmann:     str = unicode
+     janwerkmann:     from Queue import Queue
+     janwerkmann: else:
+     janwerkmann:     from queue import Queue
+     janwerkmann: import ast
+     janwerkmann: import pprint
+        pstarkey: 
+        cbilling: import signal
+        cbilling: # Quit on ctrl-c
+        cbilling: signal.signal(signal.SIGINT, signal.SIG_DFL)
+        cbilling: 
+        pstarkey: import labscript_utils.excepthook
+        cbilling: 
+        cbilling: # Set working directory to runviewer folder, resolving symlinks
+        cbilling: runviewer_dir = os.path.dirname(os.path.realpath(__file__))
+        cbilling: os.chdir(runviewer_dir)
+        cbilling: 
+        cbilling: try:
+        cbilling:     from labscript_utils import check_version
+        cbilling: except ImportError:
+        cbilling:     raise ImportError('Require labscript_utils > 2.1.0')
+        cbilling: 
+chrisjbillington: check_version('labscript_utils', '2.6.1', '3')
+     janwerkmann: check_version('qtutils', '2.0.0', '3.0.0')
+          philip: check_version('zprocess', '1.1.2', '3')
+        cbilling: 
+        pstarkey: from labscript_utils.setup_logging import setup_logging
+        pstarkey: logger = setup_logging('runviewer')
+        pstarkey: labscript_utils.excepthook.set_logger(logger)
+        pstarkey: 
+        pstarkey: from zprocess import zmq_get, ZMQServer
+             jan: import zprocess.locking
+             jan: import labscript_utils.h5_lock
+             jan: import h5py
+        pstarkey: zprocess.locking.set_client_process_name('runviewer')
+        pstarkey: 
+        pstarkey: # This must be bumped until after the h5_lock import
+        pstarkey: # This is because the check imports pyqtgraph, which imports h5py
+        pstarkey: # h5py must be imported after h5_lock, thus we do the check here
+        pstarkey: check_version('pyqtgraph', '0.9.10', '1')
+        pstarkey: 
+     janwerkmann: from qtutils.qt.QtCore import *
+     janwerkmann: from qtutils.qt.QtGui import *
+     janwerkmann: from qtutils.qt.QtWidgets import *
+     janwerkmann: from qtutils.qt.QtCore import pyqtSignal as Signal
+             jan: 
+        pstarkey: import numpy
+             jan: from scipy import interpolate
+        pstarkey: 
+        pstarkey: # must be imported after PySide/PyQt4
+        pstarkey: import pyqtgraph as pg
+        pstarkey: pg.setConfigOption('background', 'w')
+        pstarkey: pg.setConfigOption('foreground', 'k')
+        pstarkey: 
+        pstarkey: from qtutils import *
+        cbilling: import qtutils.icons
+chrisjbillington: from labscript_utils.connections import ConnectionTable
+        pstarkey: import labscript_devices
+        pstarkey: 
+        pstarkey: from labscript_utils.labconfig import LabConfig, config_prefix
+        pstarkey: 
+             jan: from runviewer.resample import resample as _resample
+        pstarkey: 
+        cbilling: 
+        cbilling: def set_win_appusermodel(window_id):
+        cbilling:     from labscript_utils.winshell import set_appusermodel, appids, app_descriptions
+        cbilling:     icon_path = os.path.abspath('runviewer.ico')
+        cbilling:     executable = sys.executable.lower()
+        cbilling:     if not executable.endswith('w.exe'):
+        cbilling:         executable = executable.replace('.exe', 'w.exe')
+        cbilling:     relaunch_command = executable + ' ' + os.path.abspath(__file__.replace('.pyc', '.py'))
+        cbilling:     relaunch_display_name = app_descriptions['runviewer']
+        cbilling:     set_appusermodel(window_id, appids['runviewer'], icon_path, relaunch_command, relaunch_display_name)
+             jan: 
+             jan: 
+        pstarkey: SHOT_MODEL__COLOUR_INDEX = 0
+     janwerkmann: SHOT_MODEL__SHUTTER_INDEX = 1
+     janwerkmann: SHOT_MODEL__CHECKBOX_INDEX = 2
+        pstarkey: SHOT_MODEL__PATH_INDEX = 1
+        pstarkey: CHANNEL_MODEL__CHECKBOX_INDEX = 0
+        pstarkey: CHANNEL_MODEL__CHANNEL_INDEX = 0
+        pstarkey: 
+             jan: 
+     janwerkmann: def format_time(input_sec):
+     janwerkmann:     # inout is the time in sec
+     janwerkmann:     if input_sec >= 1:
+     janwerkmann:         return "{:.3g}s".format(input_sec)
+     janwerkmann:     elif input_sec >= 1e-3:
+     janwerkmann:         return "{:.3g}ms".format(input_sec * 1e3)
+     janwerkmann:     elif input_sec >= 1e-6:
+     janwerkmann:         return "{:.3g}us".format(input_sec * 1e6)
+     janwerkmann:     elif input_sec >= 1e-9:
+     janwerkmann:         return "{:.3g}ns".format(input_sec * 1e9)
+     janwerkmann:     elif input_sec >= 1e-12:
+     janwerkmann:         return "{:.3g}ps".format(input_sec * 1e12)
+     janwerkmann:     elif input_sec >= 1e-15:
+     janwerkmann:         return "{:.3g}fs".format(input_sec * 1e15)
+     janwerkmann:     elif input_sec >= 1e-18:
+     janwerkmann:         return "{:.3g}as".format(input_sec * 1e18)
+     janwerkmann:     else:
+     janwerkmann:         return str(input_sec) + "s"
+        pstarkey: 
+             jan: 
+        pstarkey: def int_to_enum(enum_list, value):
+        shjohnst:     """stupid hack to work around the fact that PySide screws with the type of a variable when it goes into a model. Enums are converted to ints, which then
+        shjohnst:      can't be interpreted by QColor correctly (for example)
+        shjohnst:      unfortunately Qt doesn't provide a python list structure of enums, so you have to build the list yourself.
+        shjohnst:     """
+             jan: 
+        pstarkey:     for item in enum_list:
+        pstarkey:         if item == value:
+        pstarkey:             return item
+        pstarkey:     return value
+        pstarkey: 
+             jan: 
+             jan: class ScaleHandler():
+             jan: 
+        shjohnst:     def __init__(self, input_times, target_positions, stop_time):
+             jan:         # input_times is a list (may be unsorted) of times which should be scaled evenly with target_length
+             jan:         # an input list of [1,2,4,6] and target_length of 1.0 will result in:
+             jan:         # get_scaled_time(1)   -> 1
+             jan:         # get_scaled_time(1.5) -> 1.5
+             jan:         # get_scaled_time(3)   -> 2.5
+             jan:         # get_scaled_time(4)   -> 3
+             jan:         # get_scaled_time(5)   -> 3.5   ...
+             jan:         self.org_stop_time = float(stop_time)
+             jan: 
+             jan:         if not all((x >= 0) and (x <= self.org_stop_time) for x in input_times):
+             jan:             raise Exception('shot contains at least one marker before t=0 and/or after the stop time. Non-linear time currently does not support this.')
+             jan: 
+             jan:         unscaled_times = sorted(input_times)
+        shjohnst:         scaled_times = sorted(target_positions)
+             jan: 
+             jan: 
+             jan:         # append values for linear scaling before t=0 and after stop time
+             jan:         unscaled_times = [min(unscaled_times)-1e-9] + unscaled_times + [max(unscaled_times) + 1e-9]
+             jan:         scaled_times = [min(scaled_times)-1e-9] + scaled_times + [max(scaled_times) + 1e-9]
+             jan: 
+             jan:         self.get_scaled_time = interpolate.interp1d(unscaled_times, scaled_times, assume_sorted=True, bounds_error=False, fill_value='extrapolate')
+             jan:         self.get_unscaled_time = interpolate.interp1d(scaled_times, unscaled_times, assume_sorted=True, bounds_error=False, fill_value='extrapolate')
+             jan: 
+             jan:         self.scaled_stop_time = self.get_scaled_time(self.org_stop_time)
+             jan: 
+             jan: 
+        pstarkey: class ColourDelegate(QItemDelegate):
+        pstarkey: 
+        pstarkey:     def __init__(self, view, *args, **kwargs):
+        pstarkey:         QItemDelegate.__init__(self, *args, **kwargs)
+        pstarkey:         self._view = view
+             jan:         self._colours = [Qt.black, Qt.red, Qt.green, Qt.blue, Qt.cyan, Qt.magenta, Qt.yellow, Qt.gray, Qt.darkRed, Qt.darkGreen, Qt.darkBlue, Qt.darkCyan, Qt.darkMagenta, Qt.darkYellow, Qt.darkGray, Qt.lightGray]
+        pstarkey: 
+        pstarkey:         self._current_colour_index = 0
+             jan: 
+        pstarkey:     def get_next_colour(self):
+        pstarkey:         colour = self._colours[self._current_colour_index]
+             jan:         self._current_colour_index += 1
+        pstarkey:         if self._current_colour_index >= len(self._colours):
+        pstarkey:             self._current_colour_index = 0
+        pstarkey:         return colour
+             jan: 
+        pstarkey:     def createEditor(self, parent, option, index):
+        pstarkey:         editor = QComboBox(parent)
+        pstarkey:         #colours = QColor.colorNames()
+        pstarkey:         for colour in self._colours:
+             jan:             pixmap = QPixmap(20, 20)
+        pstarkey:             pixmap.fill(colour)
+             jan:             editor.addItem(QIcon(pixmap), '', colour)
+             jan: 
+        pstarkey:         editor.activated.connect(lambda index, editor=editor: self._view.commitData(editor))
+             jan:         editor.activated.connect(lambda index, editor=editor: self._view.closeEditor(editor, QAbstractItemDelegate.NoHint))
+             jan:         QTimer.singleShot(10, editor.showPopup)
+             jan: 
+        pstarkey:         return editor
+             jan: 
+        pstarkey:     def setEditorData(self, editor, index):
+        pstarkey:         value = index.model().data(index, Qt.UserRole)
+        pstarkey:         for i in range(editor.count()):
+        pstarkey:             if editor.itemData(i) == value():
+        pstarkey:                 editor.setCurrentIndex(i)
+        pstarkey:                 break
+             jan: 
+        pstarkey:     def setModelData(self, editor, model, index):
+        pstarkey:         icon = editor.itemIcon(editor.currentIndex())
+        pstarkey:         colour = editor.itemData(editor.currentIndex())
+             jan: 
+        pstarkey:         # Note, all data being written to the model must be read out of the editor PRIOR to calling model.setData()
+        pstarkey:         #       This is because a call to model.setData() triggers setEditorData(), which messes up subsequent
+        pstarkey:         #       calls to the editor to determine the currently selected item/data
+        pstarkey:         model.setData(index, icon, Qt.DecorationRole)
+             jan:         model.setData(index, lambda clist=self._colours, colour=colour: int_to_enum(clist, colour), Qt.UserRole)
+             jan: 
+        pstarkey:     def updateEditorGeometry(self, editor, option, index):
+             jan:         editor.setGeometry(option.rect)
+        pstarkey: 
+             jan: 
+        cbilling: class RunviewerMainWindow(QMainWindow):
+        cbilling:     # A signal for when the window manager has created a new window for this widget:
+        cbilling:     newWindow = Signal(int)
+        cbilling: 
+        cbilling:     def event(self, event):
+        cbilling:         result = QMainWindow.event(self, event)
+        cbilling:         if event.type() == QEvent.WinIdChange:
+        cbilling:             self.newWindow.emit(self.effectiveWinId())
+        cbilling:         return result
+        cbilling: 
+             jan: 
+        pstarkey: class RunViewer(object):
+        shjohnst:     def __init__(self, exp_config):
+             jan:         self.ui = UiLoader().load(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'main.ui'), RunviewerMainWindow())
+             jan: 
+             jan:         # setup shot treeview model
+        pstarkey:         self.shot_model = QStandardItemModel()
+     janwerkmann:         self.shot_model.setHorizontalHeaderLabels(['colour', 'shutters', 'path'])
+        pstarkey:         self.ui.shot_treeview.setModel(self.shot_model)
+          philip:         self.ui.shot_treeview.resizeColumnToContents(1)
+        pstarkey:         self.shot_model.itemChanged.connect(self.on_shot_selection_changed)
+        pstarkey:         self.shot_colour_delegate = ColourDelegate(self.ui.shot_treeview)
+        pstarkey:         self.ui.shot_treeview.setItemDelegateForColumn(0, self.shot_colour_delegate)
+             jan: 
+             jan:         # setup channel treeview model
+        pstarkey:         self.channel_model = QStandardItemModel()
+        pstarkey:         self.channel_model.setHorizontalHeaderLabels(['channel'])
+        pstarkey:         self.ui.channel_treeview.setModel(self.channel_model)
+        pstarkey:         self.channel_model.itemChanged.connect(self.update_plots)
+             jan: 
+        pstarkey:         # create a hidden plot widget that all plots can link their x-axis too
+        pstarkey:         hidden_plot = pg.PlotWidget(name='runviewer - time axis link')
+             jan: 
+chrisjbillington:         hidden_plot.setMinimumHeight(1)
+chrisjbillington:         hidden_plot.setMaximumHeight(1)
+        pstarkey:         hidden_plot.setLabel('bottom', 'Time', units='s')
+          philip:         hidden_plot.setLabel('left', " ")
+        pstarkey:         hidden_plot.showAxis('right', True)
+             jan:         hidden_plot_item = hidden_plot.plot([0, 1], [0, 0])
+        pstarkey:         self._hidden_plot = (hidden_plot, hidden_plot_item)
+        pstarkey:         self.ui.hidden_plot_layout.addWidget(hidden_plot)
+             jan: 
+             jan:         time_axis_plot = pg.PlotWidget()
+     janwerkmann:         time_axis_plot.setMinimumHeight(120)
+     janwerkmann:         time_axis_plot.setMaximumHeight(120)
+     janwerkmann:         time_axis_plot.setLabel('bottom', 'Time', units='s')
+     janwerkmann:         time_axis_plot.showAxis('right', True)
+             jan:         time_axis_plot.setXLink('runviewer - time axis link')
+     janwerkmann:         time_axis_plot.setMouseEnabled(y=False)
+     janwerkmann:         time_axis_plot.getAxis('left').setTicks([])  # hide y ticks in the left & right side. only show time axis
+     janwerkmann:         time_axis_plot.getAxis('right').setTicks([])
+     janwerkmann:         time_axis_plot.setLabel('left', 'Slots')
+             jan:         time_axis_plot.scene().sigMouseMoved.connect(lambda pos: self.mouseMovedEvent(pos, time_axis_plot, "Slots"))
+     janwerkmann:         time_axis_plot_item = time_axis_plot.plot([0, 1], [0, 0], pen=(255, 255, 255))
+     janwerkmann:         self._time_axis_plot = (time_axis_plot, time_axis_plot_item)
+             jan: 
+     janwerkmann:         self.all_markers = {}
+     janwerkmann:         self.all_marker_items = {}
+        shjohnst:         self.movable_marker_items = {}
+     janwerkmann:         markers_plot = pg.PlotWidget(name='runviewer - markers')
+     janwerkmann:         markers_plot.setMinimumHeight(120)
+     janwerkmann:         markers_plot.setMaximumHeight(120)
+     janwerkmann:         markers_plot.showAxis('top', False)
+     janwerkmann:         markers_plot.showAxis('bottom', False)
+     janwerkmann:         markers_plot.showAxis('left', True)
+     janwerkmann:         markers_plot.showAxis('right', True)
+     janwerkmann:         markers_plot.getAxis('left').setTicks([])
+     janwerkmann:         markers_plot.getAxis('right').setTicks([])
+             jan:         markers_plot.setLabel('left', 'Markers')
+     janwerkmann:         markers_plot.setXLink('runviewer - time axis link')
+     janwerkmann:         markers_plot.setMouseEnabled(y=False)
+             jan:         markers_plot.scene().sigMouseMoved.connect(lambda pos: self.mouseMovedEvent(pos, markers_plot, "Markers"))
+     janwerkmann:         markers_plot_item = markers_plot.plot([])
+     janwerkmann:         self._markers_plot = (markers_plot, markers_plot_item)
+     janwerkmann: 
+             jan:         self.ui.verticalLayout_9.insertWidget(1,markers_plot)
+     janwerkmann:         self.ui.plot_layout.addWidget(time_axis_plot)
+             jan: 
+        shjohnst:         # add some icons
+        shjohnst:         self.ui.add_shot.setIcon(QIcon(':/qtutils/fugue/plus'))
+     janwerkmann:         self.ui.remove_shots.setIcon(QIcon(':/qtutils/fugue/minus'))
+        shjohnst:         self.ui.enable_selected_shots.setIcon(QIcon(':/qtutils/fugue/ui-check-box'))
+        shjohnst:         self.ui.disable_selected_shots.setIcon(QIcon(':/qtutils/fugue/ui-check-box-uncheck'))
+        shjohnst:         self.ui.group_channel.setIcon(QIcon(':/qtutils/fugue/layers-group'))
+        shjohnst:         self.ui.delete_group.setIcon(QIcon(':/qtutils/fugue/layers-ungroup'))
+        shjohnst:         self.ui.channel_move_to_top.setIcon(QIcon(':/qtutils/fugue/arrow-stop-090'))
+        shjohnst:         self.ui.channel_move_up.setIcon(QIcon(':/qtutils/fugue/arrow-090'))
+        shjohnst:         self.ui.channel_move_down.setIcon(QIcon(':/qtutils/fugue/arrow-270'))
+        shjohnst:         self.ui.channel_move_to_bottom.setIcon(QIcon(':/qtutils/fugue/arrow-stop-270'))
+        shjohnst:         self.ui.reset_x_axis.setIcon(QIcon(':/qtutils/fugue/layer-resize-replicate'))
+        shjohnst:         self.ui.reset_y_axis.setIcon(QIcon(':/qtutils/fugue/layer-resize-replicate-vertical'))
+             jan:         self.ui.toggle_tooltip.setIcon(QIcon(':/qtutils/fugue/ui-tooltip-balloon'))
+        shjohnst:         self.ui.linear_time.setIcon(QIcon(':/qtutils/fugue/clock-history'))
+        shjohnst:         self.ui.equal_space_time.setIcon(QIcon(':/qtutils/fugue/border-vertical-all'))
+        shjohnst: 
+        shjohnst:         self.ui.linear_time.setEnabled(False)
+        shjohnst:         self.ui.equal_space_time.setEnabled(False)
+             jan: 
+        shjohnst:         self.ui.actionOpen_Shot.setIcon(QIcon(':/qtutils/fugue/plus'))
+        shjohnst:         self.ui.actionQuit.setIcon(QIcon(':/qtutils/fugue/cross-button'))
+     janwerkmann:         self.ui.actionLoad_channel_config.setIcon(QIcon(':/qtutils/fugue/folder-open'))
+     janwerkmann:         self.ui.actionSave_channel_config.setIcon(QIcon(':/qtutils/fugue/disk'))
+        shjohnst: 
+        shjohnst:         # disable buttons that are not yet implemented to help avoid confusion!
+        shjohnst:         self.ui.group_channel.setEnabled(False)
+        shjohnst:         self.ui.delete_group.setEnabled(False)
+        shjohnst: 
+        pstarkey:         # connect signals
+        pstarkey:         self.ui.reset_x_axis.clicked.connect(self.on_x_axis_reset)
+        pstarkey:         self.ui.reset_y_axis.clicked.connect(self.on_y_axes_reset)
+        pstarkey:         self.ui.channel_move_up.clicked.connect(self._move_up)
+        pstarkey:         self.ui.channel_move_down.clicked.connect(self._move_down)
+        pstarkey:         self.ui.channel_move_to_top.clicked.connect(self._move_top)
+        pstarkey:         self.ui.channel_move_to_bottom.clicked.connect(self._move_bottom)
+        pstarkey:         self.ui.enable_selected_shots.clicked.connect(self._enable_selected_shots)
+        pstarkey:         self.ui.disable_selected_shots.clicked.connect(self._disable_selected_shots)
+        pstarkey:         self.ui.add_shot.clicked.connect(self.on_add_shot)
+     janwerkmann:         self.ui.markers_comboBox.currentIndexChanged.connect(self._update_markers)
+        shjohnst:         # self.ui.non_linear_time.toggled.connect(self._toggle_non_linear_time)
+        shjohnst:         self.ui.linear_time.clicked.connect(self._reset_linear_time)
+        shjohnst:         self.ui.equal_space_time.clicked.connect(self._space_markers_evenly)
+     janwerkmann:         self.ui.remove_shots.clicked.connect(self.on_remove_shots)
+        shjohnst: 
+        shjohnst:         self.ui.actionOpen_Shot.triggered.connect(self.on_add_shot)
+        shjohnst:         self.ui.actionQuit.triggered.connect(self.ui.close)
+     janwerkmann:         self.ui.actionLoad_channel_config.triggered.connect(self.on_load_channel_config)
+     janwerkmann:         self.ui.actionSave_channel_config.triggered.connect(self.on_save_channel_config)
+        shjohnst: 
+        cbilling:         if os.name == 'nt':
+        cbilling:             self.ui.newWindow.connect(set_win_appusermodel)
+             jan: 
+        pstarkey:         self.ui.show()
+             jan: 
+        pstarkey:         # internal variables
+        pstarkey:         #self._channels_list = {}
+        pstarkey:         self.plot_widgets = {}
+     janwerkmann:         self.plot_items = {}
+     janwerkmann:         self.shutter_lines = {}
+     janwerkmann: 
+     janwerkmann:         try:
+     janwerkmann:             self.default_config_path = os.path.join(exp_config.get('DEFAULT', 'app_saved_configs'), 'runviewer')
+     janwerkmann:         except LabConfig.NoOptionError:
+     janwerkmann:             exp_config.set('DEFAULT', 'app_saved_configs', os.path.join('%(labscript_suite)s', 'userlib', 'app_saved_configs', '%(experiment_name)s'))
+     janwerkmann:             self.default_config_path = os.path.join(exp_config.get('DEFAULT', 'app_saved_configs'), 'runviewer')
+     janwerkmann:         if not os.path.exists(self.default_config_path):
+     janwerkmann:             os.makedirs(self.default_config_path)
+     janwerkmann: 
+        shjohnst:         self.last_opened_shots_folder = exp_config.get('paths', 'experiment_shot_storage')
+             jan: 
+        pstarkey:         # start resample thread
+        pstarkey:         self._resample = False
+        pstarkey:         self._thread = threading.Thread(target=self._resample_thread)
+        pstarkey:         self._thread.daemon = True
+        pstarkey:         self._thread.start()
+             jan: 
+        pstarkey:         # start shots_to_process_queue monitoring thread
+        pstarkey:         self._shots_to_process_thread = threading.Thread(target=self._process_shots)
+        pstarkey:         self._shots_to_process_thread.daemon = True
+        pstarkey:         self._shots_to_process_thread.start()
+             jan: 
+             jan:         self.scale_time = False
+             jan:         self.scalehandler = None
+             jan: 
+     janwerkmann:     def _update_markers(self, index):
+     janwerkmann:         for line, plot in self.all_marker_items.items():
+        shjohnst:             # line.blockSignals(True)
+     janwerkmann:             plot.removeItem(line)
+     janwerkmann:         self.all_marker_items = {}
+             jan: 
+        shjohnst:         for line, plot in self.movable_marker_items.items():
+        shjohnst:             # line.blockSignals(True)
+        shjohnst:             plot.removeItem(line)
+        shjohnst:         self.movable_marker_items = {}
+        shjohnst:         self.marker_times_unscaled = {}
+             jan: 
+             jan:         marker_index = self.ui.markers_comboBox.currentIndex()
+             jan:         shot = self.ui.markers_comboBox.itemData(marker_index)
+             jan: 
+        shjohnst:         if index == 0:
+        shjohnst:             self.ui.linear_time.setEnabled(False)
+        shjohnst:             self.ui.equal_space_time.setEnabled(False)
+        shjohnst:             self.all_markers = {}
+        shjohnst:         else:
+        shjohnst:             self.ui.linear_time.setEnabled(True)
+        shjohnst:             self.ui.equal_space_time.setEnabled(True)
+        shjohnst:             self.all_markers = shot.markers
+     janwerkmann: 
+        shjohnst:         # self._update_non_linear_time(changed_shot=True)
+             jan: 
+     janwerkmann:         times = sorted(list(self.all_markers.keys()))
+        shjohnst:         last_time = 0
+     janwerkmann:         for i, (t, m) in enumerate(sorted(self.all_markers.items())):
+     janwerkmann:             if i < len(times)-1:
+     janwerkmann:                 delta_t = times[i+1] - t
+        shjohnst:             # Now always have a marker at stop time
+        shjohnst:             # else:
+        shjohnst:                 # delta_t = shot.stop_time - t
+             jan: 
+        shjohnst:             unscaled_t = t
+             jan:             if self.scale_time:
+             jan:                 t = self.scalehandler.get_scaled_time(t)
+             jan: 
+     janwerkmann:             color = m['color']
+     janwerkmann:             color = QColor(color[0], color[1], color[2])
+             jan:             label = m['label'].decode() if isinstance( m['label'], bytes) else str(m['label'])
+        shjohnst:             if i == 0:
+        shjohnst:                 line = self._markers_plot[0].addLine(x=t, pen=pg.mkPen(color=color, width=1.5, style=Qt.DashLine), label=label, labelOpts= {"color": color, "fill": QColor(255, 255, 255, 255), "rotateAxis":(1, 0), "anchors": [(0.5, 0),(0.5, 0)]}, movable=False )
+        shjohnst:             else:
+        shjohnst:                 line = self._markers_plot[0].addLine(x=t, pen=pg.mkPen(color=color, width=1.5, style=Qt.DashLine), label=label, labelOpts= {"color": color, "fill": QColor(255, 255, 255, 255), "rotateAxis":(1, 0), "anchors": [(0.5, 0),(0.5, 0)]}, movable=True )
+        shjohnst:                 line.setBounds([last_time+1e-9 if last_time !=0 else last_time ,None])
+        shjohnst:                 line.sigPositionChanged.connect(self._marker_moving)
+        shjohnst:                 line.sigPositionChangeFinished.connect(self._marker_moved)
+        shjohnst:             # self.all_marker_items[line] = self._markers_plot[0]
+        shjohnst:             self.movable_marker_items[line] = self._markers_plot[0]
+        shjohnst:             self.marker_times_unscaled[line] = unscaled_t
+     janwerkmann: 
+        shjohnst:             line = self._time_axis_plot[0].addLine(x=t, pen=pg.mkPen(color=color, width=1.5, style=Qt.DashLine), label=format_time(delta_t), labelOpts= {"color": color, "fill": QColor(255, 255, 255, 255), "rotateAxis":(1, 0), "anchors": [(0.5, 0),(0.5, 0)]}, movable=False )
+     janwerkmann:             self.all_marker_items[line] = self._time_axis_plot[0]
+        shjohnst:             last_time = t
+     janwerkmann:         self.update_plots()
+     janwerkmann: 
+     janwerkmann:     def mouseMovedEvent(self, position, ui, name):
+             jan:         if self.ui.toggle_tooltip.isChecked():
+             jan:             v = ui.scene().views()[0]
+             jan:             viewP = v.mapFromScene(position)
+             jan:             glob_pos = ui.mapToGlobal(viewP)  # convert to Screen x
+             jan:             glob_zero = ui.mapToGlobal(QPoint(0, 0))
+             jan:             self._global_start_x = glob_zero.x()
+             jan:             self._global_start_y = glob_zero.y()
+             jan:             self._global_width = ui.width()
+             jan:             self._global_height = ui.height()
+     janwerkmann: 
+             jan:             coord_pos = ui.plotItem.vb.mapSceneToView(position)
+     janwerkmann: 
+             jan:             if len(self.get_selected_shots_and_colours()) > 0:
+             jan:                 if self.scale_time and self.scalehandler is not None:
+             jan:                     unscaled_t = float(self.scalehandler.get_unscaled_time(coord_pos.x()))
+             jan:                 else:
+             jan:                     unscaled_t = float(coord_pos.x())
+             jan:                 if unscaled_t is not None:
+             jan:                     pos = QPoint(glob_pos.x(), glob_pos.y())
+             jan:                     plot_data = ui.plotItem.listDataItems()[0].getData()
+             jan:                     if plot_data[0] is not None and unscaled_t is not None:
+             jan:                         nearest_index = numpy.abs(plot_data[0] - unscaled_t).argmin() - 1
+             jan:                         y_val = "{:.2f}".format(plot_data[1][nearest_index])
+             jan:                     else:
+             jan:                         y_val = '-'
+chrisjbillington:                     text = "Plot: {} \nTime: {:.9f}s\nValue: {}".format(name, unscaled_t, y_val)
+             jan:                     QToolTip.showText(pos, text)
+     janwerkmann: 
+        shjohnst:     def _reset_linear_time(self):
+        shjohnst:         self.scale_time = False
+        shjohnst:         markers_unscaled = sorted(list(self.all_markers.keys()))
+        shjohnst:         marker_index = self.ui.markers_comboBox.currentIndex()
+        shjohnst:         shot = self.ui.markers_comboBox.itemData(marker_index)
+             jan:         scalehandler = ScaleHandler(markers_unscaled, markers_unscaled, shot.stop_time)
+             jan:         self._update_non_linear_time(new_scalehandler=scalehandler)
+        shjohnst:         self.on_x_axis_reset()
+             jan:         self._resample = True
+             jan: 
+        shjohnst:     def _space_markers_evenly(self):
+        shjohnst:         self.scale_time = True
+        shjohnst:         marker_index = self.ui.markers_comboBox.currentIndex()
+        shjohnst:         shot = self.ui.markers_comboBox.itemData(marker_index)
+        shjohnst:         markers_unscaled = sorted(list(self.all_markers.keys()))
+             jan:         target_length = shot.stop_time / float(len(markers_unscaled) - 1)
+             jan:         scaled_times = [target_length * i for i in range(len(markers_unscaled))]
+             jan:         scalehandler = ScaleHandler(markers_unscaled, scaled_times, shot.stop_time)
+             jan:         self._update_non_linear_time(new_scalehandler=scalehandler)
+        shjohnst:         self.on_x_axis_reset()
+             jan:         self._resample = True
+             jan: 
+             jan:     def _marker_moving(self, line):
+        shjohnst:         self.scale_time = True
+             jan:         marker_index = self.ui.markers_comboBox.currentIndex()
+             jan:         shot = self.ui.markers_comboBox.itemData(marker_index)
+        shjohnst:         markers_unscaled = sorted(list(self.all_markers.keys()))
+             jan: 
+        shjohnst:         # What was the unscaled time of the marker that moved, and where is it now?
+        shjohnst:         moved_marker_unscaled_t = self.marker_times_unscaled[line]
+        shjohnst:         moved_marker_new_pos = line.pos().x()
+             jan: 
+        shjohnst:         # Where was the marker just before it was moved? This is given by the current scalehandler
+             jan:         if self.scalehandler is not None:
+             jan:             moved_marker_last_pos = self.scalehandler.get_scaled_time(moved_marker_unscaled_t)
+             jan:         else:
+        shjohnst:             moved_marker_last_pos = moved_marker_unscaled_t
+             jan: 
+        shjohnst:         # How far has the marker moved?
+        shjohnst:         delta_marker = moved_marker_new_pos - moved_marker_last_pos
+             jan: 
+        shjohnst:         # Now we want to shift the other markers if the are at a higher position than this one
+        shjohnst:         markers = list(self.marker_times_unscaled.keys())
+        shjohnst:         new_scaled_times = []
+        shjohnst:         for marker in markers:
+        shjohnst:             if marker == line:
+        shjohnst:                 new_scaled_times.append(moved_marker_new_pos)
+        shjohnst:             else:
+        shjohnst:                 x = marker.pos().x()
+             jan: 
+        shjohnst:                 if x > moved_marker_last_pos:
+        shjohnst:                     x += delta_marker
+        shjohnst:                 new_scaled_times.append(x)
+        shjohnst:         new_scaled_times = sorted(new_scaled_times)
+             jan:         scalehandler = ScaleHandler(markers_unscaled,new_scaled_times, shot.stop_time)
+             jan:         self._update_non_linear_time(new_scalehandler=scalehandler)
+             jan: 
+        shjohnst:     def _marker_moved(self, line):
+             jan:         self._resample = True
+             jan: 
+             jan:     def _update_non_linear_time(self, changed_shot=False, new_scalehandler=None):
+             jan: 
+             jan:         marker_index = self.ui.markers_comboBox.currentIndex()
+             jan:         shot = self.ui.markers_comboBox.itemData(marker_index)
+             jan:         if new_scalehandler is None:
+        shjohnst:             # make a 1:1 scalehandler using the hidden_plot
+        shjohnst:             self.scale_time = False
+        shjohnst:             end_t = self._hidden_plot[1].getData()[0][-1]
+             jan:             new_scalehandler = ScaleHandler([0,end_t],[0,end_t],end_t)
+             jan: 
+             jan:         old_scalehandler = self.scalehandler
+             jan:         self.scalehandler = new_scalehandler
+             jan: 
+             jan:         # combine markers and shutter lines
+             jan:         markers = list(self.all_marker_items.keys())
+             jan:         for channel in self.shutter_lines:
+             jan:             for shot in self.shutter_lines[channel]:
+             jan:                 for line in self.shutter_lines[channel][shot][0]:
+             jan:                     markers.append(line)
+             jan:                 for line in self.shutter_lines[channel][shot][1]:
+             jan:                     markers.append(line)
+             jan: 
+             jan:         # Move all Markes/Shutter Lines to new position
+             jan:         for marker in markers:
+             jan:             pos = marker.pos()
+             jan: 
+             jan:             if old_scalehandler is None:
+             jan:                 unscaled_x = pos.x()
+             jan:             else:
+             jan:                 unscaled_x = old_scalehandler.get_unscaled_time(pos.x())
+             jan: 
+             jan:             if self.scale_time and self.scalehandler is not None:
+             jan:                 new_x = self.scalehandler.get_scaled_time(unscaled_x)
+             jan:             else:
+             jan:                 new_x = unscaled_x
+             jan: 
+             jan:             pos.setX(new_x)
+             jan:             marker.setPos(pos)
+             jan: 
+        shjohnst:         # Move the movable lines in the upper graph
+        shjohnst:         mv_markers = list(self.movable_marker_items.keys())
+        shjohnst:         new_marker_times = {}
+        shjohnst:         for marker in mv_markers:
+             jan:             if self.scale_time and self.scalehandler is not None:
+             jan:                 new_x = self.scalehandler.get_scaled_time(self.marker_times_unscaled[marker])
+        shjohnst:             else:
+             jan:                 new_x = self.marker_times_unscaled[marker]
+        shjohnst: 
+        shjohnst:             new_marker_times[float(new_x)] = marker
+             jan: 
+        shjohnst:         last_time = None
+             jan:         for t in sorted(list(new_marker_times.keys())):
+        shjohnst:             marker = new_marker_times[t]
+        shjohnst:             marker.blockSignals(True)
+             jan:             marker.setBounds([None, None])
+             jan:             marker.setPos(t)
+             jan:             marker.setBounds([last_time+1e-9 if last_time is not None else 0.0, None])
+             jan:             marker.blockSignals(False)
+        shjohnst:             last_time = t
+             jan: 
+             jan:         if shot is not None and self.scale_time:
+             jan:             self._time_axis_plot[0].getAxis("bottom").setTicks([[[0, 0], [shot.stop_time, shot.stop_time]]])
+             jan:             for plot in self.plot_widgets.values():
+             jan:                 plot.getAxis("bottom").setTicks([[[0, 0], [shot.stop_time, shot.stop_time]]])
+             jan:         else:
+             jan:             self._time_axis_plot[0].getAxis("bottom").setTicks(None)
+             jan:             for plot in self.plot_widgets.values():
+             jan:                 plot.getAxis("bottom").setTicks(None)
+             jan: 
+             jan:         for plot in self.plot_widgets.values():
+             jan:             for item in plot.getPlotItem().items:
+             jan:                 if isinstance(item, pg.PlotDataItem):
+             jan:                     if old_scalehandler is not None:
+             jan:                         unscaled_t = old_scalehandler.get_unscaled_time(item.xData)
+             jan:                     else:
+             jan:                         unscaled_t = item.xData
+             jan: 
+             jan:                     if self.scalehandler is not None:
+             jan:                         item.setData(self.scalehandler.get_scaled_time(unscaled_t), item.yData)
+             jan:                     else:
+             jan:                         item.setData(unscaled_t, item.yData)
+             jan: 
+        pstarkey:     def _process_shots(self):
+        pstarkey:         while True:
+        pstarkey:             filepath = shots_to_process_queue.get()
+        pstarkey:             inmain_later(self.load_shot, filepath)
+             jan: 
+     janwerkmann:     def on_load_channel_config(self):
+     janwerkmann:         config_file = QFileDialog.getOpenFileName(self.ui, "Select file to load", self.default_config_path, "Config files (*.ini)")
+     janwerkmann:         if isinstance(config_file, tuple):
+     janwerkmann:             config_file, _ = config_file
+     janwerkmann:         if config_file:
+     janwerkmann:             runviewer_config = LabConfig(config_file)
+     janwerkmann:             try:
+     janwerkmann:                 channels = ast.literal_eval(runviewer_config.get('runviewer_state', 'Channels'))
+     janwerkmann:             except (LabConfig.NoOptionError, LabConfig.NoSectionError):
+     janwerkmann:                 channels = {}
+     janwerkmann: 
+     janwerkmann:             for row, (channel, checked) in enumerate(channels):
+     janwerkmann:                 check_items = self.channel_model.findItems(channel)
+     janwerkmann:                 if len(check_items) == 0:
+     janwerkmann:                     items = []
+     janwerkmann:                     check_item = QStandardItem(channel)
+     janwerkmann:                     check_item.setEditable(False)
+     janwerkmann:                     check_item.setCheckable(True)
+     janwerkmann:                     items.append(check_item)
+     janwerkmann:                     check_item.setCheckState(Qt.Checked if checked else Qt.Unchecked)
+     janwerkmann:                     check_item.setEnabled(False)
+     janwerkmann:                     self.channel_model.insertRow(row, items)
+     janwerkmann:                 else:
+     janwerkmann:                     check_item = check_items[0]
+     janwerkmann:                     check_item.setCheckState(Qt.Checked if checked else Qt.Unchecked)
+     janwerkmann:                     self.channel_model.takeRow(check_item.row())
+     janwerkmann:                     self.channel_model.insertRow(row, check_item)
+     janwerkmann: 
+     janwerkmann:     def on_save_channel_config(self):
+     janwerkmann:         save_file = QFileDialog.getSaveFileName(self.ui, 'Select  file to save current channel configuration', self.default_config_path, "config files (*.ini)")
+     janwerkmann:         if type(save_file) is tuple:
+     janwerkmann:             save_file, _ = save_file
+     janwerkmann: 
+     janwerkmann:         if save_file:
+     janwerkmann:             runviewer_config = LabConfig(save_file)
+     janwerkmann: 
+     janwerkmann:             channels = []
+     janwerkmann:             for row in range(self.channel_model.rowCount()):
+     janwerkmann:                 item = self.channel_model.item(row)
+     janwerkmann:                 channels.append((item.text(), item.checkState() == Qt.Checked))
+     janwerkmann: 
+     janwerkmann:             runviewer_config.set('runviewer_state', 'Channels', pprint.pformat(channels))
+     janwerkmann: 
+     janwerkmann:     def on_toggle_shutter(self, checked, current_shot):
+     janwerkmann:         for channel in self.shutter_lines:
+     janwerkmann:             for shot in self.shutter_lines[channel]:
+     janwerkmann:                 if shot == current_shot:
+     janwerkmann:                     for line in self.shutter_lines[channel][shot][0]:
+     janwerkmann:                         if checked:
+     janwerkmann:                             line.show()
+     janwerkmann:                         else:
+     janwerkmann:                             line.hide()
+     janwerkmann:                     for line in self.shutter_lines[channel][shot][1]:
+     janwerkmann:                         if checked:
+     janwerkmann:                             line.show()
+     janwerkmann:                         else:
+     janwerkmann:                             line.hide()
+     janwerkmann: 
+        pstarkey:     def on_add_shot(self):
+        shjohnst:         selected_files = QFileDialog.getOpenFileNames(self.ui, "Select file to load", self.last_opened_shots_folder, "HDF5 files (*.h5 *.hdf5)")
+             jan:         popup_warning = False
+     janwerkmann:         if isinstance(selected_files, tuple):
+     janwerkmann:             selected_files, _ = selected_files
+        shjohnst:         # Convert to standard platform specific path, otherwise Qt likes forward slashes:
+        shjohnst:         selected_files = [os.path.abspath(str(shot_file)) for shot_file in selected_files]
+        shjohnst:         if len(selected_files) > 0:
+        shjohnst:             self.last_opened_shots_folder = os.path.dirname(selected_files[0])
+        shjohnst: 
+             jan:         for file in selected_files:
+             jan:             try:
+             jan:                 filepath = str(file)
+             jan:                 # Qt has this weird behaviour where if you type in the name of a file that exists
+             jan:                 # but does not have the extension you have limited the dialog to, the OK button is greyed out
+             jan:                 # but you can hit enter and the file will be selected.
+             jan:                 # So we must check the extension of each file here!
+             jan:                 if filepath.endswith('.h5') or filepath.endswith('.hdf5'):
+             jan:                     self.load_shot(filepath)
+             jan:                 else:
+        pstarkey:                     popup_warning = True
+             jan:             except:
+             jan:                 popup_warning = True
+             jan:                 raise
+             jan:         if popup_warning:
+             jan:             message = QMessageBox()
+             jan:             message.setText("Warning: Some shots were not loaded because they were not valid hdf5 files")
+             jan:             message.setIcon(QMessageBox.Warning)
+             jan:             message.setWindowTitle("Runviewer")
+             jan:             message.setStandardButtons(QMessageBox.Ok)
+             jan:             message.exec_()
+             jan: 
+     janwerkmann:     def on_remove_shots(self):
+     janwerkmann:         # Get the selection model from the treeview
+     janwerkmann:         selection_model = self.ui.shot_treeview.selectionModel()
+     janwerkmann:         # Create a list of select row indices
+     janwerkmann:         selected_row_list = [index.row() for index in selection_model.selectedRows()]
+     janwerkmann:         # sort in descending order to prevent index changes of rows to be deleted
+     janwerkmann:         selected_row_list.sort(reverse=True)
+     janwerkmann: 
+     janwerkmann:         reply = QMessageBox.question(self.ui, 'Runviewer', 'Remove {} shots?'.format(len(selected_row_list)),
+     janwerkmann:                                        QMessageBox.Yes | QMessageBox.No)
+     janwerkmann:         if reply == QMessageBox.No:
+     janwerkmann:             return
+     janwerkmann: 
+     janwerkmann:         for row in selected_row_list:
+     janwerkmann:             item = self.shot_model.item(row, SHOT_MODEL__CHECKBOX_INDEX)
+     janwerkmann:             colour_item = self.shot_model.item(row, SHOT_MODEL__COLOUR_INDEX)
+     janwerkmann:             shutter_item = self.shot_model.item(row, SHOT_MODEL__SHUTTER_INDEX)
+     janwerkmann:             shot = item.data()
+     janwerkmann:             # unselect shot
+     janwerkmann:             item.setCheckState(Qt.Unchecked)
+     janwerkmann:             shutter_item.setCheckState(Qt.Unchecked)
+     janwerkmann:             # remove row
+     janwerkmann:             self.shot_model.removeRow(row)
+     janwerkmann:             del shot
+     janwerkmann: 
+        pstarkey:     def on_shot_selection_changed(self, item):
+        pstarkey:         if self.shot_model.indexFromItem(item).column() == SHOT_MODEL__CHECKBOX_INDEX:
+             jan: 
+        pstarkey:             # add or remove a colour for this shot
+        pstarkey:             checked = item.checkState()
+        pstarkey:             row = self.shot_model.indexFromItem(item).row()
+             jan:             colour_item = self.shot_model.item(row, SHOT_MODEL__COLOUR_INDEX)
+     janwerkmann:             check_shutter = self.shot_model.item(row, SHOT_MODEL__SHUTTER_INDEX)
+             jan: 
+        pstarkey:             if checked:
+        shjohnst:                 colour = colour_item.data(Qt.UserRole)
+        shjohnst:                 if colour is not None:
+        shjohnst:                     colour = colour()
+        shjohnst:                 else:
+        shjohnst:                     colour = self.shot_colour_delegate.get_next_colour()
+        shjohnst: 
+        pstarkey:                 colour_item.setEditable(True)
+             jan:                 pixmap = QPixmap(20, 20)
+        pstarkey:                 pixmap.fill(colour)
+        pstarkey:                 icon = QIcon(pixmap)
+        shjohnst:                 colour_item.setData(lambda clist=self.shot_colour_delegate._colours, colour=colour: int_to_enum(clist, colour), Qt.UserRole)
+        shjohnst:                 colour_item.setData(icon, Qt.DecorationRole)
+             jan:                 shot_combobox_index = self.ui.markers_comboBox.findText(os.path.basename(item.data().path))
+     janwerkmann:                 self.ui.markers_comboBox.model().item(shot_combobox_index).setEnabled(True)
+     janwerkmann:                 if self.ui.markers_comboBox.currentIndex() == 0:
+     janwerkmann:                     self.ui.markers_comboBox.setCurrentIndex(shot_combobox_index)
+     janwerkmann:                 if item.data().shutter_times != {}:
+     janwerkmann:                     check_shutter.setEnabled(True)
+     janwerkmann:                 else:
+     janwerkmann:                     check_shutter.setEnabled(False)
+     janwerkmann:                     check_shutter.setToolTip("This shot doesn't contain shutter markers")
+        pstarkey:             else:
+        shjohnst:                 # colour = None
+        shjohnst:                 # icon = None
+             jan:                 shot_combobox_index = self.ui.markers_comboBox.findText(os.path.basename(item.data().path))
+     janwerkmann:                 self.ui.markers_comboBox.model().item(shot_combobox_index).setEnabled(False)
+     janwerkmann:                 if shot_combobox_index == self.ui.markers_comboBox.currentIndex():
+     janwerkmann:                     self.ui.markers_comboBox.setCurrentIndex(0)
+        pstarkey:                 colour_item.setEditable(False)
+     janwerkmann:                 check_shutter.setEnabled(False)
+             jan: 
+             jan:             # model.setData(index, editor.itemIcon(editor.currentIndex()),
+        pstarkey:             # model.setData(index, editor.itemData(editor.currentIndex()), Qt.UserRole)
+             jan: 
+        pstarkey:             self.update_channels_treeview()
+        pstarkey:         elif self.shot_model.indexFromItem(item).column() == SHOT_MODEL__COLOUR_INDEX:
+             jan:             # update the plot colours
+             jan: 
+        pstarkey:             # get reference to the changed shot
+             jan:             current_shot = self.shot_model.item(self.shot_model.indexFromItem(item).row(), SHOT_MODEL__CHECKBOX_INDEX).data()
+             jan: 
+        pstarkey:             # find and update the pen of the plot items
+        pstarkey:             for channel in self.plot_items.keys():
+        pstarkey:                 for shot in self.plot_items[channel]:
+        pstarkey:                     if shot == current_shot:
+        pstarkey:                         colour = item.data(Qt.UserRole)
+        shjohnst:                         self.plot_items[channel][shot].setPen(pg.mkPen(QColor(colour()), width=2))
+     janwerkmann:         elif self.shot_model.indexFromItem(item).column() == SHOT_MODEL__SHUTTER_INDEX:
+     janwerkmann:             current_shot = self.shot_model.item(self.shot_model.indexFromItem(item).row(), SHOT_MODEL__CHECKBOX_INDEX).data()
+     janwerkmann:             self.on_toggle_shutter(item.checkState(), current_shot)
+             jan: 
+             jan:     def load_shot(self, filepath):
+        pstarkey:         shot = Shot(filepath)
+             jan: 
+        pstarkey:         # add shot to shot list
+        pstarkey:         # Create Items
+        pstarkey:         items = []
+        pstarkey:         colour_item = QStandardItem('')
+        pstarkey:         colour_item.setEditable(False)
+        pstarkey:         colour_item.setToolTip('Double-click to change colour')
+        pstarkey:         items.append(colour_item)
+             jan: 
+     janwerkmann:         check_shutter = QStandardItem()
+     janwerkmann:         check_shutter.setCheckable(True)
+     janwerkmann:         check_shutter.setCheckState(Qt.Unchecked)  # options are Qt.Checked OR Qt.Unchecked
+     janwerkmann:         check_shutter.setEnabled(False)
+     janwerkmann:         check_shutter.setToolTip("Toggle shutter markers")
+     janwerkmann:         items.append(check_shutter)
+     janwerkmann: 
+        pstarkey:         check_item = QStandardItem(shot.path)
+        pstarkey:         check_item.setEditable(False)
+        pstarkey:         check_item.setCheckable(True)
+             jan:         check_item.setCheckState(Qt.Unchecked)  # options are Qt.Checked OR Qt.Unchecked
+        pstarkey:         check_item.setData(shot)
+        shjohnst:         check_item.setToolTip(filepath)
+        pstarkey:         items.append(check_item)
+        pstarkey:         # script name
+        pstarkey:         # path_item = QStandardItem(shot.path)
+        pstarkey:         # path_item.setEditable(False)
+        pstarkey:         # items.append(path_item)
+        pstarkey:         self.shot_model.appendRow(items)
+     janwerkmann:         self.ui.markers_comboBox.addItem(os.path.basename(shot.path), shot)
+             jan:         shot_combobox_index = self.ui.markers_comboBox.findText(os.path.basename(shot.path))
+     janwerkmann:         self.ui.markers_comboBox.model().item(shot_combobox_index).setEnabled(False)
+             jan: 
+        pstarkey:         # only do this if we are checking the shot we are adding
+             jan:         # self.update_channels_treeview()
+             jan: 
+        pstarkey:     def get_selected_shots_and_colours(self):
+             jan:         # get the ticked shots
+        pstarkey:         ticked_shots = {}
+        pstarkey:         for i in range(self.shot_model.rowCount()):
+             jan:             item = self.shot_model.item(i, SHOT_MODEL__CHECKBOX_INDEX)
+             jan:             colour_item = self.shot_model.item(i, SHOT_MODEL__COLOUR_INDEX)
+     janwerkmann:             shutter_item = self.shot_model.item(i, SHOT_MODEL__SHUTTER_INDEX)
+        pstarkey:             if item.checkState() == Qt.Checked:
+        pstarkey:                 shot = item.data()
+        pstarkey:                 colour_item_data = colour_item.data(Qt.UserRole)
+     janwerkmann:                 ticked_shots[shot] = (colour_item_data(), shutter_item.checkState())
+        pstarkey:         return ticked_shots
+             jan: 
+        pstarkey:     def update_channels_treeview(self):
+        pstarkey:         ticked_shots = self.get_selected_shots_and_colours()
+             jan: 
+        pstarkey:         # get set of channels
+        pstarkey:         channels = {}
+        pstarkey:         for shot in ticked_shots.keys():
+        pstarkey:             channels[shot] = set(shot.channels)
+        pstarkey:         channels_set = frozenset().union(*channels.values())
+             jan: 
+        pstarkey:         # now find channels in channels_set which are not in the treeview, and add them
+        pstarkey:         # now find channels in channels set which are already in the treeview, but deactivated, and activate them
+        pstarkey:         treeview_channels_dict = {}
+        pstarkey:         deactivated_treeview_channels_dict = {}
+        pstarkey:         for i in range(self.channel_model.rowCount()):
+             jan:             item = self.channel_model.item(i, CHANNEL_MODEL__CHECKBOX_INDEX)
+        pstarkey:             # Sanity check
+     janwerkmann:             if str(item.text()) in treeview_channels_dict:
+        pstarkey:                 raise RuntimeError("A duplicate channel name was detected in the treeview due to an internal error. Please lodge a bugreport detailing how the channels with the same name appeared in the channel treeview. Please restart the application")
+             jan: 
+     janwerkmann:             treeview_channels_dict[str(item.text())] = i
+        pstarkey:             if not item.isEnabled():
+     janwerkmann:                 deactivated_treeview_channels_dict[str(item.text())] = i
+        pstarkey:         treeview_channels = set(treeview_channels_dict.keys())
+             jan:         deactivated_treeview_channels = set(deactivated_treeview_channels_dict.keys())
+             jan: 
+             jan:         # speed up working with self.channel_model by blocking signals and later reenabeling them
+             jan:         self.channel_model.blockSignals(True)
+             jan: 
+        pstarkey:         # find list of channels to work with
+        pstarkey:         channels_to_add = channels_set.difference(treeview_channels)
+        pstarkey:         for channel in sorted(channels_to_add):
+        pstarkey:             items = []
+        pstarkey:             check_item = QStandardItem(channel)
+        pstarkey:             check_item.setEditable(False)
+        pstarkey:             check_item.setCheckable(True)
+        pstarkey:             check_item.setCheckState(Qt.Unchecked)
+        pstarkey:             items.append(check_item)
+        pstarkey:             # channel_name_item = QStandardItem(channel)
+        pstarkey:             # channel_name_item.setEditable(False)
+        pstarkey:             # items.append(channel_name_item)
+        pstarkey:             self.channel_model.appendRow(items)
+             jan: 
+        pstarkey:         channels_to_reactivate = deactivated_treeview_channels.intersection(channels_set)
+        pstarkey:         for channel in channels_to_reactivate:
+        pstarkey:             for i in range(self.channel_model.columnCount()):
+             jan:                 item = self.channel_model.item(deactivated_treeview_channels_dict[channel], i)
+        pstarkey:                 item.setEnabled(True)
+        pstarkey:                 item.setSelectable(True)
+             jan: 
+        pstarkey:         # now find channels in the treeview which are not in the channels_set and deactivate them
+        pstarkey:         channels_to_deactivate = treeview_channels.difference(channels_set)
+        pstarkey:         for channel in channels_to_deactivate:
+        pstarkey:             for i in range(self.channel_model.columnCount()):
+             jan:                 item = self.channel_model.item(treeview_channels_dict[channel], i)
+        pstarkey:                 item.setEnabled(False)
+        pstarkey:                 item.setSelectable(False)
+             jan: 
+             jan:         self.channel_model.blockSignals(False)
+             jan:         self.channel_model.layoutChanged.emit()
+             jan: 
+        pstarkey:         # TODO: Also update entries in groups
+             jan: 
+        pstarkey:         self.update_plots()
+             jan: 
+        pstarkey:     def update_plots(self):
+        pstarkey:         # get list of selected shots
+        pstarkey:         ticked_shots = self.get_selected_shots_and_colours()
+             jan: 
+        pstarkey:         # SHould we rescale the x-axis?
+        pstarkey:         # if self._hidden_plot[0].getViewBox.getState()['autoRange'][0]:
+             jan:         #    self._hidden_plot[0].enableAutoRange(axis=pg.ViewBox.XAxis)
+        pstarkey:         # else:
+             jan:         #    self._hidden_plot[0].enableAutoRange(axis=pg.ViewBox.XAxis, enable=False)
+             jan: 
+        pstarkey:         # find stop time of longest ticked shot
+     janwerkmann: 
+        pstarkey:         largest_stop_time = 0
+        pstarkey:         stop_time_set = False
+        pstarkey:         for shot in ticked_shots.keys():
+        shjohnst:             if self.scale_time:
+        shjohnst:                 st = self.scalehandler.get_scaled_time(shot.stop_time)
+        shjohnst:             else:
+        shjohnst:                 st = shot.stop_time
+        shjohnst:             if st > largest_stop_time:
+        shjohnst:                 largest_stop_time = st
+        pstarkey:                 stop_time_set = True
+        pstarkey:         if not stop_time_set:
+        pstarkey:             largest_stop_time = 1.0
+             jan: 
+             jan:         # Update the range of the link plot
+             jan:         self._hidden_plot[1].setData([0, largest_stop_time], [0, 1e-9])
+             jan: 
+        pstarkey:         # Update plots
+        pstarkey:         for i in range(self.channel_model.rowCount()):
+             jan:             check_item = self.channel_model.item(i, CHANNEL_MODEL__CHECKBOX_INDEX)
+     janwerkmann:             channel = str(check_item.text())
+        pstarkey:             if check_item.checkState() == Qt.Checked and check_item.isEnabled():
+        pstarkey:                 # we want to show this plot
+        pstarkey:                 # does a plot already exist? If yes, show it
+        pstarkey:                 if channel in self.plot_widgets:
+        pstarkey:                     self.plot_widgets[channel].show()
+        pstarkey:                     # update the plot
+        pstarkey:                     # are there are plot items for this channel which are shown that should not be?
+        pstarkey:                     to_delete = []
+        pstarkey:                     for shot in self.plot_items[channel]:
+        pstarkey:                         if shot not in ticked_shots.keys():
+        pstarkey:                             self.plot_widgets[channel].removeItem(self.plot_items[channel][shot])
+     janwerkmann:                             # Remove Shutter Markers of unticked Shots
+     janwerkmann:                             if shot in self.shutter_lines[channel]:
+     janwerkmann:                                 for line in self.shutter_lines[channel][shot][0]:
+     janwerkmann:                                     self.plot_widgets[channel].removeItem(line)
+     janwerkmann:                                 for line in self.shutter_lines[channel][shot][1]:
+     janwerkmann:                                     self.plot_widgets[channel].removeItem(line)
+     janwerkmann:                                 self.shutter_lines[channel].pop(shot)
+        pstarkey:                             to_delete.append(shot)
+     janwerkmann:                     for shot in to_delete:
+     janwerkmann:                         del self.plot_items[channel][shot]
+     janwerkmann: 
+        pstarkey:                     # do we need to add any plot items for shots that were not previously selected?
+     janwerkmann:                     for shot, (colour, shutters_checked) in ticked_shots.items():
+        pstarkey:                         if shot not in self.plot_items[channel]:
+        pstarkey:                             # plot_item = self.plot_widgets[channel].plot(shot.traces[channel][0], shot.traces[channel][1], pen=pg.mkPen(QColor(colour), width=2))
+        pstarkey:                             # Add empty plot as it the custom resampling we do will happen quicker if we don't attempt to first plot all of the data
+             jan:                             plot_item = self.plot_widgets[channel].plot([0, 0], [0], pen=pg.mkPen(QColor(colour), width=2), stepMode=True)
+        pstarkey:                             self.plot_items[channel][shot] = plot_item
+             jan: 
+     janwerkmann:                         # Add Shutter Markers of newly ticked Shots
+     janwerkmann:                         self.add_shutter_markers(shot, channel, shutters_checked)
+     janwerkmann: 
+     janwerkmann:                     for t, m in self.all_markers.items():
+     janwerkmann:                         color = m['color']
+     janwerkmann:                         color = QColor(color[0], color[1], color[2])
+             jan:                         if self.scale_time and self.scalehandler is not None:
+             jan:                             t = self.scalehandler.get_scaled_time(t)
+     janwerkmann:                         line = self.plot_widgets[channel].addLine(x=t, pen=pg.mkPen(color=color, width=1.5, style=Qt.DashLine))
+     janwerkmann:                         self.all_marker_items[line] = self.plot_widgets[channel]
+     janwerkmann: 
+        pstarkey:                 # If no, create one
+        pstarkey:                 else:
+        pstarkey:                     self.create_plot(channel, ticked_shots)
+             jan: 
+        pstarkey:             else:
+        pstarkey:                 if channel not in self.plot_widgets:
+        pstarkey:                     self.create_plot(channel, ticked_shots)
+        pstarkey:                 self.plot_widgets[channel].hide()
+             jan: 
+        pstarkey:         self._resample = True
+        pstarkey: 
+        pstarkey:     def create_plot(self, channel, ticked_shots):
+             jan:         self.plot_widgets[channel] = pg.PlotWidget()  # name=channel)
+        pstarkey:         self.plot_widgets[channel].setMinimumHeight(200)
+        pstarkey:         self.plot_widgets[channel].setMaximumHeight(200)
+        pstarkey:         self.plot_widgets[channel].setLabel('bottom', 'Time', units='s')
+        pstarkey:         self.plot_widgets[channel].showAxis('right', True)
+     janwerkmann:         self.plot_widgets[channel].showAxis('bottom', True)
+             jan:         self.plot_widgets[channel].setXLink('runviewer - time axis link')
+             jan:         self.plot_widgets[channel].sigXRangeChanged.connect(self.on_x_range_changed)
+     janwerkmann:         self.plot_widgets[channel].scene().sigMouseMoved.connect(lambda pos: self.mouseMovedEvent(pos, self.plot_widgets[channel], channel))
+             jan:         self.ui.plot_layout.insertWidget(self.ui.plot_layout.count() - 1, self.plot_widgets[channel])
+     janwerkmann:         self.shutter_lines[channel] = {}  # initialize Storage for shutter lines
+     janwerkmann:         self.plot_items.setdefault(channel, {})
+             jan: 
+        pstarkey:         has_units = False
+        pstarkey:         units = ''
+     janwerkmann:         for shot, (colour, shutters_checked) in ticked_shots.items():
+        pstarkey:             if channel in shot.traces:
+        pstarkey:                 # plot_item = self.plot_widgets[channel].plot(shot.traces[channel][0], shot.traces[channel][1], pen=pg.mkPen(QColor(colour), width=2))
+        pstarkey:                 # Add empty plot as it the custom resampling we do will happen quicker if we don't attempt to first plot all of the data
+             jan:                 plot_item = self.plot_widgets[channel].plot([0, 0], [0], pen=pg.mkPen(QColor(colour), width=2), stepMode=True)
+        pstarkey:                 self.plot_items[channel][shot] = plot_item
+             jan: 
+        pstarkey:                 if len(shot.traces[channel]) == 3:
+        pstarkey:                     has_units = True
+        pstarkey:                     units = shot.traces[channel][2]
+             jan: 
+     janwerkmann:                 # Add Shutter Markers of ticked Shots
+     janwerkmann:                 self.add_shutter_markers(shot, channel, shutters_checked)
+     janwerkmann: 
+        pstarkey:         if has_units:
+        pstarkey:             self.plot_widgets[channel].setLabel('left', channel, units=units)
+        pstarkey:         else:
+        pstarkey:             self.plot_widgets[channel].setLabel('left', channel)
+             jan: 
+     janwerkmann:     def add_shutter_markers(self, shot, channel, shutters_checked):
+     janwerkmann:         if shot not in self.shutter_lines[channel] and channel in shot.shutter_times:
+     janwerkmann:             self.shutter_lines[channel][shot] = [[], []]
+     janwerkmann: 
+     janwerkmann:             open_color = QColor(0, 255, 0)
+     janwerkmann:             close_color = QColor(255, 0, 0)
+     janwerkmann: 
+     janwerkmann:             for t, val in shot.shutter_times[channel].items():
+     janwerkmann:                 scaled_t = t
+     janwerkmann:                 if val:  # val != 0, shutter open
+     janwerkmann:                     line = self.plot_widgets[channel].addLine(x=scaled_t, pen=pg.mkPen(color=open_color, width=4., style=Qt.DotLine))
+     janwerkmann:                     self.shutter_lines[channel][shot][1].append(line)
+     janwerkmann:                     if not shutters_checked:
+     janwerkmann:                         line.hide()
+     janwerkmann:                 else:  # else shutter close
+     janwerkmann:                     line = self.plot_widgets[channel].addLine(x=scaled_t, pen=pg.mkPen(color=close_color, width=4., style=Qt.DotLine))
+     janwerkmann:                     self.shutter_lines[channel][shot][0].append(line)
+     janwerkmann:                     if not shutters_checked:
+     janwerkmann:                         line.hide()
+     janwerkmann: 
+        pstarkey:     def on_x_range_changed(self, *args):
+        pstarkey:         # print 'x range changed'
+        pstarkey:         self._resample = True
+             jan: 
+        pstarkey:     @inmain_decorator(wait_for_return=True)
+        pstarkey:     def _get_resample_params(self, channel, shot):
+        pstarkey:         rect = self.plot_items[channel][shot].getViewBox().viewRect()
+        pstarkey:         xmin, xmax = rect.left(), rect.width() + rect.left()
+        pstarkey:         dx = xmax - xmin
+        pstarkey:         view_range = self.plot_widgets[channel].viewRange()
+        pstarkey:         return view_range[0][0], view_range[0][1], dx
+             jan: 
+             jan:     def resample(self, data_x, data_y, xmin, xmax, stop_time, num_pixels):
+        pstarkey:         """This is a function for downsampling the data before plotting
+        pstarkey:         it. Unlike using nearest neighbour interpolation, this method
+        pstarkey:         preserves the features of the plot. It chooses what value to
+        pstarkey:         use based on what values within a region are most different
+        pstarkey:         from the values it's already chosen. This way, spikes of a short
+        pstarkey:         duration won't just be skipped over as they would with any sort
+        pstarkey:         of interpolation."""
+             jan:         # TODO: Only finely sample the currently visible region. Coarsely sample the rest
+        pstarkey:         # x_out = numpy.float32(numpy.linspace(data_x[0], data_x[-1], 4000*(data_x[-1]-data_x[0])/(xmax-xmin)))
+             jan:         x_out = numpy.float64(numpy.linspace(xmin, xmax, 3 * 2000 + 2))
+             jan:         y_out = numpy.empty(len(x_out) - 1, dtype=numpy.float64)
+        pstarkey:         data_x = numpy.float64(data_x)
+        pstarkey:         data_y = numpy.float64(data_y)
+             jan: 
+             jan:         # TODO: investigate only resampling when necessary.
+             jan:         #       Currently pyqtgraph sometimes has trouble rendering things
+             jan:         #       if you don't resample. If a point is far off the graph,
+        pstarkey:         #       and this point is the first that should be drawn for stepMode,
+        pstarkey:         #       because there is a long gap before the next point (which is
+        pstarkey:         #       visible) then there is a problem.
+             jan:         #       Also need to explicitly handle cases where none of the data
+        pstarkey:         #       is visible (which resampling does by setting NaNs)
+        pstarkey:         #
+        pstarkey:         # x_data_slice = data_x[(data_x>=xmin)&(data_x<=xmax)]
+        pstarkey:         # print len(data_x)
+        pstarkey:         # if len(x_data_slice) < 3*2000+2:
+             jan:         #    x_out = x_data_slice
+             jan:         #    y_out = data_y[(data_x>=xmin)&(data_x<=xmax)][:-1]
+             jan:         #    logger.info('skipping resampling')
+             jan:         # else:
+        pstarkey:         resampling = True
+             jan: 
+        pstarkey:         if resampling:
+        pstarkey:             _resample(data_x, data_y, x_out, y_out, numpy.float64(stop_time))
+        pstarkey:             # self.__resample4(data_x, data_y, x_out, y_out, numpy.float32(stop_time))
+        pstarkey:         else:
+        pstarkey:             x_out, y_out = data_x, data_y
+             jan: 
+        pstarkey:         return x_out, y_out
+             jan: 
+        pstarkey:     def __resample4(self, x_in, y_in, x_out, y_out, stop_time):
+             jan:         # we want x-out to have three times the number of points as there are pixels
+        pstarkey:         # Plus one at the end
+        pstarkey:         # y_out = numpy.empty(len(x_out)-1, dtype=numpy.float64)
+        pstarkey:         # print 'len x_out: %d'%len(x_out)
+             jan: 
+        pstarkey:         # A couple of special cases that I don't want to have to put extra checks in for:
+        pstarkey:         if x_out[-1] < x_in[0] or x_out[0] > stop_time:
+        pstarkey:             # We're all the way to the left of the data or all the way to the right. Fill with NaNs:
+        pstarkey:             y_out.fill('NaN')
+        pstarkey:         elif x_out[0] > x_in[-1]:
+        pstarkey:             # We're after the final clock tick, but before stop_time
+        pstarkey:             i = 0
+             jan:             while i < len(x_out) - 1:
+        pstarkey:                 if x_out[i] < stop_time:
+        pstarkey:                     y_out[i] = y_in[-1]
+        pstarkey:                 else:
+        pstarkey:                     y_out[i] = numpy.float('NaN')
+        pstarkey:                 i += 1
+        pstarkey:         else:
+        pstarkey:             i = 0
+        pstarkey:             j = 1
+        pstarkey:             # Until we get to the data, fill the output array with NaNs (which
+        pstarkey:             # get ignored when plotted)
+        pstarkey:             while x_out[i] < x_in[0]:
+        pstarkey:                 y_out[i] = numpy.float('NaN')
+             jan:                 y_out[i + 1] = numpy.float('NaN')
+             jan:                 y_out[i + 2] = numpy.float('NaN')
+             jan:                 i += 3
+        pstarkey:             # If we're some way into the data, we need to skip ahead to where
+        pstarkey:             # we want to get the first datapoint from:
+        pstarkey:             while x_in[j] < x_out[i]:
+        pstarkey:                 j += 1
+             jan: 
+        pstarkey:             # Get the first datapoint:
+        pstarkey:             # y_out[i] = y_in[j-1]
+        pstarkey:             # i += 1
+             jan: 
+        pstarkey:             # Get values until we get to the end of the data:
+             jan:             while j < len(x_in) and i < len(x_out) - 2:  # Leave one spare for the final data point and one because stepMode=True requires len(y)=len(x)-1
+        pstarkey:                 # This is 'nearest neighbour on the left' interpolation. It's
+        pstarkey:                 # what we want if none of the source values checked in the
+        pstarkey:                 # upcoming loop are used:
+             jan:                 y_out[i] = y_in[j - 1]
+             jan:                 i += 2
+        pstarkey:                 positive_jump_value = 0
+             jan:                 positive_jump_index = j - 1
+        pstarkey:                 negative_jump_value = 0
+             jan:                 negative_jump_index = j - 1
+        pstarkey:                 # now find the max and min values between this x_out time point and the next x_out timepoint
+        pstarkey:                 # print i
+        pstarkey:                 while j < len(x_in) and x_in[j] < x_out[i]:
+             jan:                     jump = y_in[j] - y_out[i - 2]
+        pstarkey:                     # would using this source value cause a bigger positive jump?
+        pstarkey:                     if jump > 0 and jump > positive_jump_value:
+        pstarkey:                         positive_jump_value = jump
+        pstarkey:                         positive_jump_index = j
+        pstarkey:                     # would using this source value cause a bigger negative jump?
+        pstarkey:                     elif jump < 0 and jump < negative_jump_value:
+        pstarkey:                         negative_jump_value = jump
+        pstarkey:                         negative_jump_index = j
+             jan: 
+             jan:                     j += 1
+             jan: 
+        pstarkey:                 if positive_jump_index < negative_jump_index:
+             jan:                     y_out[i - 1] = y_in[positive_jump_index]
+        pstarkey:                     y_out[i] = y_in[negative_jump_index]
+             jan:                     # TODO: We could override the x_out values with x_in[jump_index]
+        pstarkey:                 else:
+             jan:                     y_out[i - 1] = y_in[negative_jump_index]
+        pstarkey:                     y_out[i] = y_in[positive_jump_index]
+             jan: 
+        pstarkey:                 i += 1
+             jan: 
+        pstarkey:             # Get the last datapoint:
+        pstarkey:             if j < len(x_in):
+        pstarkey:                 # If the sample rate of the raw data is low, then the current
+        pstarkey:                 # j point could be outside the current plot view range
+             jan:                 # If so, decrease j so that we take a value that is within the
+        pstarkey:                 # plot view range.
+        pstarkey:                 if x_in[j] > x_out[-1] and j > 0:
+        pstarkey:                     j -= 1
+             jan: 
+        pstarkey:                 y_out[i] = y_in[j]
+        pstarkey:                 i += 1
+        pstarkey:             # if i < len(x_out):
+             jan:             #    y_out[i] = y_in[-1]
+             jan:             #    i += 1
+        pstarkey:             # Fill the remainder of the array with the last datapoint,
+        pstarkey:             # if t < stop_time, and then NaNs after that:
+             jan:             while i < len(x_out) - 1:
+        pstarkey:                 if x_out[i] < stop_time:
+        pstarkey:                     y_out[i] = y_in[-1]
+        pstarkey:                 else:
+        pstarkey:                     y_out[i] = numpy.float('NaN')
+        pstarkey:                 i += 1
+        pstarkey:         # return y_out # method changed to modify y_out array in place
+             jan: 
+             jan:     def __resample3(self, x_in, y_in, x_out, stop_time):
+        pstarkey:         """This is a Python implementation of the C extension. For
+        pstarkey:         debugging and developing the C extension."""
+        pstarkey:         y_out = numpy.empty(len(x_out))
+        pstarkey:         i = 0
+        pstarkey:         j = 1
+        pstarkey:         # A couple of special cases that I don't want to have to put extra checks in for:
+        pstarkey:         if x_out[-1] < x_in[0] or x_out[0] > stop_time:
+        pstarkey:             # We're all the way to the left of the data or all the way to the right. Fill with NaNs:
+        pstarkey:             while i < len(x_out):
+        pstarkey:                 y_out[i] = numpy.float('NaN')
+        pstarkey:                 i += 1
+        pstarkey:         elif x_out[0] > x_in[-1]:
+        pstarkey:             # We're after the final clock tick, but before stop_time
+        pstarkey:             while i < len(x_out):
+        pstarkey:                 if x_out[i] < stop_time:
+        pstarkey:                     y_out[i] = y_in[-1]
+        pstarkey:                 else:
+        pstarkey:                     y_out[i] = numpy.float('NaN')
+        pstarkey:                 i += 1
+        pstarkey:         else:
+        pstarkey:             # Until we get to the data, fill the output array with NaNs (which
+        pstarkey:             # get ignored when plotted)
+        pstarkey:             while x_out[i] < x_in[0]:
+        pstarkey:                 y_out[i] = numpy.float('NaN')
+        pstarkey:                 i += 1
+        pstarkey:             # If we're some way into the data, we need to skip ahead to where
+        pstarkey:             # we want to get the first datapoint from:
+        pstarkey:             while x_in[j] < x_out[i]:
+        pstarkey:                 j += 1
+        pstarkey:             # Get the first datapoint:
+             jan:             y_out[i] = y_in[j - 1]
+        pstarkey:             i += 1
+        pstarkey:             # Get values until we get to the end of the data:
+        pstarkey:             while j < len(x_in) and i < len(x_out):
+        pstarkey:                 # This is 'nearest neighbour on the left' interpolation. It's
+        pstarkey:                 # what we want if none of the source values checked in the
+        pstarkey:                 # upcoming loop are used:
+             jan:                 y_out[i] = y_in[j - 1]
+        pstarkey:                 while j < len(x_in) and x_in[j] < x_out[i]:
+        pstarkey:                     # Would using this source value cause the interpolated values
+        pstarkey:                     # to make a bigger jump?
+             jan:                     if numpy.abs(y_in[j] - y_out[i - 1]) > numpy.abs(y_out[i] - y_out[i - 1]):
+        pstarkey:                         # If so, use this source value:
+        pstarkey:                         y_out[i] = y_in[j]
+             jan:                     j += 1
+        pstarkey:                 i += 1
+        pstarkey:             # Get the last datapoint:
+        pstarkey:             if i < len(x_out):
+        pstarkey:                 y_out[i] = y_in[-1]
+        pstarkey:                 i += 1
+        pstarkey:             # Fill the remainder of the array with the last datapoint,
+        pstarkey:             # if t < stop_time, and then NaNs after that:
+        pstarkey:             while i < len(x_out):
+        pstarkey:                 if x_out[i] < stop_time:
+        pstarkey:                     y_out[i] = y_in[-1]
+        pstarkey:                 else:
+        pstarkey:                     y_out[i] = numpy.float('NaN')
+        pstarkey:                 i += 1
+        pstarkey:         return y_out
+             jan: 
+        pstarkey:     def _resample_thread(self):
+        pstarkey:         logger = logging.getLogger('runviewer.resample_thread')
+        pstarkey:         while True:
+        pstarkey:             if self._resample:
+        pstarkey:                 self._resample = False
+        pstarkey:                 # print 'resampling'
+        pstarkey:                 ticked_shots = inmain(self.get_selected_shots_and_colours)
+     janwerkmann:                 for shot, (colour, shutters_checked) in ticked_shots.items():
+             jan:                     for channel in shot.traces:
+        pstarkey:                         if self.channel_checked_and_enabled(channel):
+        pstarkey:                             try:
+             jan:                                 xmin, xmax, dx = self._get_resample_params(channel, shot)
+             jan: 
+        pstarkey:                                 # We go a bit outside the visible range so that scrolling
+        pstarkey:                                 # doesn't immediately go off the edge of the data, and the
+        pstarkey:                                 # next resampling might have time to fill in more data before
+        pstarkey:                                 # the user sees any empty space.
+             jan:                                 if self.scale_time:
+             jan:                                     xnew, ynew = self.resample(shot.scaled_times(channel), shot.traces[channel][1], xmin, xmax, shot.stop_time, dx)
+             jan:                                 else:
+             jan:                                     xnew, ynew = self.resample(shot.traces[channel][0], shot.traces[channel][1], xmin, xmax, shot.stop_time, dx)
+        pstarkey:                                 inmain(self.plot_items[channel][shot].setData, xnew, ynew, pen=pg.mkPen(QColor(colour), width=2), stepMode=True)
+        pstarkey:                             except Exception:
+        pstarkey:                                 #self._resample = True
+        pstarkey:                                 pass
+        pstarkey:                         else:
+             jan:                             logger.info('ignoring channel %s' % channel)
+        pstarkey:             time.sleep(0.5)
+             jan: 
+        pstarkey:     @inmain_decorator(wait_for_return=True)
+        pstarkey:     def channel_checked_and_enabled(self, channel):
+             jan:         logger.info('is channel %s enabled' % channel)
+        pstarkey:         index = self.channel_model.index(0, CHANNEL_MODEL__CHANNEL_INDEX)
+        pstarkey:         indexes = self.channel_model.match(index, Qt.DisplayRole, channel, 1, Qt.MatchExactly)
+             jan:         logger.info('number of matches %d' % len(indexes))
+        pstarkey:         if len(indexes) == 1:
+        pstarkey:             check_item = self.channel_model.itemFromIndex(indexes[0])
+        pstarkey:             if check_item.checkState() == Qt.Checked and check_item.isEnabled():
+        pstarkey:                 return True
+        pstarkey:         return False
+             jan: 
+        pstarkey:     def on_x_axis_reset(self):
+        shjohnst:         ticked_shots = self.get_selected_shots_and_colours()
+        shjohnst:         largest_stop_time = 0
+        shjohnst:         stop_time_set = False
+        shjohnst:         for shot in ticked_shots.keys():
+        shjohnst:             if self.scale_time:
+        shjohnst:                 st = self.scalehandler.get_scaled_time(shot.stop_time)
+        shjohnst:             else:
+        shjohnst:                 st = shot.stop_time
+        shjohnst:             if st > largest_stop_time:
+        shjohnst:                 largest_stop_time = st
+        shjohnst:                 stop_time_set = True
+        shjohnst:         if not stop_time_set:
+        shjohnst:             largest_stop_time = 1.0
+        shjohnst: 
+        shjohnst:         # Update the range of the link plot
+        shjohnst:         self._hidden_plot[1].setData([0, largest_stop_time], [0, 1e-9])
+             jan: 
+             jan:         self._hidden_plot[0].enableAutoRange(axis=pg.ViewBox.XAxis)
+             jan: 
+        pstarkey:     def on_y_axes_reset(self):
+        pstarkey:         for plot_widget in self.plot_widgets.values():
+        pstarkey:             plot_widget.enableAutoRange(axis=pg.ViewBox.YAxis)
+             jan: 
+        pstarkey:     def _enable_selected_shots(self):
+        pstarkey:         self.update_ticks_of_selected_shots(Qt.Checked)
+             jan: 
+        pstarkey:     def _disable_selected_shots(self):
+        pstarkey:         self.update_ticks_of_selected_shots(Qt.Unchecked)
+             jan: 
+        pstarkey:     def update_ticks_of_selected_shots(self, state):
+        pstarkey:         # Get the selection model from the treeview
+        pstarkey:         selection_model = self.ui.shot_treeview.selectionModel()
+        pstarkey:         # Create a list of select row indices
+        pstarkey:         selected_row_list = [index.row() for index in sorted(selection_model.selectedRows())]
+        pstarkey:         # for each row selected
+        pstarkey:         for row in selected_row_list:
+             jan:             check_item = self.shot_model.item(row, SHOT_MODEL__CHECKBOX_INDEX)
+        pstarkey:             check_item.setCheckState(state)
+             jan: 
+             jan:     def _move_up(self):
+        pstarkey:         # Get the selection model from the treeview
+             jan:         selection_model = self.ui.channel_treeview.selectionModel()
+        pstarkey:         # Create a list of select row indices
+        pstarkey:         selected_row_list = [index.row() for index in sorted(selection_model.selectedRows())]
+        pstarkey:         # For each row selected
+             jan:         for i, row in enumerate(selected_row_list):
+        pstarkey:             # only move the row if it is not element 0, and the row above it is not selected
+        pstarkey:             # (note that while a row above may have been initially selected, it should by now, be one row higher
+        pstarkey:             # since we start moving elements of the list upwards starting from the lowest index)
+             jan:             if row > 0 and (row - 1) not in selected_row_list:
+        pstarkey:                 # Remove the selected row
+        pstarkey:                 items = self.channel_model.takeRow(row)
+        pstarkey:                 # Add the selected row into a position one above
+             jan:                 self.channel_model.insertRow(row - 1, items)
+        pstarkey:                 # Since it is now a newly inserted row, select it again
+             jan:                 selection_model.select(self.channel_model.indexFromItem(items[0]), QItemSelectionModel.SelectCurrent)
+        pstarkey:                 # reupdate the list of selected indices to reflect this change
+        pstarkey:                 selected_row_list[i] -= 1
+        pstarkey:         self.update_plot_positions()
+             jan: 
+        pstarkey:     def _move_down(self):
+        pstarkey:         # Get the selection model from the treeview
+             jan:         selection_model = self.ui.channel_treeview.selectionModel()
+        pstarkey:         # Create a list of select row indices
+        pstarkey:         selected_row_list = [index.row() for index in reversed(sorted(selection_model.selectedRows()))]
+        pstarkey:         # For each row selected
+             jan:         for i, row in enumerate(selected_row_list):
+        pstarkey:             # only move the row if it is not the last element, and the row above it is not selected
+        pstarkey:             # (note that while a row below may have been initially selected, it should by now, be one row lower
+        pstarkey:             # since we start moving elements of the list upwards starting from the highest index)
+             jan:             if row < self.channel_model.rowCount() - 1 and (row + 1) not in selected_row_list:
+        pstarkey:                 # Remove the selected row
+        pstarkey:                 items = self.channel_model.takeRow(row)
+        pstarkey:                 # Add the selected row into a position one above
+             jan:                 self.channel_model.insertRow(row + 1, items)
+        pstarkey:                 # Since it is now a newly inserted row, select it again
+             jan:                 selection_model.select(self.channel_model.indexFromItem(items[0]), QItemSelectionModel.SelectCurrent)
+        pstarkey:                 # reupdate the list of selected indices to reflect this change
+        pstarkey:                 selected_row_list[i] += 1
+        pstarkey:         self.update_plot_positions()
+             jan: 
+        pstarkey:     def _move_top(self):
+        pstarkey:         # Get the selection model from the treeview
+             jan:         selection_model = self.ui.channel_treeview.selectionModel()
+        pstarkey:         # Create a list of select row indices
+        pstarkey:         selected_row_list = [index.row() for index in sorted(selection_model.selectedRows())]
+        pstarkey:         # For each row selected
+             jan:         for i, row in enumerate(selected_row_list):
+        pstarkey:             # only move the row while it is not element 0, and the row above it is not selected
+        pstarkey:             # (note that while a row above may have been initially selected, it should by now, be one row higher
+        pstarkey:             # since we start moving elements of the list upwards starting from the lowest index)
+             jan:             while row > 0 and (row - 1) not in selected_row_list:
+        pstarkey:                 # Remove the selected row
+        pstarkey:                 items = self.channel_model.takeRow(row)
+        pstarkey:                 # Add the selected row into a position one above
+             jan:                 self.channel_model.insertRow(row - 1, items)
+        pstarkey:                 # Since it is now a newly inserted row, select it again
+             jan:                 selection_model.select(self.channel_model.indexFromItem(items[0]), QItemSelectionModel.SelectCurrent)
+        pstarkey:                 # reupdate the list of selected indices to reflect this change
+        pstarkey:                 selected_row_list[i] -= 1
+        pstarkey:                 row -= 1
+        pstarkey:         self.update_plot_positions()
+             jan: 
+        pstarkey:     def _move_bottom(self):
+             jan:         selection_model = self.ui.channel_treeview.selectionModel()
+        pstarkey:         # Create a list of select row indices
+        pstarkey:         selected_row_list = [index.row() for index in reversed(sorted(selection_model.selectedRows()))]
+        pstarkey:         # For each row selected
+             jan:         for i, row in enumerate(selected_row_list):
+        pstarkey:             # only move the row while it is not the last element, and the row above it is not selected
+        pstarkey:             # (note that while a row below may have been initially selected, it should by now, be one row lower
+        pstarkey:             # since we start moving elements of the list upwards starting from the highest index)
+             jan:             while row < self.channel_model.rowCount() - 1 and (row + 1) not in selected_row_list:
+        pstarkey:                 # Remove the selected row
+        pstarkey:                 items = self.channel_model.takeRow(row)
+        pstarkey:                 # Add the selected row into a position one above
+             jan:                 self.channel_model.insertRow(row + 1, items)
+        pstarkey:                 # Since it is now a newly inserted row, select it again
+             jan:                 selection_model.select(self.channel_model.indexFromItem(items[0]), QItemSelectionModel.SelectCurrent)
+        pstarkey:                 # reupdate the list of selected indices to reflect this change
+        pstarkey:                 selected_row_list[i] += 1
+        pstarkey:                 row += 1
+        pstarkey:         self.update_plot_positions()
+             jan: 
+        pstarkey:     def update_plot_positions(self):
+        pstarkey:         # remove all widgets
+        pstarkey:         layout_items = {}
+        pstarkey:         for i in range(self.ui.plot_layout.count()):
+        pstarkey:             if i == 0:
+        pstarkey:                 continue
+        pstarkey:             item = self.ui.plot_layout.takeAt(i)
+        pstarkey: 
+        pstarkey:         # add all widgets
+        pstarkey:         for i in range(self.channel_model.rowCount()):
+             jan:             check_item = self.channel_model.item(i, CHANNEL_MODEL__CHECKBOX_INDEX)
+     janwerkmann:             channel = str(check_item.text())
+        pstarkey:             if channel in self.plot_widgets:
+        pstarkey:                 self.ui.plot_layout.addWidget(self.plot_widgets[channel])
+        pstarkey:                 if check_item.checkState() == Qt.Checked and check_item.isEnabled():
+        pstarkey:                     self.plot_widgets[channel].show()
+        pstarkey:                 else:
+        pstarkey:                     self.plot_widgets[channel].hide()
+             jan:         self.ui.plot_layout.addWidget(self._time_axis_plot[0])
+             jan: 
+             jan: 
+        pstarkey: class Shot(object):
+        pstarkey:     def __init__(self, path):
+        pstarkey:         self.path = path
+             jan: 
+        pstarkey:         # Store list of traces
+        pstarkey:         self._traces = None
+        pstarkey:         # store list of channels
+        pstarkey:         self._channels = None
+     janwerkmann:         # store list of markers
+     janwerkmann:         self._markers = None
+             jan:         self.cached_scaler = None
+             jan:         self._scalehandler = None
+             jan:         self._scaled_x = {}
+             jan: 
+     janwerkmann:         # store list of shutter changes and callibrations
+     janwerkmann:         self._shutter_times = None
+     janwerkmann:         self._shutter_calibrations = {}
+     janwerkmann: 
+        pstarkey:         # TODO: Get this dynamically
+        pstarkey:         device_list = ['PulseBlaster', 'NI_PCIe_6363', 'NI_PCI_6733']
+             jan: 
+        pstarkey:         # Load connection table
+        pstarkey:         self.connection_table = ConnectionTable(path)
+             jan: 
+        pstarkey:         # open h5 file
+        pstarkey:         with h5py.File(path, 'r') as file:
+        pstarkey:             # Get master pseudoclock
+             jan:             self.master_pseudoclock_name = file['connection table'].attrs['master_pseudoclock']
+             jan:             if isinstance(self.master_pseudoclock_name, bytes):
+             jan:                 self.master_pseudoclock_name = self.master_pseudoclock_name.decode('utf8')
+             jan:             else:
+             jan:                 self.master_pseudoclock_name = str(self.master_pseudoclock_name)
+             jan: 
+        pstarkey:             # get stop time
+     janwerkmann:             self.stop_time = file['devices'][self.master_pseudoclock_name].attrs['stop_time']
+             jan: 
+     janwerkmann:             self.device_names = list(file['devices'].keys())
+             jan: 
+     janwerkmann:             # Get Shutter Calibrations
+     janwerkmann:             if 'calibrations' in file and 'Shutter' in file['calibrations']:
+     janwerkmann:                 for name, open_delay, close_delay in numpy.array(file['calibrations']['Shutter']):
+             jan:                     name = name.decode('utf8') if isinstance(name, bytes) else str(name)
+     janwerkmann:                     self._shutter_calibrations[name] = [open_delay, close_delay]
+     janwerkmann: 
+        pstarkey:     def delete_cache(self):
+        pstarkey:         self._channels = None
+        pstarkey:         self._traces = None
+             jan: 
+        pstarkey:     def _load(self):
+        pstarkey:         if self._channels is None:
+        pstarkey:             self._channels = {}
+        pstarkey:         if self._traces is None:
+        pstarkey:             self._traces = {}
+     janwerkmann:         if self._markers is None:
+     janwerkmann:             self._markers = {}
+     janwerkmann:         if self._shutter_times is None:
+     janwerkmann:             self._shutter_times = {}
+             jan: 
+     janwerkmann:         self._load_markers()
+        pstarkey:         # Let's walk the connection table, starting with the master pseudoclock
+             jan:         master_pseudoclock_device = self.connection_table.find_by_name(self.master_pseudoclock_name)
+             jan: 
+        pstarkey:         self._load_device(master_pseudoclock_device)
+             jan: 
+        shjohnst:         # self._scalehandler = ScaleHandler(self._markers.keys(), self.stop_time)
+             jan: 
+     janwerkmann:     def _load_markers(self):
+     janwerkmann:         with h5py.File(self.path, 'r') as file:
+     janwerkmann:             if "time_markers" in file:
+     janwerkmann:                 for row in file["time_markers"]:
+     janwerkmann:                     self._markers[row['time']] = {'color': row['color'].tolist()[0], 'label': row['label']}
+     janwerkmann:             elif "runviewer" in file:
+     janwerkmann:                 for time, val in file["runviewer"]["markers"].attrs.items():
+     janwerkmann:                     props = val.strip('{}}').rsplit(",", 1)
+     janwerkmann:                     color = list(map(int, props[0].split(":")[1].strip(" ()").split(",")))
+     janwerkmann:                     label = props[1].split(":")[1]
+     janwerkmann:                     self._markers[float(time)] = {'color': color, 'label': label}
+        shjohnst:             if 0 not in self._markers:
+        shjohnst:                 self._markers[0] = {'color': [0,0,0], 'label': 'Start'}
+        shjohnst:             if self.stop_time not in self._markers:
+        shjohnst:                 self._markers[self.stop_time] = {'color': [0,0,0], 'label' : 'End'}
+     janwerkmann: 
+        pstarkey:     def add_trace(self, name, trace, parent_device_name, connection):
+     janwerkmann:         name = str(name)
+             jan:         self._channels[name] = {'device_name': parent_device_name, 'port': connection}
+        pstarkey:         self._traces[name] = trace
+             jan: 
+             jan:         # add shutter times
+             jan:         con = self.connection_table.find_by_name(name)
+             jan:         if con.device_class == "Shutter" and 'open_state' in con.properties:
+             jan:             self.add_shutter_times([(name, con.properties['open_state'])])
+             jan: 
+             jan: 
+     janwerkmann:     # Temporary solution to physical shutter times
+     janwerkmann:     def add_shutter_times(self, shutters):
+     janwerkmann:         for name, open_state in shutters:
+     janwerkmann:             x_values, y_values = self._traces[name]
+     janwerkmann:             if len(x_values) > 0:
+     janwerkmann:                 change_indices = numpy.where(y_values[:-1] != y_values[1:])[0]
+     janwerkmann:                 change_indices += 1 # use the index of the value that is changed to
+             jan:                 change_values = list(zip(x_values[change_indices], y_values[change_indices]))
+     janwerkmann:                 change_values.insert(0, (x_values[0], y_values[0])) # insert first value
+     janwerkmann:                 self._shutter_times[name] = {x_value + (self._shutter_calibrations[name][0] if y_value == open_state else self._shutter_calibrations[name][1]): 1 if y_value == open_state else 0 for x_value, y_value in change_values}
+     janwerkmann: 
+        pstarkey:     def _load_device(self, device, clock=None):
+        pstarkey:         try:
+     janwerkmann:             print('loading %s' % device.name)
+        pstarkey:             module = device.device_class
+        pstarkey:             # Load the master pseudoclock class
+        pstarkey:             # labscript_devices.import_device(module)
+        pstarkey:             device_class = labscript_devices.get_runviewer_parser(module)
+        pstarkey:             device_instance = device_class(self.path, device)
+        pstarkey:             clocklines_and_triggers = device_instance.get_traces(self.add_trace, clock)
+        pstarkey: 
+        pstarkey:             for name, trace in clocklines_and_triggers.items():
+        pstarkey:                 child_device = self.connection_table.find_by_name(name)
+        pstarkey:                 for grandchild_device_name, grandchild_device in child_device.child_list.items():
+        pstarkey:                     self._load_device(grandchild_device, trace)
+             jan: 
+        pstarkey:         except Exception:
+             jan:             # TODO: print/log exception traceback
+        pstarkey:             # if device.name == 'ni_card_0' or device.name == 'pulseblaster_0' or device.name == 'pineblaster_0' or device.name == 'ni_card_1' or device.name == 'novatechdds9m_0':
+             jan:             #    raise
+        pstarkey:             # raise
+        pstarkey:             if hasattr(device, 'name'):
+     janwerkmann:                 print('Failed to load device %s' % device.name)
+        pstarkey:             else:
+     janwerkmann:                 print('Failed to load device (unknown name, device object does not have attribute name)')
+             jan: 
+             jan:         # backwards compat
+             jan:         with h5py.File(self.path, 'r') as file:
+             jan:             if "runviewer" in file:
+             jan:                 if "shutter_times" in file["runviewer"]:
+             jan:                     for name, val in file["runviewer"]["shutter_times"].attrs.items():
+             jan:                         self._shutter_times[name] = {float(key_value.split(":")[0]): int(key_value.split(":")[1]) for key_value in val.strip('{}}').split(",")}
+     janwerkmann: 
+             jan:     def scaled_times(self, channel):
+             jan:         if self.cached_scaler != app.scalehandler:
+             jan:             self.cached_scaler = app.scalehandler
+             jan:             self._scaled_x = {}
+             jan:         if channel not in self._scaled_x:
+             jan:             self._scaled_x[channel] = self.cached_scaler.get_scaled_time(self._traces[channel][0])
+             jan: 
+             jan:         return self._scaled_x[channel]
+             jan: 
+        pstarkey:     @property
+        pstarkey:     def channels(self):
+        pstarkey:         if self._channels is None:
+        pstarkey:             self._load()
+             jan: 
+        pstarkey:         return self._channels.keys()
+             jan: 
+        pstarkey:     def clear_cache(self):
+        pstarkey:         # clear cache variables to cut down on memory usage
+        pstarkey:         pass
+             jan: 
+        pstarkey:     @property
+     janwerkmann:     def markers(self):
+     janwerkmann:         if self._markers is None:
+     janwerkmann:             self._load()
+     janwerkmann:         return self._markers
+     janwerkmann: 
+     janwerkmann:     @property
+        pstarkey:     def traces(self):
+        pstarkey:         # if traces cached:
+        pstarkey:         #    return cached traces and waits
+        pstarkey:         if self._traces is None:
+        pstarkey:             self._load()
+        pstarkey:         return self._traces
+             jan: 
+     janwerkmann:     @property
+     janwerkmann:     def shutter_times(self):
+     janwerkmann:         if self._shutter_times is None:
+     janwerkmann:             self._load()
+     janwerkmann:         return self._shutter_times
+     janwerkmann: 
+        shjohnst:     # @property
+        shjohnst:     # def scalehandler(self):
+        shjohnst:         # if self._scalehandler is None:
+        shjohnst:             # self._load()
+        shjohnst:         # return self._scalehandler
+             jan: 
+             jan: 
+        pstarkey: class TempShot(Shot):
+        pstarkey:     def __init__(self, i):
+             jan:         Shot.__init__(self, 'shot %d' % i)
+        pstarkey:         self._channels = ['Bx', 'By', 'Bz', 'Bq']
+             jan: 
+             jan:         self.stop_time = i + 1
+             jan: 
+        pstarkey:         self.traces = {}
+        pstarkey:         no_x_points = 10000
+        pstarkey:         for channel in self.channels:
+        pstarkey:             # self.traces[channel] = (numpy.linspace(0,10,no_x_points), numpy.random.rand(no_x_points))
+             jan:             x_points = numpy.linspace(0, self.stop_time, no_x_points)
+             jan:             self.traces[channel] = (x_points, (i + 1) * numpy.sin(x_points * numpy.pi + i / 11.0 * 2 * numpy.pi))
+             jan: 
+        pstarkey:     @property
+        pstarkey:     def channels(self):
+        pstarkey:         return self._channels
+             jan: 
+        pstarkey:     def get_traces(self):
+        pstarkey:         return self.traces
+             jan: 
+        pstarkey: 
+        pstarkey: class RunviewerServer(ZMQServer):
+        pstarkey:     def __init__(self, *args, **kwargs):
+        pstarkey:         ZMQServer.__init__(self, *args, **kwargs)
+        pstarkey:         self.logger = logging.getLogger('runviewer.server')
+        pstarkey: 
+        pstarkey:     def handler(self, h5_filepath):
+        pstarkey:         if h5_filepath == 'hello':
+        pstarkey:             return 'hello'
+             jan: 
+             jan:         self.logger.info('Received hdf5 file: %s' % h5_filepath)
+        pstarkey:         # Convert path to local slashes and shared drive prefix:
+        pstarkey:         h5_filepath = labscript_utils.shared_drive.path_to_local(h5_filepath)
+             jan:         logger.info('local filepath: %s' % h5_filepath)
+             jan:         # we add the shot to a queue so that we don't have to wait for the app to come up before
+        pstarkey:         # responding to runmanager
+        pstarkey:         shots_to_process_queue.put(h5_filepath)
+        pstarkey:         return 'ok'
+        pstarkey: 
+             jan: 
+        pstarkey: if __name__ == "__main__":
+        pstarkey:     qapplication = QApplication(sys.argv)
+             jan: 
+        pstarkey:     shots_to_process_queue = Queue()
+             jan: 
+     janwerkmann:     exp_config = LabConfig(required_params = {"DEFAULT": ["experiment_name"], "paths": ["shared_drive", "experiment_shot_storage"], 'ports': ['runviewer']})
+             jan: 
+             jan:     port = int(exp_config.get('ports', 'runviewer'))
+             jan:     myappid = 'monashbec.runviewer'  # arbitrary string
+        pstarkey:     try:
+        pstarkey:         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+        pstarkey:     except:
+        pstarkey:         logger.info('Not on a windows machine')
+        pstarkey:     # Start experiment server
+        pstarkey:     experiment_server = RunviewerServer(port)
+             jan: 
+        shjohnst:     app = RunViewer(exp_config)
+             jan: 
+        pstarkey:     def execute_program():
+        pstarkey:         qapplication.exec_()
+        pstarkey: 
+     janwerkmann:     sys.exit(execute_program())
+chrisjbillington: from __future__ import print_function, unicode_literals, division, absolute_import
+chrisjbillington: from labscript_utils import PY2, check_version
+chrisjbillington: if PY2:
+chrisjbillington:     str = unicode
+        cbilling: import os
+        cbilling: 
+chrisjbillington: try:
+chrisjbillington:     import autocython
+chrisjbillington: except ImportError:
+chrisjbillington:     msg = ('autocython required, installable via pip')
+chrisjbillington:     raise RuntimeError(msg)
+        cbilling: 
+chrisjbillington: check_version('autocython', '1.1', '2.0')
+chrisjbillington: from autocython import ensure_extensions_compiled, import_extension
+        cbilling: 
+chrisjbillington: ensure_extensions_compiled(os.path.abspath(os.path.dirname(__file__)))
+chrisjbillington: extension = import_extension('runviewer.resample.resample')
+chrisjbillington: resample = extension.resample
+chrisjbillington: #####################################################################
+chrisjbillington: #                                                                   #
+chrisjbillington: # resample.pyx                                                      #
+chrisjbillington: #                                                                   #
+chrisjbillington: # Copyright 2014-2018 Monash University                             #
+chrisjbillington: #                                                                   #
+chrisjbillington: # This file is part of the program runviewer, in the labscript      #
+chrisjbillington: # suite (see http://labscriptsuite.org), and is licensed under the  #
+chrisjbillington: # Simplified BSD License. See the license.txt file in the root of   #
+chrisjbillington: # the project for the full license.                                 #
+chrisjbillington: #                                                                   #
+chrisjbillington: #####################################################################
+chrisjbillington: 
+chrisjbillington: cimport cython
+chrisjbillington: import numpy as np
+chrisjbillington: 
+chrisjbillington: cdef double NAN = np.nan
+chrisjbillington: 
+chrisjbillington: @cython.initializedcheck(False)
+chrisjbillington: @cython.boundscheck(False)
+chrisjbillington: @cython.wraparound(False)
+chrisjbillington: @cython.nonecheck(False)
+chrisjbillington: @cython.cdivision(True)
+chrisjbillington: def resample(double [:] x_in, double [:] y_in,
+chrisjbillington:              double [:] x_out, double [:] y_out, double stop_time):
+chrisjbillington:     
+chrisjbillington:     cdef int N_out
+chrisjbillington:     cdef int N_in
+chrisjbillington:     cdef int positive_jump_index
+chrisjbillington:     cdef int negative_jump_index
+chrisjbillington:     cdef double positive_jump_value
+chrisjbillington:     cdef double negative_jump_value
+chrisjbillington:     cdef double jump
+chrisjbillington:     cdef int i
+chrisjbillington:     cdef int j
+chrisjbillington: 
+chrisjbillington:     N_in = x_in.shape[0]
+chrisjbillington:     N_out = x_out.shape[0]
+chrisjbillington:     with nogil:
+chrisjbillington:         # A couple of special cases that I don't want to have to put extra checks
+chrisjbillington:         # in for:
+chrisjbillington:         if x_out[N_out - 1] < x_in[0] or x_out[0] > stop_time:
+chrisjbillington:             # We're all the way to the left of the data or all the way to the
+chrisjbillington:             # right. Fill with NaNs:
+chrisjbillington:             y_out[:] = NAN
+chrisjbillington:         elif x_out[0] > x_in[N_in - 1]:
+chrisjbillington:             # We're after the final clock tick, but before stop_time
+chrisjbillington:             i = 0
+chrisjbillington:             while i < N_out - 1:
+chrisjbillington:                 if x_out[i] < stop_time:
+chrisjbillington:                     y_out[i] = y_in[N_in - 1]
+chrisjbillington:                 else:
+chrisjbillington:                     y_out[i] = NAN
+chrisjbillington:                 i += 1
+chrisjbillington:         else:
+chrisjbillington:             i = 0
+chrisjbillington:             j = 1
+chrisjbillington:             # Until we get to the data, fill the output array with NaNs (which get
+chrisjbillington:             # ignored when plotted)
+chrisjbillington:             while x_out[i] < x_in[0]:
+chrisjbillington:                 y_out[i:i+3] = NAN
+chrisjbillington:                 i += 3
+chrisjbillington:             # If we're some way into the data, we need to skip ahead to where we
+chrisjbillington:             # want to get the first datapoint from:
+chrisjbillington:             while x_in[j] < x_out[i]:
+chrisjbillington:                 j += 1
+chrisjbillington: 
+chrisjbillington:             # Get values until we get to the end of the data:
+chrisjbillington: 
+chrisjbillington:             # Leave one spare for the final data point and one because
+chrisjbillington:             # stepMode=True requires len(y)=len(x)-1
+chrisjbillington:             while j < N_in and i < N_out - 2:  
+chrisjbillington:                 # This is 'nearest neighbour on the left' interpolation. It's
+chrisjbillington:                 # what we want if none of the source values checked in the
+chrisjbillington:                 # upcoming loop are used:
+chrisjbillington:                 y_out[i] = y_in[j - 1]
+chrisjbillington:                 i += 2
+chrisjbillington:                 positive_jump_value = 0
+chrisjbillington:                 positive_jump_index = j - 1
+chrisjbillington:                 negative_jump_value = 0
+chrisjbillington:                 negative_jump_index = j - 1
+chrisjbillington:                 # now find the max and min values between this x_out time point and
+chrisjbillington:                 # the next x_out timepoint print i
+chrisjbillington:                 while j < N_in and x_in[j] < x_out[i]:
+chrisjbillington:                     jump = y_in[j] - y_out[i - 2]
+chrisjbillington:                     # would using this source value cause a bigger positive jump?
+chrisjbillington:                     if jump > 0 and jump > positive_jump_value:
+chrisjbillington:                         positive_jump_value = jump
+chrisjbillington:                         positive_jump_index = j
+chrisjbillington:                     # would using this source value cause a bigger negative jump?
+chrisjbillington:                     elif jump < 0 and jump < negative_jump_value:
+chrisjbillington:                         negative_jump_value = jump
+chrisjbillington:                         negative_jump_index = j
+chrisjbillington:                     j += 1
+chrisjbillington: 
+chrisjbillington:                 if positive_jump_index < negative_jump_index:
+chrisjbillington:                     y_out[i - 1] = y_in[positive_jump_index]
+chrisjbillington:                     y_out[i] = y_in[negative_jump_index]
+chrisjbillington:                     # TODO: We could override the x_out values with
+chrisjbillington:                     # x_in[jump_index]
+chrisjbillington:                 else:
+chrisjbillington:                     y_out[i - 1] = y_in[negative_jump_index]
+chrisjbillington:                     y_out[i] = y_in[positive_jump_index]
+chrisjbillington: 
+chrisjbillington:                 i += 1
+chrisjbillington: 
+chrisjbillington:             # Get the last datapoint:
+chrisjbillington:             if j < N_in:
+chrisjbillington:                 # If the sample rate of the raw data is low, then the current j
+chrisjbillington:                 # point could be outside the current plot view range If so,
+chrisjbillington:                 # decrease j so that we take a value that is within the plot view
+chrisjbillington:                 # range.
+chrisjbillington:                 if x_in[j] > x_out[N_out - 1] and j > 0:
+chrisjbillington:                     j -= 1
+chrisjbillington: 
+chrisjbillington:                 y_out[i] = y_in[j]
+chrisjbillington:                 i += 1
+chrisjbillington:             # Fill the remainder of the array with the last datapoint,
+chrisjbillington:             # if t < stop_time, and then NaNs after that:
+chrisjbillington:             while i < N_out - 1:
+chrisjbillington:                 if x_out[i] < stop_time:
+chrisjbillington:                     y_out[i] = y_in[N_in - 1]
+chrisjbillington:                 else:
+chrisjbillington:                     y_out[i] = NAN
+chrisjbillington:                 i += 1
+chrisjbillington: # This extension is intended to be built with autocython. To trigger a build on a
+chrisjbillington: # new platform, run the code that imports the extension, or run:
+chrisjbillington: # python -m autocython
+chrisjbillington: # in this directory.
+chrisjbillington: from setuptools import setup
+chrisjbillington: from setuptools.extension import Extension
+chrisjbillington: from Cython.Distutils import build_ext
+chrisjbillington: from autocython import PLATFORM_SUFFIX
+chrisjbillington: ext_modules = [Extension("resample" + PLATFORM_SUFFIX, ["resample.pyx"])]
+        pstarkey: setup(
+chrisjbillington:     name = "resample",
+chrisjbillington:     cmdclass = {"build_ext": build_ext},
+chrisjbillington:     ext_modules = ext_modules
+chrisjbillington: )
