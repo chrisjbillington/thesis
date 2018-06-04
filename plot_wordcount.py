@@ -42,7 +42,7 @@ plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%Y'))
 
 # plt.step(dates, wordcounts, where='post')
 plt.step(dates, wordcounts, 'k-', markersize=1, where='post')
-plt.axvline(date2num(datetime.datetime(2018, 5, 21)), linestyle='--', color='k')
+plt.axvline(date2num(datetime.datetime(2018, 6, 30)), linestyle='--', color='k')
 plt.grid(True)
 plt.ylabel('wordcount')
 

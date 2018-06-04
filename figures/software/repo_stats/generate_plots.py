@@ -78,8 +78,10 @@ def get_counts_churn():
             with open(filename) as f:
                 for line in f:
                     name = line.split('  ')[0]
-                    if not name:
-                        name = 'Unknown'
+                    if name in aliases:
+                        name = aliases[name]
+                    # if not name:
+                    #     name = 'Unknown'
                     lines = int(line.split(' ')[-2])
                     counts[name][project_name] = lines
     return counts
@@ -94,8 +96,8 @@ def get_counts_blame():
                     name = line.split(':')[0].strip()
                     if name in aliases:
                         name = aliases[name]
-                    if not name:
-                        name = 'Unknown'
+                    # if not name:
+                    #     name = 'Unknown'
                     counts[name][project_name] += 1
     return counts
 
@@ -124,7 +126,7 @@ def make_plot(counts, filename):
                             key=totals_by_name.__getitem__))
 
     # Only plot the top 8
-    N = 8 #len(names)
+    N = 10 #len(names)
     ind = np.arange(N)
     width = 0.35
 
