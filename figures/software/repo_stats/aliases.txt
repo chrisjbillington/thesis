@@ -46,3 +46,6 @@ dsbark7 = Daniel Barker
 rene = Rene Kolb
 tbaldwin = Tom Baldwin
 matt = Matt Earnshaw
+vnegnev = Vlad Negnevitsky
+vnegnev@gmail.com = Vlad Negnevitsky
+lincoln = Lincoln Turner
