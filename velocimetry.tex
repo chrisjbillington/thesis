@@ -1,61 +1,68 @@
 
 \chapter{Particle velocimetry of vortices in Bose–Einstein condensates}\label{chap:velocimetry}
 
-[START COPIED FROM INTRO]
-
-This project aims to experimentally realise an imaging method for the real time tracking of quantum vortices in a turbulent $^{41}$K condensate. This will involve ultracold $^{87}$Rb tracer particles which will become bound to vortex lines in the condensate, and which will be imaged repeatedly to track the vortex lines as they move. The imaging of tracer particles to track vortex motion has already proved successful in superfluid helium \cite{bewley_generation_2009, bewley_superfluid_2006, packard_vortex_1982}, and the method of laser cooling and imaging atoms in high resolution with the same laser light has also been successful in cold atom systems \cite{bakr_quantum_2009}. We have tested our method \textit{in-silico} \cite{billington_particle_2010} and from this, expect it to work under a number of assumptions.
+This chapter comprises a feasibility study for an imaging method for the real time tracking of quantum vortices in a turbulent $^{41}$K condensate. The method involves ultracold $^{87}$Rb tracer particles that become bound to vortex lines in the condensate and are imaged continuously to track the vortex lines as they move. The imaging of tracer particles to track vortex motion has previously proved successful in superfluid helium~\cite{bewley_generation_2009, bewley_superfluid_2006, packard_vortex_1982}, and the method of laser cooling and imaging atoms in high resolution with the same laser light has also been successful in cold atom systems~\cite{bakr_quantum_2009}. This chapter comprises numerical simulations of the method under a number of assumptions to establish its feasibility as an imaging method. 
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.6\textwidth]{figures/unsorted/side-on.pdf}
-\caption{\label{fig:side-on}Fluorescence imaging of the condensate itself (bottom) makes it difficult to resolve vortices unless they are viewed end-on. The vortex cores are usually smaller than the imaging light's wavelength, and are thus also difficult to resolve unless the cloud is allowed to expand. Imaging tracer particles instead resolves both these problems.}
+\caption{\label{fig:side-on}Fluorescence imaging of the condensate itself (bottom) makes it difficult to resolve vortices unless they are viewed end-on. The vortex cores are usually smaller than the imaging light's wavelength, and are thus also difficult to resolve unless the cloud is allowed to expand. Imaging tracer particles instead has the potential to resolve both these problems.}
 \end{center}
 \end{figure}
 
-If successful, this method will overcome several existing difficulties that other imaging methods face. Since vortices have previously been imaged by resonant absorption imaging of the condensate itself, they are usually viewed with the vortex line perpendicular to the image plane. If not viewed end on, the rest of the cloud obscures the low density of atoms due to the core. One solution to this problem is to slice the condensate into layers, and image them separately \cite{anderson_watching_2001}.
+This method has the potential to overcome several existing difficulties that typical imaging methods face when used to image vortices. In ordinary absorption imaging, atoms are imaged via resonant absorption of the condensate itself, and vortices---visible as density minima---generally can only be seen when the vortex line is normal to the image plane. If not viewed end-on in this way, a vortex line represents only a minor decrease in column density and cannot be distinguished from the rest of the condensate. One solution to this problem is to slice the condensate into layers, and image them separately~\cite{anderson_watching_2001}.
 
-Our method should be able to image vortex lines side-on without destroying the condensate, since the atoms being imaged reside in the vortex core itself rather than the bulk of the condensate. This should make it possible to image the time evolution of Kelvin waves \cite{bretin_quadrupole_2003}, vortex reconnections \cite{leadbeater_sound_2001}, and vortex rings \cite{anderson_watching_2001}.
+The use of tracer particles that are only present within vortex cores allows vortex lines to be visible from any viewing angle.  Furthermore, since the atoms being imaged reside in the vortex cores themselves rather than the bulk of the condensate, this imaging can potentially be repeatedly or continuously performed without destroying the condensate. This may enable observation of the time evolution of Kelvin waves~\cite{bretin_quadrupole_2003}, vortex reconnections~\cite{leadbeater_sound_2001}, and vortex rings~\cite{anderson_watching_2001}.
 
-This \emph{in-situ} imaging of vortex dynamics will allow more types of vortex motion to be imaged. Dynamics of \bec s are usually imaged with a shot-by-shot method, in which repeated experiments with identical initial conditions are imaged destructively after being allowed to evolve for different amounts of time. Whilst this works for many types of dynamics, it fails for experiments that are more sensitive to initial conditions and noise (quantum or otherwise), such as turbulent flow. This includes phenomena which cannot be created reliably in the same initial state, even though the evolution thereafter would be consistent from one experimental run to the next. One such phenomenon is the spontaneous generation of vortices after evaporative cooling \cite{weiler_spontaneous_2008}.
+This \emph{in-situ} imaging of vortex dynamics may allow more types of vortex motion to be imaged. Dynamics of \bec s are typically studied using a shot-by-shot method, in which repeated experiments with identical initial conditions are imaged destructively after being allowed to evolve for different amounts of time. Whilst this works for many types of dynamics, it fails for experiments that are more sensitive to initial conditions and noise (quantum or otherwise), such as turbulent flow. This includes phenomena which cannot be created reliably in the same initial state, even though the evolution thereafter would be consistent from one experimental run to the next. One such phenomenon is the spontaneous generation of vortices after evaporative cooling~\cite{weiler_spontaneous_2008}.
 
 \emph{In-situ} imaging of vortex motion has been achieved previously \cite{freilich_real-time_2010}, by ejecting a fraction of the atoms from the condensate periodically and imaging them. This process is limited by depletion of the condensate, and was also used only to image vortices end-on. The fraction of the condensate being imaged was also allowed to freely expand before being imaged, since vortex cores are otherwise unable to be resolved by the wavelength of light used. Our method requires neither free expansion or depletion of the condensate.
 
 \section{Motivation: Turbulence}
 
-It is commonly said that turbulence is one of the greatest unsolved problems of classical physics. But in what sense is it an unsolved problem? Its not a problem at all if your aim is reductionism---the Navier--Stokes equation perfectly describes the evolution of a Newtonian fluid within its domain of validity, and the process of deriving it from the underlying motion of classical particles is completely understood. It's turtles all the way down \cite[p 1]{hawking_brief_1988}; what more could we ask for?
+It is commonly said that turbulence is one of the greatest unsolved problems of classical physics. But in what sense is it an unsolved problem? Its not a problem at all if your aim is reductionism---the Navier--Stokes equation adequately describes the evolution of a Newtonian fluid within its domain of validity, and the process of deriving it from the underlying motion of classical particles is well understood. It's turtles all the way down~\cite[p 1]{hawking_brief_1988}; what more could we ask for?
 
-The best comparison to make at this point, I think, is to the field of thermodynamics, for precisely the same statement can be made about the energy content and exchange between systems of particles. Thermodynamics has revealed that despite the chaotic motion of individual particles in an ensemble, definite statements can still be made about the behaviour of the system as a whole, \emph{without having to consider the dynamics of the constituent components in detail}.
+An demonstrative comparison might be with the field of thermodynamics, as precisely the same statement can be made about the energy content and exchange between systems of particles. Thermodynamics has revealed that despite the chaotic motion of individual particles in an ensemble, definite statements can still be made about the behaviour of the system as a whole, \emph{without having to consider the dynamics of the constituent components in detail}.
 
-This is the kind of solution people have in mind when they speak of `solving' the problem of turbulence. Laws describing the average properties of a fluid without reference to its precise flow field would not simply be interesting as describing turbulence as an emergent phenomenon, but would aid practical computations immensely, which are presently quite difficult. The flow of a turbulent fluid contains detail on such a  wide range of length scales that any finite-element analysis of a system such as say, an aeroplane wing, requires a very high resolution in order to be accurate. Following an estimate of computing power required to simulate a turbulent system down to its smallest length scales, Stanley Corrsin quipped \cite{corrsin_turbulent_1961}:
+This is the kind of solution people have in mind when they speak of `solving' the problem of turbulence. Laws describing the average properties of a fluid without reference to its precise flow field would not simply be interesting as describing turbulence as an emergent phenomenon, but would aid practical computations, which for many problems of interest are prohibitively computationally intensive. The flow of a turbulent fluid contains detail on such a  wide range of length scales that any finite-element or finite-difference analysis of a system such as an aeroplane wing requires a very high resolution in order to be accurate. Following an estimate of computing power required to simulate a turbulent system down to its smallest length scales, Stanley Corrsin quipped~\cite{corrsin_turbulent_1961}:
 \begin{quote}
 The foregoing estimate  is enough to suggest the use of analog instead of digital  computation; in particular, how about an analog consisting of a tank of water?
 \end{quote}
+This sounds like a joke, but the reliance of the aerospace industry on wind tunnels and practical tests show that there is some truth to the necessity of using nature as ones computer when it comes to turbulence. Whilst nature must always have the final say, it would be of great benefit to be able to compute expected results more cheaply before setting up a wind-tunnel experiment or constructing a prototype aircraft.
 
-But are we asking for too much? Perhaps the statistical properties of a turbulent fluid fundamentally cannot be decoupled from the finer details. If so, then it is wishful thinking to hope that we might do so.
+But are we asking for too much? Perhaps the statistical properties of a turbulent fluid fundamentally cannot be decoupled from the finer details. There is reason to believe that this is not the case. There are several tantalising results that hint at universal properties that all turbulent flows share, and there is the simple empirical observation that the average flow of turbulent fluids at large scales is reproducible from one experimental run to the next~\cite[pp 13, 86]{davidson_turbulence:_2004}.
 
-However there is reason to believe that this is not the case. There are several tantalising results that hint at universal properties that all turbulent flows share, and there is the simple empirical observation that the average flow of turbulent fluids at large scales is reproducible from one experimental run to the next \cite[pp 13, 86]{davidson_turbulence:_2004}.
+One of these universal results is Kolmogorov's theory of the statistics of small eddies~\cite{kolmogorov_local_1941, spalding_kolmogorovs_1991}. Another is the fact that the rate of energy dissipation via the action of viscosity at small scales is independent of the viscosity itself~\cite[p 77]{davidson_turbulence:_2004}.
 
-One of these universal results is Kolmogorov's theory of the statistics of small eddies \cite{kolmogorov_local_1941, spalding_kolmogorovs_1991}. Another is the fact that the rate of energy dissipation via the action of viscosity at small scales \emph{is independent of the viscosity itself} \cite[p 77]{davidson_turbulence:_2004}.
+Then there is the Richardson energy cascade~\cite{richardson_weather_2007}, in which energy is continually transferred from larger scales to smaller scales. With dissipation at the smallest scales and addition at larger scales, this allows for the existence of `steady state' turbulence.
 
-Then there is the Richardson energy cascade \cite{richardson_weather_2007}, in which energy is continually transferred from larger scales to smaller scales. With dissipation at the smallest scales and addition at larger scales, this allows for the existence of `steady state' turbulence.
+The above examples derive from ordinary, viscous fluids. Bose--Einstein condensates on the other hand are superfluids. There are several interesting aspects of superfluid turbulence that differ from classical turbulence. The defining difference is the absence of viscosity; another major difference is the quantisation of circulation. On scales much larger than spacing between vortex lines, superfluid turbulence is expected to closely resemble classical turbulence\footnote{Similarly at sufficiently large scales in non-superfluids, velocity gradients are small and hence viscosity can be neglected.}~\cite{tsubota_energy_2009}. But at smaller scales the energy dissipation mechanism is different, instead involving the production of sound waves via vortex interactions~\cite{tsubota_energy_2009, vinen_how_2005}.
 
-So far I haven't mentioned superfluids at all, though a superfluid is what this project is studying. There are several interesting aspects of superfluid turbulence that differ from classical turbulence. The most obvious is the absence of viscosity;  another major difference is the quantisation of vortex lines. On scales much larger than the vortex spacing, superfluid turbulence is expected to closely resemble classical turbulence\footnote{At large scales in classical fluids, velocity gradients are small and hence viscosity can be neglected anyway.} \cite{tsubota_energy_2009}. But at smaller scales the energy dissipation mechanism is different, instead involving the production of sound waves via vortex interactions \cite{tsubota_energy_2009, vinen_how_2005}.
+In certain 2\textsc{d} geometries, an \emph{inverse cascade}~\cite{onsager_statistical_1949, kraichnan_inertial_1967} is predicted to take place in superfluids, whereby energy moves not from large scales to small, but from small to large, clustering quantised vortices of the same circulation direction together. This phenomenon has been studied numerically in the Monash Quantum Fluids group [CITE] and recently experimentally observed in the Monash Dual-Species lab in experiments performed by Shaun Johnstone, as well as at [OTHER GROUP] [CITE THEM BOTH - ARXIV OR PUBLISHED IF DONE BY THEN]
 
-In certain 2\textsc{d} geometries, an \emph{inverse cascade} \cite{onsager_statistical_1949, kraichnan_inertial_1967} is predicted to take place in superfluids, whereby energy moves not from large scales to small, but from small to large, clustering quantised vortices of the same circulation direction together. This has not as of yet been observed. [TODO IT HAS BEEN SIMULATED CITE TAPIO ETC]
-
-To emphasise the role of vortices in turbulence in general, I will finally give a definition of turbulence, taken from \cite[p 53]{davidson_turbulence:_2004}:
+The following definition of turbulence, taken from~\cite[p 53]{davidson_turbulence:_2004}, emphasises the role of vortices in turbulence in general:
 \begin{quote}
 Incompressible hydrodynamic turbulence is a spatially complex distribution of vorticity which advects itself in a chaotic manner in accordance with [the vorticity equation\footnote{Which is a transformation of the Navier--Stokes equation for an incompressible fluid into a form in which the vorticity field is center-stage.}]. The vorticity field is random in both space and time, and exhibits a wide and continuous distribution of length and time scales.
 \end{quote}
 
 When vorticity exists only in infinitely narrow lines, as it does in superfluid, the vorticity equation mentioned in the above definition reduces to a Biot--Savart type law which can be used to compute the motion of vortices without having to compute the entire flow field.
 
-This is why we are interested in the study of the dynamics of quantised vortices. Unlike in classical fluids, the vortices in superfluids have a definite position and size; there is either a vortex or there is not. This may make it simpler to describe the motion of vortices statistically.
+This is why we are interested in the study of the dynamics of quantised vortices. Unlike in classical fluids, the vortices in superfluids have a definite position and size; there is either a vortex at a given spatial location or there is not. This may make it simpler to describe the motion of vortices statistically.
 
-So far experimental studies of superfluid turbulence have mainly been in the context of liquid helium \cite{leggett_superfluidity_1999}; we hope to augment the existing experimental data with that obtained from \bec. The high degree of control afforded over systems of cold atoms allows the superfluid's properties to be tweaked in several ways, creating a larger parameter space in which to study turbulence than that afforded by liquid helium.
+So far experimental studies of superfluid turbulence have been primarily in the context of liquid helium~\cite{leggett_superfluidity_1999}. Bose--Einstein condensates offer a compelling alternative subject of study for superfluid turbulence. The high degree of control afforded over systems of cold atoms allows the superfluid's properties to be tweaked in several ways, creating a larger parameter space in which to study turbulence than that afforded by liquid helium.
 
+\section{Overview}
 
-[END COPIED FROM INTRO]
+Ok, so - the vortices are potential wells. Show some pictures of this.
+
+BUT. PROBLEM. The wells are not very deep when measured in recoil energies. Need cooling! Honours thesis studied this. Answer: maybe.
+
+Possible solution: Feshbach resonance. BUT: problem, cooling doesn't work. To this end, developed a cooling scheme.
+
+Other alternative: sympathetic cooling. We did this too. It looks ok.
+
+Finally: thought about other cooling schemes. Though we didn't simulate this one or take it anywhere, the inability to simulate it prompted me to begin thinking about the issues that the hidden variables chapter resolves.
+
 
 
 \begin{itemize}
@@ -243,6 +250,13 @@ If this goes to plan, statistically the atom will be closer to the center of the
 This scheme will be simulated to determine its viability; preliminary calculations haven't turned up any problems yet.
 
 \section{Particle velocimetry simulations}
+
+% Paths: bilbo.tk: ~/laptop_backup/Desktop/current_work/sympathetic_cooling/
+%                  ~/oldserver/bilbo/particle_tracking_higher_scattering_length
+%                  ~/laptop_backup/Desktop/current_work/paper%20simulations/
+%                  ~/laptop_backup/Desktop/current_work/paper
+%                  ~/laptop_backup/Desktop/current_work/DPGPoster
+% Compare to honours thesis - don't include stuff already in honours thesis!
 
 \null\newpage
 \null\newpage
