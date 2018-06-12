@@ -102,3 +102,9 @@
 \setheadfoot{\onelineskip}{2\onelineskip}
 \setheaderspaces{*}{2\onelineskip}{*}
 \checkandfixthelayout
+
+% Move margin notes upward to prevent them running off the edge of the page:
+% \usepackage{marginfix}
+% Fixed margin footnotes not appearing at all sometimes. Conflicts with
+% marginfix, but this is the better result for now:
+\strictpagecheck
