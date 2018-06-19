@@ -1,34 +1,34 @@
 
 \chapter{Particle velocimetry of vortices in Bose–Einstein condensates}\label{chap:velocimetry}
 
-\lettrine[lines=3]{T}{his chapter investigates}, via numerical simulation, an imaging method for the real time tracking of quantum vortices in a turbulent $^{41}$K condensate. The method involves ultracold $^{87}$Rb tracer particles that become bound to vortex lines in the condensate and are imaged continuously to track the vortex lines as they move. The imaging of tracer particles to track vortex motion has previously proved successful in superfluid helium~\cite{bewley_generation_2009, bewley_superfluid_2006, packard_vortex_1982}, and the method of laser cooling and imaging atoms in high resolution with the same laser light has also been successful in cold atom systems~\cite{bakr_quantum_2009}. This chapter comprises numerical simulations of the method under a number of assumptions to establish its feasibility as an imaging method. 
+\lettrine[lines=3]{T}{his chapter investigates}, via numerical simulation, an imaging method for the real time tracking of quantum vortices in a turbulent $^{41}$K condensate. The method involves ultracold $^{87}$Rb tracer particles that become bound to vortex lines in the condensate and are imaged continuously to track the vortex lines as they move. The imaging of tracer particles to track vortex motion has previously proved successful in superfluid helium~\cite{bewley_generation_2009, bewley_superfluid_2006, packard_vortex_1982}, and the method of laser cooling and imaging atoms in high resolution with the same laser light has also been successful in cold atom systems~\cite{bakr_quantum_2009}. This chapter presents the results of numerical simulations of the method under a number of assumptions to establish its feasibility as an imaging method. 
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.6\textwidth]{figures/unsorted/side-on.pdf}
-\caption{\label{fig:side-on}Fluorescence imaging of the condensate itself (bottom) makes it difficult to resolve vortices unless they are viewed end-on. The vortex cores are usually smaller than the imaging light's wavelength, and are thus also difficult to resolve unless the cloud is allowed to expand. Imaging tracer particles instead has the potential to resolve both these problems.}
+\caption{\label{fig:side-on}Imaging of the condensate itself, whether by flourescence (bottom) or absorption imaging makes it difficult to resolve vortices unless they are viewed end-on. The vortex cores are usually smaller than the imaging light's wavelength, and are thus also difficult to resolve unless the cloud is allowed to expand. Imaging tracer particles instead (top) has the potential to resolve both these problems.}\label{fig:side_on}
 \end{center}
 \end{figure}
 
-This method has the potential to overcome several existing difficulties that typical imaging methods face when used to image vortices. In ordinary absorption imaging, atoms are imaged via resonant absorption of the condensate itself, and vortices---visible as density minima---generally can only be seen when the vortex line is normal to the image plane. If not viewed end-on in this way, a vortex line represents only a minor decrease in column density and cannot be distinguished from the rest of the condensate. One solution to this problem is to slice the condensate into layers, and image them separately~\cite{anderson_watching_2001}.
+This method has the potential to overcome several existing difficulties that typical imaging techniques face when used to image vortices. In ordinary absorption imaging, atoms are imaged via resonant absorption of the condensate itself, and vortices---visible as density minima---generally can only be seen when the vortex line is normal to the image plane. If not viewed end-on in this way, a vortex line represents only a minor decrease in column density and cannot be distinguished from the rest of the condensate (\figref{fig:side_on}). One solution to this problem is to slice the condensate into layers, and image them separately~\cite{anderson_watching_2001}.
 
 The use of tracer particles that are only present within vortex cores allows vortex lines to be visible from any viewing angle.  Furthermore, since the atoms being imaged reside in the vortex cores themselves rather than the bulk of the condensate, this imaging can potentially be repeatedly or continuously performed without destroying the condensate. This may enable observation of the time evolution of Kelvin waves~\cite{bretin_quadrupole_2003}, vortex reconnections~\cite{leadbeater_sound_2001}, and vortex rings~\cite{anderson_watching_2001}.
 
-This \emph{in-situ} imaging of vortex dynamics may allow more types of vortex motion to be imaged. Dynamics of \bec s are typically studied using a shot-by-shot method, in which repeated experiments with identical initial conditions are imaged destructively after being allowed to evolve for different amounts of time. Whilst this works for many types of dynamics, it fails for experiments that are more sensitive to initial conditions and noise (quantum or otherwise), such as turbulent flow. This includes phenomena which cannot be created reliably in the same initial state, even though the evolution thereafter would be consistent from one experimental run to the next. One such phenomenon is the spontaneous generation of vortices after evaporative cooling~\cite{weiler_spontaneous_2008}.
+This \emph{in-situ} imaging of vortex dynamics may allow more types of vortex motion to be imaged. Dynamics of \bec s are typically studied using a shot-by-shot method, in which repeated experiments with identical initial conditions are imaged destructively after being allowed to evolve for different amounts of time. Whilst this works for many types of dynamics, it fails for experiments that are sensitive to initial conditions and noise (quantum or otherwise), such as turbulent flow. This includes phenomena which cannot be created reliably in the same initial state, even though the evolution thereafter would be consistent from one experimental run to the next. One such phenomenon is the spontaneous generation of vortices after evaporative cooling~\cite{weiler_spontaneous_2008}.
 
-\emph{In-situ} imaging of vortex motion has been achieved previously \cite{freilich_real-time_2010}, by ejecting a fraction of the atoms from the condensate periodically and imaging them. This process is limited by depletion of the condensate, and was also used only to image vortices end-on. The fraction of the condensate being imaged was also allowed to freely expand before being imaged, since vortex cores are otherwise unable to be resolved by the wavelength of light used. Our method requires neither free expansion or depletion of the condensate.
+\emph{In-situ} imaging of vortex motion has been achieved previously~\cite{freilich_real-time_2010}, by ejecting a fraction of the atoms from the condensate periodically and imaging them. This process is limited by depletion of the condensate, and was also used only to image vortices end-on. The fraction of the condensate being imaged was also allowed to freely expand before being imaged, since vortex cores are otherwise unable to be resolved by the wavelength of light used. Our proposed method would require neither free expansion or depletion of the condensate.
 
 \section{Motivation: Turbulence}
 
-It is commonly said that turbulence is one of the greatest unsolved problems of classical physics. But in what sense is it an unsolved problem? Its not a problem at all if your aim is reductionism---the Navier--Stokes equation adequately describes the evolution of a Newtonian fluid within its domain of validity, and the process of deriving it from the underlying motion of classical particles is well understood. It's turtles all the way down~\cite[p 1]{hawking_brief_1988}; what more could we ask for?
+It is commonly said that turbulence is one of the greatest unsolved problems of classical physics. But in what sense is it an unsolved problem? It is not a problem at all if your aim is reductionism---the Navier--Stokes equation adequately describes the evolution of a Newtonian fluid within its domain of validity, and the process of deriving it from the underlying motion of classical particles is well understood. It's turtles all the way down~\cite[p 1]{hawking_brief_1988}; what more could we ask for?
 
-An demonstrative comparison might be with the field of thermodynamics, as precisely the same statement can be made about the energy content and exchange between systems of particles. Thermodynamics has revealed that despite the chaotic motion of individual particles in an ensemble, definite statements can still be made about the behaviour of the system as a whole, \emph{without having to consider the dynamics of the constituent components in detail}.
+A demonstrative comparison might be with the field of thermodynamics, as precisely the same statement can be made about the energy content and exchange between systems of particles. Thermodynamics has revealed that despite the chaotic motion of individual particles in an ensemble, definite statements can still be made about the behaviour of the system as a whole, \emph{without having to consider the dynamics of the constituent components in detail}.
 
-This is the kind of solution people have in mind when they speak of `solving' the problem of turbulence. Laws describing the average properties of a fluid without reference to its precise flow field would not simply be interesting as describing turbulence as an emergent phenomenon, but would aid practical computations, which for many problems of interest are prohibitively computationally intensive. The flow of a turbulent fluid contains detail on such a  wide range of length scales that any finite-element or finite-difference analysis of a system such as an aeroplane wing requires a very high resolution in order to be accurate. Following an estimate of computing power required to simulate a turbulent system down to its smallest length scales, Stanley Corrsin quipped~\cite{corrsin_turbulent_1961}:
+This is the kind of solution people have in mind when they speak of `solving' the problem of turbulence. Laws describing the average properties of a fluid without reference to its precise flow field would not simply be interesting as describing turbulence as an emergent phenomenon, but would aid practical computations, which for many problems of interest are prohibitively computationally expensive. The flow of a turbulent fluid contains detail on such a  wide range of length scales that finite-element or finite-difference analyses of a system such as an aeroplane wing requires a very high resolution in order to be accurate. Following an estimate of computing power required to simulate a turbulent system down to its smallest length scales, Stanley Corrsin quipped~\cite{corrsin_turbulent_1961}:
 \begin{quote}
 The foregoing estimate  is enough to suggest the use of analog instead of digital  computation; in particular, how about an analog consisting of a tank of water?
 \end{quote}
-This sounds like a joke, but the reliance of the aerospace industry on wind tunnels and practical tests show that there is some truth to the necessity of using nature as ones computer when it comes to turbulence. Whilst nature must always have the final say, it would be of great benefit to be able to compute expected results more cheaply before setting up a wind-tunnel experiment or constructing a prototype aircraft.
+The reliance of the aerospace industry on wind tunnels and practical tests shows that there is some truth to the necessity of using nature as one's computer when it comes to turbulence. Whilst nature must always have the final say, it would be of great benefit to be able to compute expected results more cheaply before setting up a wind-tunnel experiment or constructing a prototype aircraft.
 
 But are we asking for too much? Perhaps the statistical properties of a turbulent fluid fundamentally cannot be decoupled from the finer details. There is reason to believe that this is not the case. There are several tantalising results that hint at universal properties that all turbulent flows share, and there is the simple empirical observation that the average flow of turbulent fluids at large scales is reproducible from one experimental run to the next~\cite[pp 13, 86]{davidson_turbulence:_2004}.
 
@@ -36,9 +36,9 @@ One of these universal results is Kolmogorov's theory of the statistics of small
 
 Then there is the Richardson energy cascade~\cite{richardson_weather_2007}, in which energy is continually transferred from larger scales to smaller scales. With dissipation at the smallest scales and addition at larger scales, this allows for the existence of `steady state' turbulence.
 
-The above examples derive from ordinary, viscous fluids. Bose--Einstein condensates on the other hand are superfluids. There are several interesting aspects of superfluid turbulence that differ from classical turbulence. The defining difference is the absence of viscosity; another major difference is the quantisation of circulation. On scales much larger than spacing between vortex lines, superfluid turbulence is expected to closely resemble classical turbulence\footnote{Similarly at sufficiently large scales in non-superfluids, velocity gradients are small and hence viscosity can be neglected.}~\cite{tsubota_energy_2009}. But at smaller scales the energy dissipation mechanism is different, instead involving the production of sound waves via vortex interactions~\cite{tsubota_energy_2009, vinen_how_2005}.
+The above examples derive from ordinary, viscous fluids. Bose--Einstein condensates on the other hand are superfluids. There are several interesting aspects of superfluid turbulence that differ from classical turbulence. The defining difference is the absence of viscosity; another major difference is the quantisation of circulation. On length scales much larger than spacing between vortex lines, superfluid turbulence is expected to closely resemble classical turbulence~\cite{tsubota_energy_2009}. At smaller scales however the energy dissipation mechanism is different, instead involving the production of sound waves via vortex interactions~\cite{tsubota_energy_2009, vinen_how_2005}.
 
-In certain 2\textsc{d} geometries, an \emph{inverse cascade}~\cite{onsager_statistical_1949, kraichnan_inertial_1967} is predicted to take place in superfluids, whereby energy moves not from large scales to small, but from small to large, clustering quantised vortices of the same circulation direction together. This phenomenon has been studied numerically in the Monash Quantum Fluids group [CITE] and recently experimentally observed in the Monash Dual-Species lab in experiments performed by Shaun Johnstone, as well as at [OTHER GROUP] [CITE THEM BOTH - ARXIV OR PUBLISHED IF DONE BY THEN]
+In certain 2\textsc{d} geometries, an \emph{inverse cascade}~\cite{onsager_statistical_1949, kraichnan_inertial_1967} is predicted to take place in superfluids, whereby energy moves not from large scales to small, but from small to large, clustering quantised vortices of the same circulation direction together. This phenomenon has been studied theoretically and numerically in the Monash Quantum Fluids group~\cite{simula_emergence_2014, groszek_vortex_2018} and recently experimentally observed in the Monash Dual-Species laboratory in experiments performed by Shaun Johnstone~\cite{johnstone_order_2018}, simultaneously with a group at the University of Queensland~\cite{gauthier_negative-temperature_2018}.
 
 The following definition of turbulence, taken from~\cite[p 53]{davidson_turbulence:_2004}, emphasises the role of vortices in turbulence in general:
 \begin{quote}
@@ -51,30 +51,6 @@ This is why we are interested in the study of the dynamics of quantised vortices
 
 So far experimental studies of superfluid turbulence have been primarily in the context of liquid helium~\cite{leggett_superfluidity_1999}. Bose--Einstein condensates offer a compelling alternative subject of study for superfluid turbulence. The high degree of control afforded over systems of cold atoms allows the superfluid's properties to be tweaked in several ways, creating a larger parameter space in which to study turbulence than that afforded by liquid helium.
 
-\section{Overview}
-
-[SCRAP THE BELOW: JUST SUMMARISE THE SECTIONS COMING]
-
-Ok, so - the vortices are potential wells. Show some pictures of this.
-
-BUT. PROBLEM. The wells are not very deep when measured in recoil energies. Need cooling! Honours thesis studied this. Answer: maybe.
-
-Possible solution: Feshbach resonance. BUT: problem, cooling doesn't work. To this end, developed a cooling scheme.
-
-Other alternative: sympathetic cooling. We did this too. It looks ok.
-
-Finally: thought about other cooling schemes. Though we didn't simulate this one or take it anywhere, the inability to simulate it prompted me to begin thinking about the issues that the hidden variables chapter resolves.
-
-\begin{itemize}
-\item Semiclassical simulations:
-Provide details of how the simulations were performed and the results they gave. Describe method of computing collisions between the classically modelled particles and the condensate, and how the fluorescence imaging was simulated. Present results and discuss experimental feasibility.
-
-\item{Sisyphus cooling in a magnetic field}
-Describe the scheme for Sisyphus cooling I developed, and show 1D simulation results.
-
-\end{itemize}
-
-
 \section{Overview of velocimetry scheme}
 
 \begin{figure}
@@ -84,46 +60,75 @@ Describe the scheme for Sisyphus cooling I developed, and show 1D simulation res
 \end{center}
 \end{figure}
 
-As mentioned, the idea of this method is to use tracer particles to track vortex cores in a \bec\ in real time. The tracer particles are $^{87}$Rb atoms and the BEC made of $^{41}$K. This choice is due to the strong interspecies repulsion between these atoms, which gives rise to the trapping of atoms in the vortex cores. In the limit of low densities and temperatures, such that three body collisions are suppressed and $s$-wave scattering dominates the interspecies interactions \cite[p 120]{leggett_quantum_2006}, the rubidium tracer atoms experience a potential due to the potassium:
+As mentioned, the core idea of our proposed imaging method is to use tracer particles to track vortex cores in a \bec\ in real time. In this chapter I consider $^{87}$Rb atoms as tracer particles in a \textsc{bec} made of $^{41}$K. This choice is due to the strong interspecies repulsion between these atomic species, which gives rise to the trapping of atoms in the vortex cores. In the limit of low densities and temperatures, such that three body collisions are suppressed and $s$-wave scattering dominates the interspecies interactions~\cite[p 120]{leggett_quantum_2006}, the rubidium tracer atoms experience a potential due to the potassium:
 
 \begin{equation}
 V(\vec{r}) = \frac{2\pi\hbar^2 a_s}{m_r}\rho_\up{K}(\vec{r}),
 \end{equation}
 where $\rho_\up{K}(\vec{r})$ is the spatially varying atom density of the potassium condensate, $a_s$ is the interspecies $s$-wave scattering length, and
-$m_r = \frac{m_\up{K}m_\up{Rb}}{m_\up{K} + m_\up{Rb}}$ is the reduced mass of the scattering pair.
+$m_r = \frac{m_\up{K}m_\up{Rb}}{m_\up{K} + m_\up{Rb}}$ is the reduced mass of the scattering pair. Vortex cores thus create potential wells for other atoms, since they are regions of low condensate density in a background of high density.
 
-Vortex cores thus create potential wells for other atoms, since they are regions of low condensate density in a background of high density.
+The basic setup of the scheme is shown in Figure~\ref{fig:setup}. Cold rubidium atoms are introduced (such as by magnetic transport from a \mot) to a potassium condensate, after which both species are optically trapped at the focus of a high power $1064$nm laser, using the dipole force. Various methods may be used to create vortices in the condensate. These include bluff-body flow, where a repulsive potential is dragged through the condensate, and inducing a turbulent state by applying off-resonant laser speckle. The rubidium atoms are then expected to become trapped in the low density vortex cores.
 
-The basic setup of the scheme is shown in Figure~\ref{fig:setup}. Cold rubidium atoms are introduced (such as by magnetic transport from a \mot) to a potassium condensate, after which both species are optically trapped at the focus of a high power $1064$nm laser, using the dipole force.
+The atoms are imaged with resonant or near-resonant laser light, depending on the exact scheme employed. In this chapter I present the results of simulating two configurations, one of which has near-resonant laser light also cooling the atoms to keep them trapped in the vortex cores, and the other relying solely on sympathetic cooling with imaging being performed with resonant light.
 
-Various methods may be used to create vortices in the condensate. These include bluff-body flow, where a repulsive potential is dragged through the condensate, and inducing a turbulent state by applying off-resonant laser speckle. The rubidium atoms are then expected to become trapped in the low density vortex cores.
+The simplest scheme which attempts to cool the rubidium atoms is ordinary polarisation gradient cooling, in which the same light is used for imaging and cooling the atoms (Figure~\ref{fig:setup}). This was considered in my Honours thesis~\cite{billington_particle_2010}, the results of which I summarise in the next section. This method precludes the use of a magnetic trap or large bias field, since either would destroy the cooling effect.
 
-The atoms are imaged with resonant or near-resonant laser light, depending on the exact scheme employed. In this chapter I discuss and model several schemes, some of which involve the laser light also cooling the atoms to keep them trapped in the vortex cores.
-
-The simplest imaging scheme involves only imaging a small amount of the tracer atoms at a time, by transferring population slowly from the $|1,1\rangle$ groundstate into an $F=2$ state where a resonant laser images them and likely removes them from the trap.
-
-The simplest scheme which attempts to cool the rubidium atoms is ordinary polarisation gradient cooling, where the same light is used for imaging and cooling the atoms (Figure~\ref{fig:setup}). This method precludes the use of a magnetic trap or large bias field, since either would destroy the cooling effect.
-
-The vortex potentials may be made deeper through the use of a Feshbach resonance [SECREF], which increases the interspecies scattering length. However, since this requires a magnetic field, as mentioned above it prevents the use of ordinary polarisation gradient cooling. In section (see section \ref{sec:atoms} I present an alternative polarisation gradient cooling scheme designed work in the presence of a magnetic field of the strength required for the Feshbach resonance of interest.
+The vortex potentials may be made deeper through the use of a Feshbach resonance (Section~\ref{sec:feshbach}), which increases the interspecies scattering length. However, since this requires a magnetic field, it precludes the use of ordinary polarisation gradient cooling. In section (see Section~\ref{sec:laser_cooling_simulations}) I present an alternative polarisation gradient cooling scheme designed work in the presence of a magnetic field of the strength required for the Feshbach resonance of interest.
 
 Effective imaging of vortex motion would require approximately $10^5$ photons per second to scatter off each rubidium atom without it escaping its vortex core trap, and without causing so much heating as to destroy the condensate on a reasonable experimental timescale. A high resolution, low aberration lens (numerical aperture $\approx 0.5$) would also be required to focus the scattered light onto a fast capture, high quantum efficiency camera to produce images of vortex motion.
 
+\section{Relation to previous work}
 
-\section{Improvement over previous work}
+This scheme was first investigated in my Honours project~\cite{billington_particle_2010}. In that work I investigated the ability of vortex potentials to trap atoms, including consideration of the depth of such traps when measured in units of the photon recoil energy. Considering the depth in these units was a first attempt to estimate how easily atoms may escape vortex potentials in the presence of imaging light. Figure~\ref{fig:levels1e14} and Figure~\ref{fig:levels1e15}show bound states of typical vortex potentials at different condensate densities.
 
-This scheme was first investigated in my Honours project [CITE]. In that work I investigated the ability of vortex potentials to trap atoms, including consideration of the depth of such traps when measured in units of the photon recoil energy. Considering the depth in these units was a first attempt to estimate how easily atoms may escape vortex potentials if they are scattering imaging light. Figures [COPY TWO OF THEM FROM HONOURS THESIS] show some bound states of typical vortex potentials.
+\begin{figure}
+\centering
+\noindent\makebox[\textwidth]{
+\includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e14_l=00.png}
+\includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e14_l=01.png}}
+\noindent\makebox[\textwidth]{
+\includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e14_l=02.png}
+\includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e14.png}}
+\caption{Energy eigenstates of a rubidium atom in a potassium vortex core, for a potassium \textsc{bec} with background density $\approx $10$^{14}\unit{cm}^{-3}$. There are a number of bound states spanning three orbital quantum numbers. Plots of the bound states are of a cross section through the centre of a vortex core, and the lower right plot shows just the energy levels. Figure reproduced from~\cite{billington_particle_2010}.}%
+\label{fig:levels1e14}%
+\end{figure}
 
-[PICS? BOTH FIGS FROM HONOURS THESIS?]
+\begin{figure}
+\centering
+\noindent\makebox[\textwidth]{
+\includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e15_l=00.png}
+\includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e15_l=01.png}}
+\noindent\makebox[\textwidth]{
+\includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e15_l=02.png}
+\includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e15_l=03.png}}
+\noindent\makebox[\textwidth]{
+\includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e15_l=04.png}
+\includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e15_l=05}}
+\noindent\makebox[\textwidth]{
+\includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e15.png}}
+\caption{As in Figure~\ref{fig:levels1e14}, but for a potassium \textsc{bec} with background density $\approx $10$^{15}\unit{cm}^{-3}$. There are bound states over six different orbital quantum numbers. This vortex potential is much deeper than that in Figure~\ref{fig:levels1e14}, showing the effect of condensate density on the depth of the vortex potentials. Figure reproduced from~\cite{billington_particle_2010}.}%
+\label{fig:levels1e15}%
+\end{figure}
 
-There were two main conclusions from this investigation. Firstly, to minimise the recoil energy, rubidium is a better choice for tracer particle than potassium due to its larger mass, enabling a rubidium atom to remain trapped after scattering a number of photons for which a potassium atom would escape the potential. Secondly, vortex potentials are not very deep when measured in recoil energies, and their depth depends strongly on the density of the \textsc{bec}. At typical condensate densities of $10^{14}\unit{cm}^{-3}$, the vortex potentials are expected to only be one or two recoil energies deep, making it unlikely that atoms could scatter many photons whilst remaining trapped in them. At larger densities of $10^{15}\unit{cm}^{-3}$, the vortex potentials are closer to $20$ recoil energies deep, making imaging of trapped tracer atoms more plausible.
+There were a number of conclusions from this investigation. Firstly, to minimise the recoil energy, rubidium is a better choice for tracer particle than potassium due to its larger mass, enabling a rubidium atom to remain trapped after scattering a number of photons that would cause a potassium atom to escape the same potential. Secondly, vortex potentials are not very deep when measured in recoil energies, and their depth depends strongly on the density of the \textsc{bec}. At typical condensate densities of $10^{14}\unit{cm}^{-3}$, the vortex potentials are expected to only be one or two recoil energies deep, making it unlikely that atoms could scatter many photons whilst remaining trapped in them. At larger densities of $10^{15}\unit{cm}^{-3}$, the vortex potentials are closer to $20$ recoil energies deep, making imaging of trapped tracer atoms more plausible.
 
-The main simulation result of my Honours project considered a potassium condensate with a peak density of $10^{15}\unit{cm}^{-3}$ and rubidium tracer atoms being cooled using standard polarisation gradient cooling with parameters chosen to ensure each atom scattered $10^5$ photons per second. The result was that initially randomly distributed rubidium atoms were able to become and remain trapped in the vortex cores whilst being cooled.
+The main simulation result of my Honours project considered a potassium condensate with a peak density of $10^{15}\unit{cm}^{-3}$ and rubidium tracer atoms being cooled using standard polarisation gradient cooling with parameters chosen to ensure each atom scattered $10^5$ photons per second in two spatial dimensions. The result was that initially randomly distributed rubidium atoms were able to become and remain trapped in the vortex cores whilst being cooled (Figure~\ref{fig:hybrid}).
 
-However, the density assumed was rather high for a real experiment. Three body losses tend to limit the lifetime of condensates at such a high density, and so the work in this chapter investigates ways to make particle velocimetry work in a less dense condensate. As the vortex potentials are so shallow at lower density, as mentioned earlier the potentials may be deepened through the use of a Feshbach resonance.
+\begin{figure}
+\centering
+\noindent\makebox[\textwidth]{\includegraphics[width=1.0\columnwidth]{figures/velocimetry/hybrid1.png}}
+\noindent\makebox[\textwidth]{\includegraphics[width=1.0\columnwidth]{figures/velocimetry/hybrid2.png}}
+\noindent\makebox[\textwidth]{\includegraphics[width=1.0\columnwidth]{figures/velocimetry/hybrid3.png}}
+\caption{The result from~\cite{billington_particle_2010} of a two-dimensional hybrid quantum-semiclassical simulation for 1000 rubidium atoms (right, depicted as fluorescence assuming diffraction through an $\mathrm{NA}=0.5$ imaging system) and a turbulent potassium \textsc{bec} (left) of peak density $\approx 10^{15}\unit{cm}^{-3}$. The rubidium atoms are subject to a classical approximation of the force due to polarisation gradient cooling as described in~\cite{billington_particle_2010}. Most rubidium atoms eventually either become bound to a vortex core or leave the condensate. Figure reproduced from~\cite{billington_particle_2010}.}%
+\label{fig:hybrid}%
+\end{figure}
 
-In section [SECREF] I investigate whether sympathetic cooling of the tracer atoms by the condensate may be enough to keep them trapped in the presence of imaging light. Then, in section [SECREF] I present a new laser cooling scheme designed to work at the required magnetic field strength.
+However, the density assumed was rather high for a real experiment. Three-body losses tend to limit the lifetime of condensates at such a high density, and so the work in this chapter investigates ways to make particle velocimetry work in a less dense condensate. As the vortex potentials are so shallow at lower density, as mentioned earlier the potentials may be deepened through the use of a Feshbach resonance.
 
-\section{Sympathetic cooling}
+In Section~\ref{sec:sympathetic} I consider a similar configuration, but with a more reasonable \textsc{bec} density combined with an enhancement of the interspecies repulsion due to a Feshbach resonance. I investigate whether sympathetic cooling of the tracer atoms by the condensate may be enough to keep them trapped in the presence of imaging light. Then, in Section~\ref{sec:laser_cooling_simulations} I present simulation results of a new laser cooling scheme designed to work at the magnetic field strength required for the Feshbach resonance.
+
+\section{Sympathetic cooling}\label{sec:sympathetic}
 
 OK so one thing my honours thesis ignored was sympathetic cooling, in which the tracer atoms are cooled by the condensate (which is in turn heated). How strong is this effect? Is it enough to keep the atoms trapped? In this section I present the results of simulations to answer this question
 
