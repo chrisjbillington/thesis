@@ -1,5 +1,5 @@
 Total
-Words in text: 65207
+Words in text: 65206
 Words in headers: 516
 Words outside text (captions, etc.): 10757
 Number of headers: 137
@@ -15,6 +15,6 @@ Subcounts:
   2721+14+98 (4/0/16/0) File(s) total: introduction.tex
   23088+155+3403 (31/15/824/137) File(s) total: numerics.tex
   9497+81+1478 (26/5/7/0) File(s) total: software.tex
-  4893+37+939 (12/10/88/4) File(s) total: velocimetry.tex
+  4892+37+939 (12/10/88/4) File(s) total: velocimetry.tex
   784+35+385 (9/4/7/0) File(s) total: wave_mixing.tex
 
