@@ -90,7 +90,7 @@ This scheme was first investigated in my Honours project~\cite{billington_partic
 \noindent\makebox[\textwidth]{
 \includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e14_l=02.png}
 \includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e14.png}}
-\caption{Energy eigenstates of a rubidium atom in a potassium vortex core, for a potassium \textsc{bec} with background density $\approx $10$^{14}\unit{cm}^{-3}$. There are a number of bound states spanning three orbital quantum numbers. Plots of the bound states are of a cross section through the centre of a vortex core, and the lower right plot shows just the energy levels. Figure reproduced from~\cite{billington_particle_2010}.}%
+\caption{Energy eigenstates of a rubidium atom in a potassium vortex core, for a potassium \textsc{bec} with background density $\approx 10^{14}\unit{cm}^{-3}$. There are a number of bound states spanning three orbital quantum numbers. Plots of the bound states are of a cross section through the centre of a vortex core, and the lower right plot shows just the energy levels. Figure reproduced from~\cite{billington_particle_2010}.}%
 \label{fig:levels1e14}%
 \end{figure}
 
@@ -107,7 +107,7 @@ This scheme was first investigated in my Honours project~\cite{billington_partic
 \includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e15_l=05}}
 \noindent\makebox[\textwidth]{
 \includegraphics[width=0.5\columnwidth]{figures/velocimetry/levels1e15.png}}
-\caption{As in Figure~\ref{fig:levels1e14}, but for a potassium \textsc{bec} with background density $\approx $10$^{15}\unit{cm}^{-3}$. There are bound states over six different orbital quantum numbers. This vortex potential is much deeper than that in Figure~\ref{fig:levels1e14}, showing the effect of condensate density on the depth of the vortex potentials. Figure reproduced from~\cite{billington_particle_2010}.}%
+\caption{As in Figure~\ref{fig:levels1e14}, but for a potassium \textsc{bec} with background density ${\approx 10^{15}\unit{cm}^{-3}}$. There are bound states over six different orbital quantum numbers. This vortex potential is much deeper than that in Figure~\ref{fig:levels1e14}, showing the effect of condensate density on the depth of the vortex potentials. Figure reproduced from~\cite{billington_particle_2010}.}%
 \label{fig:levels1e15}%
 \end{figure}
 
@@ -120,19 +120,23 @@ The main simulation result of my Honours project considered a potassium condensa
 \noindent\makebox[\textwidth]{\includegraphics[width=1.0\columnwidth]{figures/velocimetry/hybrid1.png}}
 \noindent\makebox[\textwidth]{\includegraphics[width=1.0\columnwidth]{figures/velocimetry/hybrid2.png}}
 \noindent\makebox[\textwidth]{\includegraphics[width=1.0\columnwidth]{figures/velocimetry/hybrid3.png}}
-\caption{The result from~\cite{billington_particle_2010} of a two-dimensional hybrid quantum-semiclassical simulation for 1000 rubidium atoms (right, depicted as fluorescence assuming diffraction through an $\mathrm{NA}=0.5$ imaging system) and a turbulent potassium \textsc{bec} (left) of peak density $\approx 10^{15}\unit{cm}^{-3}$. The rubidium atoms are subject to a classical approximation of the force due to polarisation gradient cooling as described in~\cite{billington_particle_2010}. Most rubidium atoms eventually either become bound to a vortex core or leave the condensate. Figure reproduced from~\cite{billington_particle_2010}.}%
+\caption{The result from~\cite{billington_particle_2010} of a two-dimensional hybrid quantum-classical simulation for 1000 classical rubidium atoms (right, depicted as fluorescence assuming diffraction through an $\mathrm{NA}=0.5$ imaging system) and a turbulent potassium \textsc{bec} (left) of peak density $\approx 10^{15}\unit{cm}^{-3}$. The rubidium atoms are subject to a classical approximation of the force due to polarisation gradient cooling as described in~\cite{billington_particle_2010}. Most rubidium atoms eventually either become bound to a vortex core or leave the condensate. Figure reproduced from~\cite{billington_particle_2010}.}%
 \label{fig:hybrid}%
 \end{figure}
 
-However, the density assumed was rather high for a real experiment. Three-body losses tend to limit the lifetime of condensates at such a high density, and so the work in this chapter investigates ways to make particle velocimetry work in a less dense condensate. As the vortex potentials are so shallow at lower density, as mentioned earlier the potentials may be deepened through the use of a Feshbach resonance.
+However, the density assumed in this simulation was rather high for a real experiment. Three-body losses tend to limit the lifetime of condensates at such a high density, and so the work in this chapter investigates ways to make particle velocimetry work in a less dense condensate. As the vortex potentials are so shallow at lower density, as mentioned earlier the potentials may be deepened through the use of a Feshbach resonance.
 
 In Section~\ref{sec:sympathetic} I consider a similar configuration, but with a more reasonable \textsc{bec} density combined with an enhancement of the interspecies repulsion due to a Feshbach resonance. I investigate whether sympathetic cooling of the tracer atoms by the condensate may be enough to keep them trapped in the presence of imaging light. Then, in Section~\ref{sec:laser_cooling_simulations} I present simulation results of a new laser cooling scheme designed to work at the magnetic field strength required for the Feshbach resonance.
 
 \section{Sympathetic cooling}\label{sec:sympathetic}
 
-OK so one thing my honours thesis ignored was sympathetic cooling, in which the tracer atoms are cooled by the condensate (which is in turn heated). How strong is this effect? Is it enough to keep the atoms trapped? In this section I present the results of simulations to answer this question
+The simulation performed in my Honours thesis considered only polarisation gradient cooling counteracting the heating effect of the imaging light. In reality, collisions between tracer atoms and atoms in the condensate would also contribute to cooling. This sympathetic cooling of the tracer atoms---which would also lead to heating of the condensate---was disregarded in my Honours thesis' results. 
+
+Depending on the strength of the cooling effect from sympathetic cooling, this cooling may be sufficient to retain tracer atoms in vortex cores in the absence of an additional cooling mechanism such as polarisation gradient cooling. If laser cooling is not necessary to trap tracer atoms in vortices, then the Feshbach resonance may be used to enhance the interspecies scattering length, further enhancing the ability of the vortices to trap tracer atoms. In this section I consider a similar simulation to that in my Honours thesis, in which the tracer atoms are subject to sympathetic cooling only, in order to examine this possibility.
 
 \subsection{Model}
+
+As with the simulation in my Honours thesis, in this section I model the tracer particles classically in a \textsc{bec}
 
 In this section I model sympathetic cooling due to elastic two-body scattering between the rubidium tracer atoms and the potassium atoms in the condensate. The model is two-dimensional, approximating a pancake-shaped condensate.
 
@@ -163,15 +167,14 @@ DEFINE EVERYTHING TURBULATE INITIAL CONDITIONS, REFER TO NUMERICS SECTIONS
 
 \section{Sisyphus cooling in a $34\unit{G}$ magnetic field}\label{sec:laser_cooling_simulations}
 
-As mentioned, one of the limitations of the usual method of polarisation gradient cooling is that it doesn't work in a magnetic field. Usually this is not an issue for the cooling stage used en-route to \bec; the magnetic field is simply temporarily switched off. Our imaging method would greatly benefit from a cooling scheme that did work in a magnetic field, since the repulsive interactions between $^{87}$Rb and $^{41}$K can be greatly enhanced via a Feshbach resonance at 34 gauss~\cite{thalhammer_double_2008}. This would make the potential wells that the rubidium atoms see deeper, trapping them more strongly. However if the magnetic field destroys our cooling method then the atoms won't stay trapped for long.
+As mentioned, one of the limitations of the usual method of polarisation gradient cooling is that it doesn't work in a magnetic field. Usually this is not an issue for the cooling stage used en-route to \bec; the magnetic field is simply temporarily switched off. Our imaging method would benefit from a cooling scheme that does work in a magnetic field, since the repulsive interactions between $^{87}$Rb and $^{41}$K can be greatly enhanced via a Feshbach resonance at $34 \unit{G}$~\cite{thalhammer_double_2008}. This would make the potential wells that the rubidium atoms see deeper, trapping them more strongly. However if the magnetic field destroys the cooling mechanism then the atoms won't stay trapped for long. Even if sympathetic cooling is sufficient to image tracer particles trapped in vortices, the addition of a cooling scheme would increase the lifetime of the condensate on account of decreased sympathetic heating, and may allow a larger scattering rate of photons before the tracer atoms cease to be trapped.
 
-This Feshbach resonance only occurs if both species are in their respective \mbox{$|F=1,m_F=1\rangle$} spin state\footnote{$F$ is not a good quantum number in a nonzero magnetic field, so what we really mean writing this is the state that one would get if starting in an $F$ state and adiabatically ramping the field up.}, so we would like a cooling method that has the rubidium atoms spending a significant amount of time in this state. Polarisation gradient cooling isn't particularly efficient when using this groundstate, due to the high probability of atoms in the $F=2$ excited state decaying to the $F=2$ groundstate, requiring repumping.
+The Feshbach resonance only occurs if both species are in their respective \mbox{$|F=1,m_F=1\rangle$} spin state,\footnote{$F$ is not a good quantum number in a nonzero magnetic field, so what we mean writing this is the state that one would get if starting in an $F$ state and adiabatically turning on the magnetic field.} so a cooling mechanism in which the rubidium atoms spend a significant fraction of their time in this state is desirable.
 
-One possibility is to develop a sub-Doppler cooling scheme that works in a $34\,$G magnetic field. The basic Sisyphus mechanism---of atoms moving alternately between spin states which see different potentials---should be possible to find in many multi-level systems of sufficient complexity\footnote{And indeed, many other Sisyphus cooling mechanisms exists other than polarisation gradient cooling~\cite[p 116]{metcalf_laser_1999}.}. Below I describe one that uses four lasers to cool $^{87}$Rb in a $34\,$G field, with the atoms spending approximately half their time in the \mbox{|$1,1\rangle$} state.
+In this section I present a sub-Doppler cooling scheme that is designed to cool $^{87}$Rb in a $34\,$G magnetic field. The basic Sisyphus mechanism---of atoms moving alternately between spin states which see different potentials---is possible to find in many multi-level systems of sufficient complexity\footnote{And indeed, many other Sisyphus cooling mechanisms exists other than polarisation gradient cooling~\cite[p 116]{metcalf_laser_1999}.}; my cooling scheme uses a Sisyphus mechanism with four lasers to cool and repump $^{87}$Rb atoms in a $34\unit{G}$ field, with the atoms spending approximately half their time in the \mbox{|$1,1\rangle$} state.
 
-Incidentally, my initial misunderstanding of polarisation gradient cooling coupled with a misplaced negative sign in my calculations---which hid that misunderstanding---led me to construct a scheme qualitatively different from conventional \textsc{pgc}. This scheme uses blue detuned light, and the main cooling force comes from atoms ascending repulsive optical potential hills, rather than climbing out of attractive potential wells as in ordinary \textsc{pgc}.
+In Section~\ref{sec:vortexcooling}, I briefly describe another cooling scheme suggested by Kris Helmerson, which uses the vortex cores themselves as the potential hills in a Sisyphus mechanism. I have not simulated this scheme to asses its viability; I mention it here because it is illustrative of the type of problem that is difficult to model semiclassically, and was one of the factors that led me to consider the use of hidden variables in semiclassical models, as discussed in Chapter~\ref{chap:hvsc}.
 
-In section \ref{sec:vortexcooling}, I describe another cooling scheme, recently suggested by Kris Helmerson, which uses the vortex cores themselves as the potential hills in a Sisyphus mechanism.
 
 \subsection{Description of cooling scheme}
 
@@ -182,7 +185,7 @@ In section \ref{sec:vortexcooling}, I describe another cooling scheme, recently 
 \end{center}
 \end{figure}
 
-The scheme involves four lasers, two for cooling and two for repumping. First let's focus on the cooling lasers only. Looking at Figure \ref{fig:cooling_simplified}, imagine that we have a rubidium atom at $z=0$ and in the $|1,1\rangle$ hyperfine groundstate. Here our atom sees no light, as the intensity of the cooling laser labeled $\omega_1$ is zero, and it is in the wrong state to be pumped by the $\omega_2$ laser (which is not resonant with any transitions from the $|1,1\rangle$ groundstate).
+The scheme involves four lasers, two for cooling and two for repumping. For simplicity I will first focus on the cooling lasers only, depicted in Figure~\ref{fig:cooling_simplified}. Imagine that we have a rubidium atom at $z=0$ and in the $|1,1\rangle$ hyperfine groundstate. Here our atom sees no light, as the intensity of the cooling laser labeled $\omega_1$ is zero, and it is in the wrong state to be pumped by the $\omega_2$ laser (which is not resonant with any transitions from the $|1,1\rangle$ groundstate).
 
 As our atom moves rightward however, it will have to climb the repulsive potential hill formed by the $\omega_1$ laser. As it does so, its $|1,1\rangle$ excited state probability will increase, and along with it, the probability of spontaneous emission. Spontaneous emission will be most likely to occur near the top of the potential hill where the laser intensity---and hence the excited state probability---is greatest.
 
