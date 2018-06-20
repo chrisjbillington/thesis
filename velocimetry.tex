@@ -159,14 +159,27 @@ Collisions with the condensate are modelled as elastic collisions between a rubi
 \begin{align}
 \vec v_\up{K}(\vec r, t) = \frac \hbar {m_\up{K}} \nabla \phi_\up{K}(\vec r, t),
 \end{align}
-where $\phi_\up{K}(\vec r, t)$ is the complex phase of the potassium condensate wavefunction.
-
-The rate of two body collisions is given by the scattering cross section and relative velocity as:
-
-[EXPRESSION]
-
-Where the scattering cross section is - uh, check how I calculated it, it involves a Feshbach resonance obviously. At low temperatures $s$-wave scattering dominates so we're just using that.
-
+where $\phi_\up{K}(\vec r, t)$ is the complex phase of the potassium condensate wavefunction. The $s$-wave scattering cross length $a$ is defined as~\cite[p 589, eq.~12.101]{bransden_physics_2003}
+\begin{align}
+a = -\lim_{k_\up{rel}\rightarrow 0} \frac{\tan\left(\delta_0(k_\up{rel})\right)}{k_\up{rel}},
+\end{align}
+where $k_\up{rel}=m_\up{r}v_\up{rel}/\hbar$ is the relative wavenumber of the colliding pair of atoms with reduced mass $m_\up{r}$ and relative velocity $v_\up{rel}$, and $\delta_0(k)$ the collisional phase shift. Assuming small $k_\up{rel}$ and substituting this into the $s$-wave elastic scattering cross section~\cite[p 584, eq.~12.66]{bransden_physics_2003} 
+\begin{align}
+\sigma = \frac{4\pi}{k_\up{rel}^2}\sin^2\left(\delta_0(k_\up{rel})\right)
+\end{align}
+gives a low-velocity approximation to the scattering cross section for elastic collisions between the rubidium and potassium atoms:
+\begin{align}
+\sigma_{\textrm{Rb--K}} \approx 4\pi\frac{a_{\textrm{Rb--K}}^2}{1 + k_\up{rel}^2a_{\textrm{Rb--K}}^2}.
+\end{align}
+The mean free path of a rubidium tracer particle within the potassium \textsc{bec} is therefore
+\begin{align}
+\ell(\vec r, t) = \left(\sigma_{\textrm{Rb--K}}\abs{\Psi_\up{K}(\vec r, t)}^2\right)^{-1},
+\end{align}
+yielding the probability of a collision occurring in an infinitesimal time interval $\dd t$
+\begin{align}
+P_\up{collision}(\vec r, t+\dd t, t) = v_\up{rel}\sigma_{\textrm{Rb--K}}\abs{\Psi_\up{K}(\vec r, t)}^2\dd t.
+\end{align}
+At each timestep, a random number between zero and one is generated for each atom, and if less than the above, a collision is taken to have occurred. In the case of a collision, the \textsc{2d} elastic scattering problem is solved and the rubidium atom's velocity instantaneously replaced with its post-collision value. The potassium condensate wavefunction is not modified---the sympathetic heating resulting from these collisions is ignored.
 
 \subsection{Results}
 
@@ -319,7 +332,7 @@ However, this scheme cannot be simulated in the same manner as the laser cooling
 
 \section{Discussion and conclusion}
 
-Sisyphus cooling: maybe
+Sisyphus cooling: maybe. Looks ok but I have disregarded heating of the condensate.
 
 laser cooling: also maybe - can be optimised, but in 3D might be different, is impractical given the number of lasers and the funky alignment, which can only be maintained over a distance of [something].
 
