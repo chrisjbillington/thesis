@@ -173,7 +173,7 @@ The Feshbach resonance only occurs if both species are in their respective \mbox
 
 In this section I present a sub-Doppler cooling scheme that is designed to cool $^{87}$Rb in a $34\,$G magnetic field. The basic Sisyphus mechanism---of atoms moving alternately between spin states which see different potentials---is possible to find in many multi-level systems of sufficient complexity\footnote{And indeed, many other Sisyphus cooling mechanisms exists other than polarisation gradient cooling~\cite[p 116]{metcalf_laser_1999}.}; my cooling scheme uses a Sisyphus mechanism with four lasers to cool and repump $^{87}$Rb atoms in a $34\unit{G}$ field, with the atoms spending approximately half their time in the \mbox{|$1,1\rangle$} state.
 
-In Section~\ref{sec:vortexcooling}, I briefly describe another cooling scheme suggested by Kris Helmerson, which uses the vortex cores themselves as the potential hills in a Sisyphus mechanism. I have not simulated this scheme to asses its viability; I mention it here because it is illustrative of the type of problem that is difficult to model semiclassically, and was one of the factors that led me to consider the use of hidden variables in semiclassical models, as discussed in Chapter~\ref{chap:hvsc}.
+In Section~\ref{sec:vortexcooling}, I briefly describe another cooling scheme suggested by Prof.~Helmerson, which uses the vortex cores themselves as the potential hills in a Sisyphus mechanism. I have not simulated this scheme to asses its viability; I mention it here because it is illustrative of the type of problem that is difficult to model semiclassically, and was one of the factors that led me to consider the use of hidden variables in semiclassical models, as discussed in Chapter~\ref{chap:hvsc}.
 
 
 \subsection{Description of cooling scheme}
@@ -269,7 +269,7 @@ which gives  $T_\up{1D} = 16.2\unit{\upmu K}$, well below the Doppler temperatur
 \begin{figure}
 \begin{center}
 \includegraphics[width=\textwidth]{figures/unsorted/cold_atom.pdf}
-\caption{\label{fig:cold_atom} Histogram of atom velocity over time, normalised as a probability density. A best-fit Maxwell-Boltzmann distribution is shown as the dotted line. It is no surprise that it is not a good fit---there is no thermalisation happening since there is only one atom and no collisions. The average energy is more informative than the fit parameters for determining the temperature that an ensemble of such atoms would have if they were allowed to thermalise. The long tail visible to the right is the atom's initial slowdown from its starting velocity.}
+\caption{\label{fig:cold_atom} Histogram of atom velocity over time, normalised as a probability density. A best-fit Maxwell--Boltzmann distribution is shown as the dotted line. It is no surprise that it is not a good fit---there is no thermalisation happening since there is only one atom and no collisions. The average energy is more informative than the fit parameters for determining the temperature that an ensemble of such atoms would have if they were allowed to thermalise. The long tail visible to the right is the atom's initial slowdown from its starting velocity.}
 \end{center}
 \end{figure}
 
@@ -277,9 +277,7 @@ This simulation has not, however, been optimised---the results presented here re
 
 \subsection{Vortex-assisted Sisyphus cooling}\label{sec:vortexcooling}
 
-[COMMENT ON HIDDEN VARIABLES - PRESENTED HERE TO MAKE A POINT]
-
-Another idea for a cooling scheme is to use the vortex potential itself as a spatial discriminator for transferring atoms between states. Similar to how a \mot\ traps atoms by bringing them into resonance with optical pumping only when they are some distance from the trap's centre, we could use the shape of the vortex potential to bring an \rf\ or microwave transition into resonance only when trapped tracer particles are some way up the side of a vortex core.
+Another idea for a cooling scheme is to use the vortex potential itself as a spatial discriminator for transferring atoms between states. Similar to how a \mot\ traps atoms by bringing them into resonance with optical pumping only when they are some distance from the trap's centre, one might use the shape of the vortex potential to bring an \rf\ or microwave transition into resonance only when trapped tracer particles are some distance away from the centre of a vortex core. This method was proposed by Prof.~Helmerson whilst considering different possibilities for cooling atoms in vortex cores, and I considered which states might be appropriate to implement the scheme in. I have not simulated this scheme, but present it here because the reason it is difficult to simulate is an example of the difficulty that led me to develop the hidden variable semiclassical method presented in Chapter~\ref{chap:hvsc}.
 
 \begin{figure}
 \begin{center}
@@ -295,15 +293,15 @@ Another idea for a cooling scheme is to use the vortex potential itself as a spa
 \end{center}
 \end{figure}
 
-The basic idea is outlined in Figure~\ref{fig:vortexcooling}. In the presence of the Feshbach resonance, atoms in the $|1,1\rangle$ state will scatter some tens of photons, using whichever transition is most likely to have them decay to the same groundstate with minimal repumping (transitioning to the $|0,0\rangle$ excited state on the $D_2$ line looks to be the best choice). As the atom scatters photons, it climbs the side of the vortex potential, converting its new found kinetic energy (from photon recoil) into potential energy.
+The basic idea of the vortex-assisted cooling scheme is outlined in Figure~\ref{fig:vortexcooling}. In the presence of the Feshbach resonance, atoms in the $\ket{1,1}$ state scatter some tens of photons, using whichever transition is most likely to have them decay to the same groundstate with minimal repumping (the $\ket{0,0}$ excited state on the $D_2$ line looks to be the best choice). As the atom scatters photons, it climbs the side of the vortex potential, converting the kinetic energy obtained from photon recoil into potential energy.
 
-Due to the state-dependence of the interspecies scattering length, the vortex potentials for different states have different depths. This means that the \rf\ or microwave frequency required to transition between the different hyperfine states and Zeeman sublevels varies as a function of space, and can be tuned so as to only be resonant with atoms which have nearly escaped the vortex core.
+Due to the state-dependence of the interspecies scattering length, the vortex potentials for different states have different depths, especially when one is enhanced by a Feshbach resonance. This means that the \rf\ or microwave frequency required to transition between the different hyperfine states and Zeeman sublevels varies as a function of space, and can be tuned so as to only be resonant with atoms which have nearly escaped the vortex core.
 
-The atom is then transferred into a different hyperfine or Zeeman state (the $|2,2\rangle$ groundstate should suit) and the hope is that it then lacks the kinetic energy to escape the (shallower) vortex potential it now finds itself in. Rather, it will oscillate back and forth in the well until a weak laser pumps it back into the $|1,1\rangle$ groundstate via spontaneous emission from some excited state (again chosen to maximise the decay probability to $|1,1\rangle$; the $|2,2\rangle$ $P_\frac32$ excited state looks to be a good choice.)
+When the atom enters the region resonant with said \rf\ or microwave radiation, it is then transferred into a different hyperfine or Zeeman state, for example the $\ket{2,2}$ groundstate, and the hope is that it then lacks the kinetic energy to escape the (shallower) vortex potential it then finds itself in. Rather, it oscillates back and forth in the well until a weak laser pumps it back into the $\ket{1,1}$ groundstate via spontaneous emission from some excited state (again chosen to maximise the decay probability to $\ket{1,1}$; the $\ket{2,2}$ $P_\frac32$ excited state looks to be a good choice.)
 
-If this goes to plan, statistically the atom will be closer to the center of the  $|1,1\rangle$ vortex potential than when it left. Provided its corresponding drop in potential energy makes up for all the photon scattering (which provides fluorescence imaging), then we have a cooling scheme. It is yet another Sisyphus effect, with the atom climbing steep vortex potential hills and descending shallower ones.
+After completing this cycle, statistically the atom will be closer to the centre of the  $\ket{1,1}$ vortex potential than when it left the $\ket{1,1}$ state. Provided its corresponding drop in potential energy makes up for the photon scattering (which provides fluorescence imaging), then it comprises a cooling and imaging scheme capable of keeping the atoms trapped in the vortex cores. It is yet another Sisyphus effect, with the atom climbing steep vortex potential hills and descending shallower ones.
 
-This scheme will be simulated to determine its viability; preliminary calculations haven't turned up any problems yet.
+However, this scheme cannot be simulated in the same manner as the laser cooling scheme presented in Section~\ref{sec:laser_cooling_simulations}. The reason is that the \rf\ or microwave transition depicted as the grey arrow in~\figref{fig:vortexcooling} is coherent, and as such leads to state vectors that are superpositions of the two hyperfine or Zeeman sublevels, with no one state dominating the superposition. Since (crucially for the cooling scheme), the two states are subject to different potentials, an atom in such a superposition would undergo Stern--Gerlach separation. Unlike the laser cooling scheme from the previous section, since no one state dominates the superposition at a given time, the expectation value of the two forces does not accurately describe the motion of the atom. To accurately simulate this cooling scheme, a semiclassical method able to reproduce this Stern--Gerlach separation would likely be necessary. This realisation, along with similar difficulties in simulations of Majorana losses in evaporative cooling during collaboration with Drs.~Turner and Anderson and Chris Watkins led me to develop the hidden-variable semiclassical method, discussed in Chapter~\ref{chap:hvsc}.
 
 % Paths: bilbo.tk: ~/laptop_backup/Desktop/current_work/sympathetic_cooling/
 %                  ~/oldserver/bilbo/particle_tracking_higher_scattering_length
@@ -312,3 +310,10 @@ This scheme will be simulated to determine its viability; preliminary calculatio
 %                  ~/laptop_backup/Desktop/current_work/DPGPoster
 % Compare to honours thesis - don't include stuff already in honours thesis!
 
+\section{Discussion and conclusion}
+
+Sisyphus cooling: maybe
+
+laser cooling: also maybe - can be optimised, but in 3D might be different, is impractical given the number of lasers and the funky alignment, which can only be maintained over a distance of [something].
+
+This chapter doesn't establish definitively whether the scheme will work in practice but provides enough of a wink in its direction to suggest an experimental attempt.
