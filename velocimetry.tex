@@ -136,25 +136,32 @@ Depending on the strength of the cooling effect from sympathetic cooling, this c
 
 \subsection{Model}
 
-As with the simulation in my Honours thesis, in this section I model the tracer particles classically in a \textsc{bec}
+In this section I model sympathetic cooling due to elastic two-body scattering between the rubidium tracer atoms and the potassium atoms in the condensate. The model is two-dimensional, approximating a pancake-shaped condensate. As with the simulation in my Honours thesis, I model the \textsc{bec} with the Gross--Pitaevskii equation:
 
-In this section I model sympathetic cooling due to elastic two-body scattering between the rubidium tracer atoms and the potassium atoms in the condensate. The model is two-dimensional, approximating a pancake-shaped condensate.
+\begin{align}
+\ii\hbar\pdv{t} \Psi_\up{K}(\vec r, t) = \left[-\frac{\hbar^2}{2m_\up{K}}\nabla^2 + V(\vec{\vec r}) + g_\up{K}\abs{\Psi_\up{K}(\vec r, t)}^2\right]\Psi_\up{K}(\vec r, t),
+\end{align}
 
-The potassium condensate is modelled with the Gross--Pitaevskii equation:
+where all symbols are as defined in Section~\ref{sec:mean_field_theory}, with the added subscripts $_\up{K}$ indicating quantities specific to $^{41}\up{K}$. The rubidium tracer atoms are modelled classically, evolving under potential due to interspecies repulsion, resulting in the equation of motion:
+\begin{align}\label{eq:classical_motion_tracers}
+\dv[2]{t} \vec r = \frac {g_{\textrm{Rb--K}}} {m_\up{Rb}}\nabla\abs{\Psi_\up{K}(\vec r, t)}^2,
+\end{align}
+where $g_{\textrm{Rb--K}}$ is the $^{87}$Rb--$^{41}$K non-linear interaction constant
+\begin{align}
+g_{\textrm{Rb--K}} = \frac{2\pi\hbar^2 a_{\textrm{Rb--K}}}{m_\up{r}},
+\end{align}
+where $m_\up{r}$ is the reduced mass of the $^{87}$Rb--$^{41}$K scattering pair and 
+$a_{\textrm{Rb--K}}$ is the $s$-wave interspecies scattering length, equal to $640 a_0$ at zero magnetic field~\cite{thalhammer_double_2008}, where $a_0$ is the Bohr radius, and taken in the following simulation to be a factor of five larger due to the $34\unit{G}$ Feshbach resonance (see Section~\ref{sec:feshbach} and \figref{fig:feshKRb}). Numerically, since the Gross--Pitaevskii equation is solved on a grid whereas the classical motion of the atoms is modelled using continuous position variables, the condensate density is numerically differentiated and the results interpolated to the positions of the tracer atoms using cubic splines in order to evaluate~\eqref{eq:classical_motion_tracers}.
 
-[BLAH]
+The motion of the tracer atoms is punctuated by velocity jumps due to both the scattering of imaging photons and two-body collisions with the condensate. Photon scattering events are modelled as instantaneous velocity jumps of magnitude $v_\up{r} = hc/\lambda m_\up{Rb}$ where $\lambda=780\unit{nm}$ is the wavelength of the imaging light. A random direction in \textsc{3d} space is chosen and a velocity jump in this direction with the given magnitude is projected into the \textsc{2d} plane of the simulation before being applied to the atom. These jumps occur at random times at an average rate given by the target photon scattering rate. 
 
-where [define symbols], and the rubidium atoms follow the classical equation of motion
+Collisions with the condensate are modelled as elastic collisions between a rubidium atom with the given classical velocity, and a potassium atom of velocity equal to the superfluid velocity $\vec v_\up{K}$ of the condensate (discussed in Section~\ref{sec:mean_field_theory}) at the location of the tracer atom, given by
+\begin{align}
+\vec v_\up{K}(\vec r, t) = \frac \hbar {m_\up{K}} \nabla \phi_\up{K}(\vec r, t),
+\end{align}
+where $\phi_\up{K}(\vec r, t)$ is the complex phase of the potassium condensate wavefunction.
 
-[blah]
-
-where [define symbols].
-
-The motion of the tracer atoms is punctuated by velocity jumps due to scattering of imaging photons and to two-body collisions with the condensate. The effect of photon scattering is modelled as velocity jumps of magnitude [RECOIL MOMENTUM EQUALS EXPRESSION] in a random direction projected into the 2D plane [VERIFY] of the simulation, occurring at random times at an average rate given by the photon scattering rate. The latter modelled as elastic collisions between a rubidium atom with the given classical velocity, and a potassium atom of velocity equal to the superfluid velocity [SYMBOL] of the condensate at the location of the tracer atom:
-
-[EXPRESSION FOR SUPERFLUID VELOCITY]
-
-The rate of two body collisions is given by the scattering cross section times the relative velocity or something like that:
+The rate of two body collisions is given by the scattering cross section and relative velocity as:
 
 [EXPRESSION]
 
@@ -264,7 +271,7 @@ and assuming the single atom ergotically sampled a sufficient fraction of the po
 \begin{align}
 \frac12 k_\up{B} T_\up{1D} = \ev{E_\up{K}},
 \end{align}
-which gives  $T_\up{1D} = 16.2\unit{\upmu K}$, well below the Doppler temperature $T_\up{D} = 146\unit{\upmu K}$~\cite{steck_rubidium_2015}. A histogram showing the time the atoms spent at different velocities is show in Figure~\ref{fig:cold_atom}. This one-dimensional temperature corresponds to $\approx30E_\up{r}$ where $E_\up{r}$ is the rubidium recoil energy. Given that the potassium vortex potentials are at about $15E_\up{r}$ deep without a Feshbach resonance at a density of $1\times10^{15}\unit{cm}^{-3}$ and only $\approx 1.2E_\up{r}$ at the more realistic density of $1\times10^{14}\unit{cm}^{-3}$, and that the atom only spends about half its time in the state subject to the Feshbach resonance, this cooling would only be sufficient to keep rubidium atoms trapped in vortex cores if the Feshbach resonance enhances the interspecies scattering length by a factor of $\approx 2$ for a $1\times10^{15}\unit{cm}^{-3}$ condensate or a factor of $\approx 50$ for a $1\times10^{14}\unit{cm}^{-3}$ condensate. While a factor of $2$ is easily achievable, a factor of $50$ is not, indicating that the minimum density compatible with tracer particles at this temperature being trapped is between $1\times10^{14}\unit{cm}^{-3}$ and $1\times10^{15}\unit{cm}^{-3}$.
+which gives  $T_\up{1D} = 16.2\unit{\upmu K}$, well below the Doppler temperature $T_\up{D} = 146\unit{\upmu K}$~\cite{steck_rubidium_2015}. A histogram showing the time the atoms spent at different velocities is show in Figure~\ref{fig:cold_atom}. This one-dimensional temperature corresponds to $\approx30E_\up{r}$ where $E_\up{r}$ is the rubidium recoil energy. Given that the potassium vortex potentials are at about $15E_\up{r}$ deep without a Feshbach resonance at a density of $1\times10^{15}\unit{cm}^{-3}$ and only $\approx 2.0E_\up{r}$ at the more realistic density of $1\times10^{14}\unit{cm}^{-3}$, and that the atom only spends about half its time in the state subject to the Feshbach resonance, this cooling would only be sufficient to keep rubidium atoms trapped in vortex cores if the Feshbach resonance enhances the interspecies scattering length by a factor of $\approx 2$ for a $1\times10^{15}\unit{cm}^{-3}$ condensate or a factor of $\approx 30$ for a $1\times10^{14}\unit{cm}^{-3}$ condensate. While a factor of $2$ is easily achievable, a factor of $30$ is not, indicating that the minimum density compatible with tracer particles at this temperature being trapped is between $1\times10^{14}\unit{cm}^{-3}$ and $1\times10^{15}\unit{cm}^{-3}$.
 
 \begin{figure}
 \begin{center}
