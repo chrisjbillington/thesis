@@ -136,22 +136,25 @@ Depending on the strength of the cooling effect from sympathetic cooling, this c
 
 \subsection{Model}
 
-In this section I model sympathetic cooling due to elastic two-body scattering between the rubidium tracer atoms and the potassium atoms in the condensate. The model is two-dimensional, approximating a pancake-shaped condensate. As with the simulation in my Honours thesis, I model the \textsc{bec} with the Gross--Pitaevskii equation:
-
+In this section I model sympathetic cooling due to elastic two-body scattering between the rubidium tracer atoms and the potassium atoms in the condensate. The model is two-dimensional, approximating a pancake-shaped condensate. As with the simulation in my Honours thesis, I model the \textsc{bec} with the damped Gross--Pitaevskii equation:
 \begin{align}
-\ii\hbar\pdv{t} \Psi_\up{K}(\vec r, t) = \left[-\frac{\hbar^2}{2m_\up{K}}\nabla^2 + V(\vec{\vec r}) + g_\up{K}\abs{\Psi_\up{K}(\vec r, t)}^2\right]\Psi_\up{K}(\vec r, t),
+\ii\hbar\pdv{t} \Psi_\up{K}(\vec r, t) = (1-\ii\gamma)\left[-\frac{\hbar^2}{2m_\up{K}}\nabla^2 + V(\vec{\vec r}) + g_\up{K}\abs{\Psi_\up{K}(\vec r, t)}^2\right]\Psi_\up{K}(\vec r, t),
 \end{align}
-
-where all symbols are as defined in Section~\ref{sec:mean_field_theory}, with the added subscripts $_\up{K}$ indicating quantities specific to $^{41}\up{K}$. The rubidium tracer atoms are modelled classically, evolving under potential due to interspecies repulsion, resulting in the equation of motion:
+with damping constant $\gamma=0.01$ and all other symbols are as defined in Section~\ref{sec:mean_field_theory}, with the added subscripts $_\up{K}$ indicating quantities specific to $^{41}\up{K}$. The $^{41}$K $s$-wave scattering length is $a_\up{K}=121 a_0$~\cite{cote_potassium_1998}, where $a_0$ is the Bohr radius. The damped \textsc{gpe}~\cite{tsubota_vortex_2002, madarassy_vortex_2008} is a phenomenological modification of the standard \textsc{gpe} that includes dissipation which gradually removes higher energy excitations from the condensate wavefunction, a finite temperature effect. The condensate wavefunction is normalised at each timestep. The potential $V(\vec r)$ is a harmonic potential:
+\begin{align}
+V(\vec r) = \frac12m_\up{K}\omega_\up{K}^2 r^2
+\end{align}
+where $\omega_\up{K}=2\pi\times 130\unit{Hz}$.
+The rubidium tracer atoms are modelled classically, evolving under the potential due to interspecies repulsion, as well as the external potential\footnote{For simplicity I assume that both species are subject to the same external potential. Written as a harmonic trap for rubidium such that $V(\vec r) = \frac12m_\up{K}\omega_\up{K}^2 r^2 = \frac12m_\up{Rb}\omega_\up{Rb}^2 r^2$ gives $\omega_\up{Rb}= 2\pi\times 90\unit{Hz}$.} $V(\vec r)$, resulting in the equation of motion:
 \begin{align}\label{eq:classical_motion_tracers}
-\dv[2]{t} \vec r = \frac {g_{\textrm{Rb--K}}} {m_\up{Rb}}\nabla\abs{\Psi_\up{K}(\vec r, t)}^2,
+\dv[2]{t} \vec r = -\frac1{m_\up{Rb}}\nabla\left({g_{\textrm{Rb--K}}} \abs{\Psi_\up{K}(\vec r, t)}^2 + V(\vec r)\right),
 \end{align}
 where $g_{\textrm{Rb--K}}$ is the $^{87}$Rb--$^{41}$K non-linear interaction constant
 \begin{align}
 g_{\textrm{Rb--K}} = \frac{2\pi\hbar^2 a_{\textrm{Rb--K}}}{m_\up{r}},
 \end{align}
 where $m_\up{r}$ is the reduced mass of the $^{87}$Rb--$^{41}$K scattering pair and 
-$a_{\textrm{Rb--K}}$ is the $s$-wave interspecies scattering length, equal to $640 a_0$ at zero magnetic field~\cite{thalhammer_double_2008}, where $a_0$ is the Bohr radius, and taken in the following simulation to be a factor of five larger due to the $34\unit{G}$ Feshbach resonance (see Section~\ref{sec:feshbach} and \figref{fig:feshKRb}). Numerically, since the Gross--Pitaevskii equation is solved on a grid whereas the classical motion of the atoms is modelled using continuous position variables, the condensate density is numerically differentiated and the results interpolated to the positions of the tracer atoms using cubic splines in order to evaluate~\eqref{eq:classical_motion_tracers}.
+$a_{\textrm{Rb--K}}$ is the $s$-wave interspecies scattering length, equal to $640 a_0$ at zero magnetic field~\cite{thalhammer_double_2008}, and assumed in this section to be enhanced by a factor of five by means of the $34\unit{G}$ Feshbach resonance (see Section~\ref{sec:feshbach} and \figref{fig:feshKRb}). Since the Gross--Pitaevskii equation is solved on a grid whereas the classical motion of the atoms is modelled using continuous position variables, the condensate density is numerically differentiated and the results interpolated to the positions of the tracer atoms using cubic splines in order to evaluate~\eqref{eq:classical_motion_tracers} for each tracer atom.
 
 The motion of the tracer atoms is punctuated by velocity jumps due to both the scattering of imaging photons and two-body collisions with the condensate. Photon scattering events are modelled as instantaneous velocity jumps of magnitude $v_\up{r} = hc/\lambda m_\up{Rb}$ where $\lambda=780\unit{nm}$ is the wavelength of the imaging light. A random direction in \textsc{3d} space is chosen and a velocity jump in this direction with the given magnitude is projected into the \textsc{2d} plane of the simulation before being applied to the atom. These jumps occur at random times at an average rate given by the target photon scattering rate. 
 
@@ -159,7 +162,7 @@ Collisions with the condensate are modelled as elastic collisions between a rubi
 \begin{align}
 \vec v_\up{K}(\vec r, t) = \frac \hbar {m_\up{K}} \nabla \phi_\up{K}(\vec r, t),
 \end{align}
-where $\phi_\up{K}(\vec r, t)$ is the complex phase of the potassium condensate wavefunction. The $s$-wave scattering cross length $a$ is defined as~\cite[p 589, eq.~12.101]{bransden_physics_2003}
+where $\phi_\up{K}(\vec r, t)$ is the complex phase of the potassium condensate wavefunction. The $s$-wave scattering length $a$ is defined as~\cite[p 589, eq.~12.101]{bransden_physics_2003}
 \begin{align}
 a = -\lim_{k_\up{rel}\rightarrow 0} \frac{\tan\left(\delta_0(k_\up{rel})\right)}{k_\up{rel}},
 \end{align}
@@ -168,22 +171,47 @@ where $k_\up{rel}=m_\up{r}v_\up{rel}/\hbar$ is the relative wavenumber of the co
 \sigma = \frac{4\pi}{k_\up{rel}^2}\sin^2\left(\delta_0(k_\up{rel})\right)
 \end{align}
 gives a low-velocity approximation to the scattering cross section for elastic collisions between the rubidium and potassium atoms:
-\begin{align}
+\begin{align}\label{eq:sigma_scattering}
 \sigma_{\textrm{Rb--K}} \approx 4\pi\frac{a_{\textrm{Rb--K}}^2}{1 + k_\up{rel}^2a_{\textrm{Rb--K}}^2}.
 \end{align}
-The mean free path of a rubidium tracer particle within the potassium \textsc{bec} is therefore
+For rubidium atoms at $5\unit{\upmu K}$, $k_\up{rel}a_{\textrm{Rb--K}} < 0.1$, such that the zero-velocity scattering cross section $\sigma = 4\pi a^2$ would be accurate enough; nonetheless~\eqref{eq:sigma_scattering} is the expression used in this section.\footnote{For modestly larger Feshbach enhancements of the scattering length, the zero-velocity cross section would not be accurate and the velocity dependence of the scattering cross section would become important.} From the scattering cross section we obtain the mean free path of a rubidium tracer particle within the potassium \textsc{bec}:
 \begin{align}
 \ell(\vec r, t) = \left(\sigma_{\textrm{Rb--K}}\abs{\Psi_\up{K}(\vec r, t)}^2\right)^{-1},
 \end{align}
-yielding the probability of a collision occurring in an infinitesimal time interval $\dd t$
-\begin{align}
-P_\up{collision}(\vec r, t+\dd t, t) = v_\up{rel}\sigma_{\textrm{Rb--K}}\abs{\Psi_\up{K}(\vec r, t)}^2\dd t.
+yielding the probability of a collision occurring in an infinitesimal time interval $\dd t$:
+\begin{align}\label{eq:P_collision}
+P_\up{collision}(\vec r, t+\dd t, t) = v_\up{rel}(\vec r, t)\sigma_{\textrm{Rb--K}}\abs{\Psi_\up{K}(\vec r, t)}^2\dd t,
 \end{align}
-At each timestep, a random number between zero and one is generated for each atom, and if less than the above, a collision is taken to have occurred. In the case of a collision, the \textsc{2d} elastic scattering problem is solved and the rubidium atom's velocity instantaneously replaced with its post-collision value. The potassium condensate wavefunction is not modified---the sympathetic heating resulting from these collisions is ignored.
+where $v_\up{rel} = \abs{\vec v_\up{K}(\vec r, t) - \vec v}$ for a specific rubidium atom at position $\vec r$ and with velocity $\vec v$.
+
+At each timestep, a random number between zero and one is generated for each atom, and if less than~\eqref{eq:P_collision}, a collision is taken to have occurred.\footnote{During thesis writing, an error was discovered in the code that produced the results in this section, in which the computed collision probability~\eqref{eq:P_collision} was too small by a factor of $\sqrt{2}$. As such, the results shown in the next subsection underestimate the sympathetic cooling effect slightly. I do not expect this error to change any of my conclusions.} In the case of a collision, the \textsc{2d} elastic scattering problem is solved and the rubidium atom's velocity instantaneously replaced with its post-collision value. The potassium condensate wavefunction is not modified---the sympathetic heating resulting from these collisions is ignored, which is a limitation of these results.
 
 \subsection{Results}
 
-DEFINE EVERYTHING TURBULATE INITIAL CONDITIONS, REFER TO NUMERICS SECTIONS
+I simulated the equations described in the previous section in two dimensions, with the \textsc{gpe} solved on a $256\times256$ grid (representing a spatial region of $40\unit{\upmu m}\times40\unit{\upmu m}$) using fourth-order Runge--Kutta (Section~\ref{sec:rk4}) with $\upDelta t = 500\unit{ns}$ using fast Fourier transforms to evaluate the kinetic energy term (Section~\ref{sec:fourier_pseudospectral}), and the tracer atoms' equations of motion propagated also using fourth-order Runge--Kutta with the same timestep. $1\times10^3$ tracer atoms were simulated. The first derivatives of the condensate wavefunction required to compute its phase gradient were evaluated using second-order finite differences, which I observed to be less susceptible to Gibbs' phenomenon in the vicinity of vortex cores, which---when using Fourier transforms---would produce a velocity field with unphysical radial motion close to a vortex core.\footnote{Interestingly, second derivatives---as required for the kinetic energy term of the \textsc{gpe}---do not appear to suffer from this problem at similar grid resolutions.}
+
+I computed the initial conditions for the condensate wavefunction using the imaginary time evolution method (Section~\ref{sec:ITEM}) subject to a fixed \textsc{2d} normalisation constant leading to a peak density of $4\times 10^{14}\unit{cm}^{-3}$. Once the groundstate condensate wavefunction was found, a turbulent state was constructed by imposing a phase pattern on the condensate on a $16\times16$ grid, with the phase in each region chosen randomly from the interval $(-\pi, \pi)$. The imaginary time evolution algorithm was then applied once more for $300\unit{\upmu s}$ to produce a physically realistic condensate wavefunction containing a number of vortices randomly distributed.
+
+The initial conditions of the tracer atoms comprised random initial positions uniformly distributed over the entire spatial region, and velocities drawn from a Maxwell--Boltzmann distribution at $5\unit{\upmu K}$.
+
+I these evolved these initial in time for $16\unit{ms}$ with sympathetic cooling being modelled, but with zero photon scattering (Figure~\ref{fig:velocimetry_dark}). This allowed many of the tracer atoms to either move into vortex cores or leave the condensate (those that left mostly moved in a ring at the Thomas--Fermi radius where the external potential and interspecies potential resulted in a potential minimum).
+
+After this period of sympathetic cooling without imaging was simulated, I then evolved the system further in time with the addition of imaging light. This part of the simulation was run twice.
+
+In the first imaging simulation, shown in Figure~\ref{fig:velocimetry_idealised}, the photon scattering rate was $1\times10^5$ photons per second and imaging proceeded for $6.6\unit{ms}$. The location of every photon emission event, binned to a $256\times256$ grid, was recorded to produce an image of the tracer particles' locations over the simulation. In this image, the paths of vortices are clearly visible in the motion of the tracer atoms, showing vortex motion and interaction.
+
+However, this is an idealised situation. Assuming a numerical aperture of $0.5$ and unity quantum efficiency, only approximately $4.2\,\%$ of photons emitted would be detected by an imaging system; there would also be diffraction. To take these effects into account in a second run of the imaging part of the simulation, for each photon emission a random number was chosen to determine whether it was to be included in a simulated image with probability $0.042$. No attempt was made to choose photons based on their emission direction---which photons were included in the image was entirely random. The position of the photon on the image produced was then summed with a random number drawn from a Gaussian distribution with zero mean and standard deviation of $0.33\unit{\upmu m}$, which is a Gaussian approximation to the point spread function of a $\up{NA}=0.5$ imaging system. This produced an image that took into account finite collection efficiency and diffraction. I found that in order to be able to see vortex positions, a higher photon scattering rate was required. In Figure\ref{fig:velocimetry_realistic} I show the results of this second run of the imaging part of the simulation, using a higher photon scattering rate of $5\times10^5$ photons per second. Due to the heating of the tracer atoms, a reduced imaging duration of only $2\unit{\upmu s}$ was used as after that the tracer atoms had mostly escaped the vortex cores. Vortices are still visible in these results, but their motion is not discernible. This suggests that as-is, sympathetic cooling may be enough to image vortex positions with brief imaging pulses, but may not be sufficient to track them over time unless a larger scattering length enhancement via a Feshbach resonance is used, or unless additional cooling can be provided.
+
+[FIGURE OF 3 frames FREE EVOLUTION] \label{fig:velocimetry_dark}
+
+[FIGURE OF 3 frames IDEALISED] \label{fig:velocimetry_idealised}
+
+[FIGURE OF MORE REALISTIC] \label{fig:velocimetry_realistic}
+
+[COPY CAPTIONS FROM DPG POSTER? RE-PLOT? DO I HAVE THE DATA? NO I DON'T.]
+
+[TODO CORRECT EARLIER STATEMENTS ABOUT DENSITY]
+
 
 \section{Sisyphus cooling in a $34\unit{G}$ magnetic field}\label{sec:laser_cooling_simulations}
 
@@ -332,7 +360,7 @@ However, this scheme cannot be simulated in the same manner as the laser cooling
 
 \section{Discussion and conclusion}
 
-Sisyphus cooling: maybe. Looks ok but I have disregarded heating of the condensate.
+Sisyphus cooling: maybe. Looks ok but I have disregarded heating of the condensate. Short imaging at high intensity could be used to view vortices but maybe not continuously unless more cooling is added.
 
 laser cooling: also maybe - can be optimised, but in 3D might be different, is impractical given the number of lasers and the funky alignment, which can only be maintained over a distance of [something].
 

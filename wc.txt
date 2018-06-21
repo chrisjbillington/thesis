@@ -1,11 +1,11 @@
 Total
-Words in text: 66037
+Words in text: 66864
 Words in headers: 518
-Words outside text (captions, etc.): 10674
+Words outside text (captions, etc.): 10809
 Number of headers: 138
 Number of floats/tables/figures: 51
-Number of math inlines: 2031
-Number of math displayed: 332
+Number of math inlines: 2067
+Number of math displayed: 333
 Files: 8
 Subcounts:
   text+headers+captions (#headers/#floats/#inlines/#displayed)
@@ -15,6 +15,6 @@ Subcounts:
   2721+14+98 (4/0/16/0) File(s) total: introduction.tex
   23088+155+3403 (31/15/824/137) File(s) total: numerics.tex
   9519+81+1478 (26/5/7/0) File(s) total: software.tex
-  5701+40+856 (13/10/140/15) File(s) total: velocimetry.tex
+  6528+40+991 (13/10/176/16) File(s) total: velocimetry.tex
   784+35+385 (9/4/7/0) File(s) total: wave_mixing.tex
 
