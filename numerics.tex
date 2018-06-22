@@ -1067,7 +1067,7 @@ In \textsc{fedvr} the derivative operator, regardless of whether its matrix elem
 \Rightarrow\psi^{\prime \prime}_\up{approx}(x_i) =  \psi^{\prime\prime}_\up{exact}(x_i) + \Ord{\upDelta x^{N-2}}.
 \end{align} 
 
-Central finite difference approximations to second derivatives on the other hand have error $\Ord{\upDelta x^{N - 1}}$ where N is the total number of points used to compute the derivative at each point (for example the three-point central finite difference rule for second derivatives has error $\Ord{\upDelta x^2}$, the five-point rule is accurate to $\Ord{\upDelta x^4}$, etc). With this knowledge we can translate our question
+Central finite difference approximations to second derivatives on the other hand have error $\Ord{\upDelta x^{N - 1}}$ where N is the total number of points used to compute the derivative at each point (for example the three-point central finite difference rule for second derivatives has error $\Ord{\upDelta x^2}$, the five-point rule is accurate to $\Ord{\upDelta x^4}$, etc.). With this knowledge we can translate our question
 
 \begin{quote}
 Which is less computationally intensive to simulate the \textsc{gpe} or Schr\"odinger wave equation: $m^\up{th}$-order accurate \textsc{fedvr} or $m^\up{th}$-order accurate finite differences?
@@ -1076,7 +1076,7 @@ to
 \begin{quote}
 which is less computationally intensive to simulate the \textsc{gpe} or Schr\"odinger wave equation: $m+2$ points-per-element \textsc{fedvr} or $m+1$ point central finite differences?
 \end{quote}
-The argument in favour of \textsc{fedvr} is that as $m$ grows, finite differences require an increasing number of points to be exchanged at the boundaries between cluster nodes/threads etc in a parallel implementation, whereas so long as each boundary between spatial regions allocated to different cluster nodes aligns with the boundary between two elements, only one point need be exchanged per timestep in \textsc{fedvr}, no matter how many points per element there are. Therefore, in the limit of high accuracy, \textsc{fedvr} wins, it seems.
+The argument in favour of \textsc{fedvr} is that as $m$ grows, finite differences require an increasing number of points to be exchanged at the boundaries between cluster nodes/threads etc.~in a parallel implementation, whereas so long as each boundary between spatial regions allocated to different cluster nodes aligns with the boundary between two elements, only one point need be exchanged per timestep in \textsc{fedvr}, no matter how many points per element there are. Therefore, in the limit of high accuracy, \textsc{fedvr} wins, it seems.
 
 The problem with this argument is that it compares only the amount of work that needs to be done \emph{per timestep}. But, since the allowed timestep size required for stability (at least for fourth order Runge--Kutta, I'll argue shortly why I think this generalises to other timestepping schemes as well) depends on the spectral radius of the kinetic energy operator, and the kinetic energy operator is not the same as $m$ grows, more work is needed to show which method is least computationally expensive per unit \emph{simulation time}.
 
