@@ -901,7 +901,7 @@ U^\dagger_{\textsc{dft2}} k_x U_{\textsc{dft2}}\psi(\tilde{\vec r}) =
 \end{align} 
 where $k_x$ is the diagonal matrix of the discrete angular wavenumbers for the $x$ spatial dimension and $\delta^{(n)}_{\upDelta x}$ is the matrix representing $n^\up{th}$ order finite difference approximation to the first derivative using grid spacing $\upDelta x$. The matrix elements of this and some other central finite differences are shown in \tableref{table:fd_matrixels}.
 
-\begin{table}\label{table:fd_matrixels}
+\begin{table}
 \centering
 \begin{tabular}[c]{|r||rrrrrrr|}
 \hline
@@ -921,7 +921,7 @@ $\upDelta x^2\left(\delta^{2 (6)}_{\upDelta x}\right)_{i, i+k}$
 & $\frac{1}{90}$ & $-\frac{3}{20}$ & $\frac{3}{2}$ & $-\frac{49}{18}$ & $\frac{3}{2}$ & $-\frac{3}{20}$ & $\frac{1}{90}$\\
 \hline
 \end{tabular}
-\caption{Matrix elements \cite{fornberg_generation_1988} for some finite-differencing schemes for first ($\delta^{(n)}_{\upDelta x}$) and second ($\delta^{2 (n)}_{\upDelta x}$) derivatives using central finite differences of various orders $n$ for uniform grid spacing $\upDelta x$. All finite difference matrices are banded; each column here shows the matrix elements of $k^\up{th}$ diagonal, which are all identical. Elements outside of each matrix's band are left blank. Each matrix element is shown multiplied by factors of $\upDelta x$ for clarity.}
+\caption{Matrix elements \cite{fornberg_generation_1988} for some finite-differencing schemes for first ($\delta^{(n)}_{\upDelta x}$) and second ($\delta^{2 (n)}_{\upDelta x}$) derivatives using central finite differences of various orders $n$ for uniform grid spacing $\upDelta x$. All finite difference matrices are banded; each column here shows the matrix elements of $k^\up{th}$ diagonal, which are all identical. Elements outside of each matrix's band are left blank. Each matrix element is shown multiplied by factors of $\upDelta x$ for clarity.}\label{table:fd_matrixels}
 \end{table}
 
 The fact that the finite difference matrices are banded allows them to be computing by applying a ``stencil" to a discrete state vector, computing an approximation to some linear sum of derivative operators at each point of discrete space by consideration of only that point and a small number of surrounding point. For example, a $\Ord{\upDelta x^2}$ approximation (assuming $\upDelta x = \upDelta y$) to the kinetic energy operator in two dimensions may be evaluated at each point as:
