@@ -202,15 +202,62 @@ In the first imaging simulation, shown in Figure~\ref{fig:velocimetry_idealised}
 
 However, this is an idealised situation. Assuming a numerical aperture of $0.5$ and unity quantum efficiency, only approximately $4.2\,\%$ of photons emitted would be detected by an imaging system; there would also be diffraction. To take these effects into account in a second run of the imaging part of the simulation, for each photon emission a random number was chosen to determine whether it was to be included in a simulated image with probability $0.042$. No attempt was made to choose photons based on their emission direction---which photons were included in the image was entirely random. The position of the photon on the image produced was then summed with a random number drawn from a Gaussian distribution with zero mean and standard deviation of $0.33\unit{\upmu m}$, which is a Gaussian approximation to the point spread function of a $\up{NA}=0.5$ imaging system. This produced an image that took into account finite collection efficiency and diffraction. I found that in order to be able to see vortex positions, a higher photon scattering rate was required. In Figure~\ref{fig:velocimetry_realistic} I show the results of this second run of the imaging part of the simulation, using a higher photon scattering rate of $5\times10^5$ photons per second. Due to the heating of the tracer atoms, a reduced imaging duration of only $2\unit{\upmu s}$ was used as after that the tracer atoms had mostly escaped the vortex cores. Vortices are still visible in these results, but their motion is not discernible. This suggests that as-is, sympathetic cooling may be enough to image vortex positions with brief imaging pulses, but may not be sufficient to track them over time unless a larger scattering length enhancement via a Feshbach resonance is used, or unless additional cooling can be provided.
 
-[FIGURE OF 3 frames FREE EVOLUTION] \label{fig:velocimetry_dark}
 
-[FIGURE OF 3 frames IDEALISED] \label{fig:velocimetry_idealised}
+\afterpage{
+    \newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+    \begin{sidewaysfigure}[th]
+    \centerfloat
+    \includegraphics[width=1.05\textwidth]{figures/velocimetry/evolution_high_density.pdf}
+    \caption{caption}
+    \label{fig:evolution_high_density}
+    \end{sidewaysfigure}
+    \restoregeometry
+}
 
-[FIGURE OF MORE REALISTIC] \label{fig:velocimetry_realistic}
+\clearpage
 
-[COPY CAPTIONS FROM DPG POSTER? RE-PLOT? DO I HAVE THE DATA? NO I DON'T.]
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{figures/velocimetry/imaging_high_densitynormal_start.pdf}
+\caption{Caption}\label{fig:imaging_high_densitynormal_start}
+\end{center}
+\end{figure}
 
-[TODO CORRECT EARLIER STATEMENTS ABOUT DENSITY]
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{figures/velocimetry/imaging_high_densitylate_start.pdf}
+\caption{Caption}\label{fig:imaging_high_densitylate_start}
+\end{center}
+\end{figure}
+
+
+
+\afterpage{
+    \newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+    \begin{sidewaysfigure}[th]
+    \centerfloat
+    \includegraphics[width=1.05\textwidth]{figures/velocimetry/evolution_low_density.pdf}
+    \caption{caption}
+    \label{fig:evolution_low_density}
+    \end{sidewaysfigure}
+    \restoregeometry
+}
+
+\clearpage
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{figures/velocimetry/imaging_low_densitynormal_start.pdf}
+\caption{Caption}\label{fig:imaging_low_densitynormal_start}
+\end{center}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{figures/velocimetry/imaging_low_densitylate_start.pdf}
+\caption{Caption}\label{fig:imaging_low_densitylate_start}
+\end{center}
+\end{figure}
 
 
 \section{Sisyphus cooling in a $34\unit{G}$ magnetic field}\label{sec:laser_cooling_simulations}
@@ -361,7 +408,9 @@ However, this scheme cannot be simulated in the same manner as the laser cooling
 \section{Discussion and conclusion}
 
 Sisyphus cooling: maybe. Looks ok but I have disregarded heating of the condensate. Short imaging at high intensity could be used to view vortices but maybe not continuously unless more cooling is added. Imaging assumes we remain in the 1,1 state, so would require repumping. Strong feshbach resonances induce inelastic collisions, so that is a limitation
-% (https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.82.2422)
+% (https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.82.2422).
+
+In 3D the cloud of atoms surrounding would obscure things a bit more since they would be in front of the BEC as well.
 
 laser cooling: also maybe - can be optimised, but in 3D might be different, is impractical given the number of lasers and the funky alignment, which can only be maintained over a distance of [something].
 
