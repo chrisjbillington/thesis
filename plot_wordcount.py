@@ -25,6 +25,9 @@ while True:
     except Exception:
         if 'unknown revision' in result.stderr.decode('utf8'):
             break
+        elif 'hidden revision' in result.stderr.decode('utf8'):
+            i += 1
+            continue
         elif 'no such file' in result.stderr.decode('utf8'):
             words = float('nan')
     result = run(['hg', 'log', '-r', str(i), '--template', "'{date}'"],
