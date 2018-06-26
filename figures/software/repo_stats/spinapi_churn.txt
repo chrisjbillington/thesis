@@ -1,5 +1,0 @@
-Christopher Billington   1497 **********************************************
-Philip Starkey            286 *********
-Jan Werkmann               13 
-Matt Earnshaw               7 
-Tom Baldwin                 7 
