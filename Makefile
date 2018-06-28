@@ -1,7 +1,7 @@
 .PHONY: all write latex wc hglog clean
 
 BASENAME = thesis
-CONTENT_FILES = atomic_physics.tex front_matter.tex hidden_variables.tex introduction.tex numerics.tex software.tex velocimetry.tex wave_mixing.tex
+CONTENT_FILES = front_matter.tex introduction.tex atomic_physics.tex numerics.tex software.tex velocimetry.tex hidden_variables.tex   
 
 BASE_LATEX_COMMAND = lualatex -interaction=nonstopmode -halt-on-error -recorder -shell-escape
 
