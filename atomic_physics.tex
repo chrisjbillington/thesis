@@ -4,13 +4,13 @@
 
 The main experimental techniques used to create \textsc{bec} are Doppler cooling, magneto-optical, magnetic, and dipole trapping, polarisation gradient (Sisyphus) cooling, and evaporative cooling. These were discovered, perhaps by no coincidence, in roughly the same order as they are called for in a \textsc{bec} experiment, and many were first discovered along the way to the first realisations of Bose--Einstein condensation.
 
-Section \ref{sec:cooling_and_trapping} is a whirlwind summary of these and a few other experimental techniques. Then in section \ref{sec:mean_field_theory}, I'll present some of the theory describing superfluid flow and vortices and in \textsc{bec}, which is central to the simulations of vortex tracking presented in chapter \ref{chap:velocimetry}. The final section of this chapter, section \ref{sec:the_rubidium_D_line}, will construct the detailed theory for describing the internal state of a $^{87}$Rb atom in magnetic and optical fields, considering only the first $L=0$ to $L=1$ excitation is accessible to rubidium's  sole outer-shell electron. The resulting Hamiltonian describes 32 sublevels, and forms the basis of any detailed calculations of laser cooling and trapping.
+Section~\ref{sec:cooling_and_trapping} is a whirlwind summary of these and a few other experimental techniques. Then in section~\ref{sec:mean_field_theory}, I'll present some of the theory describing superfluid flow and vortices and in \textsc{bec}, which is central to the simulations of vortex tracking presented in chapter~\ref{chap:velocimetry}. The final section of this chapter, Section~\ref{sec:the_rubidium_D_line}, will construct the detailed theory for describing the internal state of a $^{87}$Rb atom in magnetic and optical fields, considering only the first $L=0$ to $L=1$ excitation is accessible to rubidium's  sole outer-shell electron. The resulting Hamiltonian describes 32 sublevels, and forms the basis of any detailed calculations of laser cooling and trapping.
 
 \section{Cooling, trapping, and manipulating atoms}\label{sec:cooling_and_trapping}
 
 \subsection{Doppler cooling}\label{sec:doppler_cooling}
 
-Doppler cooling, demonstrated in 1978 \cite{wineland_radiation-pressure_1978} is a consequence of the simple observation that atoms see the wavelength of incident light Doppler shifted depending on their velocity. For example, the electric field of a linearly polarised optical plane wave is:
+Doppler cooling, demonstrated in 1978~\cite{wineland_radiation-pressure_1978} is a consequence of the simple observation that atoms see the wavelength of incident light Doppler shifted depending on their velocity. For example, the electric field of a linearly polarised optical plane wave is:
 \begin{align}
 \vec E \propto \cos(\vec k \cdot \vec r - \omega t),
 \end{align}
@@ -21,7 +21,7 @@ which for an atom moving with constant velocity $\vec v$ can be written:
 \end{align}
 where $\omega_\up{eff} = \omega - \vec k \cdot \vec v$ is the effective angular frequency of the laser as seen by the atom.
 
-This can be used to selectively transfer momentum to only fast-moving atoms, by tuning an incident laser slightly redder than would be required for a resonant absorption. If six lasers in counter-propagating pairs orthogonal to each other surround a cloud of atoms, the atoms can be cooled close to the \emph{Doppler limit} \cite[p 58]{metcalf_laser_1999}
+This can be used to selectively transfer momentum to only fast-moving atoms, by tuning an incident laser slightly redder than would be required for a resonant absorption. If six lasers in counter-propagating pairs orthogonal to each other surround a cloud of atoms, the atoms can be cooled close to the \emph{Doppler limit}~\cite[p 58]{metcalf_laser_1999}
 
 \begin{equation}
 k_\up{B} T_\up{D} = \frac{\hbar\Gamma}2
@@ -31,7 +31,7 @@ where $\Gamma$ is the line width of the atomic transition. For the cooling trans
 
 \subsection{Magneto-optical and magnetic trapping}
 
-Magneto-optical trapping, first demonstrated in 1987 \cite{raab_trapping_1987} comes from the realisation that a magnetic field can be used to \emph{spatially} vary the detuning from resonance that the atoms in the above mentioned arrangement of lasers see. This is possible due to the Zeeman effect \cite{zeeman_influence_1897}, in which the wavelengths of atomic transitions are shifted in a magnetic field.
+Magneto-optical trapping, first demonstrated in 1987~\cite{raab_trapping_1987} comes from the realisation that a magnetic field can be used to \emph{spatially} vary the detuning from resonance that the atoms in the above mentioned arrangement of lasers see. This is possible due to the Zeeman effect~\cite{zeeman_influence_1897}, in which the wavelengths of atomic transitions are shifted in a magnetic field.
 
 If a field profile can be found which causes the transition to come closer to resonance as the atoms move away from a central point, then it forms a trap---atoms  that stray too far from the centre will absorb more strongly and be deflected back\footnote{The polarisations of the beams are such that absorption from the inward facing beam occurs, rather than from the one that would accelerate the atom further outward!}.
 
@@ -42,13 +42,13 @@ With the Doppler beams off, this magnetic field still provides a trapping potent
 \begin{equation}
 V(\vec{r}) = -\vec \mu \cdot \vec B,
 \end{equation}
-where $\vec\mu$ is the atomic magnetic moment, and $\vec B$ the magnetic field. This only traps some atomic spin states, and has losses due to spin-flips \cite{brink_majorana_2006} near the field zero.
+where $\vec\mu$ is the atomic magnetic moment, and $\vec B$ the magnetic field. This only traps some atomic spin states, and has losses due to spin-flips~\cite{brink_majorana_2006} near the field zero.
 
 The optimal magnetic field gradient for forming a magneto-optical trap (\textsc{mot}) is lower than that required to merely hold atoms against gravity, and thus there is little if any magnetic trapping occurring in a \textsc{mot}---the trapping almost entirely results from the position-dependent rate of photon absorption caused by the Zeeman shift due to the magnetic field. To transfer atoms from a \textsc{mot} to a solely magnetic trap, the magnetic field gradient must be increased substantially.
 
 \subsection{Optical trapping}
 
-Optical trapping on the other hand relies on the \emph{dipole force}, in which off-resonant light shifts the energy of the eigenstates of the combined atom-light system, the so called \emph{dressed states}. This energy shift, called the \emph{light shift}, depends on the intensity of the light, and so results in a potential that spatially varies as the intensity of the light. In the limit of large detuning (compared to Rabi frequency), the resulting energy shift for an atom in a ground state (the shift for an excited state is the same but with the opposite sign) is \cite[p 8]{metcalf_laser_1999}:
+Optical trapping on the other hand relies on the \emph{dipole force}, in which off-resonant light shifts the energy of the eigenstates of the combined atom-light system, the so called \emph{dressed states}. This energy shift, called the \emph{light shift}, depends on the intensity of the light, and so results in a potential that spatially varies as the intensity of the light. In the limit of large detuning (compared to Rabi frequency), the resulting energy shift for an atom in a ground state (the shift for an excited state is the same but with the opposite sign) is~\cite[p 8]{metcalf_laser_1999}:
 
 \begin{equation}
 \Delta E = \frac{\hbar\Omega^2}{4\delta}
@@ -59,13 +59,13 @@ where $\delta$ is the detuning from resonance and the Rabi frequency is:
 \Omega=\frac{E_0}\hbar\matrixel{n^\prime}{e\hat{\vec r}}{n},
 \end{equation}
 
-where $E_0$ is the amplitude of the light's electric field and  $\matrixel{n^\prime}{e\hat{\vec r}}{n}$ is the transition dipole moment between the two states in a two-level system. This transition dipole moment can be either for two specific sublevels coupled by a laser, the calculation of which is detailed in section \ref{sec:optical_dipole_transitions}, or an overall effective transition dipole moment between two manifolds containing many sublevels, if the detuning much larger compared to the spacing between the sublevels.
+where $E_0$ is the amplitude of the light's electric field and  $\matrixel{n^\prime}{e\hat{\vec r}}{n}$ is the transition dipole moment between the two states in a two-level system. This transition dipole moment can be either for two specific sublevels coupled by a laser, the calculation of which is detailed in section~\ref{sec:optical_dipole_transitions}, or an overall effective transition dipole moment between two manifolds containing many sublevels, if the detuning much larger compared to the spacing between the sublevels.
 
-With the potential proportional to $E_0^2$, and thus the light's intensity, the force the atom experiences is proportional to the light's intensity gradient. For this reason, the dipole force is also called the \emph{gradient force}. The name \emph{dipole force} comes from the fact that the force can be equivalently understood to arise from the polarisability of atoms in a light field, giving rise to a force identical to that which traps polarisable materials in optical tweezers \cite{ashkin_acceleration_1970}.
+With the potential proportional to $E_0^2$, and thus the light's intensity, the force the atom experiences is proportional to the light's intensity gradient. For this reason, the dipole force is also called the \emph{gradient force}. The name \emph{dipole force} comes from the fact that the force can be equivalently understood to arise from the polarisability of atoms in a light field, giving rise to a force identical to that which traps polarisable materials in optical tweezers~\cite{ashkin_acceleration_1970}.
 
 \subsection{Polarisation gradient cooling}
 
-Polarisation gradient cooling, also called Sisyphus cooling, was proposed in 1989 \cite{dalibard_laser_1989, ungar_optical_1989} to explain experimentally measured cold atom cloud temperatures \cite{lett_optical_1989} which, at \textsc{nist} in 1988, were found to be well below the expected limit obtainable by the well understood method of Doppler cooling\footnote{As well as to explain other discrepancies between experiments and the theory of Doppler cooling, such as the optimal detuning of light being much greater than predicted.}, one of the few examples of experiments turning out better than expected. A one dimensional theory has been developed~\cite{dalibard_laser_1989} which has found remarkable agreement with three dimensional experiments \cite{salomon_laser_1990}
+Polarisation gradient cooling, also called Sisyphus cooling, was proposed in 1989~\cite{dalibard_laser_1989, ungar_optical_1989} to explain experimentally measured cold atom cloud temperatures~\cite{lett_optical_1989} which, at \textsc{nist} in 1988, were found to be well below the expected limit obtainable by the well understood method of Doppler cooling\footnote{As well as to explain other discrepancies between experiments and the theory of Doppler cooling, such as the optimal detuning of light being much greater than predicted.}, one of the few examples of experiments turning out better than expected. A one dimensional theory has been developed~\cite{dalibard_laser_1989} which has found remarkable agreement with three dimensional experiments~\cite{salomon_laser_1990}
 
 One common configuration for Sisyphus cooling comprises two counter-propagating laser beams in each spatial dimension, both linearly polarised but with their polarisation angles perpendicular to one another. The optical field resulting from the two beams' superposition has regions of linear polarisation and of both helicities of circular polarisation, and varies between them on a length scale shorter than an optical wavelength.
 
@@ -75,13 +75,13 @@ This type of cooling does not work in a magnetic field; the splitting of transit
 
 \subsection{Evaporative cooling}\label{sec:evaporative_cooling}
 
-The final stage of cooling is forced \textsc{rf} evaporative cooling \cite{hess_evaporative_1986, anderson_observation_1995}, which decreases the temperature of the cloud by systematically removing the hottest atoms. This is performed in a magnetic trap, which as mentioned earlier, only traps certain spin states. Evaporation proceeds by using an \emph{\rf\ knife} to induce spin flips in the atoms. The \textsc{rf} frequency is chosen such that is is only resonant with atoms some distance away from the centre of the trap (via the Zeeman shift). The furthest out atoms are the most energetic, possessing the energy to climb the magnetic potential the furthest. By flipping their spins, these atoms are ejected due to the magnetic field becoming anti-trapping for them.
+The final stage of cooling is forced \textsc{rf} evaporative cooling~\cite{hess_evaporative_1986, anderson_observation_1995}, which decreases the temperature of the cloud by systematically removing the hottest atoms. This is performed in a magnetic trap, which as mentioned earlier, only traps certain spin states. Evaporation proceeds by using an \emph{\rf\ knife} to induce spin flips in the atoms. The \textsc{rf} frequency is chosen such that is is only resonant with atoms some distance away from the centre of the trap (via the Zeeman shift). The furthest out atoms are the most energetic, possessing the energy to climb the magnetic potential the furthest. By flipping their spins, these atoms are ejected due to the magnetic field becoming anti-trapping for them.
 
 The cloud is given some time to rethermalise and the knife\footnote{So called because it cuts the tail off the velocity distribution of the atom cloud.} is moved inward where it removes slightly colder atoms. This is repeated until the desired compromise of lower temperature/lower atom number is reached. Usually some method is employed to prevent atoms near the centre of the trap from undergoing spin flips~\cite{brink_majorana_2006} as they move across the field zero. The method used in our lab is to use an optical dipole trap in combination with the magnetic trap~\cite{lin_rapid_2009}, such that the coldest atoms get trapped in the dipole trap which is offset from the magnetic field zero.
 
 \subsection{Feshbach resonances}\label{sec:feshbach}
 
-A Feshbach resonance \cite{chin_feshbach_2010} is an enhancement of the interparticle interaction strength when when a certain magnetic field strength is applied.\footnote{Feshbach resonances can also be induced optically and with \rf\, but magnetic resonances are the most commonly used.} This phenomenon was first discovered in ultracold atoms in 1998 \cite{inouye_observation_1998}, and is now a staple of cold atom experiments.
+A Feshbach resonance~\cite{chin_feshbach_2010} is an enhancement of the interparticle interaction strength when when a certain magnetic field strength is applied.\footnote{Feshbach resonances can also be induced optically and with \rf\, but magnetic resonances are the most commonly used.} This phenomenon was first discovered in ultracold atoms in 1998~\cite{inouye_observation_1998}, and is now a staple of cold atom experiments.
 
 \begin{figure}%[htb]
 \begin{center}
@@ -94,7 +94,7 @@ The interparticle interaction mentioned above:
 \begin{equation}
 g = \frac{2\pi \hbar^2 a}{m_r}
 \end{equation}
-where $m_r$ is the reduced mass of a pair of the interacting particles, is dependent on a parameter $a$ called the \emph{s-wave scattering length}, which characterises low energy collisions between atoms. It is sensitive not only to what species of atoms are colliding, but also to their spin states. For each combination of spins, there is a different inter-atomic potential (called a \emph{channel}) which determines the collision dynamics (Figure \ref{fig:feshbach}).
+where $m_r$ is the reduced mass of a pair of the interacting particles, is dependent on a parameter $a$ called the \emph{s-wave scattering length}, which characterises low energy collisions between atoms. It is sensitive not only to what species of atoms are colliding, but also to their spin states. For each combination of spins, there is a different inter-atomic potential (called a \emph{channel}) which determines the collision dynamics (Figure~\ref{fig:feshbach}).
 
 The resulting scattering length is sensitive to any bound states of this inter-atomic potential which are near the collision energy. If the channels of different spin states are coupled via the hyperfine interaction\footnote{Requiring that the atoms in question have a nuclear magnetic moment.}, then the scattering length is also sensitive to bound states in the channels other than the one the atoms are in when they are far from each other. Due to the Zeeman effect, the energies between the different channels can be shifted with a magnetic field, and so a bound state can be shifted close to the collision energy, which causes the scattering length to diverge.
 
@@ -107,7 +107,7 @@ The end result is that at certain magnetic field strengths we find that atoms ar
 \end{center}
 \end{figure}
 
-A particular Feshbach resonance of interest is shown in \figref{fig:feshKRb}, and can be used to enhance the interspecies repulsion between $^{87}$Rb and $^{41}$K. The use of this resonance is assumed for the simulations in chapter \ref{chap:velocimetry} to trap tracer particles more strongly in vortex cores of a \textsc{bec}.
+A particular Feshbach resonance of interest is shown in~\figref{fig:feshKRb}, and can be used to enhance the interspecies repulsion between $^{87}$Rb and $^{41}$K. The use of this resonance is assumed for the simulations in chapter~\ref{chap:velocimetry} to trap tracer particles more strongly in vortex cores of a \textsc{bec}.
 
 \section{Mean-field theory: The Gross--Pitaevskii equation and vortices}\label{sec:mean_field_theory}
 
@@ -119,7 +119,7 @@ Bose-condensates are described well by \emph{mean field} theory, whereby the man
 
 where $g$ characterises the strength of the interparticle interactions\footnote{The nonlinear constant $g$ is usually positive---having the effect of stabilising \bec s by self-repulsion.}, and $\Psi = \sqrt{N}\Psi_\up{single}$ is the single-particle wavefunction scaled by the square root of the number of particles\footnote{Thus giving it the property that $|\Psi|^2$ is the particle density.}.
 
-In the hydrodynamic formulation of quantum mechanics \cite{madelung_quantentheorie_1927}, the flow velocity of a spatial wavefunction can be defined by considering the probability current to be a product of density and velocity. This allows us to define the superfluid velocity of a \bec\ as:
+In the hydrodynamic formulation of quantum mechanics~\cite{madelung_quantentheorie_1927}, the flow velocity of a spatial wavefunction can be defined by considering the probability current to be a product of density and velocity. This allows us to define the superfluid velocity of a \bec\ as:
 \begin{equation}
 \vec v = \frac\hbar m \nabla\phi
 \end{equation}
@@ -129,9 +129,9 @@ where $\phi$ is the complex phase of the condensate wavefunction $\Psi$. Integra
 C &= \frac\hbar m\oint_\gamma\nabla\phi\,ds\\
   &= \frac\hbar m 2\pi n.\qquad n=0,1,2\dots
 \end{align}
-The fact that the circulation is quantised means that vorticity cannot exist in the condensate except in one-dimensional lines, about which the wavefunction's phase winds by a multiple of $2\pi$. These topological defects are the quantised vortices that are central to the vortex tracking simulations in chapter \ref{chap:velocimetry}.
+The fact that the circulation is quantised means that vorticity cannot exist in the condensate except in one-dimensional lines, about which the wavefunction's phase winds by a multiple of $2\pi$. These topological defects are the quantised vortices that are central to the vortex tracking simulations in chapter~\ref{chap:velocimetry}.
 
-At a vortex core, the atom density of a \bec\ must go to zero. This can be intuitively understood to arise from centrifugal forces, but is also required in order for the wavefunction to be continuous and single-valued across the core. This drop in density in the vicinity of a vortex core is exploited by the method simulated in chapter \ref{chap:velocimetry} to trap atoms within the cores.
+At a vortex core, the atom density of a \bec\ must go to zero. This can be intuitively understood to arise from centrifugal forces, but is also required in order for the wavefunction to be continuous and single-valued across the core. This drop in density in the vicinity of a vortex core is exploited by the method simulated in chapter~\ref{chap:velocimetry} to trap atoms within the cores.
 
 \section{The $^{87}$Rb $\up{D}$ line}\label{sec:the_rubidium_D_line}
 
@@ -139,7 +139,7 @@ We atomic physicists do our theory work at an intermediate level of abstraction,
 
 In this section I'll summarise what the $^{87}$Rb $\up{D}$ line looks like from the perspective of a cold atom physicist, building up a Hamiltonian containing all 32 sublevels of the ground and first excited state of $^{87}$Rb including fine structure, hyperfine structure, interaction with a magnetic field, and optical transitions between states. This Hamiltonian is the starting point for any calculations regarding cooling, trapping, and coherent control of $^{87}$Rb, and for other alkali earth metals is much the same.
 
-Much of the details of this section are drawn from references \cite{steck_rubidium_2015, steck_quantum_2017, metcalf_laser_1999, king_angular_2008, farrell_consistency_1995}, but the reader should be aware that there are considerable conventional and notational differences between different literature sources. What is presented here is summarised and framed in a way that I think is useful to an experimentalist looking to use the theory to make concrete calculations about real systems.
+Much of the details of this section are drawn from references~\cite{steck_rubidium_2015, steck_quantum_2017, metcalf_laser_1999, king_angular_2008, farrell_consistency_1995}, but the reader should be aware that there are considerable conventional and notational differences between different literature sources. What is presented here is summarised and framed in a way that I think is useful to an experimentalist looking to use the theory to make concrete calculations about real systems.
 
 \subsection{Fine structure}\label{sec:fine_structure}
 
@@ -165,18 +165,18 @@ H_\up{fs}  =
 \end{align}
 which is a block-diagonal matrix with each block also being a diagonal matrix. We have not yet specified the size of each submatrix---the size of each differs and depends on how many hyperfine and Zeeman sublevels are in that state.
 
-This base Hamiltonian is worth singling out since the energy differences between its three states are orders of magnitude larger than any of the energy differences between hyperfine and Zeeman sublevels within them. When doing any sort of calculations or simulations then, this time-independent Hamiltonian can often be removed from the equations using an interaction picture (see Section \ref{sec:interaction_picture}), as done in Section \ref{sec:laser_cooling_simulations} in simulating laser cooling. 
+This base Hamiltonian is worth singling out since the energy differences between its three states are orders of magnitude larger than any of the energy differences between hyperfine and Zeeman sublevels within them. When doing any sort of calculations or simulations then, this time-independent Hamiltonian can often be removed from the equations using an interaction picture (see Section~\ref{sec:interaction_picture}), as done in Section~\ref{sec:laser_cooling_simulations} in simulating laser cooling. 
 
 \subsection{Hyperfine structure}\label{sec:hyperfine_structure}
 
-Within each of the $S_{1/2}$, $P_{1/2}$ and $P_{3/2}$ states, the single outer-shell electron's total angular momentum $\hat {\vec J}$ has an interaction with $^{87}$Rb's nuclear angular momentum $\hat{\vec I}$. This results in multiple discrete energy levels depending on the relative orientation of the two separate angular momenta. The interaction Hamiltonian for this hyperfine structure is\footnote{Note that this expression differs from those in the cited references by a factor of $1/\hbar^2$---this is because I define the $\hat{\vec I}$ and $\hat{\vec J}$ angular momentum operators in SI units, rather than in units of $\hbar^2$.} \cite{steck_rubidium_2015, arimondo_experimental_1977}:
+Within each of the $S_{1/2}$, $P_{1/2}$ and $P_{3/2}$ states, the single outer-shell electron's total angular momentum $\hat {\vec J}$ has an interaction with $^{87}$Rb's nuclear angular momentum $\hat{\vec I}$. This results in multiple discrete energy levels depending on the relative orientation of the two separate angular momenta. The interaction Hamiltonian for this hyperfine structure is\footnote{Note that this expression differs from those in the cited references by a factor of $1/\hbar^2$---this is because I define the $\hat{\vec I}$ and $\hat{\vec J}$ angular momentum operators in SI units, rather than in units of $\hbar^2$.}~\cite{steck_rubidium_2015, arimondo_experimental_1977}:
 \begin{align}\label{eq:H_hfs}
 \hat H_\up{hfs} = \frac{A_\up{hfs}}{\hbar^2} \hat{\vec I} \cdot \hat {\vec J}
 + \frac{B_\up{hfs}}{\hbar^2}\frac
 {3(\hat{\vec I}\cdot\hat{\vec J})^2 + \frac32 \hat{\vec I}\cdot\hat{\vec J} - I(I + 1)J(J + 1)}
 {2I(2I - 1)J(2J - 1)},
 \end{align}
-where $J$ is the total angular momentum quantum number of the electron, equal to either $\frac12$ or $\frac32$ depending on which state in the $\up{D}$ line we are considering, $I=\frac32$ is the total angular momentum quantum number of the nucleus, and $A_\up{hfs}$ and $B_\up{hfs}$ are empirically determined coupling constants. Here we see the boundary between the quantities we can calculate with the machinery of quantum mechanics and those that we determine empirically---this expression applies so long as $J$ and $I$ are good quantum numbers,\footnote{$J$ is a good quantum number so long as the hyperfine splitting is small compared to the spacing between the three states of the $\up{D}$ line, which it is, and $I$ is a good quantum number so long as the hyperfine splitting is small compared to the energy difference between the ground state and the first \emph{nuclear} excited state, which it most certainly is.} and the two terms are the dipolar and quadrupolar interactions \cite{arimondo_experimental_1977} between two angular momenta, with the coupling constants determined empirically and encapsulating details that are difficult to compute a-priori, such as relativistic effects and the exact shape of the electron orbitals given the presence of inner shell electrons. For the spherically-symmetric $S_{1/2}$ ground state, there is no quadrupolar interaction and so $B_\up{hfs}$ is only non-zero for the two $P$ excited states.\footnote{The quadrupolar term should be explicitly excluded from numerical computations of the hyperfine splitting on the $S_{1/2}$ state, as it contains a division by zero in this case, which may lead to erroneous results even if the term is subsequently multiplied by $B_\up{hfs}=0$.} The values of $A_\up{hfs}$ and $B_\up{hfs}$ for each of the three $L_J$ states of the $\up{D}$ line can be found in \cite{steck_rubidium_2015}.
+where $J$ is the total angular momentum quantum number of the electron, equal to either $\frac12$ or $\frac32$ depending on which state in the $\up{D}$ line we are considering, $I=\frac32$ is the total angular momentum quantum number of the nucleus, and $A_\up{hfs}$ and $B_\up{hfs}$ are empirically determined coupling constants. Here we see the boundary between the quantities we can calculate with the machinery of quantum mechanics and those that we determine empirically---this expression applies so long as $J$ and $I$ are good quantum numbers,\footnote{$J$ is a good quantum number so long as the hyperfine splitting is small compared to the spacing between the three states of the $\up{D}$ line, which it is, and $I$ is a good quantum number so long as the hyperfine splitting is small compared to the energy difference between the ground state and the first \emph{nuclear} excited state, which it most certainly is.} and the two terms are the dipolar and quadrupolar interactions~\cite{arimondo_experimental_1977} between two angular momenta, with the coupling constants determined empirically and encapsulating details that are difficult to compute a-priori, such as relativistic effects and the exact shape of the electron orbitals given the presence of inner shell electrons. For the spherically-symmetric $S_{1/2}$ ground state, there is no quadrupolar interaction and so $B_\up{hfs}$ is only non-zero for the two $P$ excited states.\footnote{The quadrupolar term should be explicitly excluded from numerical computations of the hyperfine splitting on the $S_{1/2}$ state, as it contains a division by zero in this case, which may lead to erroneous results even if the term is subsequently multiplied by $B_\up{hfs}=0$.} The values of $A_\up{hfs}$ and $B_\up{hfs}$ for each of the three $L_J$ states of the $\up{D}$ line can be found in~\cite{steck_rubidium_2015}.
 
 For a given state of the $\up{D}$ line, we can construct the matrix representation $\oversetIJ H_\up{hfs}$ of $\hat H_\up{hfs}$ in the $\mathcal{I}\times\mathcal{J}$ basis---which we define as the basis in which both the $z$ vector components $\hat{I}_z$ and $\hat{J}_z$ of $\hat{\vec I}$ and $\hat{\vec J}$ are diagonal---by constructing matrix representations $\oversetIJ{\vec I}$ and $\oversetIJ{\vec J}$ of the operators $\hat{\vec I}$ and $\hat{\vec J}$ in that basis and then applying the expression (\ref{eq:H_hfs}). The overset ${\mathcal{I} \times \mathcal{J}}$ on each of the matrices indicates that the matrix is a representation of its respective operator in the ${\mathcal{I} \times \mathcal{J}}$ basis, so named because its basis vectors can be obtained via a Cartesian product\footnote{The different types of products available for matrices, vectors, operators, spaces, and their sets of basis vectors are rife with subfield-specific conventions and overloaded notation, leading to much ambiguity. Although `Cartesian product' connotes well what I mean here, it is still ambiguous. What I mean is that the ${\mathcal{I} \times \mathcal{J}}$ basis is the set of basis vectors $\{\left.\vec u \otimes \vec v\ \right|\ \vec u \in \mathcal{I}, \vec v\in\mathcal{J}\}$. The notation $\vec u \otimes \vec v$, which is also ambiguous, denotes the Kronecker product of two column vectors, producing a column vector with number of elements equal to the product of the number of elements in each of the two vectors---not the `outer' or `tensor' product, which would produce a matrix.} of the two sets of basis vectors from the $\mathcal{I}$ and $\mathcal{J}$ bases for the two individual nuclear and electronic angular momentum degrees of freedom, in which $\hat{I}_z$ and $\hat{J}_z$ are respectively diagonal.
 
@@ -192,7 +192,7 @@ where $\oversetI{\mathbb{I}}$ is the matrix representation of the identity opera
 
 Each of the two matrices $\vec I$ and $\vec J$ is actually a vector of matrices, one for the angular momentum projection in each of the directions $x$, $y$ and $z$. The procedure for constructing such matrices for arbitrary total angular momentum quantum numbers is as follows.\footnote{This explicit procedure for constructing the matrix representations of these operators is useful for entering into a programming language to produce programs capable of performing atomic physics calculations for arbitrary total angular momentum quantum number $J$, without having to explicitly enter the angular momentum operators for each value of $J$, which can be tedious and prone to human error.} I'll show the procedure for constructing $J_x$, $J_y$ and $J_z$ only for an arbitrary $J$, the procedure is identical for computing the vector components of $\vec I$.
 
-For a given total angular momentum quantum number $J$, the vector components of $\vec J$ in the $\mathcal{J}$ basis (the basis in which $J_z$ is diagonal) can be constructed using the raising and lowering operators $\hat J_+$ and $\hat J_-$. Since the action of the raising and lowering operators on an eigenstate of $J_z$ with angular momentum projection quantum number $m_J$ is to produce an adjacent ($m_J \pm 1$) eigenstate multiplied by a constant \cite[p 192]{sakurai_modern_1994}, this fact can be used to compute the non-zero matrix elements of $\hat J_+$ and $\hat J_-$ in the $\{\ket{m_J}\}$ basis (the basis kets of which we identify with the standard basis vectors\footnote{I will hereafter use the terms ``$\mathcal{J}$ basis" and ``$\{\ket{m_J}\}$ basis", and similarly for other bases, interchangeably, in the understanding that this identification of standard unit vectors with the basis kets is implied.} for a $2J+1$ dimensional space in order to define the set of concrete basis vectors $\mathcal{J}$):
+For a given total angular momentum quantum number $J$, the vector components of $\vec J$ in the $\mathcal{J}$ basis (the basis in which $J_z$ is diagonal) can be constructed using the raising and lowering operators $\hat J_+$ and $\hat J_-$. Since the action of the raising and lowering operators on an eigenstate of $J_z$ with angular momentum projection quantum number $m_J$ is to produce an adjacent ($m_J \pm 1$) eigenstate multiplied by a constant~\cite[p 192]{sakurai_modern_1994}, this fact can be used to compute the non-zero matrix elements of $\hat J_+$ and $\hat J_-$ in the $\{\ket{m_J}\}$ basis (the basis kets of which we identify with the standard basis vectors\footnote{I will hereafter use the terms ``$\mathcal{J}$ basis" and ``$\{\ket{m_J}\}$ basis", and similarly for other bases, interchangeably, in the understanding that this identification of standard unit vectors with the basis kets is implied.} for a $2J+1$ dimensional space in order to define the set of concrete basis vectors $\mathcal{J}$):
 
 \begin{align}
 \matrixel{m_J + 1}{\hat J_+}{m_J} &= \hbar\sqrt{J(J + 1) - m_J(m_J + 1)}, \qquad -J \leq m_J < J,\\
@@ -253,7 +253,7 @@ The above prescription can be used to produce matrix representations of angular 
 
 \python{code_listings/angular_momentum_operators.py}
 
-Using the above prescription to construct a matrix representation of the $\hat J$ operator with $J=\frac12$ for the $S_{1/2}$ and $P_{1/2}$ states, or $J=\frac32$ for the $P_{3/2}$ state, and to construct a matrix representation of the $\hat I$ operator with $I=\frac32$, we can explicitly construct a matrix representation of the hyperfine interaction Hamiltonian for any state of the $^{87}$Rb $\up{D}$ line. Remaining is to obtain the matrix representations of the two operators in the $\mathcal{I}\times\mathcal{J}$ product space basis using \eqref{eq:kronecker_identity_I} and \eqref{eq:kronecker_identity_J}, and then we can apply \eqref{eq:H_hfs} to our matrices to obtain the matrix representation $\oversetIJ H_\up{hfs}$ of $\hat H_\up{hfs}$ for a given $J$ corresponding to one of the three states on the $\up{D}$ line:
+Using the above prescription to construct a matrix representation of the $\hat J$ operator with $J=\frac12$ for the $S_{1/2}$ and $P_{1/2}$ states, or $J=\frac32$ for the $P_{3/2}$ state, and to construct a matrix representation of the $\hat I$ operator with $I=\frac32$, we can explicitly construct a matrix representation of the hyperfine interaction Hamiltonian for any state of the $^{87}$Rb $\up{D}$ line. Remaining is to obtain the matrix representations of the two operators in the $\mathcal{I}\times\mathcal{J}$ product space basis using~\eqref{eq:kronecker_identity_I} and~\eqref{eq:kronecker_identity_J}, and then we can apply~\eqref{eq:H_hfs} to our matrices to obtain the matrix representation $\oversetIJ H_\up{hfs}$ of $\hat H_\up{hfs}$ for a given $J$ corresponding to one of the three states on the $\up{D}$ line:
 \begin{align}\label{eq:H_hfs_matrix}
 \oversetIJ H_\up{hfs} = \frac{A_\up{hfs}}{\hbar^2}
 \oversetIJ{\vec I} \cdot
@@ -303,34 +303,34 @@ where $\ket{m_I\ m_J} = \ket{m_I} \otimes \ket{m_J}$. The vector representation 
 \braket{m_I=-I\ m_J=-J}{\psi}\\
 \end{smallmatrix}\right].
 \end{align}
-The hyperfine Hamiltonian is not diagonal in the $\{\ket{m_I\ m_J}\}$ basis. The basis in which it is diagonal---the $\{\ket{F\ m_F}\}$ basis---will be discussed in section \ref{sec:the_F_mF_basis}.
+The hyperfine Hamiltonian is not diagonal in the $\{\ket{m_I\ m_J}\}$ basis. The basis in which it is diagonal---the $\{\ket{F\ m_F}\}$ basis---will be discussed in section~\ref{sec:the_F_mF_basis}.
 
 \subsection{Zeeman sublevels}\label{sec:zeeman_sublevels}
 
-The states differing only in their $m_F$ quantum numbers---called Zeeman sublevels---are degenerate in energy with respect to the hyperfine Hamiltonian, but an external magnetic field lifts this degeneracy. The Zeeman effect \cite{zeeman_influence_1897, steck_rubidium_2015} results in an energy shift proportional to the external magnetic field $\vec B$ and to a system's magnetic moment $\vec \mu$:
+The states differing only in their $m_F$ quantum numbers---called Zeeman sublevels---are degenerate in energy with respect to the hyperfine Hamiltonian, but an external magnetic field lifts this degeneracy. The Zeeman effect~\cite{zeeman_influence_1897, steck_rubidium_2015} results in an energy shift proportional to the external magnetic field $\vec B$ and to a system's magnetic moment $\vec \mu$:
 \begin{align}
 V = - \vec\mu\cdot\vec B.
 \end{align}
-Our atom is a composite particle, made of a nucleus with its own intrinsic magnetic moment, an electron with its own intrinsic one as well, and a contribution from the orbital motion of the electron about the nucleus. Each magnetic moment is proportional to the angular momentum of the subsystem in question, with the proportionality constants, called Land\'e g-factors written as dimensionless multiples of $-\mu_B/\hbar$, where $\mu_B$ is the Bohr magneton.\footnote{We are using the sign convention that defines the Land\'e $g$-factor $g_J$ for the electron as positive.} Since $J$ is a good quantum number so long as energy shifts are smaller than the (large) energy spacing between the three $L_J$ states of the $\up{D}$ line, on the level we work we don't consider the electron spin and orbital angular momenta separately, rather we encapsulate them with a single, empirically determined Land\'e g-factor $g_J$ \cite{steck_rubidium_2015} for the magnetic moment of the electron in each of the three $L_J$ states. Similarly we consider the nucleus as a single spin with an experimentally determined $g_I$ \cite{steck_rubidium_2015}, resulting in a Zeeman Hamiltonian:
+Our atom is a composite particle, made of a nucleus with its own intrinsic magnetic moment, an electron with its own intrinsic one as well, and a contribution from the orbital motion of the electron about the nucleus. Each magnetic moment is proportional to the angular momentum of the subsystem in question, with the proportionality constants, called Land\'e g-factors written as dimensionless multiples of $-\mu_B/\hbar$, where $\mu_B$ is the Bohr magneton.\footnote{We are using the sign convention that defines the Land\'e $g$-factor $g_J$ for the electron as positive.} Since $J$ is a good quantum number so long as energy shifts are smaller than the (large) energy spacing between the three $L_J$ states of the $\up{D}$ line, on the level we work we don't consider the electron spin and orbital angular momenta separately, rather we encapsulate them with a single, empirically determined Land\'e g-factor $g_J$~\cite{steck_rubidium_2015} for the magnetic moment of the electron in each of the three $L_J$ states. Similarly we consider the nucleus as a single spin with an experimentally determined $g_I$~\cite{steck_rubidium_2015}, resulting in a Zeeman Hamiltonian:
 \begin{align}
 \hat H_\up{Z} & = -\hat{\vec \mu} \cdot \vec B\\
 &= -\left(\hat{\vec \mu}_I + \hat{\vec \mu}_J\right) \cdot \vec B\\
 &=\left(\frac{g_I\mu_B}{\hbar} \hat{\vec I} + \frac{g_J\mu_B}{\hbar} \hat{\vec J}\right) \cdot \vec B.\label{eq:H_Z}
 \end{align}
-Separate $g_S$ and $g_L$ values are known and can be used in two terms instead of the one containing $\hat{\vec J}$ above if $J$ is not a good quantum number, but in the regime we work that is not usually the case (and if it were, the fine and hyperfine structure Hamiltonians above would also be inadequate since they assume that $J$ is a good quantum number). If $J$ is a good quantum number then it is more accurate to use the above expression with empirically measured $g_J$ values, since they encapsulate QED effects and corrections due to the multi-electron structure of $^{87}$Rb that are not captured by the simple Zeeman Hamiltonian with separate $\hat{\vec S}$ and $\hat{\vec L}$ terms \cite{steck_rubidium_2015}. 
+Separate $g_S$ and $g_L$ values are known and can be used in two terms instead of the one containing $\hat{\vec J}$ above if $J$ is not a good quantum number, but in the regime we work that is not usually the case (and if it were, the fine and hyperfine structure Hamiltonians above would also be inadequate since they assume that $J$ is a good quantum number). If $J$ is a good quantum number then it is more accurate to use the above expression with empirically measured $g_J$ values, since they encapsulate QED effects and corrections due to the multi-electron structure of $^{87}$Rb that are not captured by the simple Zeeman Hamiltonian with separate $\hat{\vec S}$ and $\hat{\vec L}$ terms~\cite{steck_rubidium_2015}. 
 
 If the energy shifts from the Zeeman effect are small compared to the hyperfine spitting, then $F$ (the total spin quantum number, defined in the next section) is a good quantum number and a given hyperfine level can be treated as a single magnetic moment subject to the Zeeman Hamiltonian:
 \begin{align}
 \hat H_\up{Z\,lin} = \frac{g_F\mu_B}{\hbar} \hat{\vec F} \cdot \vec B,
 \end{align}
-where \cite{steck_rubidium_2015}
+where~\cite{steck_rubidium_2015}
 \begin{align}
 g_F = g_J\frac{F(F+1) - I(I+1) + J(J+1)}{2F(F+1)}
     + g_I\frac{F(F+1) + I(I+1) - J(J+1)}{2F(F+1)}.
 \end{align}
-The direction in which each Zeeman sublevel shifts in energy for small magnetic fields is depicted in \figref{fig:D_line}. Experimentally, Zeeman shifts that depart from this linear regime are not infrequently encountered, and so it is an approximation that cannot always be made.
+The direction in which each Zeeman sublevel shifts in energy for small magnetic fields is depicted in~\figref{fig:D_line}. Experimentally, Zeeman shifts that depart from this linear regime are not infrequently encountered, and so it is an approximation that cannot always be made.
 
-An explicit matrix representation $\oversetIJ{H}_\up{Z}$ of $\hat H_\up{Z}$ in the $\{\ket{m_I\ m_J}\}$ basis for each of the three $L_J$ states of the $\up{D}$ line can be constructed by applying \eqref{eq:H_Z} to the matrix representations of $\hat{\vec I}$ and $\hat{\vec J}$ in that basis: 
+An explicit matrix representation $\oversetIJ{H}_\up{Z}$ of $\hat H_\up{Z}$ in the $\{\ket{m_I\ m_J}\}$ basis for each of the three $L_J$ states of the $\up{D}$ line can be constructed by applying~\eqref{eq:H_Z} to the matrix representations of $\hat{\vec I}$ and $\hat{\vec J}$ in that basis: 
 \begin{align}\label{eq:Zeeman_hamiltonian}
 \oversetIJ{H}_\up{Z} &= -\oversetIJ{\vec\mu}\cdot \vec B,
 \end{align}
@@ -390,7 +390,7 @@ The $\{\ket{F\ m_F}\}$ basis is defined as the simultaneous eigenbasis of the $\
 \oversetIJ {F^2} &= \oversetIJ{\vec F}\cdot\oversetIJ{\vec F}
 \end{align}
 
-The $\{\ket{F m_F}\}$ basis allows the eigenstates of the hyperfine interaction to be labelled with $F$ and $m_F$ quantum numbers. For a state of the $^{87}$Rb $\up{D}$ line with electron total angular momentum quantum number $J$, there are $1+J+I - \abs{(I - J)}$ hyperfine levels, with $F$ quantum numbers running from $\abs{I - J}$ to $I + J$. Within each hyperfine level there are $2F + 1$ degenerate states with different $m_F$ quantum numbers ranging from $-F$ to $F$. This results in a total of 32 possible states for the rubidium $\up{D}$ line, a schematic of which is shown in \figref{fig:D_line}.
+The $\{\ket{F m_F}\}$ basis allows the eigenstates of the hyperfine interaction to be labelled with $F$ and $m_F$ quantum numbers. For a state of the $^{87}$Rb $\up{D}$ line with electron total angular momentum quantum number $J$, there are $1+J+I - \abs{(I - J)}$ hyperfine levels, with $F$ quantum numbers running from $\abs{I - J}$ to $I + J$. Within each hyperfine level there are $2F + 1$ degenerate states with different $m_F$ quantum numbers ranging from $-F$ to $F$. This results in a total of 32 possible states for the rubidium $\up{D}$ line, a schematic of which is shown in~\figref{fig:D_line}.
 
 \begin{figure}%[htb]
 \begin{center}
@@ -399,7 +399,7 @@ The $\{\ket{F m_F}\}$ basis allows the eigenstates of the hyperfine interaction 
 \end{center}
 \end{figure}
 
-To transform each submatrix between the $\{\ket{m_I\ m_J}\}$ and $\{\ket{F\ m_F}\}$ bases, we use a unitary matrix whose elements are Clebsch--Gordan coefficients, each defined as the inner product of a $\ket{F\ m_F}$ state with a $\ket{m_I\ m_J}$ state (written in full as $\ket{I\ m_I\ J\ m_J}$), and calculable as \cite{steck_rubidium_2015}
+To transform each submatrix between the $\{\ket{m_I\ m_J}\}$ and $\{\ket{F\ m_F}\}$ bases, we use a unitary matrix whose elements are Clebsch--Gordan coefficients, each defined as the inner product of a $\ket{F\ m_F}$ state with a $\ket{m_I\ m_J}$ state (written in full as $\ket{I\ m_I\ J\ m_J}$), and calculable as~\cite{steck_rubidium_2015}
 \begin{align}\label{eq:ClebschGordanCoeffs}
 \braket{I\ m_I\ J\ m_J}{F\ m_F} &=
 (-1)^{I - J + m_F}\sqrt{2F + 1}
@@ -480,15 +480,15 @@ Here is a recap of what we have taken into account with our model of the Rubidiu
 \end{itemize}
 
 The above considerations allow us to construct a Hamiltonian, as a concrete matrix representation, for all 32 possible states of the rubidium $\up{D}$ line in a fixed magnetic field, in a basis in which it is diagonal for the case of zero magnetic field. In a non-zero magnetic field, one can analytically diagonalise the $S_{1/2}$ and $P_{1/2}$blocks of this matrix using the Breit--Rabi formula
-\citeleft\citen{steck_quantum_2017}, p.~347; \citen{breit_measurement_1931}\citeright, but the same cannot be done for the entire $\up{D}$ line, and diagonalisation must be performed numerically for the $P_{3/2}$ block. At non-zero magnetic field, $F$ ceases to be a good quantum number, but states are nonetheless labelled using a variable $\alpha$, defined as the value of $F$ a state \emph{would} have if the magnetic field were reduced to zero. $m_F$ remains a good quantum number however, and thus at non-zero magnetic field the $\{\ket{\alpha\ m_F}\}$ basis, is the one in which the Hamiltonian is diagonal, with the transformation between it and the $\{\ket{F\ m_F}\}$ basis requiring numerical diagonalisation.
+\citeleft\citen{steck_quantum_2017}, p.~347;~\citen{breit_measurement_1931}\citeright, but the same cannot be done for the entire $\up{D}$ line, and diagonalisation must be performed numerically for the $P_{3/2}$ block. At non-zero magnetic field, $F$ ceases to be a good quantum number, but states are nonetheless labelled using a variable $\alpha$, defined as the value of $F$ a state \emph{would} have if the magnetic field were reduced to zero. $m_F$ remains a good quantum number however, and thus at non-zero magnetic field the $\{\ket{\alpha\ m_F}\}$ basis, is the one in which the Hamiltonian is diagonal, with the transformation between it and the $\{\ket{F\ m_F}\}$ basis requiring numerical diagonalisation.
 
-If the magnetic field is static, then this Hamiltonian $\hat{H}_{\up{D}\,^{87}\up{Rb}}$ is a time independent Hamiltonian, to which additional time-dependent Hamiltonians can be added to take into account optical or $\textsc{rf}$ transitions, detailed below. In a dynamic magnetic field, only $\hat H_\up{hfs}$ is time-independent, in which case the Zeeman Hamiltonian will also be part of the time-dependent part of the Hamiltonian. This has implications for the use of an interaction picture (described in section \ref{sec:interaction_picture}), in which the time independent part of a Hamiltonian can be analytically removed from the equations of motion, which can make further computations more tractable both analytically and numerically.
+If the magnetic field is static, then this Hamiltonian $\hat{H}_{\up{D}\,^{87}\up{Rb}}$ is a time independent Hamiltonian, to which additional time-dependent Hamiltonians can be added to take into account optical or $\textsc{rf}$ transitions, detailed below. In a dynamic magnetic field, only $\hat H_\up{hfs}$ is time-independent, in which case the Zeeman Hamiltonian will also be part of the time-dependent part of the Hamiltonian. This has implications for the use of an interaction picture (described in section~\ref{sec:interaction_picture}), in which the time independent part of a Hamiltonian can be analytically removed from the equations of motion, which can make further computations more tractable both analytically and numerically.
 
 \subsection{Optical dipole transitions}\label{sec:optical_dipole_transitions}
 
 Optical transitions due to laser fields appear as off-diagonal matrix elements in the $\{\ket{F\ m_F}\}$ basis\footnote{The matrix elements can be obtained in the $\{\ket{\alpha\ m_F}\}$ basis at non-zero magnetic field via the numerically computed transformation mentioned in the previous subsection}. A given laser of a certain polarisation may give rise to non-zero transition matrix elements between several different pairs of states, depending on selection rules.
 
-The potential the outer electron of rubidium is subject to in a classical electric field is the electric dipole potential \cite{metcalf_laser_1999, steck_quantum_2017}:
+The potential the outer electron of rubidium is subject to in a classical electric field is the electric dipole potential~\cite{metcalf_laser_1999, steck_quantum_2017}:
 \begin{align}
 \hat H_\up{d} = -\hat{\vec d}\cdot\vec E,
 \end{align}
@@ -516,7 +516,7 @@ The electric field of a plane wave of amplitude $E_0$, polarisation unit vector 
 \left(\hat{\vec\varepsilon} \ee^{\ii(\vec k \cdot \vec r - \omega t)}
 + \hat{\vec\varepsilon}^* \ee^{-\ii(\vec k \cdot \vec r - \omega t)} \right),
 \end{align}
-where $^*$ is complex conjugation, which in the case of a real valued polarisation unit vector $\hat{\vec\varepsilon}$ does nothing, making the above equal to a cosine wave $E_0\hat{\vec\varepsilon}\cos(\vec k \cdot \vec r - \omega t)$ as expected for a linearly polarised plane wave. However, \eqref{eq:complex_plane_wave} also allows for arbitrary circular or elliptical polarisation, if $\hat{\vec\varepsilon}$ is allowed to have complex components. This comes with the caveat, however, that the amplitude $E_0$ is a misnomer in these cases and no longer corresponds to any actual amplitude. For example, a circularly polarised plane wave propagating in the $z$ direction constructed using complex polarisation vector $\hat{\vec\varepsilon}=\mp(\hat{\vec{x}} \pm i \hat{\vec y})/\sqrt{2}$) and ``amplitude" $E_0$ actually has an electric field vector with constant magnitude $E_0/\sqrt{2}$. The ``amplitude" $E_0$ in \eqref{eq:complex_plane_wave} is actually equal to $\sqrt{2}E_\up{rms}$ and thus only equal to the peak electric field strength in the case of linear polarisation. Using the intensity of the beam\footnote{Not to be confused with the nuclear spin $I$, distinguishable by context.} $I=\varepsilon_0 c E_\up{rms}^2$ instead, which is less ambiguous and more relatable to experimentalists~\cite{king_angular_2008}, resolves this potential confusion:\footnote{One possible confusion of many given the diverse notational and conventional differences throughout the literature.}
+where $^*$ is complex conjugation, which in the case of a real valued polarisation unit vector $\hat{\vec\varepsilon}$ does nothing, making the above equal to a cosine wave $E_0\hat{\vec\varepsilon}\cos(\vec k \cdot \vec r - \omega t)$ as expected for a linearly polarised plane wave. However,~\eqref{eq:complex_plane_wave} also allows for arbitrary circular or elliptical polarisation, if $\hat{\vec\varepsilon}$ is allowed to have complex components. This comes with the caveat, however, that the amplitude $E_0$ is a misnomer in these cases and no longer corresponds to any actual amplitude. For example, a circularly polarised plane wave propagating in the $z$ direction constructed using complex polarisation vector $\hat{\vec\varepsilon}=\mp(\hat{\vec{x}} \pm i \hat{\vec y})/\sqrt{2}$) and ``amplitude" $E_0$ actually has an electric field vector with constant magnitude $E_0/\sqrt{2}$. The ``amplitude" $E_0$ in~\eqref{eq:complex_plane_wave} is actually equal to $\sqrt{2}E_\up{rms}$ and thus only equal to the peak electric field strength in the case of linear polarisation. Using the intensity of the beam\footnote{Not to be confused with the nuclear spin $I$, distinguishable by context.} $I=\varepsilon_0 c E_\up{rms}^2$ instead, which is less ambiguous and more relatable to experimentalists~\cite{king_angular_2008}, resolves this potential confusion:\footnote{One possible confusion of many given the diverse notational and conventional differences throughout the literature.}
 \begin{align}\label{eq:complex_plane_wave_intensity}
 \vec E(\vec r, t) = \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}
 \left(\hat{\vec\varepsilon} \ee^{\ii(\vec k \cdot \vec r - \omega t)}
@@ -530,7 +530,7 @@ Consider one of the three polarisation unit vectors $\hat{\vec\varepsilon}_q$ fo
 \hat{\vec\varepsilon}_{\pm} &= \mp(\hat{\vec{x}} \pm i \hat{\vec y})/\sqrt{2},\\
 \hat{\vec\varepsilon}_{0} &= \hat{\vec z},
 \end{align}
-where $q=\pm1$ is denoted with the subscript $_\pm$. These are the basis vectors of the spherical tensor basis \cite{steck_quantum_2017}, which is the basis in which it is easiest to compute matrix elements, as well as the one in which it is easiest to think about which transitions a given laser will drive. Light with polarisation vector $\hat{\vec\varepsilon}_{\pm}$ is called $\sigma^\pm$ polarised, and excites ground states to excited states that differ in $m_F$ quantum number by $\pm 1$. A single beam with this polarisation would have to be propagating in the $z$ direction, with left or right hand circular polarisation. Light with polarisation vector $\hat{\vec\varepsilon}_0$ is called $\pi$ polarised, and drives transitions between states of equal $m_F$ quantum numbers. A single beam with this polarisation would have to be propagating with a $\vec k$ vector in the $x,y$ plane and be linearly polarised in the $z$ direction. However, lasers with propagation directions and polarisation vectors different from these three configurations can be decomposed into the spherical basis. For example, light with linear polarisation vector in the $x,y$ plane drives both $\sigma^+$ and $\sigma^-$ transitions.
+where $q=\pm1$ is denoted with the subscript $_\pm$. These are the basis vectors of the spherical tensor basis~\cite{steck_quantum_2017}, which is the basis in which it is easiest to compute matrix elements, as well as the one in which it is easiest to think about which transitions a given laser will drive. Light with polarisation vector $\hat{\vec\varepsilon}_{\pm}$ is called $\sigma^\pm$ polarised, and excites ground states to excited states that differ in $m_F$ quantum number by $\pm 1$. A single beam with this polarisation would have to be propagating in the $z$ direction, with left or right hand circular polarisation. Light with polarisation vector $\hat{\vec\varepsilon}_0$ is called $\pi$ polarised, and drives transitions between states of equal $m_F$ quantum numbers. A single beam with this polarisation would have to be propagating with a $\vec k$ vector in the $x,y$ plane and be linearly polarised in the $z$ direction. However, lasers with propagation directions and polarisation vectors different from these three configurations can be decomposed into the spherical basis. For example, light with linear polarisation vector in the $x,y$ plane drives both $\sigma^+$ and $\sigma^-$ transitions.
 
 The spherical basis is defined somewhat differently than how we are used to for ordinary real-valued vectors. The components $A_q$ of a vector $\vec A$ in the spherical basis are defined as the coefficients of \emph{complex conjugates} of the basis vectors:
 \begin{align}\label{eq:basis_components}
@@ -544,7 +544,7 @@ and the dot product in terms of the spherical basis components of two vectors is
 \begin{align}\label{eq:spherical_dot_product}
 \vec A \cdot \vec B = \sum_q (-1)^q A_q B_{-q}.
 \end{align}
-The definition \eqref{eq:basis_components} has the counter-intuitive consequence that the unit vectors themselves, written in terms of their components $\hat{\vec\varepsilon}_q = \left((\varepsilon_q)_{-}, (\varepsilon_q)_{0}, (\varepsilon_q)_{+}\right)$ in the spherical basis are:
+The definition~\eqref{eq:basis_components} has the counter-intuitive consequence that the unit vectors themselves, written in terms of their components $\hat{\vec\varepsilon}_q = \left((\varepsilon_q)_{-}, (\varepsilon_q)_{0}, (\varepsilon_q)_{+}\right)$ in the spherical basis are:
 \begin{align}
 \hat{\vec\varepsilon}_{-} &= (0, 0, -1),\\
 \hat{\vec\varepsilon}_0 &= (0, 1, 0),\\
@@ -558,7 +558,7 @@ Considering a plane wave with polarisation vector equal to one of the spherical 
 \left(\hat{\vec\varepsilon}_q \ee^{\ii(\vec k \cdot \vec r - \omega t)}
 + \hat{\vec\varepsilon}_q^* \ee^{-\ii(\vec k \cdot \vec r - \omega t)} \right),
 \end{align}
-which, removing the complex conjugation using \eqref{eq:spherical_negative_property}, can be written:
+which, removing the complex conjugation using~\eqref{eq:spherical_negative_property}, can be written:
 \begin{align}\label{eq:complex_plane_wave_q_noconj}
 \vec E_q(\vec r, t) = \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}
 \left(\hat{\vec\varepsilon}_q \ee^{\ii(\vec k \cdot \vec r - \omega t)}
@@ -567,7 +567,7 @@ which, removing the complex conjugation using \eqref{eq:spherical_negative_prope
 
 \subsubsection{The dipole approximation}
 
-Substituting \eqref{eq:complex_plane_wave_q_noconj} into \eqref{eq:electric_dipole_potential} results in the matrix element of the dipole Hamiltonian for a $q$ polarised plane wave:
+Substituting~\eqref{eq:complex_plane_wave_q_noconj} into~\eqref{eq:electric_dipole_potential} results in the matrix element of the dipole Hamiltonian for a $q$ polarised plane wave:
 \begin{align}\label{eq:dipole_H_with_plane_wave}
 \matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n} &= 
 \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}\left(
@@ -579,7 +579,7 @@ Substituting \eqref{eq:complex_plane_wave_q_noconj} into \eqref{eq:electric_dipo
   {e\hat{\vec r}\cdot\hat{\vec\varepsilon}_{-q} \ee^{-\ii(\vec k \cdot \vec r - \omega t)}}
   {n}\right).
 \end{align}
-The \emph{dipole approximation} is the approximation that the spatial extent of the electron's orbital is much smaller than the wavelength of the light, and thus that the factors of $\ee^{\pm\ii\vec k\cdot\vec r}$ are approximately constant over the integral and can be taken outside it, with $\vec r$ taken to be the expectation value of the atom's position\footnote{The resulting classical position $\vec r$ of the atom should not be confused with the electron's position operator $\hat{\vec r}$ with respect to the nucleus. Strictly speaking, \eqref{eq:dipole_H_with_plane_wave} should have $\vec r$ in the exponents replaced with a quantum operator with a different name to signify that it is the absolute position of the electron rather than the position relative to the nucleus, but I suspect this would cause more confusion than it would resolve.}. For optical wavelengths this is a good approximation, yielding our matrix element in the dipole approximation:
+The \emph{dipole approximation} is the approximation that the spatial extent of the electron's orbital is much smaller than the wavelength of the light, and thus that the factors of $\ee^{\pm\ii\vec k\cdot\vec r}$ are approximately constant over the integral and can be taken outside it, with $\vec r$ taken to be the expectation value of the atom's position\footnote{The resulting classical position $\vec r$ of the atom should not be confused with the electron's position operator $\hat{\vec r}$ with respect to the nucleus. Strictly speaking,~\eqref{eq:dipole_H_with_plane_wave} should have $\vec r$ in the exponents replaced with a quantum operator with a different name to signify that it is the absolute position of the electron rather than the position relative to the nucleus, but I suspect this would cause more confusion than it would resolve.}. For optical wavelengths this is a good approximation, yielding our matrix element in the dipole approximation:
 \begin{align}
 \matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n} &= 
 \frac12\sqrt{\frac{2I}{\varepsilon_0 c}}\left(
@@ -591,7 +591,7 @@ The \emph{dipole approximation} is the approximation that the spatial extent of 
   {e\hat{\vec r}\cdot\hat{\vec\varepsilon}_{-q}}
   {n} \ee^{-\ii(\vec k \cdot \vec r - \omega t)}\right).
 \end{align}
-Evaluating the dot products using \eqref{eq:spherical_dot_product}, we get $\hat{\vec r}\cdot \hat{\vec\varepsilon}_q = \sum_p (-1)^p \hat r_p (\varepsilon_q)_{-p} = \hat r_q$ and $\hat{\vec r}\cdot \hat{\vec\varepsilon}_{-q} = \sum_p (-1)^p \hat r_p (\varepsilon_{-q})_{-p} = \hat r_{-q}$, where $\hat r_q$ are the components of the position operator $\hat{\vec r}$ in the spherical basis, the position space representations of which are proportional to the $\ell=1$ spherical harmonics and the radial coordinate $r$:
+Evaluating the dot products using~\eqref{eq:spherical_dot_product}, we get $\hat{\vec r}\cdot \hat{\vec\varepsilon}_q = \sum_p (-1)^p \hat r_p (\varepsilon_q)_{-p} = \hat r_q$ and $\hat{\vec r}\cdot \hat{\vec\varepsilon}_{-q} = \sum_p (-1)^p \hat r_p (\varepsilon_{-q})_{-p} = \hat r_{-q}$, where $\hat r_q$ are the components of the position operator $\hat{\vec r}$ in the spherical basis, the position space representations of which are proportional to the $\ell=1$ spherical harmonics and the radial coordinate $r$:
 \begin{align}
 \matrixel{r, \theta, \phi}{\hat r_\pm}{r, \theta, \phi}
     &= \mp\frac r {\sqrt2}\sin\theta\ee^{\pm\ii\phi},\\
@@ -611,10 +611,10 @@ We now have our final expression for the matrix element $\matrixel{n^\prime}{\ha
   {n} \ee^{-\ii(\vec k \cdot \vec r - \omega t)}\right).
 \end{align}
 
-A further approximation often used is to approximate the atom as stationary, replacing the $\vec k\cdot\vec r$ from the exponents with a constant (usually zero if the exact phase of the optical field is not of interest). Alternately, if the atom is moving at an approximately constant velocity, the $\vec k \cdot\vec r$ term can be absorbed into $\omega$ resulting in an effective Doppler-shifted angular frequency as in section \ref{sec:doppler_cooling}. We will leave the $\vec k\cdot\vec r$ terms where they are, but note that they are often absent in most literature sources for the preceding reasons.
+A further approximation often used is to approximate the atom as stationary, replacing the $\vec k\cdot\vec r$ from the exponents with a constant (usually zero if the exact phase of the optical field is not of interest). Alternately, if the atom is moving at an approximately constant velocity, the $\vec k \cdot\vec r$ term can be absorbed into $\omega$ resulting in an effective Doppler-shifted angular frequency as in section~\ref{sec:doppler_cooling}. We will leave the $\vec k\cdot\vec r$ terms where they are, but note that they are often absent in most literature sources for the preceding reasons.
 
 \subsubsection{The rotating wave approximation}
-If the plane wave's angular frequency $\omega$ is close to the resonant angular frequency $\omega_{\up{D}_1}$ or $\omega_{\up{D}_2}$ of the $\up{D}_1$ or $\up{D}_2$ line, then one of the two exponential terms is oscillating at a frequency much further from resonance (approximately $2\omega$) than the other, and thus does not contribute significantly to coupling between states. Discarding it is known as the \emph{rotating wave approximation} (\textsc{rwa}), so called because in an interaction picture (section \ref{sec:interaction_picture}) where the evolution of the base Hamiltonian $\hat H_{\up{D}\,^{87}\up{Rb}}$ is factored out---the so called \emph{rotating frame}---this fact is more readily apparent and a formal approximation can be made showing that the off-resonant term averages to zero over time scales much shorter than any other dynamics. Which term is discarded depends on whether the transition being considered is from a ground state to excited state, or vice-versa. Our matrix element $\matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n}$ in the \textsc{rwa} becomes:
+If the plane wave's angular frequency $\omega$ is close to the resonant angular frequency $\omega_{\up{D}_1}$ or $\omega_{\up{D}_2}$ of the $\up{D}_1$ or $\up{D}_2$ line, then one of the two exponential terms is oscillating at a frequency much further from resonance (approximately $2\omega$) than the other, and thus does not contribute significantly to coupling between states. Discarding it is known as the \emph{rotating wave approximation} (\textsc{rwa}), so called because in an interaction picture (section~\ref{sec:interaction_picture}) where the evolution of the base Hamiltonian $\hat H_{\up{D}\,^{87}\up{Rb}}$ is factored out---the so called \emph{rotating frame}---this fact is more readily apparent and a formal approximation can be made showing that the off-resonant term averages to zero over time scales much shorter than any other dynamics. Which term is discarded depends on whether the transition being considered is from a ground state to excited state, or vice-versa. Our matrix element $\matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n}$ in the \textsc{rwa} becomes:
 \begin{align}\label{eq:rwa_no_rabifreq}
 \matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n} \overset{\textsc{rwa}}\approx
 \begin{cases}
@@ -630,12 +630,12 @@ If the plane wave's angular frequency $\omega$ is close to the resonant angular 
 \end{cases}.
 \end{align}
 
-The spherical basis components $\hat r_q$ of the position operator $\hat{\vec r}$ are not Hermitian operators, instead obeying the following relation \cite{steck_quantum_2017}:
+The spherical basis components $\hat r_q$ of the position operator $\hat{\vec r}$ are not Hermitian operators, instead obeying the following relation~\cite{steck_quantum_2017}:
 \begin{align}
 \hat r_q^\dagger &= (-1)^q \hat r_{-q},\\
 \Rightarrow \matrixel{n} {e\hat r_q}{n^\prime}^* &= (-1)^q\matrixel{n^\prime} {e\hat r_{-q}}{n},
 \end{align}
-allowing us to simplify \eqref{eq:rwa_no_rabifreq} to:
+allowing us to simplify~\eqref{eq:rwa_no_rabifreq} to:
 \begin{align}\label{eq:rwa_with_rabifreq}
 \matrixel{n^\prime}{\hat H_\up{d}(q,I)}{n} \overset{\textsc{rwa}}\approx
 \begin{cases}
@@ -653,7 +653,7 @@ where $\Omega_{n^\prime n}(q, I)$ is the \emph{Rabi frequency} of the $n\rightar
 \end{align}
 with the symmetry that $\Omega_{n^\prime n}(q, I) = \Omega^*_{n n^\prime}(q, I)$. Because of this symmetry, the electric dipole Hamiltonian for a plane wave in the rotating wave approximation is Hermitian, and all its matrix elements can be computed considering only transitions from ground state to excited state (with the Rabi frequencies for the reverse transitions being simply the complex conjugates of those of the forward transitions).
 
-The rotating wave approximation is accurate when $\omega - \omega_0 \gg \abs{\omega + \omega_0}$, which is the case for transitions being driven close to resonance. When far off-resonant light is being used however---for example to impart optical dipole forces as in optical traps---it may not be a good approximation, and the full matrix elements \eqref{eq:diple_matrixel_withminus} of the dipole Hamiltonian may need to considered.
+The rotating wave approximation is accurate when $\omega - \omega_0 \gg \abs{\omega + \omega_0}$, which is the case for transitions being driven close to resonance. When far off-resonant light is being used however---for example to impart optical dipole forces as in optical traps---it may not be a good approximation, and the full matrix elements~\eqref{eq:diple_matrixel_withminus} of the dipole Hamiltonian may need to considered.
 
 \subsubsection{Dipole matrix elements}
 
@@ -661,7 +661,7 @@ We now move on to how to compute the dipole matrix elements
 \begin{align}
 \matrixel{n^\prime}{e\hat r_q}{n} \equiv \matrixel{L^\prime_{J^\prime}\ F^\prime\ m_F^\prime}{e\hat r_q}{L_J\ F\ m_F}.
 \end{align}
-Using these matrix elements, one can compute Rabi frequencies for matrix elements of the dipole Hamiltonian \eqref{eq:rwa_with_rabifreq} in the rotating wave approximation, or to calculate the full matrix elements \eqref{eq:diple_matrixel_withminus} of the dipole Hamiltonian.
+Using these matrix elements, one can compute Rabi frequencies for matrix elements of the dipole Hamiltonian~\eqref{eq:rwa_with_rabifreq} in the rotating wave approximation, or to calculate the full matrix elements~\eqref{eq:diple_matrixel_withminus} of the dipole Hamiltonian.
 
 In the spherical basis we've been working in, most of the integrals required to compute these matrix elements can be treated analytically, and there are a series of reductions that can be made to ultimately reduce the matrix elements down to a product of an analytically computable coefficient depending only an angular momentum quantum numbers, and an experimentally measurable `reduced' dipole matrix element.
 
@@ -678,7 +678,7 @@ m_F & q & -m_F^\prime\\
 \end{matrix}\right)
 \matrixel{L^\prime_{J^\prime}\ F^\prime}{\left|e\hat{\vec r}\right|}{L_J\ F},
 \end{align}
-where the object in parentheses is a Wigner $3$-j symbol, and $\matrixel{L^\prime_{J^\prime}\ F^\prime}{\left|e\hat{\vec r}\right|}{L_J\ F}$ is the `reduced' matrix element for the transition from $\ket{L_J\ F}$ to $\ket{L^\prime_{J^\prime}\ F^\prime}$ free of dependence on angular momentum projection quantum numbers. Due to fact that the Clebsch--Gordan coefficient is zero unless $m_F + q = m_F$, these matrix elements are zero unless the final and initial states are being coupled by a laser of the correct polarisation to conserve angular momentum projection in the $z$ direction, one of the selection rules of optical transitions.\footnote{Observe equation \eqref{eq:diple_matrixel_withminus} however, and note that for the case of $\sigma^\pm$ light, both $q=\pm 1$ dipole matrix elements are present, and thus $\sigma^\pm$ light couples a ground state to \emph{both} $m_F^\prime = m_F \pm 1$ excited states, with one being far off resonance and discarded by the rotating wave approximation for the case of near-resonant light.}
+where the object in parentheses is a Wigner $3$-j symbol, and $\matrixel{L^\prime_{J^\prime}\ F^\prime}{\left|e\hat{\vec r}\right|}{L_J\ F}$ is the `reduced' matrix element for the transition from $\ket{L_J\ F}$ to $\ket{L^\prime_{J^\prime}\ F^\prime}$ free of dependence on angular momentum projection quantum numbers. Due to fact that the Clebsch--Gordan coefficient is zero unless $m_F + q = m_F$, these matrix elements are zero unless the final and initial states are being coupled by a laser of the correct polarisation to conserve angular momentum projection in the $z$ direction, one of the selection rules of optical transitions.\footnote{Observe equation~\eqref{eq:diple_matrixel_withminus} however, and note that for the case of $\sigma^\pm$ light, both $q=\pm 1$ dipole matrix elements are present, and thus $\sigma^\pm$ light couples a ground state to \emph{both} $m_F^\prime = m_F \pm 1$ excited states, with one being far off resonance and discarded by the rotating wave approximation for the case of near-resonant light.}
 
 The final reduction is to express this reduced matrix element as yet another analytic coefficient multiplied by a reduced matrix element that doesn't depend on the $F$ quantum numbers:
 \begin{align}
@@ -692,11 +692,11 @@ F & F^\prime & I
 \end{align}
 where $I$ is the nuclear spin quantum number, the object in curly braces is a Wigner $6$-j symbol, and $\matrixel{L^\prime_{J^\prime}}{\left|e\hat{\vec r}\right|}{L_J}$ is a reduced matrix element for the transition from $\ket{L_J}$ to $\ket{L^\prime_{J^\prime}}$ free of dependence on $F$ quantum  numbers.
 
-This final reduced matrix element can be linked to experimentally known numerical values via the line widths $\Gamma_{\up{D}_1}$ and $\Gamma_{\up{D}_2}$ of $\up{D}_1$ and $\up{D}_2$ lines \cite[eq.~7.3.7.4]{steck_quantum_2017}:
+This final reduced matrix element can be linked to experimentally known numerical values via the line widths $\Gamma_{\up{D}_1}$ and $\Gamma_{\up{D}_2}$ of $\up{D}_1$ and $\up{D}_2$ lines~\cite[eq.~7.3.7.4]{steck_quantum_2017}:
 \begin{align}\label{eq:reduced_matrixel_line width}
 \Gamma = \frac{\omega_0^3}{3\pi\varepsilon_0\hbar c^3}\frac{2J_g + 1}{2J_e + 1}\abs{\matrixel{L^\prime_{J_g}}{\left|e\hat{\vec r}\right|}{L_{J_e}}}^2,
 \end{align}
-where $\Gamma$ and $\omega_0$ are the line width and resonant (angular) frequency respectively of the transition, $L^\prime_{J_g}$ is the ground state ($S_{1/2}$) and $L_{J_e}$ is the excited state (either $P_{1/2}$ or ${P_{3/2}}$) of the transition. Thus the reduced matrix elements for transitions from excited to ground states can be expressed in terms of known constants. For the reduced matrix elements for transitions from ground to excited states instead, one cannot simply take the complex conjugates of the excited-to-ground reduced matrix elements---the reduced matrix elements are defined instead such that they have the following property \cite[eq.~7.3.5.1]{steck_quantum_2017}:
+where $\Gamma$ and $\omega_0$ are the line width and resonant (angular) frequency respectively of the transition, $L^\prime_{J_g}$ is the ground state ($S_{1/2}$) and $L_{J_e}$ is the excited state (either $P_{1/2}$ or ${P_{3/2}}$) of the transition. Thus the reduced matrix elements for transitions from excited to ground states can be expressed in terms of known constants. For the reduced matrix elements for transitions from ground to excited states instead, one cannot simply take the complex conjugates of the excited-to-ground reduced matrix elements---the reduced matrix elements are defined instead such that they have the following property~\cite[eq.~7.3.5.1]{steck_quantum_2017}:
 \begin{align}
 \matrixel{L_J}{\left|e\hat{\vec r}\right|}{L^\prime_{J^\prime}}
 = (-1)^{J - J^\prime}\sqrt{\frac{2J^\prime+1}{2J+1}}
@@ -713,7 +713,7 @@ Putting these together gives the following reduced matrix elements for the $\up{
 \matrixel{P_{3/2}}{\left|e\hat{\vec r}\right|}{S_{1/2}}
 &= -\frac1{\sqrt2}\matrixel{S_{1/2}}{\left|e\hat{\vec r}\right|}{P_{3/2}}^*
 \end{align}
-The first two of these, having only their absolute values related to the line widths and frequencies via \eqref{eq:reduced_matrixel_line width}, have an undetermined phase factor which we have taken to be equal to $+1$. Since only relative phases are important, if we limit ourselves to only one of the $\up{D}_1$ or $\up{D}_2$ lines at a time, all dipole matrix elements, being proportional to these reduced dipole matrix elements, will have the correct relative phases. However, we are imposing a fixed phase on \emph{both} the reduced dipole matrix elements for the $\up{D}$ line. We can verify that a relative phase factor of $+1$ between the two reduced dipole matrix elements is the correct choice by decomposing~\cite{steck_rubidium_2015} the reduced matrix elements into yet another Wigner-6j symbol and a reduced dipole matrix element $\matrixel{L^\prime=\frac12}{\left|e\hat{\vec r}\right|}{L=1}$, common to both fine structure lines:
+The first two of these, having only their absolute values related to the line widths and frequencies via~\eqref{eq:reduced_matrixel_line width}, have an undetermined phase factor which we have taken to be equal to $+1$. Since only relative phases are important, if we limit ourselves to only one of the $\up{D}_1$ or $\up{D}_2$ lines at a time, all dipole matrix elements, being proportional to these reduced dipole matrix elements, will have the correct relative phases. However, we are imposing a fixed phase on \emph{both} the reduced dipole matrix elements for the $\up{D}$ line. We can verify that a relative phase factor of $+1$ between the two reduced dipole matrix elements is the correct choice by decomposing~\cite{steck_rubidium_2015} the reduced matrix elements into yet another Wigner-6j symbol and a reduced dipole matrix element $\matrixel{L^\prime=\frac12}{\left|e\hat{\vec r}\right|}{L=1}$, common to both fine structure lines:
 \begin{align}
 \matrixel{L^\prime_{J^\prime}}{\left|e\hat{\vec r}\right|}{L_J} = 
 (-1)^{J+L+S+1}\sqrt{(2J+1)(2L^\prime+1)}
@@ -734,7 +734,7 @@ confirming that the choice of relative phase factor $+1$ between the two $L_J$ r
 We have now arrived at the ground floor of reductionism for most experimental atomic physicists when it comes to optical transitions, with the values of the transition dipole matrix elements resting on the foundation of empirically measured reduced dipole matrix elements, and calculable by traversing this section in reverse.
 
 \subsection{Magnetic dipole transitions}
-After all the complexity of optical dipole transitions, magnetic dipole transitions---for either \textsc{rf} transitions between Zeeman sublevels, or microwave transitions between hyperfine states---are relatively simple. The matrix elements in the $\{\ket{F\ m_F}\}$ basis for a perturbing magnetic field $\vec B(t)$ are simply those of the Zeeman Hamiltonian \eqref{eq:Zeeman_hamiltonian}:
+After all the complexity of optical dipole transitions, magnetic dipole transitions---for either \textsc{rf} transitions between Zeeman sublevels, or microwave transitions between hyperfine states---are relatively simple. The matrix elements in the $\{\ket{F\ m_F}\}$ basis for a perturbing magnetic field $\vec B(t)$ are simply those of the Zeeman Hamiltonian~\eqref{eq:Zeeman_hamiltonian}:
 \begin{align}
 \matrixel{F^\prime\ m_F^\prime}{\hat H_\up{Z}}{F\ m_F}
 =
@@ -746,7 +746,7 @@ which for a magnetic plane wave with linear polarisation $i\in \{x, y, z\}$ and 
 =
 -\matrixel{F^\prime\ m_F^\prime}{\hat{\mu}_i}{F\ m_F}B_0 \cos(\vec k\cdot \vec r - \omega t).
 \end{align}
-The magnetic dipole matrix elements $\matrixel{F^\prime\ m_F^\prime}{\hat{\mu}_i}{F\ m_F}$ can be computed using the known matrix form \eqref{eq:magnetic_moment_operator} of the magnetic moment operator $\mu_i$ in the $\{\ket{m_I\ m_J}\}$ basis, and transforming it into the $\{\ket{F\ m_F}\}$ basis using a unitary of Clebsch--Gordan coefficients as in \eqref{eq:ClebschGordanCoeffs}.
+The magnetic dipole matrix elements $\matrixel{F^\prime\ m_F^\prime}{\hat{\mu}_i}{F\ m_F}$ can be computed using the known matrix form~\eqref{eq:magnetic_moment_operator} of the magnetic moment operator $\mu_i$ in the $\{\ket{m_I\ m_J}\}$ basis, and transforming it into the $\{\ket{F\ m_F}\}$ basis using a unitary of Clebsch--Gordan coefficients as in~\eqref{eq:ClebschGordanCoeffs}.
 
 As with optical dipole transitions, the cosine can be written as a sum of exponentials, revealing co-rotating and counter-rotating terms:
 \begin{align}
