@@ -207,7 +207,7 @@ The choice to use Schr\"odinger theory for the simulations was made prior to my 
 
 To motivate the method and highlight some necessary properties of a sensible semiclassical model capable of simulating Stern--Gerlach separation, consider, as an example, a spin-$\frac12$ particle undergoing separation in a magnetic field gradient. The two spin components accelerate away from each other, with the relative acceleration vector pointing in the same direction as the gradient in field strength. We can ask the question: ``What spin-state populations would I see, if I followed the spin-down wavepacket only?" The meaning of `follow' will be made more precise in Section~\ref{sec:decoherence}, but for now we will simply look at the spin populations in the vicinity of the region of space occupied by the spin-down wavepacket.
 
-As shown in \figref{fig:HVSC_schematic}, one sees the spin-up population decreasing over time until only spin-down population remains. The rate at which spin-up population `leaves' the region of space we are watching depends on how quickly the wavepackets are accelerating away from each other, as well as the shape of the wavepackets. Likewise, if one follows the spin-up component instead, one sees the spin-down population decrease to zero.
+As shown in~\figref{fig:HVSC_schematic}, one sees the spin-up population decreasing over time until only spin-down population remains. The rate at which spin-up population `leaves' the region of space we are watching depends on how quickly the wavepackets are accelerating away from each other, as well as the shape of the wavepackets. Likewise, if one follows the spin-up component instead, one sees the spin-down population decrease to zero.
 
 Motivated by this observation, the hidden-variable semiclassical method is a phenomenological model comprised of the following:
 \begin{itemize}
@@ -314,7 +314,7 @@ The final term is identical to the non-adiabatic coupling term in the equation o
 \left(- \ii\hbar\vec v\cdot U_H(\vec r, t)\nabla U^\dagger_H(\vec r, t)\right)_{ij}
 = - \ii\hbar\vec v\cdot\matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j (\vec r, t)},
 \end{align}
-where $U_H(\vec r, t)$ is the matrix representation of $\hat U_H$ in any basis that does not vary spatially (i.e.~not the eigenbasis), $\ket{\chi_i(\vec r, t)}$ is the $i^\up{th}$ eigenvector of $\hat H(r, t)$, and $\matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j (\vec r, t)}$ is the \emph{non-adiabatic coupling vector} between the $i^\up{th}$ and $j^\up{th}$ states referred to in the literature~\cite{doi:10.1146/annurev-physchem-040215-112245}. The second to last term in brackets in \eqref{eq:Tully_adiabatic_schro_simplified}
+where $U_H(\vec r, t)$ is the matrix representation of $\hat U_H$ in any basis that does not vary spatially (i.e.~not the eigenbasis), $\ket{\chi_i(\vec r, t)}$ is the $i^\up{th}$ eigenvector of $\hat H(r, t)$, and $\matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j (\vec r, t)}$ is the \emph{non-adiabatic coupling vector} between the $i^\up{th}$ and $j^\up{th}$ states referred to in the literature~\cite{doi:10.1146/annurev-physchem-040215-112245}. The second to last term in brackets in~\eqref{eq:Tully_adiabatic_schro_simplified}
 is the additional contribution due to the time-dependence of the Hamiltonian (more specifically, the time-dependence of its eigenbasis).
 
 We now proceed identically to Tully, computing the rate of change of a an eigenstates population $\abs{c_i(t)}^2$ as:
@@ -530,7 +530,7 @@ such that~\eqref{eq:rho_with_decoherence} reads
 \rho^\up{red}_{ij}(t) &= c_i(t) c_j^*(t) R_{ij}^*(t) \nonumber\\
 & = c_i(t) c_j^*(t) R_{ji}(t).
 \end{align}
-This same decoherence factor appears when---instead of integrating over all positions---we project the total state vector onto a single motional state corresponding to a classical trajectory, which is how we impose classicality on the motional degree of freedom in our model. The effect of decoherence when `following' a specific motional state through space in this way is to reduce the amplitudes of all other states not being followed, by the decoherence factor between that state and the one being followed, as shown schematically in \figref{fig:HVSC_schematic}.
+This same decoherence factor appears when---instead of integrating over all positions---we project the total state vector onto a single motional state corresponding to a classical trajectory, which is how we impose classicality on the motional degree of freedom in our model. The effect of decoherence when `following' a specific motional state through space in this way is to reduce the amplitudes of all other states not being followed, by the decoherence factor between that state and the one being followed, as shown schematically in~\figref{fig:HVSC_schematic}.
 
 To obtain an explicit form for the decoherence factor, we need to impose an ansatz for the motional states $\{\ket{\phi_i(t)}\}$. We take each motional state $\ket{\phi_i(t)}$ to be a Gaussian wavepacket propagating---without dispersion---with centre-of-mass motion evolving classically according to the adiabatic potential $V_i(\vec r, t)$ experienced by the local eigenstate $\ket{\chi_i}$. Thus the wavefunctions of these motional states are
 \begin{align}
@@ -669,7 +669,7 @@ How can we replicate something like this for our separating wavepackets? Here I 
 
 \subsection{Approximate Markovian decoherence}\label{sec:markovian_decoherence}
 
-A crude way to include decoherence is just to approximate $R_{\eta i}(t)$---for the case of constant acceleration in~\eqref{eq:const_a_decoherence_factor}---as a decaying exponential with roughly the right decay constant. This is crude because $R_{\eta i}(t)$ does not look much like a decaying exponential (see \figref{fig:decoherence_factor_example}). In the limit of large $t$, its functional form is $\ee^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian at any timescale.
+A crude way to include decoherence is just to approximate $R_{\eta i}(t)$---for the case of constant acceleration in~\eqref{eq:const_a_decoherence_factor}---as a decaying exponential with roughly the right decay constant. This is crude because $R_{\eta i}(t)$ does not look much like a decaying exponential (see~\figref{fig:decoherence_factor_example}). In the limit of large $t$, its functional form is $\ee^{-t^4}$, not the exponential decay required to treat the decoherence as Markovian at any timescale.
 
 \begin{figure}[t]
     \centerfloat
@@ -738,7 +738,7 @@ This gives us:
               \frac{\abs{\vec a_{ij}(\vec r, t)}^2} {32\sigma^2} {t^\prime}^4\right]\left(1 -\ii \frac {m\abs{\vec a_{ij}(\vec r, t)}^2}{4\hbar} {t^\prime}^3\right)\, \dd t^\prime\label{eq:gamma_pos_exp}\\
       &= 2^{\frac54}\upGamma(\tfrac54)\sqrt{\frac{\sigma}{\abs{\vec a_{ij}(\vec r, t)}}} - 2\ii\frac{m \sigma^2}{\hbar},\label{eq:gamma_pos_recip}
 \end{align}
-where we used a first-order Taylor expansion of an exponential in \eqref{eq:gamma_pos_exp}. We similarly use a first-order expansion $(x + \varepsilon)^{-1} \approx x^{-1} - \varepsilon x^{-2}$ to take the reciprocal of \eqref{eq:gamma_pos_recip} (since the second term is much smaller than the first\footnote{This isn't necessary in order to obtain a simple expression for $\gamma_{ij\,\up{(pos)}}$---the reciprocal without this approximation is equally simple---but it leaves us with power laws for the real and imaginary parts of $\gamma_{ij\,\up{(pos)}}$, which are easier to stitch together with those from the large $\sigma$ regime. It also ensures we don't divide by zero when $\vec a_{ij}(\vec r, t)$ is zero.}), and arrive at
+where we used a first-order Taylor expansion of an exponential in~\eqref{eq:gamma_pos_exp}. We similarly use a first-order expansion $(x + \varepsilon)^{-1} \approx x^{-1} - \varepsilon x^{-2}$ to take the reciprocal of~\eqref{eq:gamma_pos_recip} (since the second term is much smaller than the first\footnote{This isn't necessary in order to obtain a simple expression for $\gamma_{ij\,\up{(pos)}}$---the reciprocal without this approximation is equally simple---but it leaves us with power laws for the real and imaginary parts of $\gamma_{ij\,\up{(pos)}}$, which are easier to stitch together with those from the large $\sigma$ regime. It also ensures we don't divide by zero when $\vec a_{ij}(\vec r, t)$ is zero.}), and arrive at
 \begin{align}
 \gamma_{ij\,\up{(pos)}}^\up{Markov}(\vec r, t) &\approx \frac1{2^{\frac54}\upGamma(\tfrac54)}\sqrt{\frac{\abs{\vec a_{ij}(\vec r, t)}}{\sigma}}
 + \frac \ii {2^{\frac32}\upGamma(\tfrac54)^2} \frac{m\sigma \abs{\vec a_{ij}(\vec r, t)}}{\hbar}.\label{eq:gamma_pos_final}%\\
@@ -769,7 +769,7 @@ Equations~\eqref{eq:gamma_pos_final} and~\eqref{eq:gamma_vel_final} are our fina
 \label{eq:gamma_total}
 \end{align}
 We now have an approximate analytic expression for a Markovian decoherence rate between two Gaussian wavepackets that is computationally inexpensive to evaluate for each semiclassical atom in an ensemble at every timestep of a differential equation.
-An example showing the accuracy of~\eqref{eq:gamma_total}, compared to the exact expression~\eqref{eq:markov_decoherence_factor_time_dep} for $\gamma_{ij}^\up{Markov}$ over a range of wavepacket sizes is shown in \figref{fig:decoherence_rate_example}.
+An example showing the accuracy of~\eqref{eq:gamma_total}, compared to the exact expression~\eqref{eq:markov_decoherence_factor_time_dep} for $\gamma_{ij}^\up{Markov}$ over a range of wavepacket sizes is shown in~\figref{fig:decoherence_rate_example}.
 
 \begin{figure}[t]
     \centerfloat
@@ -957,7 +957,7 @@ Evolving the Markovian hidden-variable semiclassical method involves three coupl
     \begin{align}
     \Pr(\eta\rightarrow\eta) &= 1 - \sum_i \left(\tilde S^\up{space}_{i\eta} + S^\up{time}_{i\eta}\right)
     \end{align}
-    that it keeps its current value. These choices can be randomly chosen between with the correct probabilities as described in \figref{fig:random_choice}.
+    that it keeps its current value. These choices can be randomly chosen between with the correct probabilities as described in~\figref{fig:random_choice}.
 
     \item If the hidden variable did transition to a different state $i\neq\eta$, and if it was a spatially induced transition, instantaneously adjust the atom's velocity as required by energy conservation:
     \begin{align}
@@ -1027,7 +1027,7 @@ This completes the mean auxiliary trajectories hidden-variable semiclassical met
 
 Here I demonstrate the two variants of the method, each for two different spatially dependent Hamiltonians in one dimension, and compare them to the numerical result from the full Schr\"odinger wave equation. All simulations are for $^{87}$Rb atoms in the $F=1$ ground state subject to the Zeeman Hamiltonian for a given magnetic field profile. In scenario I, atoms in the trapped state (for $^{87}$Rb, the locally spin-down sate is magnetically trappable) pass over a field minimum, which induces Majorana transitions, allowing the spin-flipped atoms to escape. In scenario II, the magnetic field profile is modified to create two closely spaced field minima. This scenario demonstrates the importance of accurate decoherence in surface-hopping/hidden-variable semiclassical methods, as the two regions of non-adiabatic coupling are encountered in a time comparable to the decoherence timescale where the exact form of the decoherence model can strongly influence the outcome of transitions. I use Schr\"odinger theory for the hidden-variable theory throughout. Since the Hamiltonians are time-independent, as mentioned these results do not test my proposed method of conditionally applying velocity jumps to transitioned atoms---velocity jumps are always applied.
 
-I simulated both scenarios first using the Schr\"odinger wave equation, as the gold-standard against which to benchmark the other methods. Numerically I solved the for the three-component wavefunction using fourth order Runge--Kutta (Section~\ref{sec:rk4}) and the Fourier method of evaluating spatial derivatives (Section \ref{sec:fourier_pseudospectral}). I added imaginary potentials near the boundaries of the region I wished to simulate to absorb untrapped wavepackets rather than have them reflect or wrap around due to periodic boundary conditions inherent in the Fourier method of derivatives. The initial condition was a Gaussian wavepacket in the locally spin-down eigenstate, $m_F = -1$, though I simulated in the fixed eigenbasis of $\hat F_z$, transforming as necessary to create the initial conditions, and later to compare state populations in the local eigenbasis.
+I simulated both scenarios first using the Schr\"odinger wave equation, as the gold-standard against which to benchmark the other methods. Numerically I solved the for the three-component wavefunction using fourth order Runge--Kutta (Section~\ref{sec:rk4}) and the Fourier method of evaluating spatial derivatives (Section~\ref{sec:fourier_pseudospectral}). I added imaginary potentials near the boundaries of the region I wished to simulate to absorb untrapped wavepackets rather than have them reflect or wrap around due to periodic boundary conditions inherent in the Fourier method of derivatives. The initial condition was a Gaussian wavepacket in the locally spin-down eigenstate, $m_F = -1$, though I simulated in the fixed eigenbasis of $\hat F_z$, transforming as necessary to create the initial conditions, and later to compare state populations in the local eigenbasis.
 
 I then simulated both scenarios with $10^4$ semiclassical atoms using the Ehrenfest semiclassical method (Section~\ref{sterngerlachseparation}), the Markovian hidden-variable semiclassical method (Section~\ref{sec:algo_markovian}), and the mean auxiliary trajectories hidden-variable semiclassical method (Section~\ref{sec:algo_non_markovian}). The initial conditions were set by drawing positions and velocities randomly for each semiclassical particle from the position and velocity probability distributions implied by the Gaussian wavepacket.
 
