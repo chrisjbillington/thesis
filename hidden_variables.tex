@@ -1039,6 +1039,8 @@ v^\prime &\approx v - \frac{\upDelta t}{m}\nabla V_\eta(z),
 \end{align}
 where $z$, $v$ and $t$ are the position, velocity and time at the start of a timestep, $z^\prime$, $v^\prime$ and $t^\prime$ at the end of the timestep, and $\upDelta t = t^\prime - t$, is the timestep, which was $\upDelta t = 500\unit{ns}$. These methods are not particularly accurate, but were sufficient for these demonstrations and allowed the implementation to be simple. In particular, the ordering of the individual operators for evolving the state vector over a timestep was chosen to allow everything to the right of the decoherence factor be the unitary part of the evolution for the timestep, which could be input to Schr\"odinger theory as the unitary describing evolution in the local basis for that timestep.
 
+A summary of all the simulation results presented in this section is given in Table~\ref{table:figure_summary}.
+
 \subsubsection{Scenario I}
 
 In this scenario, a $^{87}$Rb atom begins as an initially stationary Gaussian wavepacket of width $600\unit{nm}$ (equal to the thermal de~Broglie wavelength at $T=0.2\unit{\upmu K}$) centred at $z_0 = -20\unit{\upmu m}$ in the Zeeman potential experienced by the $F=1$ ground-state manifold (Section~\ref{sec:zeeman_sublevels}) with the following magnetic field profile:
@@ -1068,12 +1070,62 @@ Scenario II is identical to scenario I, except that the magnetic field profile i
 \end{align}
 where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimum to the origin, such that the two minima are separated by $5\unit{\upmu m}$, and with the other variables having the same values as in scenario I. The adiabatic potentials resulting from the Zeeman Hamiltonian with this magnetic field are shown in~\figref{fig:scenario_2}. Results are shown in Figure~\ref{fig:scenario_two_markovian} for the Markovian model and Figure\ref{fig:scenario_two_aux} for the auxiliary trajectories model.
 
-% \afterpage{
-% \newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
-% \begin{table}
-%     \caption{Table.}\label{tab:summary_of_figures}
-% \end{table}
-% \restoregeometry}
+\afterpage{
+\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+\begin{landscape}% Landscape page
+
+\begin{table}
+    \centering
+    \begin{tabular}{|c|c|c|c|c||c|c|p{8cm}|}
+    \hline
+    \multirow{2}{2cm}{Figure} &
+    \multirow{2}{1.2cm}{Scenario} &
+    \multirow{2}{2cm}{Decoherence} &
+    \multirow{2}{1.5cm}{Projection} &
+    \multirow{2}{1.5cm}{$\upDelta \vec v$ ignored} &
+    \multicolumn{2}{c|}{Correct populations} & 
+    \multirow{2}{2cm}{Summary}\\
+    \cline{6-7}
+    & & & & & Total & Local & \\
+    \hhline{|=|=|=|=|=||=|=|=|}
+    Figure~\ref{fig:scenario_one_markovian} &
+        I & Markovian & Dirac delta & No & \cmark\cmark & \xmark &
+        Correct total populations despite inaccurate local populations.
+    \\
+    \hhline{|-|-|-|-|-||-|-|-|}
+    Figure~\ref{fig:scenario_one_aux} &
+        I & Aux.~trajectories & Dirac delta & No & \cmark\cmark & \cmark\cmark &
+        Aux.~trajectories method gives accurate local populations. 
+    \\
+    \hhline{|=|=|=|=|=||=|=|=|}
+    Figure~\ref{fig:scenario_two_markovian} &
+        II & Markovian & Dirac delta & No & \xmark & \xmark &
+        Scenario II exposes that Markovian decoherence gives inaccurate populations for two closely spaced non-adiabatic coupling regions.
+    \\
+    \hhline{|-|-|-|-|-||-|-|-|}
+    Figure~\ref{fig:scenario_two_aux} &
+        II & Aux.~trajectories & Dirac delta & No & \cmark\cmark & \cmark\cmark &
+        Aux.~trajectories decoherence is accurate even for the case of two closely spaced non-adiabatic coupling regions.
+    \\
+    \hhline{|=|=|=|=|=||=|=|=|}
+    Figure~\ref{fig:very_bad_gamma} &
+        II & Aux.~trajectories & Gaussian & No & \xmark & \xmark &
+        Separation in velocity space gives unphysically large decoherence rates when using Gaussian projections.
+    \\
+    \hhline{|-|-|-|-|-||-|-|-|}
+    Figure~\ref{fig:bad_gamma} &
+        II & Aux.~trajectories & Gaussian & Yes & \cmark & \cmark &
+        Ignoring the velocity difference between the wavepackets, but otherwise still using Gaussian projection yields better results than including velocity separation, but not as good as when using Dirac-delta based decoherence rates. 
+    \\
+    \hline
+    \end{tabular}
+    \caption{
+    Summary of results as shown in the six following in this section, specifying the scenario simulated and methods used for each, and a qualitative indication of the accuracy of the results, when compared to the Schr\"odinger wave equation. \cmark\cmark\ indicates excellent agreement, \cmark\ indicates good agreement, and \xmark\ poor agreement. The level of agreement with both the total populations and with local population---i.e.~the populations along specific classical trajectories---are indicated. A summary of the central point demonstrated by each simulation is given.
+    }\label{table:figure_summary}
+\end{table}
+\end{landscape}
+\restoregeometry
+}
 
 \afterpage{
 \newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
@@ -1088,7 +1140,7 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
     \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc/trajectories.pdf}
     }
-    \caption{Scenario I results for the approximate Markovian decoherence hidden-variable semiclassical method (Section~\ref{sec:algo_markovian}), compared to the Schr\"odinger wave equation and Ehrenfest semiclassical method. (a) The populations $N$ in each spin projection state (denoted $N_\pm$, $N_0$ for $m_F=\pm 1$ and $m_F=0$ respectively) over time, obtained for the Schr\"odinger wave equation ($N_\up{S}$) by integration in the local basis over all space, for the Ehrenfest semiclassical model ($N_\up{E}$) as an expectation value over all semiclassical atoms' internal state vectors, and for the hidden-variable semiclassical method ($N_\up{H}$) as the proportion of atoms with the hidden variable specifying each state at each moment of time. The lines ending just after $1\unit{ms}$ is due to atoms/amplitude leaving the integration region. There is good agreement between all methods during the first approach of the field minimum, though the Ehrenfest trajectories do not make a second approach within the simulated interval. The remaining deviations between the Schr\"odinger and hidden-variable curves are within the random variation of the stochastic method. (b) The state populations along specific trajectories corresponding to classical motion in $m_F=-1$ (top) for all time, switching to $m_F=0$ at the first field minimum (middle), and to $m_F=1$ (bottom). These were obtained by interpolation and normalisation of the Schr\"odinger wave equation results, and by selecting the semiclassical atoms making the chosen hidden-variable transitions closest to the field minimum (black lines). One trajectory resulting from the Ehrenfest model was chosen for comparison, its trajectory is close to those of the other two models until the field minimum, after which it diverges. This plot shows the shape of the decoherence curves and how our exponential approximation---while a poor fit---does have the correct timescale, and is better than the Ehrenfest method's absence of any decoherence. (c) Probability density of trajectories. Schr\"odinger wave equation results (shaded), and Ehrenfest and hidden-variable semiclassical results shown with a single contour line for a chosen density. Inset: The probability distributions at $1\unit{ms}$. There is good agreement between the hidden-variable semiclassical and Schr\"odinger wave equation results.}\label{fig:scenario_one_markovian}
+    \caption{Scenario I results for the approximate Markovian decoherence hidden-variable semiclassical method (Section~\ref{sec:algo_markovian}), compared to the Schr\"odinger wave equation and Ehrenfest semiclassical method. (a) The populations $N$ in each spin projection state (denoted $N_\pm$, $N_0$ for $m_F=\pm 1$ and $m_F=0$ respectively) over time, obtained for the Schr\"odinger wave equation ($N_\up{S}$) by integration in the local basis over all space, for the Ehrenfest semiclassical model ($N_\up{E}$) as an expectation value over all semiclassical atoms' internal state vectors, and for the hidden-variable semiclassical method ($N_\up{H}$) as the proportion of atoms with the hidden variable specifying each state at each moment of time. The lines ending just after $1\unit{ms}$ is due to atoms/amplitude leaving the integration region. There is good agreement between all methods during the first approach of the field minimum, though the Ehrenfest trajectories do not make a second approach within the simulated interval. The remaining deviations between the Schr\"odinger and hidden-variable curves are within the random variation of the stochastic method. (b) The local state populations along specific trajectories corresponding to classical motion in $m_F=-1$ (top) for all time, switching to $m_F=0$ at the first field minimum (middle), and to $m_F=1$ (bottom). These were obtained by interpolation and normalisation of the Schr\"odinger wave equation results, and by selecting the semiclassical atoms making the chosen hidden-variable transitions closest to the field minimum (black lines). One trajectory resulting from the Ehrenfest model was chosen for comparison, its trajectory is close to those of the other two models until the field minimum, after which it diverges. This plot shows the shape of the decoherence curves and how our exponential approximation---while a poor fit---does have the correct timescale, and is better than the Ehrenfest method's absence of any decoherence. (c) Probability density of trajectories. Schr\"odinger wave equation results (shaded), and Ehrenfest and hidden-variable semiclassical results shown with a single contour line for a chosen density. Inset: The probability distributions at $1\unit{ms}$. There is good agreement between the hidden-variable semiclassical and Schr\"odinger wave equation results.}\label{fig:scenario_one_markovian}
 \end{figure}
 \restoregeometry}
 
@@ -1122,7 +1174,7 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
     \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc_mirror/trajectories.pdf}
     }
-    \caption{Scenario II results for the approximate Markovian decoherence hidden-variable semiclassical method (Section~\ref{sec:algo_markovian}) compared to the Schr\"odinger wave equation. All subfigures as described in~\figref{fig:scenario_one_markovian}. There are two minima in the magnetic field, closely spaced near $z=0$. Here we see the breakdown of the Markovian model in the presence of a second region of non-adiabatic coupling that the atoms encounter before they have fully decohered after the first. (a) The inaccurate modelling of decoherence has resulted in the wrong relative populations and phases between the states when the atom encounters the second region of coupling, leading to completely different populations after it emerges from the second field minimum. (b) Populations along specific classical trajectories. Incorrect decoherence transients were inconsequential when there were no closely spaced field minima, but here the wrong decoherence results in the wrong initial conditions as the atom enter the region of non-adiabatic coupling near the second field minimum. If the minima were farther apart, the exponential decoherence would decay the system back to a single eigenstate, which would be correct. At shorter times, it matters whether the decoherence curves actually have the right shape. The semiclassical atoms near the centre of the wavepacket have very small population in $m_F=0$ and $m_F=-1$ states after the second region of coupling, as such there were no simulated atoms whose hidden variable remained in these two states after the first region of coupling. Plotted instead are results from atoms that made additional spin flips, but quickly transitioned back to the desired state. This can be seen as groups of multiple black lines indicating a number of closely spaced spin flips. As mentioned earlier, this is one disadvantage of Schr\"odinger theory: it often makes multiple transitions in a region of coupling in cases where Tully's fewest-switches algorithm would make only one, making it harder to pick out which atoms made certain transitions of interest. (c) Probability density of trajectories. The trajectories themselves are in excellent agreement with the Schr\"odinger wave equation---but there are the wrong proportion of atoms in each cluster of trajectories.}\label{fig:scenario_two_markovian}
+    \caption{Scenario II results for the approximate Markovian decoherence hidden-variable semiclassical method (Section~\ref{sec:algo_markovian}) compared to the Schr\"odinger wave equation. All subfigures as described in~\figref{fig:scenario_one_markovian}. There are two minima in the magnetic field, closely spaced near $z=0$. Here we see the breakdown of the Markovian model in the presence of a second region of non-adiabatic coupling that the atoms encounter before they have fully decohered after the first. (a) The inaccurate modelling of decoherence has resulted in the wrong relative populations and phases between the states when the atom encounters the second region of coupling, leading to completely different populations after it emerges from the second field minimum. (b) Local populations along specific classical trajectories. Incorrect decoherence transients were inconsequential when there were no closely spaced field minima, but here the wrong decoherence results in the wrong initial conditions as the atom enter the region of non-adiabatic coupling near the second field minimum. If the minima were farther apart, the exponential decoherence would decay the system back to a single eigenstate, which would be correct. At shorter times, it matters whether the decoherence curves actually have the right shape. The semiclassical atoms near the centre of the wavepacket have very small population in $m_F=0$ and $m_F=-1$ states after the second region of coupling, as such there were no simulated atoms whose hidden variable remained in these two states after the first region of coupling. Plotted instead are results from atoms that made additional spin flips, but quickly transitioned back to the desired state. This can be seen as groups of multiple black lines indicating a number of closely spaced spin flips. As mentioned earlier, this is one disadvantage of Schr\"odinger theory: it often makes multiple transitions in a region of coupling in cases where Tully's fewest-switches algorithm would make only one, making it harder to pick out which atoms made certain transitions of interest. (c) Probability density of trajectories. The trajectories themselves are in excellent agreement with the Schr\"odinger wave equation---but there are the wrong proportion of atoms in each cluster of trajectories.}\label{fig:scenario_two_markovian}
 \end{figure}
 \restoregeometry}
 
@@ -1170,7 +1222,7 @@ This leads to much better results, shown in~\figref{fig:bad_gamma} but still not
     \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc_aux_mirror_very_bad_gamma/trajectories.pdf}
     }
-    \caption{Scenario II results with the mean-auxiliary-trajectories hidden-variable semiclassical model (Section~\ref{sec:algo_non_markovian}), modified to use Gaussian-projection based decoherence rates, compared to the Schr\"odinger wave equation. All subplots as described in~\figref{fig:scenario_one_markovian}. (a) Populations after the first region of coupling are correct, but are clearly not correct after the second region of coupling. (b) We see that the cause of this is decoherence that is much too fast decoherence, with population of states other than that selected by the hidden variable decaying away at a rate as fast or faster than that at which it appears, leading to symmetrical profiles in population around the coupling regions. Of course, since this plot is comparing the state vector's populations to the exact wavefunction along specific trajectories, and the decoherence model for this simulation is one based on projecting onto Gaussians rather than Dirac deltas centred exactly on the trajectory, we should not expect them to exactly agree (for that we would need to compare to projections of the exact wavefunctions onto Gaussians). However the disagreement is stark enough to make our point despite this. (c) As with the other results with poor modelling of decoherence, the trajectories are correct but the populations are not.}\label{fig:very_bad_gamma}
+    \caption{Scenario II results with the mean-auxiliary-trajectories hidden-variable semiclassical model (Section~\ref{sec:algo_non_markovian}), modified to use Gaussian-projection based decoherence rates, compared to the Schr\"odinger wave equation. All subplots as described in~\figref{fig:scenario_one_markovian}. (a) Populations after the first region of coupling are correct, but are clearly not correct after the second region of coupling. (b) We see that the cause of this is decoherence that is much too fast decoherence, with population of states other than that selected by the hidden variable decaying away at a rate as fast or faster than that at which it appears, leading to symmetrical profiles in population around the coupling regions. Of course, since this plot is comparing the state vector's local populations to those of the exact wavefunction along specific trajectories, and the decoherence model for this simulation is one based on projecting onto Gaussians rather than Dirac deltas centred exactly on the trajectory, we should not expect them to exactly agree (for that we would need to compare to projections of the exact wavefunctions onto Gaussians). However the disagreement is stark enough to make our point despite this. (c) As with the other results with poor modelling of decoherence, the trajectories are correct but the populations are not.}\label{fig:very_bad_gamma}
 \end{figure}
 \restoregeometry}
 
@@ -1187,7 +1239,7 @@ This leads to much better results, shown in~\figref{fig:bad_gamma} but still not
     \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc_aux_mirror_bad_gamma/trajectories.pdf}
     }
-    \caption{Scenario II results with Gaussian-projection based decoherence under the assumption of zero relative wavenumber between the Gaussians being projected onto each other when computing the decoherence rate. This decoherence rate $\gamma^\up{\textsc{mm}}_{ij}|_{\vec k_{ij} = 0}(t)$ is used with the mean-auxiliary-trajectories hidden-variable semiclassical model (Section~\ref{sec:algo_non_markovian}), and the results compared to the Schr\"odinger wave equation. All subplots as described in~\figref{fig:scenario_one_markovian}. (a) State populations are in much closer agreement with the Schr\"odinger wave equation results than when we did not set the relative wavenumber of the Gaussians to zero (\figref{fig:very_bad_gamma}). However, they are still not as accurate as our Dirac-delta based decoherence model (\figref{fig:scenario_two_aux}). (b) As with~\figref{fig:very_bad_gamma}, we should not expect the Schr\"odinger wave equation results along the trajectories of the semiclassical atoms to agree with the state populations. However, for the three semiclassical atoms plotted (chosen as their trajectories were closest to the centre of the Gaussians and their transitions closest to the centre of the first region of coupling), they appear to agree quite well, including immediately after the second region of coupling. This may be a coincidence, or perhaps population transfers for atoms near the centre of the Gaussian are computed accurately with this decoherence model, but less accurately for atoms on other trajectories. (c). As usual, the trajectories are correct. We can see the minor error in populations in the inset, and it does not appear that the populations are more accurate in the centre as we just speculated. So any region of high accuracy in population transfer must be small enough to be hidden within the bins of the histogram, and is therefore not particularly of interest.}\label{fig:bad_gamma}
+    \caption{Scenario II results with Gaussian-projection based decoherence under the assumption of zero relative wavenumber between the Gaussians being projected onto each other when computing the decoherence rate. This decoherence rate $\gamma^\up{\textsc{mm}}_{ij}|_{\vec k_{ij} = 0}(t)$ is used with the mean-auxiliary-trajectories hidden-variable semiclassical model (Section~\ref{sec:algo_non_markovian}), and the results compared to the Schr\"odinger wave equation. All subplots as described in~\figref{fig:scenario_one_markovian}. (a) State populations are in much closer agreement with the Schr\"odinger wave equation results than when we did not set the relative wavenumber of the Gaussians to zero (\figref{fig:very_bad_gamma}). However, they are still not as accurate as our Dirac-delta based decoherence model (\figref{fig:scenario_two_aux}). (b) As with~\figref{fig:very_bad_gamma}, we should not expect the local Schr\"odinger wave equation populations along the trajectories of the semiclassical atoms to agree with the state populations. However, for the three semiclassical atoms plotted (chosen as their trajectories were closest to the centre of the Gaussians and their transitions closest to the centre of the first region of coupling), they appear to agree quite well, including immediately after the second region of coupling. This may be a coincidence, or perhaps population transfers for atoms near the centre of the Gaussian are computed accurately with this decoherence model, but less accurately for atoms on other trajectories. (c). As usual, the trajectories are correct. We can see the minor error in populations in the inset, and it does not appear that the populations are more accurate in the centre as we just speculated. So any region of high accuracy in population transfer must be small enough to be hidden within the bins of the histogram, and is therefore not particularly of interest.}\label{fig:bad_gamma}
 \end{figure}
 \restoregeometry}
 

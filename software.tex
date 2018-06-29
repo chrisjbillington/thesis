@@ -64,14 +64,16 @@ Upon receiving an \textsc{hdf5} file from \texttt{runmanager}, \texttt{BLACS} ad
 When processing of the shot queue is paused by the user or when the shot queue is empty, \texttt{BLACS} remains in `manual mode', in which the devices' outputs may be controlled in real-time by the user. The graphical interface of \texttt{BLACS} (shown in~\figref{fig:BLACS}) presents controls for the outputs of all devices, with each device and output channel labelled with its name as specified in a `connection table' file containing \texttt{labscript} code describing the connection hierarchy of all devices. \texttt{BLACS} automatically generates the graphical interface for each device based a specification of its capabilities by its driver class, resulting in a set of controls for digital, analogue, and frequency generator outputs labelled with their names and using the same unit conversions set in \texttt{labscript} code for use in manual mode. Driver code may add to this interface arbitrarily to add a graphical interface for other capabilities of the device. The \texttt{BLACS} queue can be paused, shots reordered or deleted, and the currently running shot can be aborted. The queue can be put in one of two repeat modes, such that either all queued shots, or only the final shot are repeated indefinitely.
 
 \afterpage{
-    \newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
-    \begin{sidewaysfigure}[th]
-    \centerfloat
-    \includegraphics[width=\textwidth]{figures/software/new_screenshots/blacs.png}
-    \caption{The interface of \texttt{BLACS}, showing the experiment queue to the left and manual controls of devices within a tabbed interface to the right. When a hardware-timed experiment is not in progress, outputs may be controlled manually using this interface. Presently the \textsc{gui} for four devices can be displayed simultaneously, though we plan to allow \texttt{BLACS} tabs to occupy their own windows or even reside on different computers to allow a better use of screen space. Output widgets are labelled with the names of the outputs they control and can be `locked' to temporarily disallow modifications to their state. Most of the interface for each device is automatically generated from the description of the device and its outputs given in \texttt{labscript} code, though the author of a device driver for the labscript suite is free to include any graphical elements in a device tab. This screenshot was taken using the current device configuration of the Monash KRb lab.}
-    \label{fig:BLACS}
-    \end{sidewaysfigure}
-    \restoregeometry
+\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+\begin{landscape}% Landscape page
+\begin{figure}[p]
+\centerfloat
+\includegraphics[width=9.2in]{figures/software/new_screenshots/blacs.png}
+\caption{The interface of \texttt{BLACS}, showing the experiment queue to the left and manual controls of devices within a tabbed interface to the right. When a hardware-timed experiment is not in progress, outputs may be controlled manually using this interface. Presently the \textsc{gui} for four devices can be displayed simultaneously, though we plan to allow \texttt{BLACS} tabs to occupy their own windows or even reside on different computers to allow a better use of screen space. Output widgets are labelled with the names of the outputs they control and can be `locked' to temporarily disallow modifications to their state. Most of the interface for each device is automatically generated from the description of the device and its outputs given in \texttt{labscript} code, though the author of a device driver for the labscript suite is free to include any graphical elements in a device tab. This screenshot was taken using the current device configuration of the Monash KRb lab.}
+\label{fig:BLACS}
+\end{figure}
+\end{landscape}
+\restoregeometry
 }
 
 \subsection{\texttt{lyse}}
@@ -81,14 +83,16 @@ Once a shot has been executed, \texttt{BLACS} optionally passes the shot file on
 The shot globals and analysis results for all shots received by \texttt{lyse} are maintained in a tabular data structure---a `dataframe' provided by the \texttt{pandas}~\cite{mckinney-proc-scipy-2010} Python package---which is browsable in the \texttt{lyse} interface. This table of data is available to a further list of analysis routines, called \emph{multi-shot routines}. This list of analysis routines is also run in sequence, but only once single-shot analysis has completed on all shots presently loaded into \texttt{lyse}. These routines can be analyses of relations between input parameters and analysis results of the shots, in order to say, measure a trend of the number of atoms in a \textsc{mot} as the magnetic field gradient was varied. Both single-shot and multi-shot routines can be run from within \texttt{lyse}, or externally by running Python manually. In this latter case, the shot file on which to run single shot analysis can be provided as a command line argument, and the dataframe analysed by multi-shot routines can be obtained from a running instance of \texttt{lyse} over the network. This is no different to what happens when multi-shot routines are run from within \texttt{lyse}: they are simply run by \texttt{lyse} with no input, and are expected to call a function \texttt{lyse.data()} to obtain the dataframe containing multi-shot data. Because of the way this is implemented, one can also open an interactive Python interpreter such as IPython~\cite{perez_ipython:_2007} on any computer on the same network, type \texttt{import lyse; df = lyse.data(hostname)} (where \texttt{hostname} is the network name of the computer running \texttt{lyse}) and begin interactively exploring the data using the \texttt{pandas} library, one of its great strengths.
 
 \afterpage{
-    \newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
-    \begin{sidewaysfigure}[th]
-    \centerfloat
-    \includegraphics[width=\textwidth]{figures/software/new_screenshots/lyse.png}
+\newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
+\begin{landscape}% Landscape page
+\begin{figure}[p]
+\centerfloat
+\includegraphics[width=8.7in]{figures/software/new_screenshots/lyse.png}
     \caption{The interface of \texttt{lyse}. To the top left is the list of single-shot routines, and to the right of it the multi-shot routines presently loaded (empty in this example). The list of shots is below them, showing some of the globals and analysis results of these shots. To the right is the output box where any textual output produced by analysis routines is displayed. Overlaid is a plot produced by a single-shot analysis routine. This screenshot was taken using shot files and an analysis routine script from the Monash KRb lab's two-dimensional turbulence experiment~\cite{johnstone_order_2018}}
-    \label{fig:lyse}
-    \end{sidewaysfigure}
-    \restoregeometry
+\label{fig:lyse}
+\end{figure}
+\end{landscape}
+\restoregeometry
 }
 
 \section{Design philosophy and advantages of approach}
