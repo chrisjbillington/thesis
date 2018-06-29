@@ -1,30 +1,30 @@
 % This page left intentionally blank:
-  \makeatletter \def\clearforchapter{
-    \clearpage
-    \if@twoside \ifodd\c@page\else
-        \newgeometry{left=2.54cm,bottom=1.5in,right=2.54cm,top=1.5in}
-        \hbox{}
-        \vfill
-        \begin{center}This page intentionally left blank
-        \end{center}
-        \vfill
-        \thispagestyle{cleared}
-        \restoregeometry%
-  \newpage\if@twocolumn\hbox{}\newpage\fi\fi\fi}\makeatother
+  % \makeatletter \def\clearforchapter{
+  %   \clearpage
+  %   \if@twoside \ifodd\c@page\else
+  %       \newgeometry{left=2.54cm,bottom=1.5in,right=2.54cm,top=1.5in}
+  %       \hbox{}
+  %       \vfill
+  %       \begin{center}This page intentionally left blank
+  %       \end{center}
+  %       \vfill
+  %       \thispagestyle{cleared}
+  %       \restoregeometry%
+  % \newpage\if@twocolumn\hbox{}\newpage\fi\fi\fi}\makeatother
 
-  \newcommand*{\blankpage}{%
-  \newgeometry{left=2.54cm,bottom=1.5in,right=2.54cm,top=1.5in}
-  \vspace*{\fill}
-  \begin{center}This page intentionally left blank
-  \end{center}
-  \vspace{\fill}
-  \restoregeometry}
-  \makeatletter
-  \renewcommand*{\cleardoublepage}{\clearpage\if@twoside \ifodd\c@page\else
-  \blankpage
-  \thispagestyle{empty}
-  \if@twocolumn\hbox{}\newpage\fi\fi\fi}
-  \makeatother
+  % \newcommand*{\blankpage}{%
+  % \newgeometry{left=2.54cm,bottom=1.5in,right=2.54cm,top=1.5in}
+  % \vspace*{\fill}
+  % \begin{center}This page intentionally left blank
+  % \end{center}
+  % \vspace{\fill}
+  % \restoregeometry}
+  % \makeatletter
+  % \renewcommand*{\cleardoublepage}{\clearpage\if@twoside \ifodd\c@page\else
+  % \blankpage
+  % \thispagestyle{empty}
+  % \if@twocolumn\hbox{}\newpage\fi\fi\fi}
+  % \makeatother
 
 
 % Caption name/title style:
@@ -87,10 +87,10 @@
 \immediate\write18{make hglog}
 \def\hginfo{\verbatiminput{hglog.txt}}
 \def\draftinfo{{\small \ttfamily \bfseries \color{red} \hginfo}}
-\makeevenfoot{plain}{\draftinfo}{\thepage}{}
-\makeoddfoot{plain}{\draftinfo}{\thepage}{}
-\makeevenfoot{headings}{\draftinfo}{}{}
-\makeoddfoot{headings}{\draftinfo}{}{}
+% \makeevenfoot{plain}{\draftinfo}{\thepage}{}
+% \makeoddfoot{plain}{\draftinfo}{\thepage}{}
+% \makeevenfoot{headings}{\draftinfo}{}{}
+% \makeoddfoot{headings}{\draftinfo}{}{}
 
 
 % Page margins:
