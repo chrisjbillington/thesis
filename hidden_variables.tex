@@ -103,9 +103,7 @@ For us, a hidden-variable theory is simply a way to convert a unitary matrix tha
 \end{quote}
 I adopt this definition of a hidden-variable theory for the purposes of this thesis.
 
-The language of the first definition is more tangible for us---we wish to \emph{assign an eigenstate} to our atoms (choose one of the internal states in order to decide which trajectory to follow), and have a \emph{stochastic evolution rule} for which eigenstate is chosen at any one time (allow the atom to begin taking a different trajectory if it makes transitions between states), probabilistically depending on the change in quantum populations of the states. But the second definition is more specific.
-
-The stochastic evolution rule is in the form of a stochastic matrix, with elements equal to transition probabilities for some time interval. And the rule should be in some way based on the unitary evolution that the quantum system evolves according to in the same interval of time, such that the initial and final probabilities of the stochastic matrix and unitary evolution agree. That is, if a quantum state $\ket\chi$ evolves in a certain basis $\{\ket{\chi_i}\}$according to a unitary $\hat U(t^\prime, t)$:
+The language of the first definition is more tangible for us---we wish to \emph{assign an eigenstate} to our atoms (choose one of the internal states in order to decide which trajectory to follow), and have a \emph{stochastic evolution rule} for which eigenstate is chosen at any one time (allow the atom to begin taking a different trajectory if it makes transitions between states), probabilistically depending on the change in quantum populations of the states. But the second definition is more specific: the stochastic evolution rule is in the form of a stochastic matrix, with elements equal to transition probabilities for some time interval. And the rule should be in some way based on the unitary evolution that the quantum system evolves according to in the same interval of time, such that the initial and final probabilities of the stochastic matrix and unitary evolution agree. That is, if a quantum state $\ket\chi$ evolves in a certain basis $\{\ket{\chi_i}\}$according to a unitary $\hat U(t^\prime, t)$:
 \begin{align}
 \left[\begin{matrix}
 c_1(t^\prime)\\c_2(t^\prime)\\c_3(t^\prime)\\\vdots
@@ -139,7 +137,10 @@ In essence, if quantum unitary evolution maps complex state amplitudes to comple
 \begin{align}\label{eq:conditional_probability}
 \Pr(\eta(t^\prime){=}i|\eta(t){=}j) = S_{ij}(U(t^\prime, t), \vec\chi(t)).
 \end{align}
-There are many ways to define functions $S$ that satisfy this condition. The simplest is to ignore the unitary completely and set $S_{ij} = \abs{c_i(t^\prime)}^2$, which yields:
+
+We are interested in such hidden variable theories because they can wrap a layer of classical interpretation around quantum evolution. In a semiclassical model, the internal state of an atom is modelled quantum mechanically, such that $\vec\chi(t)$ and $U(t^\prime, t)$ are known at every timestep. A stochastic hidden variable theory can take these quantities---a description of the quantum evolution at each timestep---and give us back transition probabilities that allow us to evolve a hidden variable $\eta(t)$. This hidden variable's value at any moment in time will be equal to the label, index or quantum number of one state in the chosen basis, with probability equal to that state's population. Since each eigenstate of the Hamiltonian is subject to a well-defined adiabatic potential, the hidden variable can be used to connect the quantum evolution of the atom's internal state to the requirement that the classical motion use a single, well-defined force at each moment. And it do so in a way consistent with the quantum probabilities of the internal state.
+
+There are many ways to define functions $S$ that satisfy the condition~\eqref{eq:conditional_probability}. The simplest is to ignore the unitary completely and set $S_{ij} = \abs{c_i(t^\prime)}^2$, which yields:
 \begin{align}
 \Pr(\eta(t^\prime){=}i|\eta(t){=}j) = \abs{c_{i}(t^\prime)}^2,
 \end{align}
