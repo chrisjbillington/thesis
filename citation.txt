@@ -1,0 +1,7 @@
+This thesis develops a new way of modelling atoms that behave quantum mechanically on the inside, but classically on the outside.
+
+Doing so makes modelling the salient physics tractable. [reword]
+
+Prior to this technique, treating the outside classically failed to reproduce a bedrock experiment of quantum mechanics–the Stern Gerlach experiment. 
+
+I also report on the conception and flourishing of a control and analysis software suite for experiments in quantum science. This open-source project empowers experimenters to compose human-readable narratives upon their apparatus and has been adopted by a dozen groups worldwide.
