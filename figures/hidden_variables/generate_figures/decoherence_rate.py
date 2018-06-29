@@ -87,8 +87,8 @@ exact_gamma = 1/(exact_overlap.sum(axis=0)*(t[1] - t[0]))
 
 plt.figure(figsize=(FIG_WIDTH,FIG_HEIGHT))
 
-plt.loglog(sigma, exact_gamma.real, 'k-', label=r'exact numeric (real)')
-plt.loglog(sigma, exact_gamma.imag, 'k--', label=r'exact numeric (imag)')
+plt.loglog(sigma, exact_gamma.real, 'k-', label=r'exact numeric (real)', linewidth=3)
+plt.loglog(sigma, exact_gamma.imag, 'k--', label=r'exact numeric (imag)', linewidth=3)
 
 plt.loglog(sigma, gamma_total_real, 'b-', label='approx analytic (real)')
 plt.loglog(sigma, gamma_total_imag, 'b--', label='approx analytic (imag)')

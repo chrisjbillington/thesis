@@ -33,11 +33,11 @@ where $\Gamma$ is the line width of the atomic transition. For the cooling trans
 
 Magneto-optical trapping, first demonstrated in 1987~\cite{raab_trapping_1987} comes from the realisation that a magnetic field can be used to \emph{spatially} vary the detuning from resonance that the atoms in the above mentioned arrangement of lasers see. This is possible due to the Zeeman effect~\cite{zeeman_influence_1897}, in which the wavelengths of atomic transitions are shifted in a magnetic field.
 
-If a field profile can be found which causes the transition to come closer to resonance as the atoms move away from a central point, then it forms a trap---atoms  that stray too far from the centre will absorb more strongly and be deflected back\footnote{The polarisations of the beams are such that absorption from the inward facing beam occurs, rather than from the one that would accelerate the atom further outward!}.
+If a field profile can be found that causes the transition to come closer to resonance as the atoms move away from a central point, then it forms a trap---atoms  that stray too far from the centre will absorb more strongly and be deflected back\footnote{The polarisations of the beams are such that absorption from the inward facing beam occurs, rather than from the one that would accelerate the atom further outward!}.
 
-The field configuration used in an anti-Helmholtz one: two coils opposite each other carrying opposing currents. The resulting magnetic field profile has a zero in the middle and increases in magnitude in all directions.
+The field configuration used is an anti-Helmholtz one: two coils opposite each other carrying opposing currents. The resulting magnetic field profile has a zero in the middle and increases in magnitude in all directions.
 
-With the Doppler beams off, this magnetic field still provides a trapping potential, due to the magnetic dipole interaction:
+With the Doppler beams off, this magnetic field still provides a spatially-varying potential, due to the magnetic dipole interaction:
 
 \begin{equation}
 V(\vec{r}) = -\vec \mu \cdot \vec B,
@@ -46,9 +46,9 @@ where $\vec\mu$ is the atomic magnetic moment, and $\vec B$ the magnetic field. 
 
 The optimal magnetic field gradient for forming a magneto-optical trap (\textsc{mot}) is lower than that required to merely hold atoms against gravity, and thus there is little if any magnetic trapping occurring in a \textsc{mot}---the trapping almost entirely results from the position-dependent rate of photon absorption caused by the Zeeman shift due to the magnetic field. To transfer atoms from a \textsc{mot} to a solely magnetic trap, the magnetic field gradient must be increased substantially.
 
-\subsection{Optical trapping}
+\subsection{Optical dipole trapping}
 
-Optical trapping on the other hand relies on the \emph{dipole force}, in which off-resonant light shifts the energy of the eigenstates of the combined atom-light system, the so called \emph{dressed states}. This energy shift, called the \emph{light shift}, depends on the intensity of the light, and so results in a potential that spatially varies as the intensity of the light. In the limit of large detuning (compared to Rabi frequency), the resulting energy shift for an atom in a ground state (the shift for an excited state is the same but with the opposite sign) is~\cite[p 8]{metcalf_laser_1999}:
+Optical dipole trapping on the other hand relies on the \emph{dipole force}, in which off-resonant light shifts the energy of the eigenstates of the combined atom-light system, the so called \emph{dressed states}. This energy shift, called the \emph{light shift}, depends on the intensity of the light, and so results in a potential that spatially varies as the intensity of the light. In the limit of large detuning (compared to Rabi frequency), the resulting energy shift for an atom in a ground state (the shift for an excited state is the same but with the opposite sign) is~\cite[p 8]{metcalf_laser_1999}:
 
 \begin{equation}
 \Delta E = \frac{\hbar\Omega^2}{4\delta}
@@ -56,12 +56,12 @@ Optical trapping on the other hand relies on the \emph{dipole force}, in which o
 
 where $\delta$ is the detuning from resonance and the Rabi frequency is:
 \begin{equation}
-\Omega=\frac{E_0}\hbar\matrixel{n^\prime}{e\hat{\vec r}}{n},
+\Omega=\frac{E_0}\hbar\matrixel{e}{e\hat{\vec r}}{g},
 \end{equation}
 
-where $E_0$ is the amplitude of the light's electric field and  $\matrixel{n^\prime}{e\hat{\vec r}}{n}$ is the transition dipole moment between the two states in a two-level system. This transition dipole moment can be either for two specific sublevels coupled by a laser, the calculation of which is detailed in section~\ref{sec:optical_dipole_transitions}, or an overall effective transition dipole moment between two manifolds containing many sublevels, if the detuning much larger compared to the spacing between the sublevels.
+where $E_0$ is the amplitude of the light's electric field and  $\matrixel{e}{e\hat{\vec r}}{g}$ is the transition dipole moment between the excited state $\ket{e}$ and ground state $\ket{g}$ of an effectively two-level system. This transition dipole moment can be either for two specific sublevels coupled by a laser, the calculation of which is detailed in section~\ref{sec:optical_dipole_transitions}, or an overall effective transition dipole moment between two manifolds containing many sublevels, if the detuning much larger compared to the spacing between the sublevels.
 
-With the potential proportional to $E_0^2$, and thus the light's intensity, the force the atom experiences is proportional to the light's intensity gradient. For this reason, the dipole force is also called the \emph{gradient force}. The name \emph{dipole force} comes from the fact that the force can be equivalently understood to arise from the polarisability of atoms in a light field, giving rise to a force identical to that which traps polarisable materials in optical tweezers~\cite{ashkin_acceleration_1970}.
+With the potential proportional to $E_0^2$, and thus the light's intensity, the force the atom experiences is proportional to the light's intensity gradient. For this reason, the dipole force is also called the \emph{gradient force}. The name \emph{dipole force} comes from the fact that the force can be equivalently understood to arise from the polarisability of atoms in a light field, in which an optically-induced dipole moment gives rise to a force that can be used to trap polarisable materials in optical tweezers~\cite{ashkin_acceleration_1970}.
 
 \subsection{Polarisation gradient cooling}
 
@@ -81,12 +81,12 @@ The cloud is given some time to rethermalise and the knife\footnote{So called be
 
 \subsection{Feshbach resonances}\label{sec:feshbach}
 
-A Feshbach resonance~\cite{chin_feshbach_2010} is an enhancement of the interparticle interaction strength when when a certain magnetic field strength is applied.\footnote{Feshbach resonances can also be induced optically and with \rf\, but magnetic resonances are the most commonly used.} This phenomenon was first discovered in ultracold atoms in 1998~\cite{inouye_observation_1998}, and is now a staple of cold atom experiments.
+A Feshbach resonance~\cite{chin_feshbach_2010} is an enhancement of the interparticle interaction strength when when a certain magnetic field strength is applied.\footnote{Feshbach resonances can also be induced optically and with \rf\, but magnetic resonances are the most commonly used.} This phenomenon was first studied in the context of ultracold atoms in 1993~\cite{tiesinga_threshold_1993}, experimentally demonstrated in 1998~\cite{inouye_observation_1998}, and is now a staple of cold atom experiments.
 
 \begin{figure}%[htb]
 \begin{center}
 \includegraphics[width=0.5\textwidth]{figures/unsorted/feshbach.png}
-\caption{When atoms approach each other with spins aligned, they are in the \emph{open channel}. In this channel they are unbound, but do not have enough energy to be free in the other channel---the \emph{closed channel}. In the close range however, the atoms may have energy corresponding to a bound (molecular) state of the closed channel, a resonance which causes a divergence in the scattering length. The energy difference between the two channels can be tuned with a magnetic field and so these resonances can be induced in a wide range of situations.}\label{fig:feshbach}
+\caption{When atoms approach each other with spins aligned, they are in the \emph{open channel}. In this channel they are unbound, but do not have enough energy to be free in the other channel---the \emph{closed channel}. In the close range however, the atoms may have energy corresponding to a bound (molecular) state of the closed channel, a resonance that causes a divergence in the scattering length. The energy difference between the two channels can be tuned with a magnetic field and so these resonances can be induced in a wide range of situations.}\label{fig:feshbach}
 \end{center}
 \end{figure}
 The interparticle interaction mentioned above:
@@ -111,12 +111,11 @@ A particular Feshbach resonance of interest is shown in~\figref{fig:feshKRb}, an
 
 \section{Mean-field theory: The Gross--Pitaevskii equation and vortices}\label{sec:mean_field_theory}
 
-Bose-condensates are described well by \emph{mean field} theory, whereby the many-body wavefunction is approximated by a product of identical single-particle wavefunctions. Indeed, that the majority of the atoms are in the same quantum state is one of the defining features of \bec. The effect of interparticle interactions is included as a nonlinear term in the Schr\"odinger equation for the single particle wavefunctions, known as the Gross--Pitaevskii equation:
+Bose-condensates are described well by \emph{mean-field} theory, whereby the many-body wavefunction is approximated by a product of identical single-particle wavefunctions. Indeed, that the majority of the atoms are in the same quantum state is one of the defining features of \bec. The effect of interparticle interactions is included as a nonlinear term in the Schr\"odinger equation for the single particle wavefunctions, known as the Gross--Pitaevskii equation:
 
 \begin{align}
 \ii\hbar\pdv{t} \Psi(\vec r, t) = \left[-\frac{\hbar^2}{2m}\nabla^2 + V(\vec{\vec r}) + g|\Psi(\vec r, t)|^2\right]\Psi(\vec r, t),
 \end{align}
-
 where $g$ characterises the strength of the interparticle interactions\footnote{The nonlinear constant $g$ is usually positive---having the effect of stabilising \bec s by self-repulsion.}, and $\Psi = \sqrt{N}\Psi_\up{single}$ is the single-particle wavefunction scaled by the square root of the number of particles\footnote{Thus giving it the property that $|\Psi|^2$ is the particle density.}.
 
 In the hydrodynamic formulation of quantum mechanics~\cite{madelung_quantentheorie_1927}, the flow velocity of a spatial wavefunction can be defined by considering the probability current to be a product of density and velocity. This allows us to define the superfluid velocity of a \bec\ as:
@@ -135,7 +134,7 @@ At a vortex core, the atom density of a \bec\ must go to zero. This can be intui
 
 \section{The $^{87}$Rb $\up{D}$ line}\label{sec:the_rubidium_D_line}
 
-We atomic physicists do our theory work at an intermediate level of abstraction, at which many quantities and systems of interest can be computed and simulated with accurate models using standard quantum mechanics, but with models that are not fully a-priori. Instead, the Hamiltonians we feed to the machinery of quantum mechanics encapsulate some of the details we are not interested in or that are too hard to compute, with the link between the underlying layers of reductionism and the higher layer usually provided by experimentally measured values rather than calculations from fundamental physics. In this way we can readily compute results about the atoms we are interested in by treating them as simpler systems than they actually are, with some of the underlying details encapsulated by terms in an effective Hamiltonian for the dynamics that we are interested in.
+We atomic physicists do our theory work at an intermediate level of abstraction, at which many quantities and systems of interest can be computed and simulated with accurate models using standard quantum mechanics, but with models that are not fully a priori. Instead, the Hamiltonians we feed to the machinery of quantum mechanics encapsulate some of the details we are not interested in or that are too hard to compute, with the link between the underlying layers of reductionism and the higher layer usually provided by experimentally measured values rather than calculations from fundamental physics. In this way we can readily compute results about the atoms we are interested in by treating them as simpler systems than they actually are, with some of the underlying details encapsulated by terms in an effective Hamiltonian for the dynamics that we are interested in.
 
 In this section I'll summarise what the $^{87}$Rb $\up{D}$ line looks like from the perspective of a cold atom physicist, building up a Hamiltonian containing all 32 sublevels of the ground and first excited state of $^{87}$Rb including fine structure, hyperfine structure, interaction with a magnetic field, and optical transitions between states. This Hamiltonian is the starting point for any calculations regarding cooling, trapping, and coherent control of $^{87}$Rb, and for other alkali earth metals is much the same.
 
@@ -153,7 +152,6 @@ This fine structure is treated entirely empirically for our purposes, and so our
 \hbar\omega_{\up{D}_1} \hat1_{P_{1/2}} \oplus
 \hat 0_{S_{1/2}},
 \end{align}
-
 where $\hat1_{P_{3/2}}$, $\hat1_{P_{1/2}}$, and $\hat 0_{S_{1/2}}$ are identity and zero operators each acting on the subspace of states within the $P_{\frac32}$, $P_{\frac12}$, and $S_{\frac12}$ manifolds respectively, and $\oplus$ is the direct sum.\footnote{Not to be confused with the Kronecker sum, with which it shares notation. The direct sum concatenates matrices as blocks, producing a larger, block-diagonal matrix with dimension equal to the \emph{sum} of the dimensions of the matrices being direct-summed, whereas the Kronecker sum is the regular sum of matrices after each has been multiplied using the Kronecker-product with identity matrices with sizes of the other matrices in the sum, producing matrices with dimension equal to the \emph{product} of those being summed.} The matrix representation $H_\up{fs}$ of $\hat H_\up{fs}$ in the basis in which it is diagonal (which we will call the $\{\ket{L_J}\}$ basis, since $L$ and $J$ are good quantum numbers\footnote{A \emph{good quantum number} is a number that can be used to label (not necessarily uniquely) an energy eigenstate, and on which the energy eigenvalue of that state depends. Saying $J$ and $L$ are good quantum numbers is saying that the eigenstates of the overall Hamiltonian are also eigenstates of $\hat L^2$ and $\hat J^2$, since eigenstates of these two operators can be specified by stating their quantum numbers $L$ and $J$.} for specifying one of the three states, which we write with the spectroscopic notation letter---$S$ or $P$---corresponding to the value of $L$ in place of its numerical value) is
 \begin{align}
 H_\up{fs}  = 
@@ -506,7 +504,7 @@ which we will abbreviate as
 \matrixel{n^\prime}{\hat H_\up{d}}{n} = 
 \matrixel{n^\prime}{e\vec{\hat r}\cdot\vec E}{n},
 \end{align}
-writing the initial state $\ket{L_J\ F\ m_F}=\ket{n}$ and final state $\ket{L^\prime_{J^\prime}\ F^\prime\ m_F^\prime}=\ket{n^\prime}$, encapsulating the set of quantum numbers as a single index\footnote{The choice of the symbol $n$ is unrelated to the principal quantum number, which does not vary between the states of the $D$ line.} for the state.
+writing the initial state $\ket{L_J\ F\ m_F}=\ket{n}$ and final state $\ket{L^\prime_{J^\prime}\ F^\prime\ m_F^\prime}=\ket{n^\prime}$, encapsulating the set of quantum numbers as a single index\footnote{The choice of the symbol $n$ is unrelated to the principal quantum number, which does not vary between the states of the $\up{D}$ line.} for the state.
 
 \subsubsection{Plane waves}
 
@@ -771,7 +769,7 @@ allowing for a rotating wave approximation and definition of a Rabi frequency as
 \end{align}
 where $\Omega_{F^\prime\ m_F^\prime\ F\ m_F}(i, B_0) = -\hbar B_0 \matrixel{F^\prime\ m_F^\prime}{\hat H_\up{Z}(i, B_0)}{F\ m_F}$.
 
-The required linear combinations of the above matrix elements can be used to compute matrix elements for \textsc{rf} waves of different phases, or circular polarisations. It is also often practical, when numerically modelling magnetic dipole transitions, particularly between Zeeman sublevels, to simply include the magnetic field vector as a function as time and evaluate the entire matrix $H_\up{Z}$ directly in whichever basis one is working, rather than decomposing it into fixed frequency waves. This is particularly useful for frequency sweeps and other complex magnetic field sequences, which may not be good candidates for the rotating wave approximation, or may not be well represented well as single-frequency waves at all. This is most practical for transitions between Zeeman sublevels, since the energy splittings can be on the order of MHz and therefore well sampled by numerics with nanosecond to microsecond sized timesteps, which are feasible to numerically compute. Microwave transitions, being $6.8 \unit{GHz}$ in $^{87}$Rb would require sub-nanosecond timesteps to simulate in this direct way, and so is more taxing but still within the range of possibility, as opposed to optical transitions which are in the hundreds of THz and impractical to simulate without rotating wave approximations and the assumption of monochromatic waves as treated in the previous subsection.
+The required linear combinations of the above matrix elements can be used to compute matrix elements for \textsc{rf} waves of different phases, or circular polarisations. It is also often practical, when numerically modelling magnetic dipole transitions, particularly between Zeeman sublevels, to simply include the magnetic field vector as a function as time and evaluate the entire matrix $H_\up{Z}$ directly in whichever basis one is working, rather than decomposing it into fixed frequency waves. This is particularly useful for frequency sweeps and other complex magnetic field sequences, which may not be good candidates for the rotating wave approximation, or may not be represented well as single-frequency waves at all. This is most practical for transitions between Zeeman sublevels, since the energy splittings can be on the order of MHz and therefore well sampled by numerics with nanosecond to microsecond sized timesteps, which are feasible to numerically compute. Microwave transitions, being $6.8 \unit{GHz}$ in $^{87}$Rb would require sub-nanosecond timesteps to simulate in this direct way, and so is more taxing but still within the range of possibility, as opposed to optical transitions which are in the hundreds of THz and impractical to simulate without rotating wave approximations and the assumption of monochromatic waves as treated in the previous subsection.
 
 \subsection{Summary}
 We are now finally at the end of our assembly of the Hamiltonian for the $^{87}$Rb $\up{D}$ line in the presence of magnetic fields and monochromatic plane waves. Armed with this Hamiltonian and the ability to compute its coupling terms for various lasers, the atomic physicist can predict and simulate much of what is needed for the basics of laser cooling, trapping, and coherent control.
