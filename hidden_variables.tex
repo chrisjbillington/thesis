@@ -999,7 +999,7 @@ The evolution of the state variables for each atom from time $t$ to $t^\prime = 
     \begin{align}
     \hat\Gamma^\up{\textsc{mmdd}}_\eta(t) = \sum_i\ketbra{\chi_i(\vec r_\eta, t)}{\chi_i(\vec r_\eta, t)}\gamma^\up{\textsc{mmdd}}_{\eta i}(t),
     \end{align}
-    where $\gamma^\up{\textsc{mmdd}}_{ij}(t)$ are the minimal-memory non-Markovian decoherence rates given by~\eqref{eq:minimal_memory_decoherence_rate_dd}; $\gamma^\up{\textsc{mmdd}}_{\eta j}(t)$ comprising the diagonals of $\hat\Gamma^\up{\textsc{mmdd}}_\eta(t)$ if working in the local eigenbasis along the main trajectory. When computing $\gamma^\up{\textsc{mmdd}}_\eta(t)$, clip its real part from below to zero. Although such recoherence can in principle be physically meaningful, it can arise out of tiny amplitudes of states with auxiliary trajectories far from the main trajectory, and is hence subject to large floating-point error.\footnote{Large error in \emph{positive} (real parts of) decoherence rates in the same context is not a problem, as the state amplitudes are already very close to zero, so the accuracy of the rate at which they more closely approach zero is of no consequence.} I have not observed this problem with the Dirac-delta based decoherence rates, but it does seem to appear if the Gaussian-projection based decoherence rates are used.
+    where $\gamma^\up{\textsc{mmdd}}_{ij}(t)$ are the minimal-memory non-Markovian decoherence rates given by~\eqref{eq:minimal_memory_decoherence_rate_dd}; $\gamma^\up{\textsc{mmdd}}_{\eta j}(t)$ comprising the diagonals of $\hat\Gamma^\up{\textsc{mmdd}}_\eta(t)$ if working in the local eigenbasis along the main trajectory. When computing $\gamma^\up{\textsc{mmdd}}_\eta(t)$, clip its real part from below to zero. Although such recoherence can in principle be physically meaningful, it can arise out of tiny amplitudes of states with auxiliary trajectories far from the main trajectory, and is hence subject to large floating-point error.\footnote{Large error in \emph{positive} (real parts of) decoherence rates in the same context is not a problem, as the state amplitudes are already very close to zero, so the accuracy of the rate at which they more closely approach zero is of no consequence.} I have not observed this problem with the Dirac delta based decoherence rates, but it does seem to appear if the Gaussian-projection based decoherence rates are used.
 
     \item Normalise the internal state vector to unit norm:
     \begin{align}
@@ -1074,54 +1074,50 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
 \afterpage{
 \newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
 \begin{landscape}% Landscape page
-
 \begin{table}
+    \renewcommand{\arraystretch}{1.5}
+    \setlength\heavyrulewidth{1.5pt}
     \centering
-    \begin{tabular}{|c|c|c|c|c||c|c|p{8cm}|}
-    \hline
-    \multirow{2}{2cm}{Figure} &
-    \multirow{2}{1.2cm}{Scenario} &
-    \multirow{2}{2cm}{Decoherence} &
-    \multirow{2}{1.5cm}{Projection} &
-    \multirow{2}{1.5cm}{$\upDelta \vec v$ ignored} &
-    \multicolumn{2}{c|}{Correct populations} & 
-    \multirow{2}{2cm}{Summary}\\
-    \cline{6-7}
+    \begin{tabular}{cccccccp{8cm}}
+    \toprule
+    &
+    Scenario &
+    Decoherence &
+    Projection &
+    Ignore $\Delta \vec v$? &
+    \multicolumn{2}{c}{Correct populations} & 
+    Summary \\ \cmidrule{6-7}
     & & & & & Total & Local & \\
-    \hhline{|=|=|=|=|=||=|=|=|}
+    \midrule
     Figure~\ref{fig:scenario_one_markovian} &
         I & Markovian & Dirac delta & No & \cmark\cmark & \xmark &
         For a single region of non-adiabatic coupling, Markovian decoherence gives correct total populations despite inaccurate local populations.
     \\
-    \hhline{|-|-|-|-|-||-|-|-|}
     Figure~\ref{fig:scenario_one_aux} &
         I & Aux.~trajectories & Dirac delta & No & \cmark\cmark & \cmark\cmark &
-        In addition accurate total populations, Aux.~trajectories method also gives accurate local populations for a single region of non-adiabatic coupling.
+        In addition to accurate total populations, the auxiliary trajectories method gives accurate local populations for a single region of non-adiabatic coupling.
     \\
-    \hhline{|=|=|=|=|=||=|=|=|}
+    \arrayrulecolor{black!30} \midrule
     Figure~\ref{fig:scenario_two_markovian} &
         II & Markovian & Dirac delta & No & \xmark & \xmark &
         Scenario II exposes that Markovian decoherence gives inaccurate total populations for two closely spaced non-adiabatic coupling regions.
     \\
-    \hhline{|-|-|-|-|-||-|-|-|}
     Figure~\ref{fig:scenario_two_aux} &
         II & Aux.~trajectories & Dirac delta & No & \cmark\cmark & \cmark\cmark &
-        Aux.~trajectories decoherence is accurate even for the case of two closely spaced non-adiabatic coupling regions.
-    \\
-    \hhline{|=|=|=|=|=||=|=|=|}
+        Auxiliary-trajectories decoherence is accurate even for the case of two closely spaced non-adiabatic coupling regions.
+    \\ \midrule
     Figure~\ref{fig:very_bad_gamma} &
         II & Aux.~trajectories & Gaussian & No & \xmark & \xmark &
         Separation in velocity space gives unphysically large decoherence rates when using Gaussian projections.
     \\
-    \hhline{|-|-|-|-|-||-|-|-|}
     Figure~\ref{fig:bad_gamma} &
         II & Aux.~trajectories & Gaussian & Yes & \cmark & \cmark &
-        Ignoring the velocity difference between the wavepackets, but otherwise still using Gaussian projection yields better results than including velocity separation, but not as accurate as when using Dirac-delta based projection. 
+        Ignoring the velocity difference between the wavepackets, but otherwise using Gaussian projection yields better results than including velocity separation, but not as accurate as when using Dirac delta based projection.
     \\
-    \hline
+    \arrayrulecolor{black} \bottomrule
     \end{tabular}
     \caption{
-    Summary of results as shown in the six figures following this table, specifying the scenario simulated and methods used for each, and a qualitative indication of the accuracy of the results, when compared to the Schr\"odinger wave equation. \cmark\cmark\ indicates excellent agreement, \cmark\ indicates good agreement, and \xmark\ poor agreement. The level of agreement with both the total populations and with local population---i.e.~the population along specific classical trajectories---are indicated. A summary of the conclusions drawn from each simulation is given.
+    Summary of the following six figures, specifying the simulated scenario and methods used for each, and a qualitative indication of the accuracy of the results, when compared to the Schr\"odinger wave equation. The level of agreement with both the total populations (subfigures (a)) and local populations along specific classical trajectories (subfigures (b)) is indicated as excellent (\cmark\cmark), fair (\cmark), or poor (\xmark). Abbreviated conclusions from each simulation are provided. Figures~\ref{fig:very_bad_gamma} and~\ref{fig:bad_gamma} are both based on Gaussian projections, with the latter ignoring the contribution of velocity separation to decoherence similarly to Shenvi \emph{et al.}~\cite{doi:10.1063/1.3575588}. Both are less accurate than my method of computing decoherence rates by projecting onto Dirac deltas, which does not suffer from the velocity-separation problem.
     }\label{table:figure_summary}
 \end{table}
 \end{landscape}
@@ -1200,7 +1196,7 @@ where $z_\up{fieldmin} = 2.5\unit{\upmu m}$ is the distance of each field minimu
 
 \subsection{Gaussian projection results}
 
-Here I demonstrate the difference between the above results, which use the Dirac-delta based decoherence rates (Section~\ref{sec:dirac_deltas}), with what one obtains if projecting onto a Gaussian instead as originally proposed in Sections~\ref{sec:markovian_decoherence} and~\ref{sec:spawned_trajectories}. Here I only use the mean-auxiliary-trajectories method; though as argued in Section~\ref{sec:dirac_deltas}, the Markovian decoherence rate has its problems too when derived assuming Gaussian projections.
+Here I demonstrate the difference between the above results, which use the Dirac delta based decoherence rates (Section~\ref{sec:dirac_deltas}), with what one obtains if projecting onto a Gaussian instead as originally proposed in Sections~\ref{sec:markovian_decoherence} and~\ref{sec:spawned_trajectories}. Here I only use the mean-auxiliary-trajectories method; though as argued in Section~\ref{sec:dirac_deltas}, the Markovian decoherence rate has its problems too when derived assuming Gaussian projections.
 
 For these results I simulated scenario II, in which there are two closely spaced magnetic field minima, using two different decoherence rates. In the first, I take the decoherence rate $\gamma^\up{\textsc{mm}}_{ij}(t)$ given by~\eqref{eq:mm_decoherence_rate} at face value, velocity-space separation included. This leads to poor results as the decoherence is clearly too fast, as shown in~\figref{fig:very_bad_gamma}.
 
@@ -1208,7 +1204,7 @@ In the second, I make a similar change to that of Shenvi \emph{et al.}~\cite{doi
 \begin{align}
 \gamma^\up{\textsc{mm}}_{ij}|_{\vec k_{ij} = 0}(t) = \frac{1}{4\sigma^2}\vec r_{ij}(t)\cdot\vec v_{ij}(t).
 \end{align}
-This leads to much better results, shown in~\figref{fig:bad_gamma} but still not as good as the Dirac-delta projection based decoherence rate, shown in~\figref{fig:scenario_two_aux}. 
+This leads to much better results, shown in~\figref{fig:bad_gamma} but still not as good as the Dirac delta based decoherence rate, shown in~\figref{fig:scenario_two_aux}. 
 
 \afterpage{
 \newgeometry{left=1in,bottom=1.5in,right=1in,top=1.5in}
@@ -1240,7 +1236,7 @@ This leads to much better results, shown in~\figref{fig:bad_gamma} but still not
     \subfloat[]{
     \includegraphics{figures/hidden_variables/hvsc_aux_mirror_bad_gamma/trajectories.pdf}
     }
-    \caption{Scenario II results with Gaussian-projection based decoherence under the assumption of zero relative wavenumber between the Gaussians being projected onto each other when computing the decoherence rate. This decoherence rate $\gamma^\up{\textsc{mm}}_{ij}|_{\vec k_{ij} = 0}(t)$ is used with the mean-auxiliary-trajectories hidden-variable semiclassical model (Section~\ref{sec:algo_non_markovian}), and the results compared to the Schr\"odinger wave equation. All subplots as described in~\figref{fig:scenario_one_markovian}. (a) State populations are in much closer agreement with the Schr\"odinger wave equation results than when we did not set the relative wavenumber of the Gaussians to zero (\figref{fig:very_bad_gamma}). However, they are still not as accurate as our Dirac-delta based decoherence model (\figref{fig:scenario_two_aux}). (b) As with~\figref{fig:very_bad_gamma}, we should not expect the local Schr\"odinger wave equation populations along the trajectories of the semiclassical atoms to agree with the state populations. However, for the three semiclassical atoms plotted (chosen as their trajectories were closest to the centre of the Gaussians and their transitions closest to the centre of the first region of coupling), they appear to agree quite well, including immediately after the second region of coupling. This may be a coincidence, or perhaps population transfers for atoms near the centre of the Gaussian are computed accurately with this decoherence model, but less accurately for atoms on other trajectories. (c). As usual, the trajectories are correct. We can see the minor error in populations in the inset, and it does not appear that the populations are more accurate in the centre as we just speculated. So any region of high accuracy in population transfer must be small enough to be hidden within the bins of the histogram, and is therefore not particularly of interest.}\label{fig:bad_gamma}
+    \caption{Scenario II results with Gaussian-projection based decoherence under the assumption of zero relative wavenumber between the Gaussians being projected onto each other when computing the decoherence rate. This decoherence rate $\gamma^\up{\textsc{mm}}_{ij}|_{\vec k_{ij} = 0}(t)$ is used with the mean-auxiliary-trajectories hidden-variable semiclassical model (Section~\ref{sec:algo_non_markovian}), and the results compared to the Schr\"odinger wave equation. All subplots as described in~\figref{fig:scenario_one_markovian}. (a) State populations are in much closer agreement with the Schr\"odinger wave equation results than when we did not set the relative wavenumber of the Gaussians to zero (\figref{fig:very_bad_gamma}). However, they are still not as accurate as our Dirac delta based decoherence model (\figref{fig:scenario_two_aux}). (b) As with~\figref{fig:very_bad_gamma}, we should not expect the local Schr\"odinger wave equation populations along the trajectories of the semiclassical atoms to agree with the state populations. However, for the three semiclassical atoms plotted (chosen as their trajectories were closest to the centre of the Gaussians and their transitions closest to the centre of the first region of coupling), they appear to agree quite well, including immediately after the second region of coupling. This may be a coincidence, or perhaps population transfers for atoms near the centre of the Gaussian are computed accurately with this decoherence model, but less accurately for atoms on other trajectories. (c). As usual, the trajectories are correct. We can see the minor error in populations in the inset, and it does not appear that the populations are more accurate in the centre as we just speculated. So any region of high accuracy in population transfer must be small enough to be hidden within the bins of the histogram, and is therefore not particularly of interest.}\label{fig:bad_gamma}
 \end{figure}
 \restoregeometry}
 
@@ -1252,7 +1248,7 @@ The methods presented in this chapter give acceptable results in different scena
 
 The problem of velocity separation of wavepackets causing unexpected and undesired additional decoherence is resolved by instead modelling a projected state vector that is a projection of the multi-component wavefunction onto a Dirac delta---rather than a Gaussian wavepacket---equivalent to evaluating the wavefunction at a specific point in space following a classical trajectory over time (Section~\ref{sec:dirac_deltas}). The total multi-component wavefunction is still modelled as a collection of Gaussian wavepackets following classical trajectories. This is a more natural way to obtain state vectors that are statistically representative of the underlying multi-component wavefunctions we are approximating. As this is not based on wavepacket overlaps integrals, population in a state with a different phase gradient is not treated as having vanished merely because it has an inhomogeneous phase---instead we obtain some population, and some (perhaps rapidly varying) phase.
 
-The above solution to the velocity separation problem, along with my method of averaging auxiliary trajectories in order to model only one trajectory per internal state of the atom, are modest improvements over similar methods such as that by Shenvi \emph{et al.}~\cite{doi:10.1063/1.3575588}. The decoherence rate that results when Shenvi \emph{et al.}~remove velocity separation from their decoherence calculation are still based on the overlap of two Gaussians, and is therefore still a kind of average over the entire wavepacket. The real part of the resulting decoherence rate is different from that presented here, based on Dirac deltas, by a factor of two, and lacks an imaginary part (velocity separation in my model still causes a phase shift). As I've argued, using the value at the centre of the wavepacket is more natural than averaging, as this gives you something closer to a value the wavefunction actually has at some point in space, and this is borne out by the simulation results in the previous section.
+The above solution to the velocity separation problem, along with my method of averaging auxiliary trajectories in order to model only one trajectory per internal state of the atom, are modest improvements over similar methods such as that by Shenvi \emph{et al.}~\cite{doi:10.1063/1.3575588}. The decoherence rate that results when Shenvi \emph{et al.}~remove velocity separation from their decoherence calculation are still based on the overlap of two Gaussians, and is therefore still a kind of average over the entire wavepacket. The real part of the resulting decoherence rate is different from that presented here, based on Dirac deltas, by a factor of two, and lacks an imaginary part (velocity separation in my model still causes a phase shift). As I've argued, using the value at the centre of the wavepacket is more natural than averaging, as this gives you something closer to a value the wavefunction actually has at some point in space, and this is borne out by the simulation results in the previous section. This improvement is particularly relevant to cold-atom physics, as the velocity-separation problem only rears its head for large wavepackets, and thus low temperatures.
 
 Schr\"odinger theory has not been applied to surface-hopping prior to this work, and I've shown in the results section of this chapter that it gives good results. However, as discussed in Section~\ref{sec:schrodinger_theory_numerics}, it is considerably expensive to compute transition probabilities from, though it can take as input arbitrary unitaries, allowing one to compute transition probabilities consistent with quantum evolution over arbitrary time intervals, rather than integrating infinitesimal transition probabilities over a finite time interval as with Tully's fewest-switches. 
 
