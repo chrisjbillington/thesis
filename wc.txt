@@ -1,7 +1,7 @@
 Total
-Words in text: 66660
+Words in text: 66685
 Words in headers: 487
-Words outside text (captions, etc.): 11911
+Words outside text (captions, etc.): 11946
 Number of headers: 132
 Number of floats/tables/figures: 56
 Number of math inlines: 2119
@@ -15,5 +15,5 @@ Subcounts:
   23265+155+3406 (31/15/826/137) File(s) total: numerics.tex
   9364+84+1622 (26/7/7/0) File(s) total: software.tex
   7285+44+1990 (14/16/220/14) File(s) total: velocimetry.tex
-  17106+118+3491 (33/15/492/108) File(s) total: hidden_variables.tex
+  17131+118+3526 (33/15/492/108) File(s) total: hidden_variables.tex
 

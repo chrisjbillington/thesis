@@ -344,17 +344,23 @@ The equations of motion were solved using fourth order Runge--Kutta integration 
 \subsection{Results}
 
 \begin{table}
-    \renewcommand{\arraystretch}{2.0}
+    \renewcommand{\arraystretch}{1.5}
+    \setlength\heavyrulewidth{1.5pt}
     \makebox[\textwidth][c]{
-    \begin{tabular}{|c|p{3.5cm}|r|r|c|}\hline
-    Type & Transition(s) & Detuning & \shortstack{\\Intensity\\(per beam)} & Polarisation\\\hline
-    \shortstack{\\cooling\\(standing wave)} & $|S_{1/2},2,2\rangle\rightarrow |P_{1/2},2,2\rangle$ & + $66.6\,$MHz & $5.0\,$mW$\,$cm$^{-2}$ & $\pi$ \\\hline
-    \shortstack{\\cooling\\(standing wave)} & $|S_{1/2},1,1\rangle\rightarrow |P_{1/2},1,1\rangle$ & + $31.9\,$MHz & $5.0\,$mW$\,$cm$^{-2}$ & $\pi$ \\\hline
-    \shortstack{\\repump\\(single beam)} & \shortstack{\\ $|S_{1/2},2,1\rangle\rightarrow |P_\frac32,2,2\rangle$ \\
-                           $|S_{1/2},2,0\rangle\rightarrow |P_\frac32,2,1\rangle$} & \shortstack{\\\\Midway\\between} & $50.0\,$mW$\,$cm$^{-2}$ & $\sigma^+$ \\\hline
-    \shortstack{\\repump\\(single beam)} & $|S_{1/2},1,0\rangle\rightarrow |P_\frac32,1,1\rangle$  & $0$ & $10.0\,$mW$\,$cm$^{-2}$ & $\sigma^+$ \\
+    \begin{tabular}{p{2cm}p{3.5cm}p{1.75cm}p{1.5cm}c}
+    \toprule
+    Type & Transition(s) & Detuning & Intensity (per beam) & Polarisation\\
+    \midrule
+    cooling (standing wave) & $\ket{S_{1/2},2,2}\rightarrow \ket{P_{1/2},2,2}$ & + $66.6\,$MHz & $5.0\,$mW$\,$cm$^{-2}$ & $\pi$ \\
+    \arrayrulecolor{black!30} \midrule
+    cooling (standing wave) & $\ket{S_{1/2},1,1}\rightarrow \ket{P_{1/2},1,1}$ & + $31.9\,$MHz & $5.0\,$mW$\,$cm$^{-2}$ & $\pi$ \\
+    \midrule
+    repump (single beam) & $\ket{S_{1/2},2,1}\rightarrow \ket{P_{3/2},2,2}$
+                           $\ket{S_{1/2},2,0}\rightarrow \ket{P_{3/2},2,1}$ & Midway between & $50.0\,$mW$\,$cm$^{-2}$ & $\sigma^+$ \\
+    \midrule
+    repump (single beam) & $\ket{S_{1/2},1,0}\rightarrow \ket{P_\frac32,1,1}$  & $0$ & $10.0\,$mW$\,$cm$^{-2}$ & $\sigma^+$ \\
 
-    \hline
+    \arrayrulecolor{black} \bottomrule
     \end{tabular}
     }
     \caption{The parameters used in the laser cooling simulations. There are four lasers, each with a specified polarisation, intensity, and detuning from the transition it targets.}\label{table:numbers}
