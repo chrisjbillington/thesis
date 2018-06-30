@@ -6,7 +6,7 @@
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.6\textwidth]{figures/unsorted/side-on.pdf}
-\caption{\label{fig:side-on}Imaging of the condensate itself, whether by fluorescence (bottom) or absorption imaging makes it difficult to resolve vortices unless they are viewed end-on. The vortex cores are usually smaller than the imaging wavelength, and are thus also difficult to resolve unless the cloud is allowed to expand. Imaging tracer particles instead (top) has the potential to resolve both problems.}\label{fig:side_on}
+\caption{Imaging of the condensate itself, whether by fluorescence (bottom) or absorption imaging makes it difficult to resolve vortices unless they are viewed end-on. The vortex cores are usually smaller than the imaging wavelength, and are thus also difficult to resolve unless the cloud is allowed to expand. Imaging tracer particles instead (top) has the potential to resolve both problems.}\label{fig:side_on}
 \end{center}
 \end{figure}
 
@@ -181,7 +181,7 @@ P_\up{collision}(\vec r; t, t+\dd t) = v_\up{rel}(\vec r, t)\sigma_{\textrm{Rb--
 \end{align}
 where $v_\up{rel} = \abs{\vec v_\up{K}(\vec r, t) - \vec v}$ for a specific rubidium atom at position $\vec r$ and with velocity $\vec v$.
 
-At each timestep, a random number between zero and one is generated for each atom, and if less than~\eqref{eq:P_collision}, a collision is taken to have occurred.\footnote{During thesis writing, an error was discovered in the code that produced the results in this section, in which the computed collision probability~\eqref{eq:P_collision} was too small by a factor of $\sqrt{2}$. As such, the results shown in the next subsection underestimate the sympathetic cooling effect slightly. I do not expect this error to change any of my conclusions.} In the case of a collision, the \textsc{2d} elastic scattering problem is solved and the rubidium atom's velocity instantaneously replaced with its post-collision value. The potassium condensate wavefunction is not modified---the sympathetic heating resulting from these collisions is ignored, which is a limitation of these results. For an ideal Bose gas of $10^6$ potassium atoms at $T = T_\up{c}/2$, a heating rate of $10^5$ rubidium recoil energies per second from each of $10^3$ rubidium represents a rate of temperature increase of $25\unit{nK\,ms}^{-1}$. This suggests that relying on sympathetic cooling alone may not allow for imaging of vortex motion for more than a few milliseconds (after which the condensate temperature will exceed the critical temperature), and that further cooling such as that presented in Section~\ref{sec:laser_cooling_simulations} may be necessary.
+At each timestep, a random number between zero and one is generated for each atom, and if less than~\eqref{eq:P_collision}, a collision is taken to have occurred.\footnote{During thesis writing, an error was discovered in the code that produced the results in this section, in which the computed collision probability~\eqref{eq:P_collision} was too small by a factor of $\sqrt{2}$. As such, the results shown in the next subsection underestimate the sympathetic cooling effect slightly. I do not expect this error to change any of my conclusions.} In the case of a collision, the \textsc{2d} elastic scattering problem is solved and the rubidium atom's velocity instantaneously replaced with its post-collision value. The potassium condensate wavefunction is not modified, and as such the model does not take into account the effect of sympathetic heating on the condensate. However, the energy gained or lost by the potassium atom in the elastic scattering event is recorded for later use in inferring how much heating the condensate was subjected to.
 
 \subsection{Results}
 
@@ -199,6 +199,14 @@ I then continued this simulation, but with the inclusion of photon scattering as
 
 The results are encouraging---vortex motion is clearly visible in the idealised images, and still quite visible in the more realistic images taking into account imperfect imaging. Contrary to expectations, at lower densities vortex traces are slightly more visible in the simulated images due to the slower motion of the vortices. Even though vortex potentials are only a few photon recoil energies in depth at the lower density, the simulated sympathetic cooling is effective at keeping the tracer atoms trapped within vortex cores. The modelled interaction between the tracer particles and the condensate causes the tracer particles to follow the local superfluid flow, including orbiting vortex cores prior to falling into them, and moving in circles within vortex cores once trapped.
 
+Throughout each simulation, I tracked how much energy was absorbed by the condensate from collisions with the tracer atoms. These results are shown in Figure~\ref{fig:BEC_energy}, and show that sympathetic heating of the condensate is modest, such that a sufficiently large condensate can likely remain condensed after this period of imaging.
+
+\begin{figure}
+\begin{center}
+\includegraphics{figures/velocimetry/energy.pdf}
+\caption{Energy absorbed by the potassium \textsc{bec} via elastic collisions with tracer atoms over the $10\unit{ms}$ imaging interval, plotted for each of the four simulation runs, in units of $k_B\times10^6\unit{nK}$. This choice of units shows the energy absorbed per atom in temperature units, assuming a condensate of $10^6$ potassium atoms. For a fixed heat capacity corresponding to that of an ideal Bose gas at $T = T_\up{c}/2$, an amount of energy absorbed per atom of $k_B\times 30\unit{nK}$ corresponds to a temperature increase of $44\unit{nK}$. As this is likely to be smaller than the critical temperature, this result shows that the condensate is not destroyed by the imaging of tracer particles.}\label{fig:BEC_energy}
+\end{center}
+\end{figure}
 
 \afterpage{
 \newgeometry{left=1.5in,bottom=1.0in,right=1in,top=1.5in}
@@ -271,13 +279,13 @@ The results are encouraging---vortex motion is clearly visible in the idealised 
 \restoregeometry
 }
 
-\clearpage
+% \clearpage
 
 \section{Sisyphus cooling in a $34\unit{G}$ magnetic field}\label{sec:laser_cooling_simulations}
 
 As mentioned, one of the limitations of the usual method of polarisation gradient cooling is that it doesn't work in a magnetic field larger than $\Gamma/\gamma$, where $\Gamma$ is the transition line width and $\gamma$ the gyromagnetic ratio. Fields larger than this cause some of the required transitions to shift out of resonance which destroys the cooling effect. Usually this is not an issue for the cooling stage used en-route to \bec; the magnetic field is simply temporarily switched off. Our imaging method would benefit from a cooling scheme that does work in a magnetic field, since the repulsive interactions between $^{87}$Rb and $^{41}$K can be greatly enhanced via a Feshbach resonance at $34 \unit{G}$~\cite{thalhammer_double_2008}. This would make the potential wells that the rubidium atoms see deeper, trapping them more strongly. However if the magnetic field destroys the cooling mechanism then the atoms won't stay trapped for long. Even if sympathetic cooling is sufficient to image tracer particles trapped in vortices, the addition of a cooling scheme would increase the lifetime of the condensate on account of decreased sympathetic heating, and may allow a larger scattering rate of photons before the tracer atoms cease to be trapped.
 
-The Feshbach resonance only occurs if both species are in their respective \mbox{$\ket{S_{1/2}, F=1,m_F=1}$} states,\footnote{$F$ is not a good quantum number in a non-zero magnetic field, so what we mean writing this is the state that one would get if starting in an $F$ state and adiabatically turning on the magnetic field.} so a cooling mechanism in which the rubidium atoms spend a significant fraction of their time in this state is desirable.
+The Feshbach resonance only occurs if both species are in their \mbox{$\ket{S_{1/2}, F=1,m_F=1}$} states,\footnote{$F$ is not a good quantum number in a non-zero magnetic field, so what we mean writing this is the state that one would get if starting in an $F$ state and adiabatically turning on the magnetic field.} so a cooling mechanism in which the rubidium atoms spend a significant fraction of their time in this state is desirable.
 
 In this section I present a sub-Doppler cooling scheme that is designed to cool $^{87}$Rb in a $34\,$G magnetic field. The basic Sisyphus mechanism---of atoms moving alternately between spin states which see different potentials---is possible to find in many multi-level systems of sufficient complexity\footnote{And indeed, many other Sisyphus cooling mechanisms exists other than polarisation gradient cooling~\cite[p 116]{metcalf_laser_1999}.}; my cooling scheme uses a Sisyphus mechanism with four lasers to cool and repump $^{87}$Rb atoms in a $34\unit{G}$ field, with the atoms spending approximately half their time in the \mbox{$\ket{S_{1/2}, 1,1}$} state.
 
