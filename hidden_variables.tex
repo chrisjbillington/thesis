@@ -250,7 +250,7 @@ Some further notes on numerics: the above expressions for Schr\"odinger theory a
 
 Potentially faster algorithms exist for row-column scaling of matrices,\footnote{In my simulations for realistic $3\times3$ unitaries corresponding to evolution over small time intervals, Linial's method converges to the aforementioned tolerance in about $100-200$ iterations, taking about $20-40\unit{\upmu s}$ per matrix on a $2.9\unit{GHz}$ 7$^\up{th}$ generation Intel core i7 \textsc{CPU}. This is when transitions are actually occurring; before and after periods of non-adiabatic evolution the algorithm converges in zero or one step when the unitary is the identity and the state vector is in a single eigenstate.} for example, approaches that treat the problem one of root-finding or optimisation aimed at solving the simultaneous equations~\eqref{eq:a_scalings} and~\eqref{eq:b_scalings} or minimising their sum squared error~\cite{knight_fast_2013}. When prototyping with small ($3\times 3$) random unitary matrices and random state vectors, I found Newton's method to be effective at quickly solving this set of equations (after fixing $a_1=1$ to make them fully determined), requiring considerably fewer iterations that Linial's method. However, the unitaries and state vectors in quantum mechanics are not random, and the fact that most elements of the unitary and state vector are zero when there is no evolution and the atom is in an eigenstate resulted in numerical difficulties with Newton's method that Linial's method does not seem to encounter. Similar to many of the methods in reference~\cite{knight_fast_2013}, one could construct a hybrid method that takes a Newton step, and then checks the row sum and column sum residuals, and if they increased compared to the previous step, ignores that step and takes a step of Linial's method instead. I have not attempted this, and for the moment use Linial's method.
 
-A final note is that my hidden-variable semiclassical method is not only agnostic to which matrix scaling algorithm is used, but that it is also not married to any particular hidden-variable theory. An early version of the method~\cite{billington_monte_2015} was limited to two-component systems, and the probability of transition was computed as:
+A final note is that my hidden-variable semiclassical method is not only agnostic to which matrix scaling algorithm is used, but that it is also not married to any particular hidden-variable theory. An early version of the method~\cite{billington_monte_2015} was limited to two-component systems, and the probability of transition was computed as
 \begin{align} 
 \Pr(\eta(t^\prime){=}2|\eta(t){=}1) &=
 \max\left(0, \abs{c_2(t^\prime)}^2 - \abs{c_2(t)}^2\right),\\
@@ -318,7 +318,7 @@ The final term is identical to the non-adiabatic coupling term in the equation o
 where $U_H(\vec r, t)$ is the matrix representation of $\hat U_H$ in any basis that does not vary spatially (i.e.~not the eigenbasis), $\ket{\chi_i(\vec r, t)}$ is the $i^\up{th}$ eigenvector of $\hat H(r, t)$, and $\matrixel{\chi_i(\vec r, t)}{\nabla}{\chi_j (\vec r, t)}$ is the \emph{non-adiabatic coupling vector} between the $i^\up{th}$ and $j^\up{th}$ states referred to in the literature~\cite{doi:10.1146/annurev-physchem-040215-112245}. The second to last term in brackets in~\eqref{eq:Tully_adiabatic_schro_simplified}
 is the additional contribution due to the time-dependence of the Hamiltonian (more specifically, the time-dependence of its eigenbasis).
 
-We now proceed identically to Tully, computing the rate of change of an eigenstate's population $\abs{c_i(t)}^2$ as:
+We now proceed identically to Tully, computing the rate of change of an eigenstate's population $\abs{c_i(t)}^2$ as
 \begin{align}
 \dv{t}\abs{c_i(t)}^2 = c_i(t) \dv{t}c_i^*(t) + c_i^*(t) \dv{t}c_i(t),
 \end{align}
@@ -380,7 +380,7 @@ P &= P^\up{space} + P^\up{time} + P^\up{stay},\\
 \Rightarrow \sum_j P_{ij} &= \abs{c_i(t)}^2,\\
 \sum_i P_{ij} &= \abs{c_j(t + \dd t)}^2.
 \end{align}
-The corresponding conditional probabilities of a transition to the $i^\up{th}$ state occurring---given that the hidden variable was already in the $j^\up{th}$ state---can be obtained via~\eqref{eq:P_matrix_def} as:
+The corresponding conditional probabilities of a transition to the $i^\up{th}$ state occurring---given that the hidden variable was already in the $j^\up{th}$ state---can be obtained via~\eqref{eq:P_matrix_def} as
 \begin{align}
 S^\up{space}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{space}_{ij},\label{eq:S_space}\\
 S^\up{time}_{ij} &= \frac1{\abs{c_j(t)}^2} P^\up{time}_{ij}\label{eq:S_time}\\
@@ -411,7 +411,7 @@ where
 \hat H_\up{eff} = \hat V(\vec r, t)
   - \ii\hbar\hat U_H(\vec r, t)\dv{t}U^\dagger_H(\vec r, t)
 \end{align}
-is the effective Hamiltonian in the adiabatic picture for $\hat H$, the matrix representation of which can be extracted from the matrix representation of $\hat U(t+\dd t, t)$ as:
+is the effective Hamiltonian in the adiabatic picture for $\hat H$, the matrix representation of which can be extracted from the matrix representation of $\hat U(t+\dd t, t)$ as
 \begin{align}
 H_\up{eff}(\vec r, t)\,\dd t &= \ii\hbar\Log U(t+\dd t, t)\\
 &\approx \ii\hbar\left(\mathbb{I} -  U(t+\dd t, t)\right)
@@ -466,7 +466,7 @@ The corresponding matrices of conditional probabilities for the hidden variable 
 \end{align}
 Of course, when making probabilistic transitions of the hidden variable, the originating state is known and so only one column of any of the above matrices is used at a time, so the full matrices $\tilde P^\up{space}$, $\tilde P^\up{time}$, $\tilde S^\up{space}$, and $\tilde S^\up{time}$ do not need to be computed at each timestep.
 
-In the case that a transition of the hidden variable does occur to the $i^\up{th}$ from the $j^\up{th}$ state due to a spatial non-adiabatic coupling, the velocity kick to be applied to the classical velocity vector in order to conserve energy is:
+In the case that a transition of the hidden variable does occur to the $i^\up{th}$ from the $j^\up{th}$ state due to a spatial non-adiabatic coupling, the velocity kick to be applied to the classical velocity vector in order to conserve energy is
 \begin{align}\label{eq:velocity_jump}
 \upDelta \vec v_{ij} = \left[\sgn(\vec v\cdot \hat{\vec d}_{ij})
 \sqrt{(\vec v\cdot \hat{\vec d}_{ij})^2 + \frac2m\left(V_i(\vec r, t) - V_j(\vec r, t)\right)} - (\vec v\cdot \hat{\vec d}_{ij}).
@@ -790,7 +790,7 @@ Use of `auxiliary trajectories' for computing decoherence rates is common in the
 
 \subsubsection{Decoherence rate in the absence of projective measurement}\label{sec:decoherence_without_projection}
 
-Here we generalise our conception of the decoherence rate by removing the assumption that motional states are `reset' at each timestep. This resetting, which we assumed in Section~\ref{sec:continuous_projection}, set each motional state to be equal to $\ket{\phi_\eta(t)}$ at each timestep, and this led to all decoherence rates being zero due to the quantum Zeno effect (Section~\ref{sec:zeno_effect}). What is the reduction in the state amplitudes at each timestep if the wavepackets are not reset, but are left as arbitrary states? We know that if we were to perform a projective measurement at time $t$, the $i^\up{th}$ state amplitude would be reduced by a factor of $R_{\eta i}(t)$ compared to the original state amplitude $c_i(t)$ as in~\eqref{eq:R_projection}. If motional states are not reset at each timestep, then $R_{\eta i}(t)$ is not necessarily close to unity, as the wavepackets may be non-negligibly separated. In the absence of Hamiltonian evolution such that $\dv{c_i(t)}{t}=0$, the rate of change in $\tilde c_i(t)$ due to the changing decoherence factor is:
+Here we generalise our conception of the decoherence rate by removing the assumption that motional states are `reset' at each timestep. This resetting, which we assumed in Section~\ref{sec:continuous_projection}, set each motional state to be equal to $\ket{\phi_\eta(t)}$ at each timestep, and this led to all decoherence rates being zero due to the quantum Zeno effect (Section~\ref{sec:zeno_effect}). What is the reduction in the state amplitudes at each timestep if the wavepackets are not reset, but are left as arbitrary states? We know that if we were to perform a projective measurement at time $t$, the $i^\up{th}$ state amplitude would be reduced by a factor of $R_{\eta i}(t)$ compared to the original state amplitude $c_i(t)$ as in~\eqref{eq:R_projection}. If motional states are not reset at each timestep, then $R_{\eta i}(t)$ is not necessarily close to unity, as the wavepackets may be non-negligibly separated. In the absence of Hamiltonian evolution such that $\dv{c_i(t)}{t}=0$, the rate of change in $\tilde c_i(t)$ due to the changing decoherence factor is
 \begin{align}
 \dv{\tilde c_i(t)}{t} &= \dv{R_{\eta i}(t)}{t} c_i(t)\\
 &= \frac1{R_{\eta i}(t)}\dv{R_{\eta i}(t)}{t} \tilde c_i(t).

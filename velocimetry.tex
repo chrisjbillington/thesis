@@ -327,7 +327,7 @@ and
 \end{equation}
 where each $c(t)$ is the complex amplitude of one state; the $e$ indices are over the excited states and the $g$ indices over the ground states; the $n$ indices are over the lasers, with $E_n$ being the $n$\textsuperscript{th} laser's electric field, $\delta_{nge}$ the detuning of the $n$\textsuperscript{th} laser from the $g\rightarrow e$ transition, and $\matrixel{g}{q_n}{e}$ the dipole moment between the $g$\textsuperscript{th} ground and $e$\textsuperscript{th} excited states for the polarisation $q_n$ of the $n$\textsuperscript{th} laser.
 
-The external motion of the atom was modelled classically, with the atom having a definite position and velocity in one dimension. The force on the atom was computed from the dipole forces that the two ground states involved in the cooling cycle experience due to the standing waves formed by the cooling beams. An expectation value of the dipole force was computed as:
+The external motion of the atom was modelled classically, with the atom having a definite position and velocity in one dimension. The force on the atom was computed from the dipole forces that the two ground states involved in the cooling cycle experience due to the standing waves formed by the cooling beams. An expectation value of the dipole force was computed as
 \begin{align}
 \ev{F} = \abs{\braket{S_{1/2},1, 1}{\Psi}}^2F_{\ket{S_{1/2},1, 1}} + \abs{\braket{S_{1/2}, 2, 2}{\Psi}}^2F_{\ket{S_{1/2},2, 2}},
 \end{align}
@@ -370,7 +370,7 @@ The laser parameters used in the simulation are shown in Table~\ref{table:number
 
 The simulation was run for $7.2\times10^6$ integration timesteps of size $\upDelta t=20\unit{ps}$,\footnote{Corresponding to approximately ten timesteps per oscillation of the fastest oscillating terms, which oscillate at a rate close to half the $6.8\unit{GHz}$ hyperfine splitting of the rubidium ground states.} for a total of 14.3 milliseconds of simulation time. This took $14$ days of computer time. In that time, the atom moved a maximum distance of $26\unit{\upmu m}$ from its starting position, and its final position was $790\unit{nm}$ from its starting position. The atom's initial velocity was $195 \unit{mm\,s}^{-1}$, and during the simulation it reversed the direction of its velocity $2226$ times; $4103$ photons were emitted, for an average scattering rate of $2.87\times10^\up{5}$ photons per second---slightly higher than the target rate.
 
-I computed the time-averaged kinetic energy of the atom over the whole simulation as:
+I computed the time-averaged kinetic energy of the atom over the whole simulation as
 \begin{equation}
 \ev{E_\up{K}} = \frac12 m_\up{Rb} \langle v^2 \rangle.
 \end{equation}

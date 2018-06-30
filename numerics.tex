@@ -34,7 +34,7 @@ This is now something very concrete that can be typed into a computer. Programmi
 \section{Solution to the Schr\"odinger equation by direct exponentiation}
 % \sectionmark{Soln.~to the Schr\"odinger equation by direct exponentiation}
 
-As an example of something seemingly abstract being more concrete than first appearances, it is sometimes said that the `formal' solution to the Schr\"odinger equation~\eqref{eq:schrodinger_equation} is:
+As an example of something seemingly abstract being more concrete than first appearances, it is sometimes said that the `formal' solution to the Schr\"odinger equation~\eqref{eq:schrodinger_equation} is
 \begin{align}\label{eq:formal_solution}
 \ket{\psi(t)} = \ee^{-\frac \ii \hbar \int_{t_0}^t \hat H(t^\prime)\,\dd t^\prime}\ket{\psi(t_0)}.
 \end{align}
@@ -109,11 +109,11 @@ Substituting this into the Schr\"odinger equation yields an equation of motion f
 \ee^{\frac\ii\hbar\hat H_0 t}\hat H_1(t)\ee^{-\frac\ii\hbar\hat H_0 t}\ket{\psi_\up{I}(t)}\\
 \Rightarrow \ii\hbar\dv t\ket{\psi_\up{I}(t)} &= \hat H_I(t)\ket{\psi_\up{I}(t)},
 \end{align}
-where $\hat H_I(t)=\ee^{\frac\ii\hbar\hat H_0 t}\hat H_1(t)\ee^{-\frac\ii\hbar\hat H_0 t}$ is an \emph{interaction picture Hamiltonian}. Thus the interaction picture defines a time-dependent unitary transformation, with the operator for transforming from the Schr\"odinger to interaction picture being:
+where $\hat H_I(t)=\ee^{\frac\ii\hbar\hat H_0 t}\hat H_1(t)\ee^{-\frac\ii\hbar\hat H_0 t}$ is an \emph{interaction picture Hamiltonian}. Thus the interaction picture defines a time-dependent unitary transformation, with the operator for transforming from the Schr\"odinger to interaction picture being
 \begin{align}
 \hat U_I(t) = \ee^{\frac\ii\hbar\hat H_0 t},\\
 \end{align}
-and state vectors and operators transforming as:
+and state vectors and operators transforming as
 \begin{align}
 \ket{\psi_\up{I}(t)} &= \hat U_\up{I}\ket{\psi(t)}\\
 \hat A_\up{I}(t) &= \hat U_\up{I} \hat A \hat U^\dagger_\up{I},
@@ -255,7 +255,7 @@ So far all we've done is justify~\eqref{eq:first_order_product}. Now we'll ackno
 \begin{align}
 U(t_{n+1}, t_n) = \ee^{-\frac \ii \hbar \left(H_1(t_n) + H_2(t_n)\right)\upDelta t} + \Ord{\upDelta t^2}.
 \end{align}
-Using the Baker--Campbell--Hausdorff formula~\cite[p.~158]{tannor_introduction_2007}, we can expand the exponential as:
+Using the Baker--Campbell--Hausdorff formula~\cite[p.~158]{tannor_introduction_2007}, we can expand the exponential as
 \begin{align}
 \ee^{-\frac \ii \hbar \left(H_1(t_n) + H_2(t_n)\right)\upDelta t}
 &= \ee^{-\frac \ii \hbar H_1(t_n)\upDelta t}
@@ -323,7 +323,7 @@ U_2(t_{n+1}, t_n) =
 \left(\prod_{m=M}^1 \ee^{-\frac \ii \hbar H_m(t_{n+1})\frac{\upDelta t} 2}\right)
 \left(\prod_{m=1}^M \ee^{-\frac \ii \hbar H_m(t_n)\frac{\upDelta t} 2}\right).
 \end{align}
-$U_2$ can be concisely written in terms of $U_1$ as:
+$U_2$ can be concisely written in terms of $U_1$ as
 \begin{align}
 U_2(t_{n+1}, t_n) =
 U_1^\dagger(t_n + \tfrac {\upDelta t} 2, t_{n+1})
@@ -634,7 +634,7 @@ The constant factors that big-O notation disregards also favour \textsc{rk4} whe
 
 
 \section{Continuous degrees of freedom}\label{sec:continuous_dof}
-The single-particle, non-relativistic, scalar Schr\"odinger wave equation, as distinct from the general Schr\"odinger equation~\eqref{eq:schrodinger_equation}, is:
+The single-particle, non-relativistic, scalar Schr\"odinger wave equation, as distinct from the general Schr\"odinger equation~\eqref{eq:schrodinger_equation}, is
 \begin{align}\label{eq:schrodinger_wave_equation}
 \ii\hbar\pdv{}{t}\psi(\vec r, t) = \left[-\frac{\hbar^2}{2m} \nabla^2 + V(\vec r)\right]\psi(\vec r, t).
 \end{align}
@@ -728,7 +728,7 @@ j \in [-\tfrac{n_y}2, \tfrac{n_y}2 - 1] \qquad (n_y\ \textrm{even})\\
 j \in [-\tfrac{n_y - 1}2, \tfrac{n_y - 1}2] \qquad (n_y\ \textrm{odd})
 \end{cases}
 \end{align}
-we include only the $n_x$ and $n_y$ longest wavelengths in each respective spatial dimension. This is a sensible truncation with a physically meaningful interpretation. By making it, we are no longer able to represent state vectors with short wavelength components. Because the kinetic energy operator, when represented in the Fourier basis, is:
+we include only the $n_x$ and $n_y$ longest wavelengths in each respective spatial dimension. This is a sensible truncation with a physically meaningful interpretation. By making it, we are no longer able to represent state vectors with short wavelength components. Because the kinetic energy operator, when represented in the Fourier basis, is
 \begin{align}
 \matrixel{\vec k_{ij}}{\hat K}{\vec k_{i^\prime j^\prime}} = \frac{\hbar^2 k^2}{2m}\updelta_{ii^\prime}\updelta_{jj^\prime},
 \end{align}
@@ -762,7 +762,7 @@ where $\vec\psi_\up{real}$ is the vector of coefficients $\psi_{\up{real},ij}= \
     \label{fig:basis_vecs}
 \end{figure}
 
-The spatial representation of the basis vectors $\{\ket{\vec r_{ij}}\}$ can be computed using~\eqref{eq:spatial_plane_wave_basis} as:
+The spatial representation of the basis vectors $\{\ket{\vec r_{ij}}\}$ can be computed using~\eqref{eq:spatial_plane_wave_basis} as
 \begin{align}
 \phi_{ij}(\vec r) &= \braket{\vec r}{\vec r_{i j}} = \sum_{i^\prime j^\prime} \ee^{-\ii \vec k_{i^\prime j^\prime} \cdot \vec r_{i j}}\braket{\vec r}{\vec k_{i^\prime j^\prime}}\\
 \Rightarrow \phi_{ij}(\vec r) &=\begin{cases}
@@ -927,7 +927,7 @@ $\upDelta x^2\left(\delta^{2 (6)}_{\upDelta x}\right)_{i, i+k}$
 \caption{Matrix elements~\cite{fornberg_generation_1988} for some finite-differencing schemes for first ($\delta^{(n)}_{\upDelta x}$) and second ($\delta^{2 (n)}_{\upDelta x}$) derivatives using central finite differences of various orders $n$ for uniform grid spacing $\upDelta x$. All finite difference matrices are banded; each column here shows the matrix elements of $k^\up{th}$ diagonal, which are all identical. Elements outside of each matrix's band are left blank. Each matrix element is shown multiplied by factors of $\upDelta x$ for clarity.}\label{table:fd_matrixels}
 \end{table}
 
-The fact that the finite difference matrices are banded allows them to be computing by applying a `stencil' to a discrete state vector, computing an approximation to some linear sum of derivative operators at each point of discrete space by consideration of only that point and a small number of surrounding point. For example, a $\Ord{\upDelta x^2}$ approximation (assuming $\upDelta x = \upDelta y$) to the kinetic energy operator in two dimensions may be evaluated at each point as:
+The fact that the finite difference matrices are banded allows them to be computing by applying a `stencil' to a discrete state vector, computing an approximation to some linear sum of derivative operators at each point of discrete space by consideration of only that point and a small number of surrounding point. For example, a $\Ord{\upDelta x^2}$ approximation (assuming $\upDelta x = \upDelta y$) to the kinetic energy operator in two dimensions may be evaluated at each point as
 \begin{align}
 K_\up{real}\psi(\tilde{\vec r}) & = U^\dagger_{\textsc{dft2}} \frac{\hbar^2 (k_x^2 + k_y^2)}{2m} U_{\textsc{dft2}}\psi(\tilde{\vec r})\label{eq:2DKreal}\\
 &= -\frac{\hbar^2}{2m} \left[
@@ -1111,12 +1111,10 @@ The result is that as with \textsc{rk4}, the pseudo-stability criterion allows a
 
 \subsection{Nonlinearity considerations}\label{sec:FEDVR_nonlinearity}
 
-The above arguments about stability all disregarded the nonlinearity of the Gross--Pitaevskii equation. Although the stability of a numerical method is very difficult to analyse for nonlinear differential equations, there is a simple argument for heuristically putting an upper bound on the timestep required in order to accurately model the effect of the \textsc{gpe}'s nonlinear term. Essentially, density waves in the condensate propagate not at the phase velocity of the condensate wavefunction, but at its group velocity. The group velocity of the shortest possible wavelength in the system therefore sets an upper bound for the propagation of information due to the nonlinear term. In order to correctly model this term, timesteps must be short enough that one's numerical method is evaluating the nonlinear term frequently enough that fast moving density waves can't `skip` gridpoints in between evaluations. If the smallest wavelength is that of the Nyquist mode, or for non-uniform grids the mode whose wavelength is twice the smallest grid spacing, then the maximum group velocity is:
-
+The above arguments about stability all disregarded the nonlinearity of the Gross--Pitaevskii equation. Although the stability of a numerical method is very difficult to analyse for nonlinear differential equations, there is a simple argument for heuristically putting an upper bound on the timestep required in order to accurately model the effect of the \textsc{gpe}'s nonlinear term. Essentially, density waves in the condensate propagate not at the phase velocity of the condensate wavefunction, but at its group velocity. The group velocity of the shortest possible wavelength in the system therefore sets an upper bound for the propagation of information due to the nonlinear term. In order to correctly model this term, timesteps must be short enough that one's numerical method is evaluating the nonlinear term frequently enough that fast moving density waves can't `skip` gridpoints in between evaluations. If the smallest wavelength is that of the Nyquist mode, or for non-uniform grids the mode whose wavelength is twice the smallest grid spacing, then the maximum group velocity is
 \begin{equation}
 v_\up{g}(k_\up{max}) = \pdv{E_\up{K}(k_\up{max})}{p(k_\up{max})} =  \frac{\hbar k_\up{max}}{m}\frac{\pi \hbar}{m \upDelta x_\up{min}}
 \end{equation}
-
 Asking how long it takes a wave to move a distance of $\upDelta x_\up{min}$ at this velocity then results in what I'm calling the \emph{dispersion timescale}:
 
 \begin{equation}
@@ -1288,8 +1286,7 @@ is the original Schr\"odinger picture (\textsc{sp}) state vector.
 
 This transformation is exact, no approximations or assumptions have been made. If indeed the dynamics of $\ket{\psi(t)}$ in the given basis are dominated by fast oscillating dynamical phases, that is, the diagonals of $\hat H_\up{diag}(t)$ are much greater than all matrix elements of $\hat H_\up{nondiag}(t)$ in the $\ket{n}$ basis, then solving the differential equation~\eqref{eq:IPDE} for $\ket{\psi_\up{I}^{t^\prime}(t)}$ should allow one to use larger integration timesteps than solving~\eqref{eq:schrodinger_eq} directly. And if not, then it should do no harm other than the (small) computational costs of computing some extra scalar exponentials.
 
-Equation~\eqref{eq:IP_definition} defines an \emph{instantaneous} interaction picture, in that it depends on the dynamics at a specific time $t=t^\prime$, and can be recomputed repeatedly throughout a computation in order to factor out the fast dynamical phase evolution even as the oscillation rates change over time. It is \emph{local} in that $H_0^{t^\prime}$ is diagonal in the $\ket{n}$ basis, which means that transformations between Schr\"odinger picture and interaction picture state vectors involves ordinary, elementwise exponentiation of vectors, rather than matrix products. Thus~\eqref{eq:IP_definition},~\eqref{eq:IPDE} and~\eqref{eq:backtransform} can be written componentwise as:
-
+Equation~\eqref{eq:IP_definition} defines an \emph{instantaneous} interaction picture, in that it depends on the dynamics at a specific time $t=t^\prime$, and can be recomputed repeatedly throughout a computation in order to factor out the fast dynamical phase evolution even as the oscillation rates change over time. It is \emph{local} in that $H_0^{t^\prime}$ is diagonal in the $\ket{n}$ basis, which means that transformations between Schr\"odinger picture and interaction picture state vectors involves ordinary, elementwise exponentiation of vectors, rather than matrix products. Thus~\eqref{eq:IP_definition},~\eqref{eq:IPDE} and~\eqref{eq:backtransform} can be written componentwise as
 \begin{align}\label{eq:IP_definition_components}
 \braket{n}{\psi_\up{I}^{t^\prime}(t)} = \ee^{\ii (t - t^\prime)\omega_n^{t^\prime}}\braket{n}{\psi(t)},
 \end{align}
@@ -1298,7 +1295,7 @@ Equation~\eqref{eq:IP_definition} defines an \emph{instantaneous} interaction pi
     = \ee^{\ii (t - t^\prime)\omega_n^{t^\prime}}\dv t \braket{n}{\psi(t)}
       + \ii\omega_n^{t^\prime}\braket{n}{\psi_\up{I}^{t^\prime}(t)},
 \end{align}
-and:
+and
 \begin{align}\label{eq:backtransform_components}
 \braket{n}{\psi(t)} = \ee^{-\ii(t - t^\prime)\omega_n^{t^\prime}}\braket{n}{\psi_\up{I}^{t^\prime}(t)},
 \end{align}
