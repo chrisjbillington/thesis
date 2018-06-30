@@ -65,7 +65,15 @@ I certify that I have made all reasonable efforts to secure copyright permission
 
 \chapter*{Abstract}
 
-% [TODO write the abstract]
+Studies in cold quantum gases enjoy a tight coupling between theory and experiment. Bose--Einstein condensates are well modelled by mean-field theory, with which one may efficiently simulate a large number of Bose-condensed atoms. The efficacy and tractability of this and other approximate models make them powerful tools for guiding experiments in cold quantum gases for precision measurement, quantum computation, quantum simulation, and studies of superfluid turbulence.
+
+Whilst mean-field theory well describes the motional state of atoms in a Bose--Einstein condensate, their internal states---the motion of their electrons relative to the nucleus---are instead described by the Schr\"odinger equation. With this equation---reduced to a small discrete basis for only the relevant electronic states of a given problem---modelling the internal state of an atom is also tractable. Above the critical temperature required for condensation, atoms are not condensed, and move through space more like classical billiard balls---no longer described by mean-field theory. If the atoms' residual wavelike behaviour can be ignored---as it often can---their motion can be modelled using classical mechanics even though their internal state is modelled quantum-mechanically. This approach, called a `semiclassical' model, has been used with great success for theoretical studies of laser cooling, and has been used by Christopher Watkins in the Monash Quantum Fluids group in simulations of evaporative cooling in magnetic traps.
+
+However, the fundamental disconnect between quantum mechanics and classical mechanics prevents na\"ive semiclassical models from reproducing one of the bedrock experiments of quantum mechanics---the Stern--Gerlach experiment. In this experiment, the force on atoms depends on their internal state, such that atoms are measured to have probabilistically taken any of a number of trajectories. These trajectories are still individually classical, but cannot be reproduced collectively within the framework of deterministic classical motion. This problem led to an unphysical heating of the atom cloud in the aforementioned simulations of evaporative cooling, due to the sensitivity of Majorana losses on the details of Stern--Gerlach separation of atoms near the magnetic field zero of the trap.
+
+In this thesis I develop a method to resolve this disconnect to allow semiclassical models to include state-dependent forces. The method makes use of \emph{hidden variables}---labels carried alongside quantum states that declare in some sense what state the system is `really' in, when the quantum description of the state is that of a superposition. Although
+
+
 
 \chapter*{Declaration}
 
