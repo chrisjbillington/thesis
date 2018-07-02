@@ -70,7 +70,7 @@ plt.stackplot(
 
 # plt.row_stack
 
-plt.axvline(date2num(datetime.datetime(2018, 6, 30)), linestyle='--', color='k', label='due date')
+plt.axvline(date2num(datetime.datetime(2018, 7, 1)), linestyle='--', color='k', label='due date')
 # plt.grid(True)
 plt.title('Thesis')
 plt.ylabel('wordcount')
@@ -78,4 +78,5 @@ plt.legend()
 plt.gcf().autofmt_xdate()
 plt.gca().set_ylim(ymin=0)
 
-plt.show()
+plt.savefig('wordcount_vs_time.pdf')
+# plt.show()
