@@ -904,10 +904,12 @@ where $k_x$ is the diagonal matrix of the discrete angular wavenumbers for the $
 
 \begin{table}
 \centering
-\begin{tabular}[c]{|r||rrrrrrr|}
-\hline
+\renewcommand{\arraystretch}{1.5}
+\setlength\heavyrulewidth{1.5pt}
+\begin{tabular}[c]{rrrrrrrr}
+\toprule
  & $k=-3$ & $k=-2$ & $k=-1$ & $k=0$ & $k=1$ & $k=2$ & $k=3$\\
-\hline
+\midrule
 $\upDelta x\left(\delta^{(2)}_{\upDelta x}\right)_{i, i+k}$ 
 & & & $-\frac{1}{2}$ & $0$ & $\frac{1}{2}$ & & \\
 $\upDelta x\left(\delta^{(4)}_{\upDelta x}\right)_{i, i+k}$ 
@@ -920,7 +922,7 @@ $\upDelta x^2\left(\delta^{2 (4)}_{\upDelta x}\right)_{i, i+k}$
 & & $-\frac{1}{12}$ & $\frac{4}{3}$ & $-\frac{5}{2}$ & $\frac{4}{3}$ & $-\frac{1}{12}$ & \\
 $\upDelta x^2\left(\delta^{2 (6)}_{\upDelta x}\right)_{i, i+k}$ 
 & $\frac{1}{90}$ & $-\frac{3}{20}$ & $\frac{3}{2}$ & $-\frac{49}{18}$ & $\frac{3}{2}$ & $-\frac{3}{20}$ & $\frac{1}{90}$\\
-\hline
+\bottomrule
 \end{tabular}
 \caption{Matrix elements~\cite{fornberg_generation_1988} for some finite-differencing schemes for first ($\delta^{(n)}_{\upDelta x}$) and second ($\delta^{2 (n)}_{\upDelta x}$) derivatives using central finite differences of various orders $n$ for uniform grid spacing $\upDelta x$. All finite-difference matrices are banded; each column here shows the matrix elements of $k^\up{th}$ diagonal, which are all identical. Elements outside of each matrix's band are left blank. Each matrix element is shown multiplied by factors of $\upDelta x$ for clarity.}\label{table:fd_matrixels}
 \end{table}
@@ -1376,9 +1378,9 @@ When \textsc{rk4ilip} is used for imaginary time evolution (\textsc{ite})~\cite{
 \frac{\log X}{\upDelta t}\qquad  \im(\mathbf{\omega})\upDelta t > \log X
 \end{cases},
 \end{align}
-where $X$ is very large but less than the largest representable floating-point number, and use $\mathbf{\omega}_\up{clipped}$ in the exponents instead. In the below results I used \textsc{rk4ilip} with \textsc{ite} to smooth initial states of a Bose--Einstein condensate after a phase printing, and performed clipping with~\footnote{$400$ being about half the largest (base $e$) exponent representable in double-precision floating point.} $\log X = 400$.
+where $X$ is very large but less than the largest representable floating-point number, and use $\mathbf{\omega}_\up{clipped}$ in the exponents instead. In the below results I used \textsc{rk4ilip} with \textsc{ite} to smooth initial states of a Bose--Einstein condensate after a phase printing, and performed clipping with\footnote{$400$ being about half the largest (base $e$) exponent representable in double-precision floating point.} $\log X = 400$.
 
-This clipped version of $\mathbf{\omega}$ should be used in all exponents in the above algorithm, but only in exponents---not in the second term of~\eqref{eq:IPDE_components}. If it is used everywhere then all we have done is chosen a different (less useful) interaction picture, and the algorithm will still overflow. By clipping only the exponents, we produce temporarily `incorrect' evolution\footnote{Of no concern since we are using \textsc{ite} as a relaxation method, and are not interested in intermediate states. Only the final state's correctness concerns us.}, limiting the change in magnitude of each component of the state vector to a factor of $X$ per step (remembering that $X$ is very large). This continues for the few steps that it takes \textsc{ite} to get all components of the state vector to within a factor of $X$ of the ground state, after which no clipping is necessary and convergence to the ground state proceeds as normal, subject to the ordinary limitations on which timesteps may be used with \textsc{ite}.
+This clipped version of $\mathbf{\omega}$ should be used in all exponents in the above algorithm, but only in exponents---not in the second term of~\eqref{eq:IPDE_components}. If it is used everywhere then all we have done is chosen a different (less useful) interaction picture, and the algorithm will still overflow. By clipping only the exponents, we produce temporarily `incorrect' evolution,\footnote{Of no concern since we are using \textsc{ite} as a relaxation method, and are not interested in intermediate states. Only the final state's correctness concerns us.} limiting the change in magnitude of each component of the state vector to a factor of $X$ per step (remembering that $X$ is very large). This continues for the few steps that it takes \textsc{ite} to get all components of the state vector to within a factor of $X$ of the ground state, after which no clipping is necessary and convergence to the ground state proceeds as normal, subject to the ordinary limitations on which timesteps may be used with \textsc{ite}.
 
 \subsection{Domain of improvement over other methods}
 
@@ -1390,7 +1392,7 @@ However, that's not quite all: large spatial variation in potentials often comes
 
 This leaves \textsc{rk4ilip} with an advantage only in the case of large spatial variations in the potential that do not lead to equally large kinetic energies. Hence, the examples I show in the next section are ones in which the condensate is trapped in a steep potential well---the trap walls are high and hence involve large potentials compared to the interior, but do not lead to large kinetic energies because the condensate is trapped close to its ground state.
 
-The Fourier split-step (\textsc{fss}) method~\cite{Muslu2005} (see Section~\ref{sec:dft}) also models dynamical phases due to the potential analytically to low order. As such it is also quite capable of modelling large potentials. However, it requires that all operators be diagonal in either the spatial basis or the Fourier basis ~\cite{Muslu2005}. Therefore \textsc{bec}s in rotating frames, due to the Hamiltonian containing an angular momentum operator, are not amenable to simulation with \textsc{fss}\footnote{Split-step with more than these two bases is however possible in other schemes such as the finite element discrete variable representation~\cite{schneider_parallel_2006}---each operator can be diagonalised and exponentiated locally in each element and applied as a (relatively small) matrix multiplication rather than using \textsc{fft}s.}.
+The Fourier split-step (\textsc{fss}) method~\cite{Muslu2005} (see Section~\ref{sec:dft}) also models dynamical phases due to the potential analytically to low order. As such it is also quite capable of modelling large potentials. However, it requires that all operators be diagonal in either the spatial basis or the Fourier basis ~\cite{Muslu2005}. Therefore \textsc{bec}s in rotating frames, due to the Hamiltonian containing an angular momentum operator, are not amenable to simulation with \textsc{fss}.\footnote{Split-step with more than these two bases is however possible in other schemes such as the finite element discrete variable representation~\cite{schneider_parallel_2006}---each operator can be diagonalised and exponentiated locally in each element and applied as a (relatively small) matrix multiplication rather than using \textsc{fft}s.}
 
 This use of \textsc{fft}s in both the \textsc{fss} and \textsc{rk4ip} methods necessarily imposes periodic boundary conditions on a simulation, which may not be desirable. By contrast, if different boundary conditions are desired, finite differences instead of \textsc{fft}s can be used to evaluate spatial derivatives in the \textsc{rk4} and \textsc{rk4ilip} methods, so long as a sufficiently high-order finite-difference scheme is used so as not to unacceptably impact accuracy.
 
@@ -1480,7 +1482,7 @@ For the rotating frame simulations, which were only amenable to the \textsc{rk4}
 
 \subsection{Discussion}
 
-As mentioned, \textsc{rk4ilip} is mostly useful for continuum quantum mechanics only when there are large spatial differences in the potential, which cannot give rise to equally large kinetic energies\footnote{This is essentially due to such a situation violating the condition we laid out at the beginning of this section---that the simulation basis must be nearly an eigenbasis of the total Hamiltonian.}. Furthermore, the advantage that \textsc{rk4ilip} has over other methods with that same property is that it is does not require a particular form of Hamiltonian or a particular method of evaluating spatial derivatives. The former means it is applicable in rotating frames or to situations with unusual Hamiltonians, and the latter means is can be used with finite differences or \textsc{fedvr}~\cite{schneider_parallel_2006} and thus is amenable to parallelisation on a cluster computer.
+As mentioned, \textsc{rk4ilip} is mostly useful for continuum quantum mechanics only when there are large spatial differences in the potential, which cannot give rise to equally large kinetic energies.\footnote{This is essentially due to such a situation violating the condition we laid out at the beginning of this section---that the simulation basis must be nearly an eigenbasis of the total Hamiltonian.} Furthermore, the advantage that \textsc{rk4ilip} has over other methods with that same property is that it is does not require a particular form of Hamiltonian or a particular method of evaluating spatial derivatives. The former means it is applicable in rotating frames or to situations with unusual Hamiltonians, and the latter means is can be used with finite differences or \textsc{fedvr}~\cite{schneider_parallel_2006} and thus is amenable to parallelisation on a cluster computer.
 
 The ability to model large spatial variations in the potential provides only a narrow domain of increased usefulness over other methods. If a large kinetic energy results from the large potential, then the method requires just as small timesteps as any other. And if the large potential is supposed to approximate an infinite well, then an actual infinite well may be modelled using zero boundary conditions, negating the need for something like \textsc{rk4ilip}. However, when potential wells are steep, but not infinitely steep, here \textsc{rk4ilip} provides a benefit. The only other model that can handle these large potentials---Fourier split-step---has the disadvantage that it cannot deal with arbitrary operators such as those arising from a rotating frame, and is not parallelisable with local data. The benefits of parallelisability are obvious, and the above results demonstrate \textsc{rk4ilip}'s advantage at simulating \textsc{bec}s in tight traps and rotating frames.
 
