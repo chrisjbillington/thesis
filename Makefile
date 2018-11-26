@@ -8,7 +8,7 @@ BASE_LATEX_COMMAND = lualatex -interaction=nonstopmode -halt-on-error -recorder 
 # If "pydflatex" is installed, use it to parse the logfile and print more useful output:
 PYDFLATEX := $(shell command -v pydflatex 2> /dev/null)
 ifdef PYDFLATEX
-   PYDFLATEX_COMMAND = echo '====== BEGIN LATEX LOG ====='; pydflatex -l $(BASENAME).tex; echo '======= END LATEX LOG ======\n'
+   PYDFLATEX_COMMAND = echo '====== BEGIN LATEX LOG ====='; pydflatex -l $(BASENAME).tex; echo '======= END LATEX LOG ======'
    LATEX_COMMAND = $(BASE_LATEX_COMMAND) $(BASENAME).tex > /dev/null; $(PYDFLATEX_COMMAND)
    LATEXMK_COMMAND = $(BASE_LATEX_COMMAND) %O %S > /dev/null; $(PYDFLATEX_COMMAND)
 else
@@ -19,17 +19,21 @@ endif
 # Tell TeX to just print lines as long as it wants:
 export max_print_line=1048576
 
-all:
-	@# make with latexmk - runs latex and bibtex repreatedly as required
+all: pdfannotations
+	@# make with latexmk - runs latex and bibtex repeatedly as required
 	@latexmk -silent -pdflatex="$(LATEXMK_COMMAND)" $(BASENAME).tex -pdf
 
-write:
+write: pdfannotations
 	@# latexmk in continuous view mode, running as necessary whenever files change
 	@latexmk -silent -pvc -pdflatex="$(LATEXMK_COMMAND)" $(BASENAME).tex -pdf
 
-latex:
+latex: pdfannotations
 	@# Just run latex by itself.
 	@$(LATEX_COMMAND)
+
+pdfannotations:
+	@# Extract PDF annotations from the labscript paper for use with pdfpages
+	@pdfannotextractor labscript_paper/labscript_paper.pdf
 
 wc:
 	@# Wordcount:
@@ -41,7 +45,7 @@ hglog:
 
 clean:
 	@# Delete temporary files
-	@rm -rf *.aux *.log *.out *.toc *.loc *.lot *.bbl *.blg *.brf *.fls *.fdb_latexmk hglog.txt _minted-$(BASENAME)/
+	@rm -rf *.aux *.log *.out *.toc *.loc *.lot *.bbl *.blg *.brf *.fls *.fdb_latexmk hglog.txt _minted-$(BASENAME)/ labscript_paper/labscript_paper.pax
 
 
 
