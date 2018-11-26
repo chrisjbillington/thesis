@@ -594,7 +594,7 @@ For the Schr\"odinger equation in a concrete basis, $f$ is
 \begin{align}
 f(\vec \psi, t) = -\frac\ii\hbar H(t)\vec \psi,
 \end{align}
-where $\vec \psi$ is the state vector in the given basis and $H(t)$ is the matrix representation of the Hamiltonian in that basis\footnote{For the Gross--Pitaevskii equation this would be a nonlinear $H(\vec \psi, t)$, and everything else in this section still applies.}. Fourth-order Runge--Kutta is therefore as computationally expensive and parallelisable as computing the matrix--vector product $H(t)\vec\psi$. In the worst case this multiplication is $\Ord{n^2}$ in the size of the Hilbert space and barely parallelisable at all, if $H$ is dense. But in the common case (as mentioned in Section~\ref{sec:split-step}), of $H$ being a sum of terms which act on different subspaces, i.e.
+where $\vec \psi$ is the state vector in the given basis and $H(t)$ is the matrix representation of the Hamiltonian in that basis.\footnote{For the Gross--Pitaevskii equation this would be a nonlinear $H(\vec \psi, t)$, and everything else in this section still applies.} Fourth-order Runge--Kutta is therefore as computationally expensive and parallelisable as computing the matrix--vector product $H(t)\vec\psi$. In the worst case this multiplication is $\Ord{n^2}$ in the size of the Hilbert space and barely parallelisable at all, if $H$ is dense. But in the common case (as mentioned in Section~\ref{sec:split-step}), of $H$ being a sum of terms which act on different subspaces, i.e.
 \begin{align}
 H(t) = \sum_{i=1}^N \mathbb{I}_{n_1} \otimes \cdots  \otimes \mathbb{I}_{n_{i-1}}
 \otimes  H_i(t) \otimes  
@@ -678,7 +678,7 @@ This is all well and good, and it works. But at what point did we choose a basis
 
 Prior to discretisation, the spatial wavefunction $\psi(\vec r, t) = \braket{\vec r}{\psi(t)}$ was already the representation of the abstract state vector $\ket{\psi}$ in the `spatial basis'---a basis in which the basis vectors $\{\ket{\vec r}\}$ are Dirac deltas positioned at each point in space. The value of the wavefunction $\psi(\vec r)$ for a specific $\vec r$ is then simply a coefficient saying how much of the basis vector $\ket{\vec r}$ to include in the overall state vector. What we have \emph{not} done is chosen a subset of these Dirac delta basis functions as our basis. This would be very strange---our representation of the wavefunction would allow it to be non-zero at the gridpoints, but not in between, like a comb. Spatially separated Dirac deltas do not spatially overlap at all; the matrix elements of the kinetic energy operator:
 \begin{align}
-\matrixel{\vec r_i}{\hat K}{\vec r_j} = \int \delta(\vec r - \vec r_i)\left(-\frac{\hbar^2}{2m}\grad^2\right)\delta(\vec r - \vec r_j)\,\dd \vec r
+\matrixel{\vec r_i}{\hat K}{\vec r_j} = \int \delta(\vec r - \vec r_i)\left(-\frac{\hbar^2}{2m}\grad^2\right)\delta(\vec r - \vec r_j)\,\dd^2 \vec r
 \end{align}
 would all be zero for $i\neq j$, disallowing any flow of amplitude from one point in space to another by virtue of it not being able to pass through the intervening points.
 
@@ -788,7 +788,7 @@ We now have a finite basis $\{\ket{\vec r_{ij}}\}$ that matches our intuitions s
 \end{align}
 where
 \begin{align}
-\psi_{i j} = \int \phi_{ij}^*(\vec r) \psi(\vec r) \dd{\vec r}.
+\psi_{i j} = \int \phi_{ij}^*(\vec r) \psi(\vec r) \dd^2\vec r.
 \end{align}
 In practice however this integral is rarely done. Instead, $\psi_{ij}$ is simply taken to be the value of the exact wavefunction $\psi(\vec r) = \braket{\vec r}{\psi}$ at the point $\vec r = \vec r_{ij}$:
 \begin{align}\label{eq:pseudospectral_vector}
@@ -1430,7 +1430,7 @@ Arbitrary boundary conditions & Yes & No & Yes & No\\
         \caption{Results of simulations to compare \textsc{rk4ilip} to other timestepping methods.
         Top four rows: Non-rotating frame simulations with four different radial power-law potentials.
         Bottom four rows: Rotating frame simulations with same four potentials.
-        Left column: maximum per-step error $\int \abs{\psi - \tilde\psi}^2\,\dd \vec{r}/\int\abs{\tilde\psi}^2\,\dd \vec{r}$ of fourth-order Runge--Kutta (\textsc{rk4}), its interaction picture variants (\textsc{rk4ip} and \textsc{rk4ilip}) and Fourier split-step (\textsc{fss}) as a function of timestep. Solutions were checked every $100$ timesteps against a comparison solution $\tilde \psi$ computed using half sized steps for \textsc{rk4} methods, and quarter sized steps for \textsc{fss}. Simulations encountering numerical overflow not plotted.
+        Left column: maximum per-step error $\int \abs{\psi - \tilde\psi}^2\,\dd^2 \vec{r}/\int\abs{\tilde\psi}^2\,\dd^2 \vec{r}$ of fourth-order Runge--Kutta (\textsc{rk4}), its interaction picture variants (\textsc{rk4ip} and \textsc{rk4ilip}) and Fourier split-step (\textsc{fss}) as a function of timestep. Solutions were checked every $100$ timesteps against a comparison solution $\tilde \psi$ computed using half sized steps for \textsc{rk4} methods, and quarter sized steps for \textsc{fss}. Simulations encountering numerical overflow not plotted.
         Centre column: potential (black) and average density $\tilde \rho_0$ of the initial state  (red) over a slice of width $R/5$ in the $y$ direction.
         Right column: Density of solution at initial, intermediate and final times for each configuration simulated (taken from \textsc{rk4ilip} results).
         \textsc{rk4ilip} is the only method usable in rotating frames and not encountering overflow in the steeper traps for the timesteps considered.}

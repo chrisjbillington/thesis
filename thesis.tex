@@ -1,3 +1,8 @@
+% Backward compatibility that allows rendering on newer lualatex versions,
+% which have deprecated some commands. I do not use these commands, but
+% other packages I use do, so this is needed until other packages get up
+% to date:
+\RequirePackage{luatex85}
 \documentclass[a4paper,10pt,twoside]{memoir}
 \include{preamble_standard}
 \include{preamble_layout}
